@@ -1,0 +1,103 @@
+name: airwatch_mobile
+description: "AirWatch Mobile — Real-time flight tracking, synced with the airwatch-api backend and the airwatch-web dashboard."
+publish_to: 'none'
+version: 2.0.0+1
+
+environment:
+  sdk: ^3.11.3
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # State Management
+  flutter_riverpod: ^3.3.1
+  riverpod_annotation: ^4.0.2
+
+  # Networking
+  dio: ^5.7.0
+  web_socket_channel: ^3.0.1
+  # SHA-256 for SPKI certificate pinning (CertificatePinning helper).
+  # Pulled transitively by Flutter SDK; pinned here so the import in
+  # core/network/certificate_pinning.dart isn't a "phantom dependency".
+  crypto: ^3.0.6
+
+  # Map — bumped to flutter_map 8.3 (stable line, no breaking changes from 8.2).
+  # latlong2 0.10 is a major bump touching every LatLng callsite; keep ^0.9.
+  # flutter_map_animations 0.10 is a major bump — postpone until tested.
+  flutter_map: ^8.3.0
+  latlong2: ^0.9.1
+  flutter_map_animations: ^0.9.0
+  flutter_map_marker_cluster: ^8.2.2
+
+  # UI
+  google_fonts: ^8.0.2
+  shimmer: ^3.0.0
+  flutter_animate: ^4.5.2
+  glassmorphism: ^3.0.0
+  cached_network_image: ^3.4.1
+  flutter_svg: ^2.0.16
+
+  # Utils
+  intl: ^0.20.2
+  geolocator: ^14.0.2
+  permission_handler: ^12.0.1
+  shared_preferences: ^2.3.4
+  freezed_annotation: ^3.1.0
+  json_annotation: ^4.9.0
+  equatable: ^2.0.7
+  collection: ^1.19.1
+
+  # Camera & AR
+  camera: ^0.12.0+1
+  sensors_plus: ^7.0.0
+
+  # Share
+  share_plus: ^12.0.2
+
+  # Speech-to-text — drives the voice-command button. The 7.x line is
+  # the current stable release on pub.dev and supports both Android
+  # (RecognizerIntent) and iOS (SFSpeechRecognizer).
+  speech_to_text: ^7.0.0
+
+  # Notifications (local)
+  flutter_local_notifications: ^21.0.0
+
+  # Home Widget — 0.9.1 picks up Android 14 widget bugfixes
+  home_widget: ^0.9.1
+
+  # Charts. fl_chart 1.x is a major rewrite of the tooltip + axis API; the
+  # `chart_theme.dart` helper was written against the 0.69 surface, so we
+  # pin to ^0.69 and migrate to 1.x in a separate, focused PR.
+  fl_chart: ^0.69.2
+
+  # Drag-and-drop reorderable grid for Dashboard widgets
+  reorderable_grid_view: ^2.2.8
+
+  # 3D earth globe — fully native (no WebView). flutter_earth_globe 2.2.x
+  # is API-compatible with 2.0 (the surface used in globe_screen.dart);
+  # the bump picks up perf + iOS-fix patches.
+  flutter_earth_globe: ^2.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  build_runner: ^2.4.13
+  freezed: ^3.2.5
+  json_serializable: ^6.13.0
+  riverpod_generator: ^4.0.3
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/icons/
+    - assets/images/
+    - assets/flags/4x3/
+
+  # Fonts loaded via google_fonts package at runtime
