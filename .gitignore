@@ -48,3 +48,12 @@ app.*.map.json
 proxy/cache/*.json
 proxy/cache/*.notfound
 proxy/certs/*.pem
+
+# Release signing — never commit real keystore material. CI injects the
+# upload key from secrets and writes a temporary key.properties; locally,
+# devs copy key.properties.example → key.properties and fill in the values.
+android/key.properties
+android/app/upload-keystore.jks
+android/app/keystore.jks
+*.jks
+*.keystore

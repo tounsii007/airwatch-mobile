@@ -298,7 +298,10 @@ class SettingsScreen extends ConsumerWidget {
             const SizedBox(height: 20),
 
             // ═══ ABOUT ═══
-            // ═══ ABOUT ═══
+            // Brand badge + version + privacy-policy link. Both stores
+            // (Play Console "Data safety" and App Store Connect) require
+            // an in-app surface that shows the privacy disclosure, so
+            // the Privacy tile below is functional, not decorative.
             GlassPanel(
               borderRadius: 14,
               padding: const EdgeInsets.all(16),
@@ -312,6 +315,37 @@ class SettingsScreen extends ConsumerWidget {
                       fontFamily: UiConstants.bodyFont,
                       fontSize: 13,
                       color: isDark ? AppColors.textMuted : UiConstants.lightTextMuted,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            GlassPanel(
+              borderRadius: 14,
+              padding: const EdgeInsets.all(4),
+              child: Column(
+                children: [
+                  _NavTile(
+                    Icons.privacy_tip_outlined,
+                    'Privacy Policy',
+                    'How AirWatch handles your data',
+                    primary,
+                    isDark,
+                    () => _showPrivacyDialog(context, isDark, primary),
+                  ),
+                  _Div(isDark),
+                  _NavTile(
+                    Icons.description_outlined,
+                    'Open-source licenses',
+                    'Third-party packages used by this app',
+                    primary,
+                    isDark,
+                    () => showLicensePage(
+                      context: context,
+                      applicationName: 'AirWatch',
+                      applicationVersion: 'v2.0.0',
+                      applicationLegalese: '© 2026 Ridha Abderrahmen',
                     ),
                   ),
                 ],
@@ -618,5 +652,133 @@ class _LangTile extends StatelessWidget {
           : null,
     );
   }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Privacy-policy dialog
+//
+// Shows the same disclosures that ship in `PRIVACY.md` at the repo root,
+// rendered inline so the user doesn't need a network connection. The full
+// document lives at https://github.com/airwatch/airwatch-mobile/blob/main/PRIVACY.md
+// (and is also what we submit verbatim to the App Store / Play Store data-
+// safety forms — see PRIVACY.md §3 + §4 for the row-by-row list).
+//
+// We render the bullets as plain Flutter widgets rather than embedding a
+// markdown renderer for two reasons:
+//   * fewer transitive deps to vet for the privacy-sensitive surface
+//     (anything we add here will end up listed in §6 of the policy itself);
+//   * the layout reads better on small phones than a generic markdown
+//     widget would.
+// ─────────────────────────────────────────────────────────────────────────────
+void _showPrivacyDialog(BuildContext context, bool isDark, Color primary) {
+  showDialog<void>(
+    context: context,
+    builder: (ctx) {
+      final textColor = isDark ? AppColors.textPrimary : UiConstants.lightTextPrimary;
+      final mutedColor = isDark ? AppColors.textMuted : UiConstants.lightTextMuted;
+      Widget heading(String t) => Padding(
+            padding: const EdgeInsets.only(top: 16, bottom: 6),
+            child: Text(
+              t.toUpperCase(),
+              style: TextStyle(
+                fontFamily: UiConstants.headingFont,
+                fontSize: 11,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 1.5,
+                color: primary,
+              ),
+            ),
+          );
+      Widget bullet(String t) => Padding(
+            padding: const EdgeInsets.only(left: 4, top: 4),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 6),
+                  child: Container(
+                    width: 4,
+                    height: 4,
+                    decoration: BoxDecoration(color: primary, shape: BoxShape.circle),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    t,
+                    style: TextStyle(
+                      fontFamily: UiConstants.bodyFont,
+                      fontSize: 13,
+                      height: 1.4,
+                      color: textColor,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+      return AlertDialog(
+        backgroundColor: isDark ? AppColors.surface : UiConstants.lightSurface,
+        title: Row(
+          children: [
+            Icon(Icons.privacy_tip_outlined, color: primary, size: 20),
+            const SizedBox(width: 8),
+            Text(
+              'Privacy Policy',
+              style: TextStyle(
+                fontFamily: UiConstants.headingFont,
+                color: textColor,
+              ),
+            ),
+          ],
+        ),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Last updated: 2026-05-03 · v2.0.0',
+                  style: TextStyle(
+                    fontFamily: UiConstants.bodyFont,
+                    fontSize: 11,
+                    color: mutedColor,
+                  ),
+                ),
+                heading('Summary'),
+                bullet('No accounts, no logins, no personal data collected.'),
+                bullet('No ads, no analytics SDKs, no telemetry beacons.'),
+                bullet('No data sold or shared with third parties.'),
+                heading('On-device only'),
+                bullet('Location — used to centre the map and find nearby aircraft. Never uploaded.'),
+                bullet('Camera (AR mode) — frames are decoded, drawn, and discarded. Never uploaded.'),
+                bullet('Microphone (voice button) — handed to the OS speech recogniser; only the transcript reaches AirWatch, and even that is parsed locally.'),
+                bullet('Sensors (compass, accelerometer) — read at 10 Hz for the AR HUD; never persisted.'),
+                bullet('Settings, favourites, geofences — saved in the app sandbox via SharedPreferences / NSUserDefaults.'),
+                heading('Network'),
+                bullet('Talks to api.airwatch.app (TLS-pinned) and pics.avs.io for airline logos. That\'s the entire host list.'),
+                bullet('Backend logs are kept 30 days for rate-limiting; IP addresses are not joined with any other dataset.'),
+                heading('Your rights'),
+                bullet('Access, rectification, erasure, restriction, portability, objection, and consent withdrawal — write to privacy@airwatch.app.'),
+                bullet('Right to lodge a complaint with your local data-protection authority.'),
+                heading('Full text'),
+                bullet('See PRIVACY.md in the repository for the complete policy, including third-party data sources and international-transfer details.'),
+              ],
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text(
+              'Close',
+              style: TextStyle(color: primary, fontFamily: UiConstants.headingFont),
+            ),
+          ),
+        ],
+      );
+    },
+  );
 }
 

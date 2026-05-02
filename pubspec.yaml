@@ -92,6 +92,12 @@ dev_dependencies:
   json_serializable: ^6.13.0
   riverpod_generator: ^4.0.3
 
+  # Pure-Dart raster graphics — used by tool/generate_launcher_icons.dart to
+  # synthesise the AirWatch radar logo at every Android+iOS icon size from a
+  # single procedural source. Keeps the asset pipeline reproducible (no
+  # external designers, no committed binaries to drift out of date).
+  image: ^4.3.0
+
 flutter:
   uses-material-design: true
 

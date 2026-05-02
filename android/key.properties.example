@@ -1,0 +1,14 @@
+# AirWatch — Android upload-key template
+#
+# Copy this file to `android/key.properties` (gitignored) and fill in the
+# values. The build.gradle.kts in `android/app/` reads it automatically when
+# you run `flutter build appbundle --release`.
+#
+# Path is relative to `android/app/` (the Flutter convention). If you keep
+# the keystore elsewhere, use an absolute path or set the KEYSTORE_PATH
+# environment variable instead.
+
+storeFile=upload-keystore.jks
+storePassword=replace-me
+keyAlias=airwatch
+keyPassword=replace-me

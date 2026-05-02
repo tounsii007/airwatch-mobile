@@ -1,9 +1,58 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Two ways to feed the upload-key credentials in:
+//
+//   1. `android/key.properties` — the conventional Flutter workflow. Local
+//      devs copy `key.properties.example` and fill it in; the file is
+//      gitignored. Format:
+//
+//          storeFile=upload-keystore.jks   (relative to android/app/)
+//          storePassword=…
+//          keyAlias=airwatch
+//          keyPassword=…
+//
+//   2. Environment variables — what CI uses, since secrets aren't files:
+//
+//          KEYSTORE_PATH=/abs/path/to/upload.jks
+//          STORE_PASSWORD=…
+//          KEY_ALIAS=airwatch
+//          KEY_PASSWORD=…
+//
+// `key.properties` wins if both are provided. If NEITHER is configured, the
+// release build falls back to debug signing so `flutter run --release` keeps
+// working on a clean machine — but a build heading for the Play Store MUST
+// have one of them, or the upload will be rejected (debug-signed AABs are
+// not accepted).
+// ─────────────────────────────────────────────────────────────────────────────
+
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+}
+
+fun resolveStoreFile(): java.io.File? {
+    val fromProps = keystoreProperties["storeFile"] as String?
+    if (fromProps != null) {
+        // Resolve relative to android/app/ (Flutter docs convention) so devs
+        // can drop the .jks next to this build script.
+        return file(fromProps)
+    }
+    val fromEnv = System.getenv("KEYSTORE_PATH")
+    return if (fromEnv != null) file(fromEnv) else null
+}
+
+fun resolveProp(propsKey: String, envKey: String, fallback: String = ""): String =
+    (keystoreProperties[propsKey] as String?) ?: (System.getenv(envKey) ?: fallback)
 
 android {
     namespace = "com.airwatch.mobile"
@@ -27,40 +76,25 @@ android {
         versionName = flutter.versionName
     }
 
-    // ─────────────────────────────────────────────────────────────────────
-    // Release signing — keystore credentials come from the environment so
-    // they never land in version control. CI sets these via secrets;
-    // locally, drop them in `~/.gradle/gradle.properties` or export them
-    // before running `flutter build apk --release`.
-    //
-    // Required env vars:
-    //   KEYSTORE_PATH   absolute or app-relative path to the .keystore/.jks
-    //   KEY_ALIAS       key alias inside the store
-    //   KEY_PASSWORD    password for the key
-    //   STORE_PASSWORD  password for the keystore
-    //
-    // If any are missing we deliberately fall back to debug signing so
-    // `flutter run --release` still works on a developer machine — but a
-    // build that ends up on the Play Store MUST have all four set, or the
-    // upload will be rejected (debug-signed APKs are not accepted).
-    // ─────────────────────────────────────────────────────────────────────
     signingConfigs {
         create("release") {
-            val storePath = System.getenv("KEYSTORE_PATH")
-            if (storePath != null) {
-                storeFile = file(storePath)
-                storePassword = System.getenv("STORE_PASSWORD") ?: ""
-                keyAlias = System.getenv("KEY_ALIAS") ?: "airwatch"
-                keyPassword = System.getenv("KEY_PASSWORD") ?: ""
+            val storeFileResolved = resolveStoreFile()
+            if (storeFileResolved != null) {
+                storeFile = storeFileResolved
+                storePassword = resolveProp("storePassword", "STORE_PASSWORD")
+                keyAlias = resolveProp("keyAlias", "KEY_ALIAS", "airwatch")
+                keyPassword = resolveProp("keyPassword", "KEY_PASSWORD")
             }
         }
     }
 
     buildTypes {
         release {
-            // Use the real release config when KEYSTORE_PATH is set, otherwise
-            // fall back to debug so local `flutter run --release` keeps working.
-            signingConfig = if (System.getenv("KEYSTORE_PATH") != null) {
+            // Use the real release config when a keystore is configured (via
+            // key.properties OR env vars), otherwise fall back to debug so
+            // local `flutter run --release` keeps working without the upload
+            // key being checked out.
+            signingConfig = if (resolveStoreFile() != null) {
                 signingConfigs.getByName("release")
             } else {
                 signingConfigs.getByName("debug")

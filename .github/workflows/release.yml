@@ -1,0 +1,137 @@
+name: AirWatch Release
+
+# Triggered by pushing a `vMAJOR.MINOR.PATCH` tag from a green main. The
+# pipeline:
+#   1. Decodes the upload keystore from the ANDROID_KEYSTORE_BASE64 secret
+#      to a temporary file inside the runner.
+#   2. Builds a release-signed Android App Bundle and a release-signed APK.
+#   3. Optionally uploads the AAB to the Play Store internal track when a
+#      service-account JSON is configured (PLAY_SERVICE_ACCOUNT_JSON).
+#   4. Builds the iOS .ipa (no-codesign — a separate Xcode Cloud lane
+#      handles the App Store upload, since GitHub-hosted runners don't
+#      have a stable App Store Connect login flow).
+#   5. Attaches the AAB, APK, R8 mapping file, and the iOS .xcarchive to
+#      the GitHub release that the tag triggered.
+#
+# See RELEASE.md for the full runbook + the list of repo secrets needed.
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+env:
+  FLUTTER_VERSION: '3.41.5'
+  FLUTTER_CHANNEL: stable
+
+jobs:
+  android-release:
+    name: Android · signed AAB + APK
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write       # needed for softprops/action-gh-release
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: ${{ env.FLUTTER_CHANNEL }}
+          cache: true
+
+      - run: flutter pub get
+
+      # ──────────────────────────────────────────────────────────────────
+      # Decode the upload keystore from a base64 secret. We never write
+      # it under the repo tree to avoid accidentally getting it picked up
+      # by a future `git add -A`. The build-gradle.kts reads KEYSTORE_PATH
+      # straight from the env.
+      # ──────────────────────────────────────────────────────────────────
+      - name: Decode upload keystore
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$KEYSTORE_B64" ]; then
+            echo "::error::ANDROID_KEYSTORE_BASE64 secret is empty — release blocked."
+            exit 1
+          fi
+          mkdir -p "$RUNNER_TEMP/keys"
+          echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/keys/upload.jks"
+          echo "KEYSTORE_PATH=$RUNNER_TEMP/keys/upload.jks" >> "$GITHUB_ENV"
+
+      - name: Build release AAB
+        env:
+          STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS:      ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD:   ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: flutter build appbundle --release
+
+      - name: Build release APK (sideload + GitHub release artifact)
+        env:
+          STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS:      ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD:   ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: flutter build apk --release
+
+      # ──────────────────────────────────────────────────────────────────
+      # Upload to Play Console internal-testing track. Skipped if the
+      # service-account secret isn't set (e.g. before the project is
+      # connected to a Play developer account).
+      # ──────────────────────────────────────────────────────────────────
+      - name: Upload to Play Store · internal track
+        if: ${{ env.PLAY_SA_PRESENT == 'true' }}
+        env:
+          PLAY_SA_PRESENT: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON != '' }}
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: com.airwatch.mobile
+          releaseFiles: build/app/outputs/bundle/release/app-release.aab
+          track: internal
+          status: completed
+
+      - name: Attach Android artifacts to GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            build/app/outputs/bundle/release/app-release.aab
+            build/app/outputs/flutter-apk/app-release.apk
+            build/app/outputs/mapping/release/mapping.txt
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+
+  ios-release:
+    name: iOS · unsigned .xcarchive
+    runs-on: macos-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: ${{ env.FLUTTER_CHANNEL }}
+          cache: true
+
+      - run: flutter pub get
+
+      # The codesign-less build is enough for the artifact attached to the
+      # GitHub release; the App Store Connect upload runs in Xcode Cloud
+      # against the same tag (configured in `ios/Runner.xcworkspace`).
+      - run: flutter build ipa --release --no-codesign
+
+      - name: Attach iOS artifacts to GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            build/ios/archive/Runner.xcarchive/**
+          draft: false
+          prerelease: false
