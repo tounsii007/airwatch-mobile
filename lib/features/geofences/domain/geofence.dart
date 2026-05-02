@@ -155,8 +155,16 @@ bool aircraftIsInsideFence(AircraftState ac, GeoFence f) {
   }
   if (!inside) return false;
 
-  // Altitude band — feet.
-  final altFt = ac.baroAltitude == null ? null : ac.baroAltitude! * 3.28084;
+  // Altitude band — feet. Uses direct division by the SI-defined
+  // exact 1-ft length (0.3048 m) so a baroAltitude that's an integer
+  // metre count of an integer foot count (e.g. 9 144 m = 30 000 ft,
+  // 12 192 m = 40 000 ft) lands EXACTLY on the boundary, not a fraction
+  // above or below. Multiplying by `1 / 0.3048` introduces a
+  // double-rounding error on the reciprocal that bites at flight
+  // levels — testing showed both 9 144 m and 12 192 m landed
+  // ~10⁻¹² ft *below* the integer value with `*`, which fails the
+  // strict `<` band check on the way up.
+  final altFt = ac.baroAltitude == null ? null : ac.baroAltitude! / 0.3048;
   if (f.minAltitudeFt != null && (altFt == null || altFt < f.minAltitudeFt!)) {
     return false;
   }

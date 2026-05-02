@@ -114,7 +114,11 @@ List<List<double>>? _parseCoords(Map<String, dynamic> d) {
   if (coords is String) {
     final nums = coords.trim().split(RegExp(r'\s+')).map(double.tryParse).toList();
     if (nums.length < 6 || nums.length.isOdd) return null;
-    if (nums.any((n) => n == null)) return null;
+    // Reject both `null` (unparseable token) AND `NaN` (parse-able as
+    // double but useless as a coordinate). `double.tryParse('NaN')`
+    // returns `double.nan` rather than null, so the null-check alone
+    // lets a NaN polygon slip through and feed the renderer garbage.
+    if (nums.any((n) => n == null || n.isNaN)) return null;
     final pts = <List<double>>[];
     for (var i = 0; i < nums.length; i += 2) {
       pts.add([nums[i]!, nums[i + 1]!]);
