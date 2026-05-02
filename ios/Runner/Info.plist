@@ -66,5 +66,13 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<!-- Voice-command button (speech_to_text) needs both keys on iOS.
+	     Without them the system never asks for permission and the
+	     button silently no-ops. The strings are user-facing in the
+	     iOS permission dialog. -->
+	<key>NSMicrophoneUsageDescription</key>
+	<string>AirWatch listens to your voice command (e.g. "show flight DLH123") to control the map. Audio is processed by your device's speech recognizer and never stored.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>AirWatch turns spoken commands into map actions like opening a flight or switching the basemap. The transcript is parsed locally; no audio leaves the device beyond the system recognizer.</string>
 </dict>
 </plist>

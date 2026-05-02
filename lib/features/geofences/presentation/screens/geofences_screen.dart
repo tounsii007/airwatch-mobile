@@ -8,6 +8,7 @@ import 'package:airwatch_mobile/core/widgets/glass_panel.dart';
 import 'package:airwatch_mobile/features/geofences/data/geofences_repository.dart';
 import 'package:airwatch_mobile/features/geofences/domain/geofence.dart';
 import 'package:airwatch_mobile/features/geofences/presentation/screens/fence_form_screen.dart';
+import 'package:airwatch_mobile/features/geofences/presentation/screens/geofence_draw_screen.dart';
 
 /// List + create + delete + toggle for the user's geofences.
 ///
@@ -30,12 +31,35 @@ class GeofencesScreen extends ConsumerWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.of(context).push(
-          MaterialPageRoute<void>(builder: (_) => const FenceFormScreen()),
-        ),
-        backgroundColor: AppColors.primary,
-        child: const Icon(Icons.add_rounded),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          // Tap-to-draw on a real map — visual primary path. Mirrors
+          // the web's `GeoFenceDrawMap` UX.
+          FloatingActionButton.extended(
+            heroTag: 'fence_draw',
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                  builder: (_) => const GeoFenceDrawScreen()),
+            ),
+            backgroundColor: AppColors.primary,
+            icon: const Icon(Icons.edit_location_alt_rounded),
+            label: const Text('DRAW'),
+          ),
+          const SizedBox(height: 10),
+          // Numeric form fallback for users who prefer typing exact
+          // lat / lon / radius values.
+          FloatingActionButton.small(
+            heroTag: 'fence_form',
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(builder: (_) => const FenceFormScreen()),
+            ),
+            backgroundColor: AppColors.surface.withValues(alpha: 0.85),
+            foregroundColor: AppColors.primary,
+            child: const Icon(Icons.edit_rounded),
+          ),
+        ],
       ),
       body: fences.isEmpty
           ? _Empty(isDark: isDark)

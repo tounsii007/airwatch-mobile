@@ -86,6 +86,17 @@ class _MapScreenState extends ConsumerState<MapScreen>
       }
     });
 
+    // Voice-driven zoom — the command provider increments / decrements
+    // a tick. Each delta moves the camera one zoom step, clamped to
+    // the map's allowed range.
+    ref.listen<int>(mapZoomCommandProvider, (prev, next) {
+      if (prev == null || prev == next) return;
+      final delta = next - prev;
+      final cur = _mapController.camera.zoom;
+      final target = (cur + delta).clamp(AppConfig.minZoom, AppConfig.maxZoom);
+      _mapController.move(_mapController.camera.center, target);
+    });
+
     return Scaffold(
       body: Stack(
         children: [

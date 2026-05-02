@@ -117,15 +117,29 @@ final filteredAircraftProvider =
   final aircraftAsync = ref.watch(aircraftStreamProvider);
   final altFilter = ref.watch(altitudeFilterProvider);
   final catFilter = ref.watch(categoryFilterProvider);
+  // Voice-driven cargo-only filter — orthogonal to the existing
+  // category dropdown. When on, it restricts the result to flights
+  // whose airline ICAO is on the cargo carrier list.
+  final cargoOnly = ref.watch(showCargoOnlyProvider);
 
   return aircraftAsync.when(
     data: (aircraft) {
-      if (altFilter == AltitudeFilter.all && catFilter == CategoryFilter.all) {
+      if (altFilter == AltitudeFilter.all &&
+          catFilter == CategoryFilter.all &&
+          !cargoOnly) {
         return aircraft;
       }
 
       return Map.fromEntries(aircraft.entries.where((entry) {
         final a = entry.value;
+        // Cargo-only filter — orthogonal to the category dropdown.
+        if (cargoOnly) {
+          final cs = (a.callsign ?? '').toUpperCase().trim();
+          if (cs.length < 3) return false;
+          if (!_cargoCallsignPrefixes.contains(cs.substring(0, 3))) {
+            return false;
+          }
+        }
 
         // Altitude filter
         if (altFilter != AltitudeFilter.all) {
@@ -238,6 +252,43 @@ class MapFocusNotifier extends Notifier<MapFocusTrigger?> {
 
 final mapFocusProvider =
     NotifierProvider<MapFocusNotifier, MapFocusTrigger?>(MapFocusNotifier.new);
+
+// ── Cargo-airline ICAO callsign prefixes (for showCargoOnlyProvider) ─────
+//
+// Mirrors the web frontend's `cargoFilter.ts` list. A flight is treated
+// as cargo when its callsign's leading 3 chars match this set. Kept in
+// sync with `cargo_filter.dart` in the cargo feature so both screens
+// agree on what counts as cargo.
+const Set<String> _cargoCallsignPrefixes = {
+  'FDX', 'UPS', 'GTI', 'GEC', 'CLX', 'BOX', 'ABX', 'TAY', 'NPT', 'WGN',
+  'ATG', 'SQC', 'ADB', 'CKS', 'AEC', 'GMI', 'FPO', 'TGX', 'KFS', 'MSC',
+  'DHK', 'DHL', 'CKK', 'CAO', 'NCA', 'ABW',
+};
+
+// ── Voice-driven map zoom ─────────────────────────────────────────────────
+//
+// The map's actual zoom level lives on flutter_map's `MapController` which
+// isn't a Riverpod object. To let the voice command pipeline drive zoom,
+// we expose an integer "tick" that the MapScreen watches: each increment
+// means "zoom in once", each decrement means "zoom out once". Voice
+// dispatch flips the tick and the screen reads it via `ref.listen`.
+class MapZoomCommandNotifier extends Notifier<int> {
+  @override
+  int build() => 0;
+  void zoomIn() => state = state + 1;
+  void zoomOut() => state = state - 1;
+}
+
+final mapZoomCommandProvider =
+    NotifierProvider<MapZoomCommandNotifier, int>(MapZoomCommandNotifier.new);
+
+// ── Cargo-only map filter ─────────────────────────────────────────────────
+//
+// Toggled by the voice-command "cargo" / "fracht" / "fret". Down-stream
+// filter logic in `aircraftStreamProvider` consumers can `ref.watch` this
+// to restrict their view to cargo flights.
+final showCargoOnlyProvider =
+    NotifierProvider<BoolNotifier, bool>(() => BoolNotifier(false));
 
 // ── Basemap style ──────────────────────────────────────────────────────────
 //

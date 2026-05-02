@@ -130,20 +130,18 @@ class _VoiceButtonState extends ConsumerState<VoiceButton> {
       case VGoToAirport(:final query):
         _focusOnAirport(query);
       case VFilterCargo():
-        // Placeholder — until a "filter cargo" provider exists on the
-        // map screen, this is a no-op. The web implementation routes
-        // the same command to its `cargoFilter` store.
-        break;
+        // Toggle the cargo-only filter — second voice command flips
+        // it back off, so the user doesn't have to pull up the
+        // settings panel to clear the filter.
+        ref.read(showCargoOnlyProvider.notifier).toggle();
       case VSetStyleDark():
         ref.read(mapStyleProvider.notifier).set(MapStyleId.dark);
       case VSetStyleLight():
         ref.read(mapStyleProvider.notifier).set(MapStyleId.toner);
       case VZoomIn():
+        ref.read(mapZoomCommandProvider.notifier).zoomIn();
       case VZoomOut():
-        // Map screen's zoom is owned by its MapController, not Riverpod.
-        // We surface intent here; a future enhancement can plumb a
-        // notifier to drive zoom from outside the screen.
-        break;
+        ref.read(mapZoomCommandProvider.notifier).zoomOut();
       case VToggleRadar():
         ref.read(showRadarProvider.notifier).toggle();
       case VToggleTurbulence():

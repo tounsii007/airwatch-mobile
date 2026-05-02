@@ -1,4 +1,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Voice command (speech_to_text plugin) needs raw microphone
+         access plus an internet permission so Google's recognizer
+         can stream the audio back. Without these, the VoiceButton
+         silently no-ops on real devices. -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+    <!-- speech_to_text on Android delegates to Google's recognizer
+         service which lives in another package — Android 11+
+         requires apps to declare visibility for it. -->
+    <queries>
+        <intent>
+            <action android:name="android.speech.RecognitionService"/>
+        </intent>
+    </queries>
+
     <application
         android:label="AirWatch"
         android:name="${applicationName}"

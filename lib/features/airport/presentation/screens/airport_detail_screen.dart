@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:airwatch_mobile/core/constants/airport_full_database.dart';
@@ -11,22 +12,28 @@ import 'package:airwatch_mobile/core/theme/app_colors.dart';
 import 'package:airwatch_mobile/core/widgets/glass_panel.dart';
 import 'package:airwatch_mobile/core/widgets/neon_text.dart';
 import 'package:airwatch_mobile/features/airport/data/models/airport_detail_models.dart';
+import 'package:airwatch_mobile/features/airport/data/recent_airports_repository.dart';
 import 'package:airwatch_mobile/features/airport/presentation/widgets/airport_schedule_tile.dart';
 import 'package:airwatch_mobile/features/airport/data/services/airport_details_service.dart';
 
+/// Sort modes for the schedule tabs. Mirrors the web's `SortBy` union.
+enum _ScheduleSort { time, delay }
+
 /// Full airport detail screen with weather, local time, and live schedules.
-class AirportDetailScreen extends StatefulWidget {
+class AirportDetailScreen extends ConsumerStatefulWidget {
   final String iataCode;
   final String? name;
 
   const AirportDetailScreen({super.key, required this.iataCode, this.name});
 
   @override
-  State<AirportDetailScreen> createState() => _AirportDetailScreenState();
+  ConsumerState<AirportDetailScreen> createState() => _AirportDetailScreenState();
 }
 
-class _AirportDetailScreenState extends State<AirportDetailScreen>
+class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
     with SingleTickerProviderStateMixin {
+  /// Active sort mode for both departures + arrivals.
+  _ScheduleSort _sortMode = _ScheduleSort.time;
   final _service = AirportDetailsService();
 
   late TabController _tabController;
@@ -99,6 +106,17 @@ class _AirportDetailScreenState extends State<AirportDetailScreen>
           _arrivals = bundle.arrivals;
           _isLoading = false;
         });
+        // Record the visit for the recent-airports list — only after
+        // a successful load so we don't pollute the history with
+        // failed lookups. City + country resolve through the
+        // bundled `airportFullDatabase` so the recent list survives
+        // a backend outage.
+        final dbEntry = lookupAirportByIata(widget.iataCode);
+        ref.read(recentAirportsProvider.notifier).record(
+              iata: widget.iataCode,
+              city: dbEntry?.city,
+              country: dbEntry?.country,
+            );
       }
     } on DioException catch (e) {
       debugPrint('[Airport] Load info failed: ${e.message}');
@@ -171,6 +189,42 @@ class _AirportDetailScreenState extends State<AirportDetailScreen>
                 Tab(text: '${context.s.departures} (${_departures.length})'),
                 Tab(text: '${context.s.arrivals} (${_arrivals.length})'),
               ],
+            ),
+            // Sort toggle — mirrors the web frontend's "By time / By
+            // delay" pill on `/airports/[iata]`. Default sort is by
+            // time; flipping to delay reorders both tabs.
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              child: Row(
+                children: [
+                  Text(
+                    'SORT',
+                    style: TextStyle(
+                      fontFamily: UiConstants.headingFont,
+                      fontSize: 9,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 1.2,
+                      color: AppColors.textMuted,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  _SortChip(
+                    label: 'TIME',
+                    active: _sortMode == _ScheduleSort.time,
+                    primary: primary,
+                    onTap: () =>
+                        setState(() => _sortMode = _ScheduleSort.time),
+                  ),
+                  const SizedBox(width: 6),
+                  _SortChip(
+                    label: 'DELAY',
+                    active: _sortMode == _ScheduleSort.delay,
+                    primary: primary,
+                    onTap: () =>
+                        setState(() => _sortMode = _ScheduleSort.delay),
+                  ),
+                ],
+              ),
             ),
             Expanded(
               child: TabBarView(
@@ -479,11 +533,22 @@ class _AirportDetailScreenState extends State<AirportDetailScreen>
       }).toList();
     }
 
-    filtered.sort((a, b) {
-      final timeA = isDeparture ? (a.depTime ?? '') : (a.arrTime ?? '');
-      final timeB = isDeparture ? (b.depTime ?? '') : (b.arrTime ?? '');
-      return timeA.compareTo(timeB);
-    });
+    if (_sortMode == _ScheduleSort.delay) {
+      // Sort descending by delay magnitude — biggest disruption at
+      // the top, undelayed flights at the bottom. Flights without a
+      // delay reading sort last.
+      filtered.sort((a, b) {
+        final delayA = isDeparture ? a.depDelayed ?? -1 : a.arrDelayed ?? -1;
+        final delayB = isDeparture ? b.depDelayed ?? -1 : b.arrDelayed ?? -1;
+        return delayB.compareTo(delayA);
+      });
+    } else {
+      filtered.sort((a, b) {
+        final timeA = isDeparture ? (a.depTime ?? '') : (a.arrTime ?? '');
+        final timeB = isDeparture ? (b.depTime ?? '') : (b.arrTime ?? '');
+        return timeA.compareTo(timeB);
+      });
+    }
 
     if (filtered.isEmpty) {
       return Center(
@@ -583,3 +648,52 @@ class _AirportDetailScreenState extends State<AirportDetailScreen>
 
 
 
+
+
+/// Pill button used by the schedule-sort toggle. Stays small + dense
+/// so the row never wraps, even on narrow phone screens.
+class _SortChip extends StatelessWidget {
+  const _SortChip({
+    required this.label,
+    required this.active,
+    required this.primary,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool active;
+  final Color primary;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+        decoration: BoxDecoration(
+          color: active
+              ? primary.withValues(alpha: 0.18)
+              : Colors.transparent,
+          borderRadius: BorderRadius.circular(4),
+          border: Border.all(
+            color: active
+                ? primary.withValues(alpha: 0.55)
+                : AppColors.glassBorder,
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontFamily: UiConstants.headingFont,
+            fontSize: 9,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1.4,
+            color: active ? primary : AppColors.textMuted,
+          ),
+        ),
+      ),
+    );
+  }
+}

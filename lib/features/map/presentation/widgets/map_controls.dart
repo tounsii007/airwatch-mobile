@@ -6,6 +6,7 @@ import 'package:airwatch_mobile/core/utils/responsive.dart';
 import 'package:airwatch_mobile/core/widgets/glass_panel.dart';
 import 'package:airwatch_mobile/features/map/presentation/providers/flight_providers.dart';
 import 'package:airwatch_mobile/features/map/presentation/widgets/map_style_picker.dart';
+import 'package:airwatch_mobile/features/notifications/presentation/widgets/alert_bell.dart';
 import 'package:airwatch_mobile/features/voice/presentation/voice_button.dart';
 
 class MapControls extends ConsumerWidget {
@@ -66,6 +67,11 @@ class MapControls extends ConsumerWidget {
             onChanged: (next) =>
                 ref.read(mapStyleProvider.notifier).set(next),
           ),
+          const SizedBox(height: 8),
+          // Alert bell — opens the central alerts panel (squawk +
+          // geofence intrusions). Mirrors the web frontend's
+          // top-right `AlertBell` from the layout.
+          const AlertBell(),
           const SizedBox(height: 8),
           // Voice command button — mirrors the web frontend's
           // VoiceButton. Speech recognition runs natively via
