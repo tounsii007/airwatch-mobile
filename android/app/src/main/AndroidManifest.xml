@@ -7,6 +7,27 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
+    <!-- Spotting screen needs the device's GPS to pick the 60-km
+         radius around the user. We only ask for foreground precision
+         (no background location) because the screen runs in the
+         foreground while the user is at a runway/observation point. -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
+    <!-- AR mode + camera-based spotting (existing Camera dependency).
+         The Camera plugin auto-declares CAMERA, but listing it
+         explicitly here makes the manifest self-documenting and
+         survives plugin upgrades that may drop the auto-declare. -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+
+    <!-- Local notifications (squawk + geofence alerts). VIBRATE is
+         covered by the default channel; POST_NOTIFICATIONS is the
+         Android 13+ runtime-permission gate that the plugin requests
+         from Dart. -->
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
     <!-- speech_to_text on Android delegates to Google's recognizer
          service which lives in another package — Android 11+
          requires apps to declare visibility for it. -->

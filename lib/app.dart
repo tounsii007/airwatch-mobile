@@ -13,6 +13,7 @@ import 'features/map/data/models/aircraft_state.dart';
 import 'features/map/presentation/providers/flight_providers.dart';
 import 'features/map/presentation/screens/map_screen.dart';
 import 'features/map/presentation/screens/splash_screen.dart';
+import 'features/notifications/presentation/providers/alert_push_listener.dart';
 import 'features/search/presentation/screens/search_screen.dart';
 import 'features/settings/presentation/screens/settings_screen.dart';
 
@@ -60,7 +61,11 @@ class AirwatchMobileApp extends ConsumerWidget {
           : (themeMode == AppThemeMode.dark
               ? ThemeMode.dark
               : ThemeMode.light),
-      home: const AppEntry(),
+      // Wrap the entry in the alert push listener — it watches
+      // alertsProvider and surfaces deltas as system tray notifications
+      // when the user has them enabled. Lives at the top of the
+      // widget tree so a backgrounded screen still reaches it.
+      home: installAlertPushListener(child: const AppEntry()),
     );
   }
 }

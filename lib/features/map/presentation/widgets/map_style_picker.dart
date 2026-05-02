@@ -55,75 +55,80 @@ class _MapStylePickerState extends State<MapStylePicker> {
     final primary = isDark ? AppColors.primary : UiConstants.lightPrimary;
     final currentDef = styleDef(widget.current);
 
+    final trigger = GestureDetector(
+      onTap: _toggle,
+      child: GlassPanel(
+        padding: const EdgeInsets.all(10),
+        borderRadius: 12,
+        borderColor: _open ? primary.withValues(alpha: 0.45) : null,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.layers_rounded, size: 20, color: primary),
+            const SizedBox(height: 1),
+            // 3-letter code under the icon — the same hint the web
+            // version puts under its <Layers> svg.
+            Text(
+              currentDef.label,
+              style: TextStyle(
+                fontFamily: UiConstants.headingFont,
+                fontSize: 7,
+                fontWeight: FontWeight.w700,
+                color: primary.withValues(alpha: 0.75),
+                letterSpacing: 0.6,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    final popover = GlassPanel(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+      borderRadius: 12,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          for (final id in kStyleOrder)
+            _StyleEntry(
+              def: styleDef(id),
+              active: id == widget.current,
+              primary: primary,
+              isDark: isDark,
+              onTap: () => _select(id),
+            ),
+        ],
+      ),
+    );
+
+    // Popover is laid out as a normal sibling of the trigger inside a
+    // `Row` — that keeps both inside the parent's hit-test bounds.
+    //
+    // <p>The previous implementation placed the popover via
+    // `Positioned(right: 52, …)` inside a `Stack(clipBehavior: Clip.none)`.
+    // Flutter renders the popover in that case (clipBehavior = none),
+    // but the Stack's own bounds are sized to the trigger only — so
+    // the popover's hit region falls *outside* the Stack and any tap
+    // there fails to dispatch. The bug surfaced in widget tests and
+    // would have been a silent dead-tap in production. Switching to
+    // a Row-based layout sidesteps the hit-test box entirely:
+    // everything is laid out in normal flow, the parent column in
+    // MapControls grows leftward to fit, and `tester.tap` reaches the
+    // popover entries.
     return TapRegion(
       onTapOutside: (_) {
         if (_open) setState(() => _open = false);
       },
-      child: Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.centerRight,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Trigger button ──
-          GestureDetector(
-            onTap: _toggle,
-            child: GlassPanel(
-              padding: const EdgeInsets.all(10),
-              borderRadius: 12,
-              borderColor: _open
-                  ? primary.withValues(alpha: 0.45)
-                  : null,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.layers_rounded, size: 20, color: primary),
-                  const SizedBox(height: 1),
-                  // 3-letter code under the icon — the same hint the web
-                  // version puts under its <Layers> svg.
-                  Text(
-                    currentDef.label,
-                    style: TextStyle(
-                      fontFamily: UiConstants.headingFont,
-                      fontSize: 7,
-                      fontWeight: FontWeight.w700,
-                      color: primary.withValues(alpha: 0.75),
-                      letterSpacing: 0.6,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          // ── Popover ──
-          // Anchored to the LEFT of the trigger because the map controls
-          // sit on the right edge of the screen — opening rightward would
-          // clip out of the viewport.
-          if (_open)
-            Positioned(
-              right: 52, // glass panel width + spacing
-              top: -4,
-              child: GlassPanel(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 6,
-                  vertical: 6,
-                ),
-                borderRadius: 12,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    for (final id in kStyleOrder)
-                      _StyleEntry(
-                        def: styleDef(id),
-                        active: id == widget.current,
-                        primary: primary,
-                        isDark: isDark,
-                        onTap: () => _select(id),
-                      ),
-                  ],
-                ),
-              ),
-            ),
+          if (_open) ...[
+            popover,
+            const SizedBox(width: 6),
+          ],
+          trigger,
         ],
       ),
     );

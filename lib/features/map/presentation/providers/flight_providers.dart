@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:airwatch_mobile/core/constants/config.dart';
 import 'package:airwatch_mobile/core/constants/conversion_constants.dart';
 import 'package:airwatch_mobile/features/search/data/services/search_service.dart';
@@ -284,11 +285,40 @@ final mapZoomCommandProvider =
 
 // ── Cargo-only map filter ─────────────────────────────────────────────────
 //
-// Toggled by the voice-command "cargo" / "fracht" / "fret". Down-stream
-// filter logic in `aircraftStreamProvider` consumers can `ref.watch` this
-// to restrict their view to cargo flights.
+// Toggled by either the voice command ("cargo" / "fracht" / "fret") OR
+// the Cargo-only chip on the altitude-filter strip. Persisted in
+// SharedPreferences so the filter state survives an app restart —
+// matches the web frontend's behaviour where the cargo filter lives in
+// the settings store.
+class CargoOnlyNotifier extends Notifier<bool> {
+  static const _key = 'show_cargo_only_v1';
+
+  @override
+  bool build() {
+    _load();
+    return false;
+  }
+
+  Future<void> _load() async {
+    final prefs = await SharedPreferences.getInstance();
+    state = prefs.getBool(_key) ?? false;
+  }
+
+  Future<void> _save(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_key, value);
+  }
+
+  void set(bool value) {
+    state = value;
+    _save(value);
+  }
+
+  void toggle() => set(!state);
+}
+
 final showCargoOnlyProvider =
-    NotifierProvider<BoolNotifier, bool>(() => BoolNotifier(false));
+    NotifierProvider<CargoOnlyNotifier, bool>(CargoOnlyNotifier.new);
 
 // ── Basemap style ──────────────────────────────────────────────────────────
 //

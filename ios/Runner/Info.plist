@@ -74,5 +74,20 @@
 	<string>AirWatch listens to your voice command (e.g. "show flight DLH123") to control the map. Audio is processed by your device's speech recognizer and never stored.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>AirWatch turns spoken commands into map actions like opening a flight or switching the basemap. The transcript is parsed locally; no audio leaves the device beyond the system recognizer.</string>
+	<!-- Spotting screen + map-centering use the device GPS to find
+	     aircraft within 60 km of the user. Foreground-only — we
+	     never request "Always" because the screen needs to be open
+	     for the radius ring to be useful. -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>AirWatch uses your location to centre the map on you and to find aircraft within a 60 km radius for spotting. Your location is never sent to a server or stored.</string>
+	<!-- AR mode points the camera at the sky and overlays nearby
+	     flights — the camera frame is processed entirely on-device. -->
+	<key>NSCameraUsageDescription</key>
+	<string>AirWatch uses the camera in AR mode to overlay nearby aircraft on the live sky view. Frames are processed on-device and never uploaded.</string>
+	<!-- Sensor access for AR's heading + tilt readout. iOS surfaces
+	     this prompt the first time the AR screen tries to read the
+	     compass. -->
+	<key>NSMotionUsageDescription</key>
+	<string>AirWatch reads your device's compass + tilt sensors so the AR sky view can align aircraft icons with the real horizon and bearing.</string>
 </dict>
 </plist>

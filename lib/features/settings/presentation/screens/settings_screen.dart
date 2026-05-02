@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:airwatch_mobile/core/constants/settings_provider.dart';
 import 'package:airwatch_mobile/core/constants/ui_constants.dart';
 import 'package:airwatch_mobile/core/l10n/app_strings.dart';
@@ -198,21 +199,24 @@ class SettingsScreen extends ConsumerWidget {
             const SizedBox(height: 8),
             GlassPanel(borderRadius: 14, padding: const EdgeInsets.all(4), child: Column(children: [
               _LangTile(
-                flag: '🇬🇧', label: 'English', subtitle: 'Englisch',
+                flagCode: 'gb', flagFallbackEmoji: '🇬🇧',
+                label: 'English', subtitle: 'Englisch',
                 isSelected: currentLang == AppLanguage.en,
                 color: primary, isDark: isDark,
                 onTap: () => ref.read(languageProvider.notifier).set(AppLanguage.en),
               ),
               _Div(isDark),
               _LangTile(
-                flag: '🇩🇪', label: 'Deutsch', subtitle: 'German',
+                flagCode: 'de', flagFallbackEmoji: '🇩🇪',
+                label: 'Deutsch', subtitle: 'German',
                 isSelected: currentLang == AppLanguage.de,
                 color: primary, isDark: isDark,
                 onTap: () => ref.read(languageProvider.notifier).set(AppLanguage.de),
               ),
               _Div(isDark),
               _LangTile(
-                flag: '🇫🇷', label: 'Français', subtitle: 'French',
+                flagCode: 'fr', flagFallbackEmoji: '🇫🇷',
+                label: 'Français', subtitle: 'French',
                 isSelected: currentLang == AppLanguage.fr,
                 color: primary, isDark: isDark,
                 onTap: () => ref.read(languageProvider.notifier).set(AppLanguage.fr),
@@ -550,25 +554,59 @@ class _Info extends StatelessWidget {
 }
 
 class _LangTile extends StatelessWidget {
-  final String flag, label, subtitle;
+  /// Two-letter ISO code (lowercase) for the SVG asset lookup —
+  /// `assets/flags/4x3/{flagCode}.svg`. The class also accepts a
+  /// fallback emoji for the rare case the asset is missing (defensive
+  /// — every supported language has its asset).
+  final String flagCode;
+  final String flagFallbackEmoji;
+  final String label, subtitle;
   final bool isSelected;
   final Color color;
   final bool isDark;
   final VoidCallback onTap;
-  const _LangTile({required this.flag, required this.label, required this.subtitle,
-      required this.isSelected, required this.color, required this.isDark, required this.onTap});
+  const _LangTile({
+    required this.flagCode,
+    required this.flagFallbackEmoji,
+    required this.label,
+    required this.subtitle,
+    required this.isSelected,
+    required this.color,
+    required this.isDark,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
       dense: true, onTap: onTap,
       leading: Container(
-        width: 34, height: 34,
+        width: 38, height: 28,
         decoration: BoxDecoration(
           color: isSelected ? color.withValues(alpha: isDark ? 0.2 : 0.1) : Colors.transparent,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(4),
+          border: Border.all(
+            color: isSelected
+                ? color.withValues(alpha: 0.5)
+                : (isDark ? AppColors.glassBorder : UiConstants.lightBorder),
+            width: 0.5,
+          ),
         ),
-        child: Center(child: Text(flag, style: const TextStyle(fontSize: 20))),
+        clipBehavior: Clip.hardEdge,
+        // SVG flag — same asset path the country / route widgets use.
+        // Mirrors the web frontend's `<flag cc="de">` chip on the
+        // settings page. Emoji fallback covers any future locale that
+        // ships before its SVG does.
+        child: SvgPicture.asset(
+          'assets/flags/4x3/$flagCode.svg',
+          fit: BoxFit.cover,
+          placeholderBuilder: (_) => Center(
+            child: Text(
+              flagFallbackEmoji,
+              style: const TextStyle(fontSize: 18),
+            ),
+          ),
+        ),
       ),
       title: Text(label, style: TextStyle(fontFamily: UiConstants.bodyFont, fontSize: 14,
           fontWeight: FontWeight.w700,

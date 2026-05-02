@@ -61,6 +61,14 @@ class _FlightReplay3DScreenState extends State<FlightReplay3DScreen> {
   /// Index of the most-recent waypoint shown. The slider drives this;
   /// the play loop advances it once per tick.
   int _idx = 0;
+
+  /// Highest leg-index that has a corresponding `leg-N` connection on
+  /// the globe. The diff path uses this to add only the new segments
+  /// when [_idx] grows, instead of dropping + re-adding every leg
+  /// (which had been allocating ~60 connection objects per tick — at
+  /// 8x speed that's ~500 GC allocations/second on a phone screen).
+  int _renderedLegEnd = -1;
+
   bool _playing = false;
   double _speed = 1.0;
   _CameraMode _cameraMode = _CameraMode.free;
@@ -153,9 +161,16 @@ class _FlightReplay3DScreenState extends State<FlightReplay3DScreen> {
         style: const PointStyle(color: Colors.cyanAccent, size: 9),
       ));
 
+      // Sub-sample to ~60 segments along the route — the user can't
+      // tell the difference at globe scale, and the incremental
+      // diff path needs a deterministic step to keep connection ids
+      // stable across ticks.
+      _legStep = (coords.length / 60).ceil().clamp(1, 200);
+
       setState(() {
         _coords = coords;
         _idx = 0;
+        _renderedLegEnd = -1; // force a full rebuild on first paint
         _loading = false;
       });
       _renderUpToCurrent();
@@ -172,47 +187,71 @@ class _FlightReplay3DScreenState extends State<FlightReplay3DScreen> {
     }
   }
 
-  /// Repaint the trail up to [_idx] — drops every existing leg
-  /// connection and re-adds the segments from 0..idx.
+  /// Step size for the leg sub-sampler. Computed once at load-time so
+  /// every play tick uses the same stride — that's what makes the
+  /// incremental diff cheap.
+  late int _legStep;
+
+  /// Repaint the trail up to [_idx] using an INCREMENTAL diff — only
+  /// the segments between the previously-rendered end and the new one
+  /// touch the globe controller. A scrub backwards (or a shape
+  /// change) tears the chain down once and rebuilds.
   ///
-  /// <p>flutter_earth_globe doesn't have a "set polyline" call, so we
-  /// have to manage the connection list manually. To keep this cheap
-  /// we sub-sample to ~60 segments along the visible portion — the
-  /// user's eye can't tell at globe-scale anyway.
+  /// <p>The previous version dropped + re-added every leg on every
+  /// tick — that allocated ~60 connection objects per frame at 8x
+  /// speed (≈ 500 / sec), which made low-end Androids stutter under
+  /// the GC pressure. The diff path keeps allocations to one new
+  /// connection per actually-new segment.
   void _renderUpToCurrent() {
     if (_coords.isEmpty) return;
-    // Drop all leg-* connections.
+    final upto = _idx.clamp(0, _coords.length - 1);
+
+    // ── Scrub backwards or first paint after load: rebuild from 0. ──
+    if (upto < _renderedLegEnd || _renderedLegEnd < 0) {
+      _clearLegs();
+      _renderedLegEnd = 0;
+    }
+
+    if (upto >= 1) {
+      // Add only the segments past _renderedLegEnd up to upto. The
+      // step is fixed so the connection ids stay deterministic
+      // across ticks ("leg-7" always covers the same lat/lon span).
+      final start = _renderedLegEnd <= 0
+          ? _legStep
+          : _renderedLegEnd + _legStep;
+      for (var i = start; i <= upto; i += _legStep) {
+        final connId =
+            ((i ~/ _legStep) - 1).toString(); // 1-based → 0-based
+        _controller.addPointConnection(
+          PointConnection(
+            id: 'leg-$connId',
+            start: _coords[i - _legStep],
+            end: _coords[i],
+            style: PointConnectionStyle(
+              color: AppColors.primary,
+              lineWidth: 2,
+              type: PointConnectionType.solid,
+            ),
+          ),
+        );
+        _renderedLegEnd = i;
+      }
+    }
+
+    _moveCurrentTo(_coords[upto]);
+    _maybeFollowCamera(_coords[upto]);
+  }
+
+  /// Drop every `leg-*` connection. Used by the rebuild path when
+  /// the user scrubs backwards — much rarer than the forward path,
+  /// so this lookup-then-remove approach is fine.
+  void _clearLegs() {
     final ids = _controller.connections.map((c) => c.id).toList();
     for (final id in ids) {
       if (id.startsWith('leg-')) {
         _controller.removePointConnection(id);
       }
     }
-    final upto = _idx.clamp(0, _coords.length - 1);
-    if (upto < 1) {
-      _moveCurrentTo(_coords[upto]);
-      _maybeFollowCamera(_coords[upto]);
-      return;
-    }
-    final visible = _coords.sublist(0, upto + 1);
-    final step = (visible.length / 60).ceil().clamp(1, 200);
-    var connId = 0;
-    for (var i = step; i < visible.length; i += step) {
-      _controller.addPointConnection(
-        PointConnection(
-          id: 'leg-${connId++}',
-          start: visible[i - step],
-          end: visible[i],
-          style: PointConnectionStyle(
-            color: AppColors.primary,
-            lineWidth: 2,
-            type: PointConnectionType.solid,
-          ),
-        ),
-      );
-    }
-    _moveCurrentTo(_coords[upto]);
-    _maybeFollowCamera(_coords[upto]);
   }
 
   /// Move the `cur` marker to a new coordinate. flutter_earth_globe's

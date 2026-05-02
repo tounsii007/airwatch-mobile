@@ -217,6 +217,36 @@ class _CatFilter extends ConsumerWidget {
       );
     }
 
+    // Cargo-only callsign-prefix filter — orthogonal to the
+    // category dropdown above. Same provider the voice command toggles,
+    // so flipping the chip and saying "cargo" stay in sync.
+    final cargoOnly = ref.watch(showCargoOnlyProvider);
+    Widget cargoOnlyChip() {
+      return GestureDetector(
+        onTap: () => ref.read(showCargoOnlyProvider.notifier).toggle(),
+        child: Container(
+          width: 36,
+          padding: const EdgeInsets.symmetric(vertical: 3),
+          decoration: BoxDecoration(
+            color: cargoOnly
+                ? AppColors.warning.withValues(alpha: 0.20)
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(6),
+            border: cargoOnly
+                ? Border.all(color: AppColors.warning.withValues(alpha: 0.5))
+                : null,
+          ),
+          child: Icon(
+            Icons.inventory_2_outlined,
+            size: 14,
+            color: cargoOnly
+                ? AppColors.warning
+                : primary.withValues(alpha: 0.4),
+          ),
+        ),
+      );
+    }
+
     return Column(mainAxisSize: MainAxisSize.min, children: [
       chip(CategoryFilter.jets, Icons.flight_rounded),
       const SizedBox(height: 3),
@@ -225,6 +255,8 @@ class _CatFilter extends ConsumerWidget {
       chip(CategoryFilter.cargo, Icons.local_shipping_rounded),
       const SizedBox(height: 3),
       chip(CategoryFilter.light, Icons.paragliding_rounded),
+      const SizedBox(height: 3),
+      cargoOnlyChip(),
     ]);
   }
 }
