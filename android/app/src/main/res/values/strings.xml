@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Description shown in the widget picker when the user is
+         choosing widgets to add to their home screen. -->
+    <string name="widget_description">Live flight count + top airline</string>
+</resources>

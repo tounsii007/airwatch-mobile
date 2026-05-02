@@ -145,11 +145,11 @@ class _Co2Pill extends StatelessWidget {
     if (estimate == null) {
       return Row(
         children: [
-          Icon(Icons.eco_outlined, size: 14, color: AppColors.textMuted),
+          const Icon(Icons.eco_outlined, size: 14, color: AppColors.textMuted),
           const SizedBox(width: 6),
           Text(
             label.co2EstimateLabel,
-            style: TextStyle(
+            style: const TextStyle(
               fontFamily: UiConstants.bodyFont,
               fontSize: 10,
               color: AppColors.textMuted,
@@ -160,7 +160,7 @@ class _Co2Pill extends StatelessWidget {
     }
     return Row(
       children: [
-        Icon(Icons.eco_rounded, size: 14, color: AppColors.success),
+        const Icon(Icons.eco_rounded, size: 14, color: AppColors.success),
         const SizedBox(width: 6),
         Flexible(
           child: Column(
@@ -169,7 +169,7 @@ class _Co2Pill extends StatelessWidget {
             children: [
               Text(
                 '~${_formatKg(estimate!.co2Kg)} CO₂',
-                style: TextStyle(
+                style: const TextStyle(
                   fontFamily: UiConstants.headingFont,
                   fontSize: 12,
                   fontWeight: FontWeight.w800,
@@ -178,7 +178,7 @@ class _Co2Pill extends StatelessWidget {
               ),
               Text(
                 '${estimate!.distKm} km · ${label.co2PerPaxLabel}',
-                style: TextStyle(
+                style: const TextStyle(
                   fontFamily: UiConstants.bodyFont,
                   fontSize: 9,
                   color: AppColors.textMuted,
@@ -231,7 +231,6 @@ class _ShareButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: AppColors.primary.withValues(alpha: 0.30),
-            width: 1,
           ),
         ),
         child: Row(
@@ -245,7 +244,7 @@ class _ShareButton extends StatelessWidget {
             const SizedBox(width: 5),
             Text(
               copied ? copiedLabel : shareLabel,
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: UiConstants.headingFont,
                 fontSize: 10,
                 fontWeight: FontWeight.w800,

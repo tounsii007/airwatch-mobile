@@ -209,7 +209,7 @@ class _NearbyTile extends StatelessWidget {
         children: [
           Transform.rotate(
             angle: item.bearingDeg * math.pi / 180,
-            child: Icon(Icons.navigation_rounded, color: AppColors.primary),
+            child: const Icon(Icons.navigation_rounded, color: AppColors.primary),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -223,7 +223,7 @@ class _NearbyTile extends StatelessWidget {
               ],
             ),
           ),
-          Text(alt, style: TextStyle(color: AppColors.accent, fontWeight: FontWeight.w700)),
+          Text(alt, style: const TextStyle(color: AppColors.accent, fontWeight: FontWeight.w700)),
         ],
       ),
     );
@@ -301,10 +301,10 @@ class _NearbyMap extends StatelessWidget {
                   ),
             ],
             builder: (ctx, markers) => DecoratedBox(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: AppColors.primary,
                 shape: BoxShape.circle,
-                boxShadow: const [BoxShadow(blurRadius: 6, color: Colors.black38)],
+                boxShadow: [BoxShadow(blurRadius: 6, color: Colors.black38)],
               ),
               child: Center(
                 child: Text('${markers.length}',
@@ -332,7 +332,7 @@ class _ErrorState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.location_off, size: 48, color: AppColors.textMuted),
+            const Icon(Icons.location_off, size: 48, color: AppColors.textMuted),
             const SizedBox(height: 12),
             Text(message, textAlign: TextAlign.center),
             const SizedBox(height: 16),

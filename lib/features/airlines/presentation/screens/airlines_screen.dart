@@ -103,7 +103,7 @@ class AirlinesScreen extends ConsumerWidget {
                 child: Text(
                     '${entry.value} '
                     '${entry.value == 1 ? s.airlinesFlightOne : s.airlinesFlightMany}',
-                    style: TextStyle(color: AppColors.success, fontWeight: FontWeight.w700)),
+                    style: const TextStyle(color: AppColors.success, fontWeight: FontWeight.w700)),
               ),
             ],
           ),

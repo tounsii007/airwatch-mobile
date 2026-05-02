@@ -106,7 +106,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         child: ReorderableGridView.count(
           padding: const EdgeInsets.all(12),
           crossAxisCount: 2,
-          childAspectRatio: 1.0,
           mainAxisSpacing: 10,
           crossAxisSpacing: 10,
           // Long-press on the tile body to start dragging — the floating
@@ -192,7 +191,7 @@ class _SavedTile extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Icon(Icons.flight_rounded, color: AppColors.accent, size: 22),
+            const Icon(Icons.flight_rounded, color: AppColors.accent, size: 22),
             Icon(Icons.local_airport_rounded,
                 color: AppColors.accent.withValues(alpha: 0.7), size: 22),
             Icon(Icons.business_rounded,
@@ -297,7 +296,6 @@ class _Tile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GlassPanel(
-      borderRadius: 16,
       padding: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

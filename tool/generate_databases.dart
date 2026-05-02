@@ -127,24 +127,24 @@ Future<void> generateAirlines() async {
   final airlines = data['response'] as List;
 
   final buf = StringBuffer();
-  buf.writeln("/// Auto-generated airline database from Airlabs API.");
-  buf.writeln("/// ${airlines.length} airlines total.");
-  buf.writeln("/// Generated: ${DateTime.now().toIso8601String()}");
+  buf.writeln('/// Auto-generated airline database from Airlabs API.');
+  buf.writeln('/// ${airlines.length} airlines total.');
+  buf.writeln('/// Generated: ${DateTime.now().toIso8601String()}');
   buf.writeln();
-  buf.writeln("class AirlineInfo {");
-  buf.writeln("  final String icao, iata, name, country;");
-  buf.writeln("  const AirlineInfo({required this.icao, required this.iata,");
-  buf.writeln("      required this.name, required this.country});");
-  buf.writeln("}");
+  buf.writeln('class AirlineInfo {');
+  buf.writeln('  final String icao, iata, name, country;');
+  buf.writeln('  const AirlineInfo({required this.icao, required this.iata,');
+  buf.writeln('      required this.name, required this.country});');
+  buf.writeln('}');
   buf.writeln();
-  buf.writeln("AirlineInfo? resolveAirline(String? callsign) {");
-  buf.writeln("  if (callsign == null || callsign.trim().length < 3) return null;");
-  buf.writeln("  return airlineDatabase[callsign.trim().substring(0, 3).toUpperCase()];");
-  buf.writeln("}");
+  buf.writeln('AirlineInfo? resolveAirline(String? callsign) {');
+  buf.writeln('  if (callsign == null || callsign.trim().length < 3) return null;');
+  buf.writeln('  return airlineDatabase[callsign.trim().substring(0, 3).toUpperCase()];');
+  buf.writeln('}');
   buf.writeln();
-  buf.writeln("List<AirlineInfo> get airlineList => airlineDatabase.values.toList();");
+  buf.writeln('List<AirlineInfo> get airlineList => airlineDatabase.values.toList();');
   buf.writeln();
-  buf.writeln("const Map<String, AirlineInfo> airlineDatabase = {");
+  buf.writeln('const Map<String, AirlineInfo> airlineDatabase = {');
 
   int count = 0;
   final seen = <String>{};
@@ -162,7 +162,7 @@ Future<void> generateAirlines() async {
     count++;
   }
 
-  buf.writeln("};");
+  buf.writeln('};');
 
   final outFile = File('lib/core/constants/airline_database.dart');
   await outFile.writeAsString(buf.toString());
@@ -188,40 +188,40 @@ Future<void> generateAirports() async {
   }).toList();
 
   final buf = StringBuffer();
-  buf.writeln("/// Auto-generated airport database from Airlabs API.");
-  buf.writeln("/// ${valid.length} airports total.");
-  buf.writeln("/// Generated: ${DateTime.now().toIso8601String()}");
+  buf.writeln('/// Auto-generated airport database from Airlabs API.');
+  buf.writeln('/// ${valid.length} airports total.');
+  buf.writeln('/// Generated: ${DateTime.now().toIso8601String()}');
   buf.writeln();
-  buf.writeln("class AirportEntry {");
-  buf.writeln("  final String icao, iata, name, city, country;");
-  buf.writeln("  final double lat, lon;");
-  buf.writeln("  const AirportEntry(this.icao, this.iata, this.name, this.city, this.country, this.lat, this.lon);");
-  buf.writeln("}");
+  buf.writeln('class AirportEntry {');
+  buf.writeln('  final String icao, iata, name, city, country;');
+  buf.writeln('  final double lat, lon;');
+  buf.writeln('  const AirportEntry(this.icao, this.iata, this.name, this.city, this.country, this.lat, this.lon);');
+  buf.writeln('}');
   buf.writeln();
-  buf.writeln("/// Lookup by ICAO code");
-  buf.writeln("AirportEntry? lookupAirport(String icao) => airportFullDatabase[icao.toUpperCase()];");
+  buf.writeln('/// Lookup by ICAO code');
+  buf.writeln('AirportEntry? lookupAirport(String icao) => airportFullDatabase[icao.toUpperCase()];');
   buf.writeln();
-  buf.writeln("/// Lookup by IATA code");
-  buf.writeln("AirportEntry? lookupAirportByIata(String iata) {");
-  buf.writeln("  final code = iata.toUpperCase();");
-  buf.writeln("  return airportFullDatabase.values.where((a) => a.iata == code).firstOrNull;");
-  buf.writeln("}");
+  buf.writeln('/// Lookup by IATA code');
+  buf.writeln('AirportEntry? lookupAirportByIata(String iata) {');
+  buf.writeln('  final code = iata.toUpperCase();');
+  buf.writeln('  return airportFullDatabase.values.where((a) => a.iata == code).firstOrNull;');
+  buf.writeln('}');
   buf.writeln();
-  buf.writeln("/// Get city name for an IATA code");
-  buf.writeln("String airportCity(String? iata) {");
+  buf.writeln('/// Get city name for an IATA code');
+  buf.writeln('String airportCity(String? iata) {');
   buf.writeln("  if (iata == null || iata.isEmpty) return '';");
-  buf.writeln("  final apt = lookupAirportByIata(iata);");
+  buf.writeln('  final apt = lookupAirportByIata(iata);');
   buf.writeln("  return apt?.city ?? '';");
-  buf.writeln("}");
+  buf.writeln('}');
   buf.writeln();
-  buf.writeln("/// Get country code for an IATA code");
-  buf.writeln("String airportCountry(String? iata) {");
+  buf.writeln('/// Get country code for an IATA code');
+  buf.writeln('String airportCountry(String? iata) {');
   buf.writeln("  if (iata == null || iata.isEmpty) return '';");
-  buf.writeln("  final apt = lookupAirportByIata(iata);");
+  buf.writeln('  final apt = lookupAirportByIata(iata);');
   buf.writeln("  return apt?.country ?? '';");
-  buf.writeln("}");
+  buf.writeln('}');
   buf.writeln();
-  buf.writeln("const Map<String, AirportEntry> airportFullDatabase = {");
+  buf.writeln('const Map<String, AirportEntry> airportFullDatabase = {');
 
   int count = 0;
   final seenApt = <String>{};
@@ -256,7 +256,7 @@ Future<void> generateAirports() async {
     count++;
   }
 
-  buf.writeln("};");
+  buf.writeln('};');
 
   final outFile = File('lib/core/constants/airport_full_database.dart');
   await outFile.writeAsString(buf.toString());

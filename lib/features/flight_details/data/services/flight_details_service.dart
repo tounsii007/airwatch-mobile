@@ -22,8 +22,7 @@ class FlightDetailsService {
   FlightDetailsService({Dio? dio, FlightInfoDatasource? datasource})
       : _dio = dio ??
             AppHttpClient.create(
-              connectTimeout: AppConfig.apiTimeout,
-              receiveTimeout: AppConfig.longTimeout,
+              
             ),
         _datasource = datasource ?? FlightInfoDatasource();
 

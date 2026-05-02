@@ -123,7 +123,7 @@ class StatCard extends StatelessWidget {
                           height: 1.1,
                         ),
                         child: isLoading
-                            ? _ShimmerBlock(width: 56, height: 22)
+                            ? const _ShimmerBlock(width: 56, height: 22)
                             : Row(
                                 crossAxisAlignment: CrossAxisAlignment.baseline,
                                 textBaseline: TextBaseline.alphabetic,
@@ -194,7 +194,6 @@ class StatCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
                         color: accent.withValues(alpha: 0.30),
-                        width: 1,
                       ),
                     ),
                     child: Icon(icon, size: 18, color: accent),

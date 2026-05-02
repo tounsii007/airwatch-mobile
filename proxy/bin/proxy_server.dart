@@ -420,9 +420,9 @@ Future<void> _handleLookup(HttpRequest request, String path, String airlabsKey) 
     // 1. Airlabs /flight — route + status + delays + aircraft details
     _fetchJson('https://airlabs.co/api/v9/flight?flight_icao=$callsign&api_key=$airlabsKey'),
     // 2. hexdb — aircraft metadata (type, registration)
-    icao24.isNotEmpty ? _fetchJson('https://hexdb.io/api/v1/aircraft/$icao24') : Future.value(null),
+    icao24.isNotEmpty ? _fetchJson('https://hexdb.io/api/v1/aircraft/$icao24') : Future.value(),
     // 3. Planespotters — photo
-    icao24.isNotEmpty ? _fetchJson('https://api.planespotters.net/pub/photos/hex/${icao24.toUpperCase()}') : Future.value(null),
+    icao24.isNotEmpty ? _fetchJson('https://api.planespotters.net/pub/photos/hex/${icao24.toUpperCase()}') : Future.value(),
     // 4. Airlabs /routes — fallback static route
     _fetchJson('https://airlabs.co/api/v9/routes?flight_icao=$callsign&api_key=$airlabsKey'),
   ]);

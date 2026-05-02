@@ -62,7 +62,6 @@ class NotificationService {
               'Critical aviation alerts: 7500 hijack, 7600 radio failure, '
                   '7700 general emergency.',
           importance: Importance.max,
-          enableVibration: true,
         ),
       );
       await androidImpl.createNotificationChannel(
@@ -72,7 +71,6 @@ class NotificationService {
           description:
               'Fires when an aircraft enters one of your saved zones.',
           importance: Importance.high,
-          enableVibration: true,
         ),
       );
     }

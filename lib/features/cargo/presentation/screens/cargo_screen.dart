@@ -113,7 +113,7 @@ class _CargoScreenState extends ConsumerState<CargoScreen> {
             children: [
               Text(
                 s.cargoFlightsHeader.toUpperCase(),
-                style: TextStyle(
+                style: const TextStyle(
                   fontFamily: UiConstants.headingFont,
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
@@ -125,7 +125,7 @@ class _CargoScreenState extends ConsumerState<CargoScreen> {
                 const SizedBox(width: 8),
                 Text(
                   filtered.length.toString(),
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontFamily: UiConstants.headingFont,
                     fontSize: 12,
                     fontWeight: FontWeight.w800,
@@ -247,7 +247,7 @@ class _CargoSearchField extends StatelessWidget {
       borderRadius: 12,
       child: Row(
         children: [
-          Icon(Icons.search_rounded,
+          const Icon(Icons.search_rounded,
               size: 18, color: AppColors.textMuted),
           const SizedBox(width: 8),
           Expanded(
@@ -262,7 +262,7 @@ class _CargoSearchField extends StatelessWidget {
               decoration: InputDecoration(
                 isDense: true,
                 hintText: hint,
-                hintStyle: TextStyle(
+                hintStyle: const TextStyle(
                   fontFamily: UiConstants.bodyFont,
                   fontSize: 13,
                   color: AppColors.textMuted,
@@ -278,7 +278,7 @@ class _CargoSearchField extends StatelessWidget {
                 controller.clear();
                 onChanged('');
               },
-              child: Icon(Icons.close_rounded,
+              child: const Icon(Icons.close_rounded,
                   size: 16, color: AppColors.textMuted),
             ),
         ],
@@ -305,7 +305,7 @@ class _EmptyBox extends StatelessWidget {
           Text(
             text,
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
               fontFamily: UiConstants.bodyFont,
               fontSize: 13,
               color: AppColors.textMuted,
@@ -381,10 +381,9 @@ class _CargoCard extends ConsumerWidget {
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
                 color: AppColors.accent.withValues(alpha: 0.30),
-                width: 1,
               ),
             ),
-            child: Icon(Icons.local_shipping_outlined,
+            child: const Icon(Icons.local_shipping_outlined,
                 size: 20, color: AppColors.accent),
           ),
           const SizedBox(width: 12),
@@ -399,7 +398,7 @@ class _CargoCard extends ConsumerWidget {
                     Expanded(
                       child: Text(
                         cs,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontFamily: UiConstants.headingFont,
                           fontSize: 14,
                           fontWeight: FontWeight.w800,
@@ -420,7 +419,7 @@ class _CargoCard extends ConsumerWidget {
                     if (localizedCountry != null && localizedCountry.isNotEmpty)
                       localizedCountry,
                   ].where((e) => e.isNotEmpty).join(' • '),
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontFamily: UiConstants.bodyFont,
                     fontSize: 11,
                     color: AppColors.textMuted,
@@ -439,7 +438,7 @@ class _CargoCard extends ConsumerWidget {
             children: [
               Text(
                 altText,
-                style: TextStyle(
+                style: const TextStyle(
                   fontFamily: UiConstants.headingFont,
                   fontSize: 12,
                   fontWeight: FontWeight.w800,
@@ -449,7 +448,7 @@ class _CargoCard extends ConsumerWidget {
               const SizedBox(height: 2),
               Text(
                 spdText,
-                style: TextStyle(
+                style: const TextStyle(
                   fontFamily: UiConstants.bodyFont,
                   fontSize: 11,
                   color: AppColors.textMuted,

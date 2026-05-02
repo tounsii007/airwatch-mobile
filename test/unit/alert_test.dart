@@ -39,7 +39,7 @@ void main() {
   });
 
   test('AppAlert is immutable — fields stay after construction', () {
-    final t = DateTime.utc(2025, 1, 1);
+    final t = DateTime.utc(2025);
     final a = AppAlert(
       id: 'sq-AABBCC',
       kind: AlertKind.squawk,

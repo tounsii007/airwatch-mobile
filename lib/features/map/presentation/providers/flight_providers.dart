@@ -95,7 +95,7 @@ final mapBoundsProvider =
 final aircraftStreamProvider =
     StreamProvider<Map<String, AircraftState>>((ref) {
   final ds = ref.watch(airlabsFlightsDatasourceProvider);
-  ds.startPolling(interval: AppConfig.flightUpdateInterval);
+  ds.startPolling();
   ref.onDispose(() => ds.stopPolling());
 
   // Convert List stream to Map<icao24, AircraftState>

@@ -121,14 +121,12 @@ class _RadarOverlayPainter extends CustomPainter {
     // ── Sweep gradient trail ──
     final sweepPaint = Paint()
       ..shader = SweepGradient(
-        center: Alignment.center,
         startAngle: sweepAngle - 0.6,
         endAngle: sweepAngle,
         colors: [
           color.withValues(alpha: 0.0),
           color.withValues(alpha: 0.06),
         ],
-        tileMode: TileMode.clamp,
       ).createShader(Rect.fromCircle(center: center, radius: maxRadius));
     canvas.drawCircle(center, maxRadius, sweepPaint);
 

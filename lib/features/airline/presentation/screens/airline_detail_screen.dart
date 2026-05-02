@@ -139,7 +139,7 @@ class _AirlineDetailScreenState extends State<AirlineDetailScreen> {
                 children: [
                   Text(
                     '${context.tr('active_flights')} (${filtered.length})',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontFamily: UiConstants.headingFont,
                       fontSize: UiConstants.microFontSize,
                       fontWeight: FontWeight.w700,

@@ -72,9 +72,9 @@ class PanelPredictionCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.psychology_rounded, size: 14, color: AppColors.info),
+              const Icon(Icons.psychology_rounded, size: 14, color: AppColors.info),
               const SizedBox(width: 6),
-              Text(
+              const Text(
                 'PREDICTION',
                 style: TextStyle(
                   fontFamily: UiConstants.headingFont,
@@ -106,7 +106,6 @@ class PanelPredictionCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(
                 width: 40,
@@ -182,7 +181,7 @@ class PanelPredictionCard extends StatelessWidget {
                     ),
                     child: Text(
                       f,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontFamily: UiConstants.headingFont,
                         fontSize: 8,
                         fontWeight: FontWeight.w700,

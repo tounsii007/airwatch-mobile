@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -46,8 +48,10 @@ class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
     );
     if (!mounted) return;
     if (ok) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute<void>(builder: (_) => const AdminMetricsScreen()),
+      unawaited(
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute<void>(builder: (_) => const AdminMetricsScreen()),
+        ),
       );
     } else {
       setState(() { _busy = false; _error = s.adminBadCreds; });
@@ -68,17 +72,16 @@ class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
           child: GlassPanel(
-            borderRadius: 16,
             padding: const EdgeInsets.all(20),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.shield_moon_outlined, size: 48, color: AppColors.primary),
+                const Icon(Icons.shield_moon_outlined, size: 48, color: AppColors.primary),
                 const SizedBox(height: 12),
                 Text(s.adminLogin,
                     style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800, letterSpacing: 1)),
                 const SizedBox(height: 4),
-                Text('airwatch-api',
+                const Text('airwatch-api',
                     style: TextStyle(fontSize: 11, color: AppColors.textMuted, letterSpacing: 1)),
                 const SizedBox(height: 24),
                 TextField(
@@ -116,7 +119,7 @@ class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
                 ),
                 if (_error != null) ...[
                   const SizedBox(height: 12),
-                  Text(_error!, style: TextStyle(color: AppColors.error)),
+                  Text(_error!, style: const TextStyle(color: AppColors.error)),
                 ],
                 const SizedBox(height: 20),
                 SizedBox(

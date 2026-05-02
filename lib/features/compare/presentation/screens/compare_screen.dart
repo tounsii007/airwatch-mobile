@@ -179,7 +179,6 @@ class _FlightPickerState extends State<_FlightPicker> {
         padding: const EdgeInsets.all(10),
         borderRadius: 10,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
               v.callsign?.trim().isNotEmpty == true
@@ -198,7 +197,7 @@ class _FlightPickerState extends State<_FlightPicker> {
                 padding: const EdgeInsets.only(top: 2),
                 child: Text(
                   airline.name,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontFamily: UiConstants.bodyFont,
                     fontSize: 10,
                     color: AppColors.textSecondary,
@@ -215,7 +214,7 @@ class _FlightPickerState extends State<_FlightPicker> {
                 widget.onClear();
               },
               behavior: HitTestBehavior.opaque,
-              child: Text(
+              child: const Text(
                 'REMOVE',
                 style: TextStyle(
                   fontFamily: UiConstants.headingFont,
@@ -240,18 +239,18 @@ class _FlightPickerState extends State<_FlightPicker> {
           borderRadius: 10,
           child: Row(
             children: [
-              Icon(Icons.search_rounded, size: 14, color: AppColors.textMuted),
+              const Icon(Icons.search_rounded, size: 14, color: AppColors.textMuted),
               const SizedBox(width: 6),
               Expanded(
                 child: TextField(
                   controller: _ctl,
                   onChanged: (v) => setState(() => _q = v),
                   textCapitalization: TextCapitalization.characters,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontFamily: UiConstants.bodyFont,
                     fontSize: 12,
                   ),
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     isDense: true,
                     hintText: 'Callsign / ICAO24',
                     hintStyle: TextStyle(
@@ -260,7 +259,7 @@ class _FlightPickerState extends State<_FlightPicker> {
                       color: AppColors.textMuted,
                     ),
                     border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 8),
+                    contentPadding: EdgeInsets.symmetric(vertical: 8),
                   ),
                 ),
               ),
@@ -300,7 +299,7 @@ class _FlightPickerState extends State<_FlightPicker> {
                     if (ac.originCountry != null && ac.originCountry!.isNotEmpty)
                       Text(
                         ac.originCountry!,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontFamily: UiConstants.bodyFont,
                           fontSize: 9,
                           color: AppColors.textMuted,
@@ -416,7 +415,7 @@ class _Row extends StatelessWidget {
         children: [
           Text(
             label,
-            style: TextStyle(
+            style: const TextStyle(
               fontFamily: UiConstants.headingFont,
               fontSize: 8,
               fontWeight: FontWeight.w800,

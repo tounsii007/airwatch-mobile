@@ -34,7 +34,7 @@ class StatusOverlay extends ConsumerWidget {
                 NeonText(text: 'AIRWATCH', fontSize: 13, color: primary,
                     glowRadius: isDark ? 10 : 0),
                 const SizedBox(width: 10),
-                _PulsingDot(color: AppColors.success),
+                const _PulsingDot(color: AppColors.success),
                 const SizedBox(width: 5),
                 Text(context.tr('live'), style: TextStyle(
                   fontFamily: UiConstants.headingFont, fontSize: 9, fontWeight: FontWeight.w700,

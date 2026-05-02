@@ -414,7 +414,7 @@ class _PanelContent extends ConsumerWidget {
                       child: CircularProgressIndicator(
                           strokeWidth: 2, color: primary))
                   : refreshError
-                      ? Icon(Icons.wifi_off_rounded, size: 16,
+                      ? const Icon(Icons.wifi_off_rounded, size: 16,
                           color: AppColors.error)
                       : Icon(Icons.refresh_rounded, size: 16, color: primary),
             ),

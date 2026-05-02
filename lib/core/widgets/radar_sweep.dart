@@ -97,7 +97,6 @@ class _RadarSweepPainter extends CustomPainter {
           color.withValues(alpha: 0.0),
           color.withValues(alpha: 0.3),
         ],
-        tileMode: TileMode.clamp,
       ).createShader(Rect.fromCircle(center: center, radius: radius));
 
     canvas.drawCircle(center, radius, sweepPaint);

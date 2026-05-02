@@ -197,7 +197,7 @@ class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               child: Row(
                 children: [
-                  Text(
+                  const Text(
                     'SORT',
                     style: TextStyle(
                       fontFamily: UiConstants.headingFont,
@@ -318,7 +318,7 @@ class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
                       ),
                     )
                   : _refreshError
-                      ? Icon(
+                      ? const Icon(
                           Icons.wifi_off_rounded,
                           size: 18,
                           color: AppColors.error,
@@ -455,7 +455,7 @@ class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
               borderRadius: 12,
               child: Column(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.water_drop_rounded,
                     size: 16,
                     color: AppColors.info,
@@ -463,7 +463,7 @@ class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
                   const SizedBox(height: 2),
                   Text(
                     '$humidity%',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontFamily: UiConstants.headingFont,
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
@@ -479,11 +479,11 @@ class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
             borderRadius: 12,
             child: Column(
               children: [
-                Icon(Icons.schedule_rounded, size: 16, color: AppColors.accent),
+                const Icon(Icons.schedule_rounded, size: 16, color: AppColors.accent),
                 const SizedBox(height: 2),
                 Text(
                   localTime,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontFamily: UiConstants.headingFont,
                     fontSize: 14,
                     fontWeight: FontWeight.w700,

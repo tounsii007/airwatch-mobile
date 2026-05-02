@@ -304,14 +304,14 @@ class _AirportScreenState extends ConsumerState<AirportScreen> {
 
             // Filtered flight list
             if (_activeFilter == _FlightFilter.all || _activeFilter == _FlightFilter.airborne) ...[
-              Text(context.tr('recent_departures'), style: TextStyle(fontFamily: UiConstants.headingFont,
+              Text(context.tr('recent_departures'), style: const TextStyle(fontFamily: UiConstants.headingFont,
                   fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 2,
                   color: AppColors.success)),
               const SizedBox(height: 6),
               ...departures.take(10).map((ac) => _FlightTile(
                   aircraft: ac, isDark: isDark, primary: primary, isArrival: false, settings: settings)),
               const SizedBox(height: 16),
-              Text(context.tr('cruising_flights'), style: TextStyle(fontFamily: UiConstants.headingFont,
+              Text(context.tr('cruising_flights'), style: const TextStyle(fontFamily: UiConstants.headingFont,
                   fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 2,
                   color: AppColors.altitudeHigh)),
               const SizedBox(height: 6),
@@ -319,7 +319,7 @@ class _AirportScreenState extends ConsumerState<AirportScreen> {
                   aircraft: ac, isDark: isDark, primary: primary, isArrival: true, settings: settings)),
             ],
             if (_activeFilter == _FlightFilter.ground) ...[
-              Text(context.tr('on_ground').toUpperCase(), style: TextStyle(fontFamily: UiConstants.headingFont,
+              Text(context.tr('on_ground').toUpperCase(), style: const TextStyle(fontFamily: UiConstants.headingFont,
                   fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 2,
                   color: AppColors.warning)),
               const SizedBox(height: 6),

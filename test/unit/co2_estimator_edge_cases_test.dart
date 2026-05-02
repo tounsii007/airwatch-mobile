@@ -141,7 +141,6 @@ void main() {
       final est = estimateCo2(
         departure: const LatLng(50.0379, 8.5622),
         arrival: const LatLng(48.354, 11.786),
-        aircraftCategory: null,
       );
       expect(est, isNotNull);
       // 305 km × 0.10 ≈ 31 kg

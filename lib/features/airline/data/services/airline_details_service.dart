@@ -13,8 +13,7 @@ class AirlineDetailsService {
   AirlineDetailsService({Dio? dio})
       : _dio = dio ??
             AppHttpClient.create(
-              connectTimeout: AppConfig.apiTimeout,
-              receiveTimeout: AppConfig.longTimeout,
+              
             );
 
   /// Fetch all flights for an airline — combines live + schedule data.

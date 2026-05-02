@@ -77,13 +77,13 @@ class _FenceFormScreenState extends ConsumerState<FenceFormScreen> {
     final lon = double.tryParse(_centerLon.text);
     final r = double.tryParse(_radius.text);
     if (lat == null || lat < -90 || lat > 90) {
-      return _Err('Latitude must be in [-90, 90]');
+      return const _Err('Latitude must be in [-90, 90]');
     }
     if (lon == null || lon < -180 || lon > 180) {
-      return _Err('Longitude must be in [-180, 180]');
+      return const _Err('Longitude must be in [-180, 180]');
     }
     if (r == null || r <= 0) {
-      return _Err('Radius must be > 0 km');
+      return const _Err('Radius must be > 0 km');
     }
     return _Ok(GeoFence(
       id: 'fence-${DateTime.now().millisecondsSinceEpoch}',
@@ -104,10 +104,10 @@ class _FenceFormScreenState extends ConsumerState<FenceFormScreen> {
     final e = double.tryParse(_east.text);
     final w = double.tryParse(_west.text);
     if (n == null || s == null || e == null || w == null) {
-      return _Err('All four bounds required');
+      return const _Err('All four bounds required');
     }
-    if (n <= s) return _Err('North must be greater than south');
-    if (e <= w) return _Err('East must be greater than west');
+    if (n <= s) return const _Err('North must be greater than south');
+    if (e <= w) return const _Err('East must be greater than west');
     return _Ok(GeoFence(
       id: 'fence-${DateTime.now().millisecondsSinceEpoch}',
       name: name,
@@ -132,7 +132,7 @@ class _FenceFormScreenState extends ConsumerState<FenceFormScreen> {
         actions: [
           TextButton(
             onPressed: _save,
-            child: Text(
+            child: const Text(
               'SAVE',
               style: TextStyle(
                 fontFamily: UiConstants.headingFont,
@@ -195,7 +195,7 @@ class _FenceFormScreenState extends ConsumerState<FenceFormScreen> {
             ],
 
             const SizedBox(height: 8),
-            Text(
+            const Text(
               'Optional filters',
               style: TextStyle(
                 fontFamily: UiConstants.headingFont,
@@ -216,7 +216,7 @@ class _FenceFormScreenState extends ConsumerState<FenceFormScreen> {
               Padding(
                 padding: const EdgeInsets.only(top: 8),
                 child: Text(_error!,
-                    style: TextStyle(color: AppColors.error, fontSize: 12)),
+                    style: const TextStyle(color: AppColors.error, fontSize: 12)),
               ),
           ],
         ),

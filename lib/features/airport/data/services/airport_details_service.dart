@@ -24,7 +24,6 @@ class AirportDetailsService {
   AirportDetailsService({Dio? dio})
       : _dio = dio ??
             AppHttpClient.create(
-              connectTimeout: AppConfig.apiTimeout,
               receiveTimeout: AppConfig.apiTimeout,
             );
 

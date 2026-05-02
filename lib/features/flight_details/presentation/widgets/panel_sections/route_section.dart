@@ -71,7 +71,7 @@ class PanelRouteSection extends ConsumerWidget {
           : Row(
               children: [
                 // Departure
-                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                Expanded(child: Column(children: [
                   Text(hasDep ? AirportDatabase.displayCode(route!.departureAirport) : UiConstants.missingCode,
                     style: TextStyle(fontFamily: UiConstants.headingFont, fontSize: UiConstants.bodyFontSize,
                         fontWeight: FontWeight.w700,
@@ -122,7 +122,7 @@ class PanelRouteSection extends ConsumerWidget {
                   )),
                 ),
                 // Arrival
-                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                Expanded(child: Column(children: [
                   Text(hasArr ? AirportDatabase.displayCode(route!.arrivalAirport) : UiConstants.missingCode,
                     style: TextStyle(fontFamily: UiConstants.headingFont, fontSize: UiConstants.bodyFontSize,
                         fontWeight: FontWeight.w700,

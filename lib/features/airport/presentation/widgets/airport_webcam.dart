@@ -43,16 +43,16 @@ class AirportWebcam extends StatelessWidget {
                       color: primary.withValues(alpha: 0.3)),
                   const SizedBox(height: 16),
                   Text('Live webcam for $airportIata',
-                    style: TextStyle(fontFamily: UiConstants.bodyFont, fontSize: 16,
+                    style: const TextStyle(fontFamily: UiConstants.bodyFont, fontSize: 16,
                         color: AppColors.textPrimary)),
                   const SizedBox(height: 8),
                   GlassPanel(
                     padding: const EdgeInsets.all(12), borderRadius: 10,
-                    child: Text(webcamUrl, style: TextStyle(fontFamily: UiConstants.bodyFont,
+                    child: Text(webcamUrl, style: const TextStyle(fontFamily: UiConstants.bodyFont,
                         fontSize: 11, color: AppColors.textSecondary)),
                   ),
                   const SizedBox(height: 16),
-                  Text('Webcam embedding requires webview_flutter package\nfor mobile or iframe for web.',
+                  const Text('Webcam embedding requires webview_flutter package\nfor mobile or iframe for web.',
                     textAlign: TextAlign.center,
                     style: TextStyle(fontFamily: UiConstants.bodyFont, fontSize: 12,
                         color: AppColors.textMuted)),
@@ -61,7 +61,7 @@ class AirportWebcam extends StatelessWidget {
             )
           : Center(
               child: Text('No webcam available for $airportIata',
-                style: TextStyle(fontFamily: UiConstants.bodyFont, fontSize: 14,
+                style: const TextStyle(fontFamily: UiConstants.bodyFont, fontSize: 14,
                     color: AppColors.textSecondary)),
             ),
     );

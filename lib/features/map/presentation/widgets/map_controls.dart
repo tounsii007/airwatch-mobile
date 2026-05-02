@@ -170,7 +170,7 @@ class _AltitudeFilterChips extends ConsumerWidget {
           color: isActive ? color.withValues(alpha: 0.2) : Colors.transparent,
           borderRadius: BorderRadius.circular(6),
           border: isActive
-              ? Border.all(color: color.withValues(alpha: 0.5), width: 1)
+              ? Border.all(color: color.withValues(alpha: 0.5))
               : null,
         ),
         child: Text(

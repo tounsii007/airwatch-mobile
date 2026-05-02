@@ -141,7 +141,6 @@ class _AnimatedAircraftMarkerState extends State<AnimatedAircraftMarker>
                       borderRadius: BorderRadius.circular(4),
                       border: Border.all(
                         color: color.withValues(alpha: 0.5),
-                        width: 1,
                       ),
                       boxShadow: [
                         BoxShadow(

@@ -65,12 +65,11 @@ class ChartTheme {
             ),
           ),
         ),
-        rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        topTitles:   const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        rightTitles: const AxisTitles(),
+        topTitles:   const AxisTitles(),
         bottomTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: showAxes,
-            reservedSize: 22,
             getTitlesWidget: (v, _) => Text(v.toStringAsFixed(0),
                 style: TextStyle(fontSize: 9, color: axisColor)),
           ),
@@ -79,7 +78,6 @@ class ChartTheme {
       gridData: FlGridData(
         show: showGrid,
         drawVerticalLine: false,
-        horizontalInterval: null,
         getDrawingHorizontalLine: (_) =>
             FlLine(color: gridColor, strokeWidth: gridStroke),
       ),
@@ -88,7 +86,7 @@ class ChartTheme {
           ? LineTouchData(
               touchTooltipData: LineTouchTooltipData(
                 getTooltipColor: (_) => tooltipBg,
-                tooltipBorder: BorderSide(color: AppColors.glassBorder),
+                tooltipBorder: const BorderSide(color: AppColors.glassBorder),
                 tooltipPadding:
                     const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 getTooltipItems: (touched) => touched.map((t) {
@@ -110,7 +108,6 @@ class ChartTheme {
           spots: spots,
           isCurved: true,
           curveSmoothness: 0.3,
-          barWidth: 2,
           color: primary,
           dotData: const FlDotData(show: false),
           belowBarData: fillBelow
@@ -118,7 +115,7 @@ class ChartTheme {
                   show: true,
                   color: primary.withValues(alpha: 0.18),
                 )
-              : BarAreaData(show: false),
+              : BarAreaData(),
         ),
       ],
     );
@@ -149,9 +146,9 @@ class ChartTheme {
                 style: TextStyle(fontSize: 9, color: axisColor)),
           ),
         ),
-        rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        topTitles:   const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        bottomTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        rightTitles: const AxisTitles(),
+        topTitles:   const AxisTitles(),
+        bottomTitles: const AxisTitles(),
       ),
       gridData: FlGridData(
         show: showAxes,

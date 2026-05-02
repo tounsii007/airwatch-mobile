@@ -273,7 +273,7 @@ class AircraftIconPainter extends CustomPainter {
 
     // Short straight wings
     canvas.drawRect(
-      Rect.fromCenter(center: Offset(0, 0), width: 16 * s, height: 1.5 * s),
+      Rect.fromCenter(center: const Offset(0, 0), width: 16 * s, height: 1.5 * s),
       paint,
     );
 

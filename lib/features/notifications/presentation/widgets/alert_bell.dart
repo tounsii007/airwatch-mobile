@@ -206,7 +206,7 @@ class _AlertTile extends ConsumerWidget {
                     const SizedBox(height: 2),
                     Text(
                       alert.subtitle!,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontFamily: UiConstants.bodyFont,
                         fontSize: 11,
                         color: AppColors.textMuted,
@@ -258,7 +258,7 @@ class _Empty extends StatelessWidget {
                 size: 40,
                 color: AppColors.textMuted.withValues(alpha: 0.5)),
             const SizedBox(height: 8),
-            Text(
+            const Text(
               'No active alerts',
               style: TextStyle(
                 fontFamily: UiConstants.bodyFont,

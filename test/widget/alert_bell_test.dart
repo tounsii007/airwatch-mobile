@@ -13,11 +13,11 @@ Widget _wrap({required List<AppAlert> alerts}) {
     ],
     child: MaterialApp(
       theme: ThemeData.dark(),
-      home: Scaffold(
+      home: const Scaffold(
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: const AlertBell(),
+            padding: EdgeInsets.all(8),
+            child: AlertBell(),
           ),
         ),
       ),

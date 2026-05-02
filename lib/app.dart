@@ -9,6 +9,7 @@ import 'core/theme/theme_provider.dart';
 import 'features/airport/presentation/screens/airport_screen.dart';
 import 'features/favorites/data/favorites_repository.dart';
 import 'features/favorites/presentation/screens/favorites_screen.dart';
+import 'features/home_widget/presentation/widget_publisher.dart';
 import 'features/map/data/models/aircraft_state.dart';
 import 'features/map/presentation/providers/flight_providers.dart';
 import 'features/map/presentation/screens/map_screen.dart';
@@ -61,11 +62,15 @@ class AirwatchMobileApp extends ConsumerWidget {
           : (themeMode == AppThemeMode.dark
               ? ThemeMode.dark
               : ThemeMode.light),
-      // Wrap the entry in the alert push listener — it watches
-      // alertsProvider and surfaces deltas as system tray notifications
-      // when the user has them enabled. Lives at the top of the
-      // widget tree so a backgrounded screen still reaches it.
-      home: installAlertPushListener(child: const AppEntry()),
+      // Top-level wrappers:
+      //  - `installHomeWidgetPublisher` ticks every 30 s and pushes a
+      //    compact summary of the live feed to the OS home-screen
+      //    widget host (Android `AppWidgetProvider` / iOS WidgetKit).
+      //  - `installAlertPushListener` watches alertsProvider and
+      //    surfaces deltas as system tray notifications.
+      home: installHomeWidgetPublisher(
+        child: installAlertPushListener(child: const AppEntry()),
+      ),
     );
   }
 }
@@ -104,7 +109,7 @@ class _AppShellState extends ConsumerState<AppShell> {
   void _onFlightSelected(AircraftState aircraft) {
     ref.read(selectedAircraftProvider.notifier).set(aircraft);
     if (aircraft.position != null) {
-      ref.read(mapFocusProvider.notifier).focusOn(aircraft.position!, zoom: 10.0);
+      ref.read(mapFocusProvider.notifier).focusOn(aircraft.position!);
     }
     setState(() => _currentIndex = 0);
   }
@@ -137,7 +142,6 @@ class _AppShellState extends ConsumerState<AppShell> {
           border: Border(
             top: BorderSide(
               color: isDark ? AppColors.glassBorder : UiConstants.lightBorder,
-              width: 1,
             ),
           ),
           boxShadow: isDark

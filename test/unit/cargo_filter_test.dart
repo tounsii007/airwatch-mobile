@@ -77,7 +77,7 @@ void main() {
         );
 
     test('all-status filter is a no-op on the search-empty path', () {
-      final flights = [ac('FDX1', onGround: false), ac('UPS5', onGround: true)];
+      final flights = [ac('FDX1'), ac('UPS5', onGround: true)];
       expect(
         filterCargo(flights, '', CargoStatusFilter.all),
         hasLength(2),
@@ -85,14 +85,14 @@ void main() {
     });
 
     test('airborne filter drops on-ground entries', () {
-      final flights = [ac('FDX1', onGround: false), ac('UPS5', onGround: true)];
+      final flights = [ac('FDX1'), ac('UPS5', onGround: true)];
       final filtered = filterCargo(flights, '', CargoStatusFilter.airborne);
       expect(filtered, hasLength(1));
       expect(filtered.first.callsign, 'FDX1');
     });
 
     test('ground filter keeps only on-ground entries', () {
-      final flights = [ac('FDX1', onGround: false), ac('UPS5', onGround: true)];
+      final flights = [ac('FDX1'), ac('UPS5', onGround: true)];
       final filtered = filterCargo(flights, '', CargoStatusFilter.ground);
       expect(filtered, hasLength(1));
       expect(filtered.first.callsign, 'UPS5');
@@ -118,8 +118,8 @@ void main() {
   group('computeCargoStats', () {
     test('counts airborne / ground / operators correctly', () {
       final flights = [
-        AircraftState(icao24: 'A1', callsign: 'FDX1234', onGround: false),
-        AircraftState(icao24: 'A2', callsign: 'FDX5678', onGround: false),
+        AircraftState(icao24: 'A1', callsign: 'FDX1234'),
+        AircraftState(icao24: 'A2', callsign: 'FDX5678'),
         AircraftState(icao24: 'A3', callsign: 'UPS999',  onGround: true),
       ];
       final stats = computeCargoStats(flights);

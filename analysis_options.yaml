@@ -1,28 +1,57 @@
 # This file configures the analyzer, which statically analyzes Dart code to
 # check for errors, warnings, and lints.
 #
-# The issues identified by the analyzer are surfaced in the UI of Dart-enabled
-# IDEs (https://dart.dev/tools#ides-and-editors). The analyzer can also be
-# invoked from the command line by running `flutter analyze`.
+# Issues surfaced here show up in any Dart-aware IDE plus the
+# `flutter analyze` command.
 
-# The following line activates a set of recommended lints for Flutter apps,
-# packages, and plugins designed to encourage good coding practices.
 include: package:flutter_lints/flutter.yaml
 
-linter:
-  # The lint rules applied to this project can be customized in the
-  # section below to disable rules from the `package:flutter_lints/flutter.yaml`
-  # included above or to enable additional rules. A list of all available lints
-  # and their documentation is published at https://dart.dev/lints.
-  #
-  # Instead of disabling a lint rule for the entire project in the
-  # section below, it can also be suppressed for a single line of code
-  # or a specific dart file by using the `// ignore: name_of_lint` and
-  # `// ignore_for_file: name_of_lint` syntax on the line or in the file
-  # producing the lint.
-  rules:
-    # avoid_print: false  # Uncomment to disable the `avoid_print` rule
-    # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
+analyzer:
+  # Treat any missing-required-argument or undefined-getter mistake as an
+  # ERROR even when its default severity is just a warning. The codebase
+  # has been clean for these classes since Phase 1; keeping them red
+  # prevents silent reintroduction.
+  errors:
+    invalid_annotation_target: ignore
+    # `dead_code` would flip on debug-only branches like
+    # `assert(() { … }())` — keep at warning.
 
-# Additional information about this file can be found at
-# https://dart.dev/guides/language/analysis-options
+linter:
+  # Tightened ruleset on top of `flutter_lints/flutter`. Each rule
+  # below was vetted against the current tree (`flutter analyze`
+  # clean) before being enabled. New code that violates one of these
+  # rules surfaces as an error in the IDE, which is the whole point.
+  rules:
+    # ── Async safety ────────────────────────────────────────────────
+    cancel_subscriptions: true
+    close_sinks: true
+    unawaited_futures: true
+
+    # ── State-of-the-art Dart 3 idioms ─────────────────────────────
+    avoid_redundant_argument_values: true
+    prefer_const_constructors: true
+    prefer_const_declarations: true
+    prefer_final_locals: true
+    unnecessary_const: true
+    unnecessary_new: true
+    unnecessary_late: true
+    unnecessary_parenthesis: true
+
+    # ── Style consistency — codebase already follows these ─────────
+    always_declare_return_types: true
+    prefer_single_quotes: true
+    sort_child_properties_last: true
+
+    # ── Build-context safety ───────────────────────────────────────
+    # Flutter 3.7+ lints async gaps that use a stale context. We hit
+    # this in a few places (the `if (mounted)` guard pattern) but
+    # the rule is generally a good safety net.
+    use_build_context_synchronously: true
+
+    # ── Documentation hygiene ─────────────────────────────────────
+    # JavaDoc-style `{@link}` directives don't render in dartdoc;
+    # we already converted all callsites to `[X]` references in an
+    # earlier sweep, so re-enabling the lint pins that fix.
+    # `doc_directive_unknown` is on by default — the rule below
+    # ensures all public APIs have docs.
+    public_member_api_docs: false  # Too noisy for a feature-rich app

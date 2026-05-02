@@ -15,7 +15,6 @@ class FlightHistoryService {
       : _dio = dio ??
             AppHttpClient.create(
               connectTimeout: AppConfig.longTimeout,
-              receiveTimeout: AppConfig.longTimeout,
             ),
         _infoDatasource = infoDatasource ?? FlightInfoDatasource();
 

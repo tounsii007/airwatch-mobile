@@ -79,9 +79,8 @@ class _FlightReplay3DScreenState extends State<FlightReplay3DScreen> {
     super.initState();
     _controller = FlutterEarthGlobeController(
       rotationSpeed: 0.02,
-      isRotating: false,
       isBackgroundFollowingSphereRotation: true,
-      sphereStyle: SphereStyle(
+      sphereStyle: const SphereStyle(
         shadowColor: AppColors.primary,
         shadowBlurSigma: 18,
       ),
@@ -109,7 +108,7 @@ class _FlightReplay3DScreenState extends State<FlightReplay3DScreen> {
     try {
       final dio = AppHttpClient.create();
       final r = await dio.get<dynamic>(
-        ApiConstants.flightHistoryByCallsign(cs, hours: 24),
+        ApiConstants.flightHistoryByCallsign(cs),
       );
       if (r.statusCode != 200 || r.data is! Map) {
         setState(() {
@@ -227,10 +226,9 @@ class _FlightReplay3DScreenState extends State<FlightReplay3DScreen> {
             id: 'leg-$connId',
             start: _coords[i - _legStep],
             end: _coords[i],
-            style: PointConnectionStyle(
+            style: const PointConnectionStyle(
               color: AppColors.primary,
               lineWidth: 2,
-              type: PointConnectionType.solid,
             ),
           ),
         );
@@ -357,7 +355,7 @@ class _FlightReplay3DScreenState extends State<FlightReplay3DScreen> {
                 borderColor: AppColors.error.withValues(alpha: 0.45),
                 child: Text(
                   _error!,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontFamily: UiConstants.bodyFont,
                     color: AppColors.error,
                     fontSize: 12,
@@ -443,7 +441,6 @@ class _ControlsPanel extends StatelessWidget {
               ),
               Expanded(
                 child: Slider(
-                  min: 0,
                   max: (count - 1).toDouble(),
                   value: idx.toDouble().clamp(0, (count - 1).toDouble()),
                   onChanged: onScrub,
@@ -454,7 +451,7 @@ class _ControlsPanel extends StatelessWidget {
                 child: Text(
                   '$idx / ${count - 1}',
                   textAlign: TextAlign.right,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontFamily: UiConstants.headingFont,
                     fontSize: 10,
                     fontWeight: FontWeight.w800,
@@ -468,7 +465,7 @@ class _ControlsPanel extends StatelessWidget {
           // Speed pills
           Row(
             children: [
-              Text(
+              const Text(
                 'SPEED',
                 style: TextStyle(
                   fontFamily: UiConstants.headingFont,
@@ -495,7 +492,7 @@ class _ControlsPanel extends StatelessWidget {
           // Camera mode
           Row(
             children: [
-              Text(
+              const Text(
                 'CAMERA',
                 style: TextStyle(
                   fontFamily: UiConstants.headingFont,

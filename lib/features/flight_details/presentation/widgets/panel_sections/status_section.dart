@@ -60,7 +60,7 @@ class PanelStatusSection extends StatelessWidget {
                 color: AppColors.error.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(4),
               ),
-              child: Text('+${r.depDelay}m', style: TextStyle(fontFamily: 'Orbitron',
+              child: Text('+${r.depDelay}m', style: const TextStyle(fontFamily: 'Orbitron',
                   fontSize: 8, fontWeight: FontWeight.w700, color: AppColors.error)),
             ),
           if (r.hasArrDelay) ...[
@@ -71,7 +71,7 @@ class PanelStatusSection extends StatelessWidget {
                 color: AppColors.warning.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(4),
               ),
-              child: Text('${context.tr('arr')} +${r.arrDelay}m', style: TextStyle(fontFamily: 'Orbitron',
+              child: Text('${context.tr('arr')} +${r.arrDelay}m', style: const TextStyle(fontFamily: 'Orbitron',
                   fontSize: 8, fontWeight: FontWeight.w700, color: AppColors.warning)),
             ),
           ],

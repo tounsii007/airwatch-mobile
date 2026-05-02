@@ -29,7 +29,7 @@ class AppConfig {
   ///   <li>`http://localhost:8080` fallback (real devices, iOS sim).</li>
   /// </ol>
   static const String _definedBase =
-      String.fromEnvironment('API_BASE_URL', defaultValue: '');
+      String.fromEnvironment('API_BASE_URL');
 
   static String get apiBaseUrl {
     if (_definedBase.isNotEmpty) return _definedBase;

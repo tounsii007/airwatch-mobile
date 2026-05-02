@@ -153,7 +153,7 @@ class _GeoFenceDrawScreenState extends ConsumerState<GeoFenceDrawScreen> {
           if (_ready)
             TextButton(
               onPressed: _save,
-              child: Text(
+              child: const Text(
                 'SAVE',
                 style: TextStyle(
                   fontFamily: UiConstants.headingFont,
@@ -167,7 +167,7 @@ class _GeoFenceDrawScreenState extends ConsumerState<GeoFenceDrawScreen> {
           if (_firstTap != null)
             TextButton(
               onPressed: _reset,
-              child: Text(
+              child: const Text(
                 'RESET',
                 style: TextStyle(
                   fontFamily: UiConstants.headingFont,
@@ -211,14 +211,14 @@ class _GeoFenceDrawScreenState extends ConsumerState<GeoFenceDrawScreen> {
                       point: _firstTap!,
                       width: 14,
                       height: 14,
-                      child: _Dot(color: AppColors.primary),
+                      child: const _Dot(color: AppColors.primary),
                     ),
                     if (_secondTap != null)
                       Marker(
                         point: _secondTap!,
                         width: 14,
                         height: 14,
-                        child: _Dot(color: AppColors.accent),
+                        child: const _Dot(color: AppColors.accent),
                       ),
                   ],
                 ),

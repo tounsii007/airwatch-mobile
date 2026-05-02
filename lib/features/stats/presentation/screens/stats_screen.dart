@@ -204,7 +204,7 @@ class _AirlineRow extends StatelessWidget {
             child: Text(icao, style: const TextStyle(fontWeight: FontWeight.w600)),
           ),
           Text('$count $flightsLabel',
-              style: TextStyle(color: AppColors.success, fontWeight: FontWeight.w600)),
+              style: const TextStyle(color: AppColors.success, fontWeight: FontWeight.w600)),
         ],
       ),
     );

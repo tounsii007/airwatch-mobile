@@ -105,7 +105,7 @@ final ThemeData _darkTheme = ThemeData(
     elevation: 0,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(16),
-      side: const BorderSide(color: AppColors.cardBorder, width: 1),
+      side: const BorderSide(color: AppColors.cardBorder),
     ),
   ),
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(
@@ -125,7 +125,6 @@ final ThemeData _lightTheme = ThemeData(
   colorScheme: const ColorScheme.light(
     primary: UiConstants.lightPrimary,
     secondary: Color(0xFFE0256C),
-    surface: Color(0xFFFFFFFF),
     error: Color(0xFFD32F2F),
   ),
   fontFamily: UiConstants.bodyFont,
@@ -170,7 +169,7 @@ final ThemeData _lightTheme = ThemeData(
     shadowColor: Colors.black12,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(16),
-      side: const BorderSide(color: UiConstants.lightBorder, width: 1),
+      side: const BorderSide(color: UiConstants.lightBorder),
     ),
   ),
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(

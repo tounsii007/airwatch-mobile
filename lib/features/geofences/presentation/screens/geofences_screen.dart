@@ -138,7 +138,7 @@ class _FenceTile extends StatelessWidget {
               children: [
                 Text(
                   fence.name,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontFamily: UiConstants.headingFont,
                     fontSize: 13,
                     fontWeight: FontWeight.w800,
@@ -148,7 +148,7 @@ class _FenceTile extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   _shapeLine(),
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontFamily: UiConstants.bodyFont,
                     fontSize: 10,
                     color: AppColors.textMuted,
@@ -160,7 +160,7 @@ class _FenceTile extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 2),
                     child: Text(
                       'Airline: ${fence.airlineFilter}',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontFamily: UiConstants.bodyFont,
                         fontSize: 9,
                         color: AppColors.textMuted,
@@ -179,7 +179,7 @@ class _FenceTile extends StatelessWidget {
           // Delete.
           IconButton(
             tooltip: 'Delete',
-            icon: Icon(Icons.delete_outline_rounded,
+            icon: const Icon(Icons.delete_outline_rounded,
                 size: 20, color: AppColors.error),
             onPressed: onRemove,
           ),
@@ -204,7 +204,7 @@ class _Empty extends StatelessWidget {
             Icon(Icons.fence_rounded,
                 size: 48, color: AppColors.textMuted.withValues(alpha: 0.5)),
             const SizedBox(height: 12),
-            Text(
+            const Text(
               'No geofences yet',
               style: TextStyle(
                 fontFamily: UiConstants.headingFont,

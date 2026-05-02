@@ -39,7 +39,7 @@ class CertificatePinning {
   /// Comma-separated list of `sha256/{base64}` pins from
   /// `--dart-define=API_CERT_PINS=...`. Empty → pinning off.
   static const String _rawPins =
-      String.fromEnvironment('API_CERT_PINS', defaultValue: '');
+      String.fromEnvironment('API_CERT_PINS');
 
   static List<String> get _pins => _rawPins
       .split(',')

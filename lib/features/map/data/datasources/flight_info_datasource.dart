@@ -21,7 +21,6 @@ class FlightInfoDatasource {
   FlightInfoDatasource({Dio? dio})
       : _dio = dio ??
             AppHttpClient.create(
-              connectTimeout: AppConfig.apiTimeout,
               receiveTimeout: AppConfig.apiTimeout,
             );
 
@@ -94,10 +93,6 @@ class FlightInfoDatasource {
           operatorIata: flight.airlineIata,
           flightNumber: flight.flightIata,
           source: 'airlabs',
-          depCity: null, // /flight endpoint doesn't return city names
-          arrCity: null,
-          depName: null,
-          arrName: null,
           status: flight.status,
           depDelay: flight.depDelayed,
           arrDelay: flight.arrDelayed,
@@ -135,7 +130,7 @@ class FlightInfoDatasource {
 
       // Try ICAO callsign first
       final airline = resolveAirline(cs);
-      String? flightIcao = cs;
+      final String flightIcao = cs;
       String? flightIata;
       if (airline != null && cs.length > 3) {
         flightIata = '${airline.iata}${cs.substring(3)}';

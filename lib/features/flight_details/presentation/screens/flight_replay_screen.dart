@@ -29,8 +29,7 @@ class FlightReplayScreen extends StatefulWidget {
 class _FlightReplayScreenState extends State<FlightReplayScreen>
     with SingleTickerProviderStateMixin {
   final Dio _dio = AppHttpClient.create(
-    connectTimeout: AppConfig.apiTimeout,
-    receiveTimeout: AppConfig.longTimeout,
+    
   );
 
   List<_Waypoint> _waypoints = [];
@@ -228,7 +227,6 @@ class _FlightReplayScreenState extends State<FlightReplayScreen>
                 child: Padding(
                   padding: const EdgeInsets.all(12),
                   child: GlassPanel(
-                    borderRadius: 16,
                     padding: const EdgeInsets.all(14),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -257,7 +255,7 @@ class _FlightReplayScreenState extends State<FlightReplayScreen>
                             // Altitude
                             Text(
                               '${context.s.altitude}: ${_currentAltitude()?.toStringAsFixed(0) ?? "--"}m',
-                              style: TextStyle(fontFamily: UiConstants.headingFont, fontSize: 9,
+                              style: const TextStyle(fontFamily: UiConstants.headingFont, fontSize: 9,
                                   color: AppColors.altitudeHigh, fontWeight: FontWeight.w700),
                             ),
                             const SizedBox(width: 16),

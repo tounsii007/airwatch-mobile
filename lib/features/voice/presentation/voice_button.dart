@@ -99,7 +99,6 @@ class _VoiceButtonState extends ConsumerState<VoiceButton> {
     await _speech.listen(
       localeId: localeId,
       listenOptions: stt.SpeechListenOptions(
-        partialResults: true,
         cancelOnError: true,
       ),
       onResult: (res) {

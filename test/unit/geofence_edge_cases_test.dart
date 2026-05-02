@@ -74,14 +74,14 @@ void main() {
     });
 
     test('zero-radius fence rejects everything except the exact center', () {
-      final fence = _circle(centerLat: 50, centerLon: 8, radiusKm: 0);
+      final fence = _circle(radiusKm: 0);
       expect(aircraftIsInsideFence(_ac(lat: 50, lon: 8), fence), isTrue);
       // 1 km away — must be rejected.
       expect(aircraftIsInsideFence(_ac(lat: 50.01, lon: 8), fence), isFalse);
     });
 
     test('huge fence (10,000 km) covers most of the eastern hemisphere', () {
-      final fence = _circle(centerLat: 50, centerLon: 8, radiusKm: 10000);
+      final fence = _circle(radiusKm: 10000);
       // Sydney → still inside (~16,500 km is too far, but ~9,000 km hits)
       expect(aircraftIsInsideFence(_ac(lat: 30, lon: 30), fence), isTrue);
       // Antipodal point ~20,000 km — outside.
@@ -208,8 +208,6 @@ void main() {
   // ───────────────────────────────────────────────────────────────────────────
   group('Compound: geometry + altitude + airline', () {
     final fence = _circle(
-      centerLat: 50,
-      centerLon: 8,
       radiusKm: 100,
       minAltitudeFt: 30000,
       airlineFilter: 'DLH',

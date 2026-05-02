@@ -87,7 +87,7 @@ class AltitudeLegendDot extends StatelessWidget {
         boxShadow: [BoxShadow(color: color.withValues(alpha: 0.4), blurRadius: 4)],
       )),
       const SizedBox(width: 4),
-      Text(label, style: TextStyle(fontFamily: UiConstants.bodyFont, fontSize: 10,
+      Text(label, style: const TextStyle(fontFamily: UiConstants.bodyFont, fontSize: 10,
           color: AppColors.textSecondary)),
     ]);
   }

@@ -64,7 +64,7 @@ class FlightHistoryTile extends StatelessWidget {
                       border: Border.all(color: AppColors.error.withValues(alpha: 0.3)),
                     ),
                     child: Text(context.tr('delayed').toUpperCase(),
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontFamily: UiConstants.headingFont,
                             fontSize: 7,
                             fontWeight: FontWeight.w700,
@@ -79,7 +79,7 @@ class FlightHistoryTile extends StatelessWidget {
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Text(context.tr('on_time').toUpperCase(),
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontFamily: UiConstants.headingFont,
                             fontSize: 7,
                             fontWeight: FontWeight.w700,
@@ -124,7 +124,7 @@ class FlightHistoryTile extends StatelessWidget {
                                   ? AppColors.success
                                   : AppColors.textMuted)),
                       if (flight.depIsInferred)
-                        Text(' ~', style: TextStyle(fontSize: 12,
+                        const Text(' ~', style: TextStyle(fontSize: 12,
                             color: AppColors.warning, fontWeight: FontWeight.w700)),
                     ]),
                     if (flight.hasDeparture)
@@ -160,7 +160,7 @@ class FlightHistoryTile extends StatelessWidget {
                   children: [
                     Row(mainAxisSize: MainAxisSize.min, children: [
                       if (flight.arrIsInferred)
-                        Text('~ ', style: TextStyle(fontSize: 12,
+                        const Text('~ ', style: TextStyle(fontSize: 12,
                             color: AppColors.warning, fontWeight: FontWeight.w700)),
                       Text(
                           flight.hasArrival

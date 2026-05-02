@@ -31,7 +31,6 @@ void main() {
         baroAltitude: 10000,
         velocity: 230,
         trueTrack: 180,
-        onGround: false,
       );
 
       final results = await service.search(
@@ -60,7 +59,6 @@ void main() {
         baroAltitude: 10000,
         velocity: 230,
         trueTrack: 180,
-        onGround: false,
       );
 
       final results = await service.search(
@@ -83,7 +81,6 @@ void main() {
         baroAltitude: 8000,
         velocity: 200,
         trueTrack: 90,
-        onGround: false,
       );
 
       final results = await service.search(
@@ -106,7 +103,6 @@ void main() {
         baroAltitude: 10000,
         velocity: 230,
         trueTrack: 180,
-        onGround: false,
       );
 
       final results = await service.search(
@@ -130,7 +126,6 @@ void main() {
         baroAltitude: 9500,
         velocity: 210,
         trueTrack: 45,
-        onGround: false,
       );
 
       final results = await service.search(
@@ -154,7 +149,6 @@ void main() {
         baroAltitude: 9500,
         velocity: 210,
         trueTrack: 45,
-        onGround: false,
       );
 
       final selected = service.resolveSelectedAircraft(

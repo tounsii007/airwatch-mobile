@@ -157,7 +157,7 @@ class _OfflineState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.cloud_off_rounded, size: 48, color: AppColors.textMuted),
+            const Icon(Icons.cloud_off_rounded, size: 48, color: AppColors.textMuted),
             const SizedBox(height: 12),
             Text(title,
                 textAlign: TextAlign.center,

@@ -180,7 +180,7 @@ class CountryDatabase {
         .trim()
         .toLowerCase()
         .replaceAll('&', 'and')
-        .replaceAll(RegExp(r"[^a-z0-9]+"), ' ')
+        .replaceAll(RegExp(r'[^a-z0-9]+'), ' ')
         .replaceAll(RegExp(r'\s+'), ' ')
         .trim();
   }

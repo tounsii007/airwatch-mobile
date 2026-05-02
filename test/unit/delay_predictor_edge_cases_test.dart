@@ -74,7 +74,7 @@ void main() {
     });
 
     test('null squawk (unread by ADS-B) ignored', () {
-      final p = predictDelay(aircraft: _ac(squawk: null), route: null);
+      final p = predictDelay(aircraft: _ac(), route: null);
       expect(p.factors, isNot(contains('Emergency squawk')));
     });
   });

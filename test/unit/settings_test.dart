@@ -15,7 +15,7 @@ void main() {
     });
 
     test('formatAltitude in feet', () {
-      const s = SettingsState(altitudeUnit: AltitudeUnit.feet);
+      const s = SettingsState();
       expect(s.formatAltitude(10000), contains('k ft'));
       expect(s.formatAltitude(500), contains('ft'));
       expect(s.formatAltitude(null), '--');
@@ -28,7 +28,7 @@ void main() {
     });
 
     test('formatSpeed in knots', () {
-      const s = SettingsState(speedUnit: SpeedUnit.knots);
+      const s = SettingsState();
       expect(s.formatSpeed(250), contains('kts'));
       expect(s.formatSpeed(null), '--');
     });
@@ -44,14 +44,14 @@ void main() {
     });
 
     test('formatVerticalRate', () {
-      const s = SettingsState(altitudeUnit: AltitudeUnit.feet);
+      const s = SettingsState();
       expect(s.formatVerticalRate(5), contains('+'));
       expect(s.formatVerticalRate(-5), isNot(contains('+')));
       expect(s.formatVerticalRate(null), '--');
     });
 
     test('tileUrl varies by theme', () {
-      expect(const SettingsState(mapTheme: MapTheme.darkRadar).tileUrl,
+      expect(const SettingsState().tileUrl,
           contains('dark'));
       expect(const SettingsState(mapTheme: MapTheme.lightAviation).tileUrl,
           contains('light'));

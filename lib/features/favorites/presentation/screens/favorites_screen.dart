@@ -136,7 +136,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
           Icon(Icons.star_border_rounded, size: 64,
               color: isDark ? AppColors.textMuted : UiConstants.lightDisabled),
           const SizedBox(height: 16),
-          NeonText(text: context.s.noFavorites, fontSize: 16, color: primary,
+          NeonText(text: context.s.noFavorites, color: primary,
               glowRadius: isDark ? 6 : 0),
           const SizedBox(height: 8),
           Text(context.tr('no_favorites_help'),

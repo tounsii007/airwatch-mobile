@@ -69,7 +69,7 @@ class _SquawkAlertBannerState extends ConsumerState<SquawkAlertBanner>
             // surrounding rebuild cadence.
             FadeTransition(
               opacity: Tween<double>(begin: 0.55, end: 1.0).animate(_pulse),
-              child: Icon(
+              child: const Icon(
                 Icons.warning_amber_rounded,
                 color: AppColors.error,
                 size: 16,
@@ -78,7 +78,7 @@ class _SquawkAlertBannerState extends ConsumerState<SquawkAlertBanner>
             const SizedBox(width: 8),
             Text(
               s.squawkEmergencyTitle.toUpperCase(),
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: UiConstants.headingFont,
                 fontSize: 10,
                 fontWeight: FontWeight.w800,
@@ -138,7 +138,7 @@ class _SquawkPill extends StatelessWidget {
         decoration: BoxDecoration(
           color: color.withValues(alpha: 0.10),
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: color.withValues(alpha: 0.45), width: 1),
+          border: Border.all(color: color.withValues(alpha: 0.45)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,

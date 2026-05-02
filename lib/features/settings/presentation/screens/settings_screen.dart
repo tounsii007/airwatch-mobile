@@ -304,7 +304,7 @@ class SettingsScreen extends ConsumerWidget {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  NeonText(text: 'AIRWATCH', fontSize: 16, color: primary, glowRadius: isDark ? 6 : 0),
+                  NeonText(text: 'AIRWATCH', color: primary, glowRadius: isDark ? 6 : 0),
                   const SizedBox(height: 4),
                   Text(
                     'v2.0.0 — ${s.tagline}',

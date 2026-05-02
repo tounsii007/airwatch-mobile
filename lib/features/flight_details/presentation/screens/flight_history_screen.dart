@@ -105,7 +105,6 @@ class _FlightHistoryScreenState extends State<FlightHistoryScreen> {
         backgroundColor: Colors.transparent,
         title: NeonText(
           text: context.s.flightHistory,
-          fontSize: 16,
           color: primary,
           glowRadius: isDark ? 8 : 0,
         ),
@@ -282,7 +281,7 @@ class _FlightHistoryScreenState extends State<FlightHistoryScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(AirportDatabase.fullDisplay(dep),
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontFamily: UiConstants.bodyFont,
                           fontSize: 13,
                           fontWeight: FontWeight.w700,
@@ -293,7 +292,7 @@ class _FlightHistoryScreenState extends State<FlightHistoryScreen> {
                         size: 14, color: primary),
                   ),
                   Text(AirportDatabase.fullDisplay(arr),
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontFamily: UiConstants.bodyFont,
                           fontSize: 13,
                           fontWeight: FontWeight.w700,

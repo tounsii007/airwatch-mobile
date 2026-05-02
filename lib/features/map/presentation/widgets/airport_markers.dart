@@ -504,7 +504,7 @@ class _Lbl extends StatelessWidget {
         ),
         child: Text(
           iata,
-          style: TextStyle(
+          style: const TextStyle(
             fontFamily: UiConstants.headingFont,
             fontSize: 7,
             fontWeight: FontWeight.w700,

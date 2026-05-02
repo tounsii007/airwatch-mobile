@@ -141,7 +141,7 @@ final _patternsDe = <_Pattern>[
 final _patternsFr = <_Pattern>[
   (
     RegExp(
-        r"(?:montre|affiche|cherche|trouve)\s+(?:(?:le\s+)?vol\s+)?([A-Z]{2,3}\d{1,5})",
+        r'(?:montre|affiche|cherche|trouve)\s+(?:(?:le\s+)?vol\s+)?([A-Z]{2,3}\d{1,5})',
         caseSensitive: false),
     (m) => VShowFlight(m.group(1)!.toUpperCase()),
   ),

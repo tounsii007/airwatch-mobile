@@ -86,7 +86,7 @@ class AppTheme {
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          side: const BorderSide(color: AppColors.cardBorder, width: 1),
+          side: const BorderSide(color: AppColors.cardBorder),
         ),
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
