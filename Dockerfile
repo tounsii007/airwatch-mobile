@@ -101,81 +101,40 @@ ENV NGINX_ENVSUBST_FILTER="API_UPSTREAM"
 
 COPY --from=flutter-build /app/build/web /usr/share/nginx/html
 
-# nginx config template — `envsubst` substitutes ${API_UPSTREAM} at
-# container start so the same image works against different backends
-# without a rebuild.
-RUN printf '%s\n' \
-    'server {' \
-    '    listen 80;' \
-    '    server_name _;' \
-    '    root /usr/share/nginx/html;' \
-    '    index index.html;' \
-    '' \
-    '    # Hashed assets: long cache + immutable so the browser does not' \
-    '    # revalidate. Hashing is on the filename so cache busts naturally.' \
-    '    location ~* \\.(?:js|css|woff2?|ttf|otf|svg|png|jpg|jpeg|webp|wasm)$ {' \
-    '        expires 1y;' \
-    '        add_header Cache-Control "public, immutable";' \
-    '        try_files $uri =404;' \
-    '    }' \
-    '' \
-    '    # API reverse-proxy. Flutter calls /api/airlabs/... → strip the' \
-    '    # /api prefix and forward to the airwatch-api container. The trailing' \
-    '    # slash on proxy_pass is what does the strip.' \
-    '    location /api/ {' \
-    '        proxy_pass         ${API_UPSTREAM}/;' \
-    '        proxy_http_version 1.1;' \
-    '        proxy_set_header   Host              $host;' \
-    '        # Set X-Real-IP / X-Forwarded-For to the immediate client' \
-    '        # ($remote_addr) only — NOT $proxy_add_x_forwarded_for, which' \
-    '        # would APPEND to whatever the client sent. An attacker can' \
-    '        # set their own X-Forwarded-For: 127.0.0.1 to spoof internal' \
-    '        # access for an upstream that trusts that header. Overwriting' \
-    '        # forces the upstream to see the real connection IP.' \
-    '        proxy_set_header   X-Real-IP         $remote_addr;' \
-    '        proxy_set_header   X-Forwarded-For   $remote_addr;' \
-    '        proxy_set_header   X-Forwarded-Proto $scheme;' \
-    '        # WebSocket upgrade for the live-flights stream.' \
-    '        proxy_set_header   Upgrade           $http_upgrade;' \
-    '        proxy_set_header   Connection        "upgrade";' \
-    '        # The poll cycle is 60 s — give the upstream room to answer' \
-    '        # without nginx tearing the connection down too aggressively.' \
-    '        proxy_read_timeout 75s;' \
-    '    }' \
-    '' \
-    '    # SPA fallback — Flutter handles its own routing client-side.' \
-    '    # NB: this comes AFTER /api/ so API requests do not get rewritten.' \
-    '    location / {' \
-    '        try_files $uri $uri/ /index.html;' \
-    '    }' \
-    '' \
-    '    # Hide the Flutter build version from snoopers.' \
-    '    server_tokens off;' \
-    '}' > /etc/nginx/templates/default.conf.template
-
-# nginx 1.19+ auto-runs envsubst over /etc/nginx/templates/*.template at
-# startup, populating /etc/nginx/conf.d/. Drop the stock default.conf so
-# our template wins.
-RUN rm -f /etc/nginx/conf.d/default.conf
+# Server config — kept as a checked-in file (nginx/default.conf.template)
+# rather than an inline `printf` so:
+#
+#   * shell-quoting fragility goes away (escaping `$host` / regex `\.`
+#     inside a multi-line printf was a recurring footgun);
+#   * the config is reviewable as plain text in the repo;
+#   * COPY auto-creates `/etc/nginx/templates/` on the way in, which is
+#     the directory the official entrypoint scripts read from.
+#
+# The official image's `20-envsubst-on-templates.sh` entry-point hook
+# renders this template at container start, substituting `${API_UPSTREAM}`
+# (and only that — see NGINX_ENVSUBST_FILTER above) into
+# `/etc/nginx/conf.d/default.conf`. The compose file mounts a tmpfs at
+# /etc/nginx/conf.d so the rendered file can be written even though the
+# rest of the root filesystem is read-only.
+COPY nginx/default.conf.template /etc/nginx/templates/default.conf.template
 
 # ─── Drop privileges ──────────────────────────────────────────────────────
 # nginx:1.27-alpine ships an unprivileged `nginx` user (uid 101) but its
 # default ENTRYPOINT still starts as root in order to write the master
-# pid + listen on :80. We rewrite the config to bind :8080 (>1024, so no
-# CAP_NET_BIND_SERVICE needed) and rewrap the entry-points + log paths
-# the unprivileged user can write to. The compose file then publishes
-# host port → container 8080.
+# pid + listen on :80. The template above already binds :8080 (>1024,
+# no CAP_NET_BIND_SERVICE needed); here we relocate the pid file to
+# /tmp (which compose mounts as tmpfs) and chown all paths nginx will
+# touch at runtime.
 #
 # This protects against the most common LPE primitive in container
 # escapes: an attacker who exploits a memory-corruption bug in nginx
 # would otherwise run as root inside the namespace. Now they run as
 # uid 101 with a read-only filesystem (see compose file).
-RUN sed -i \
+RUN rm -f /etc/nginx/conf.d/default.conf \
+    && sed -i \
         -e 's|listen       80;|listen       8080;|g' \
         -e 's|/var/run/nginx.pid|/tmp/nginx.pid|g' \
-        /etc/nginx/nginx.conf 2>/dev/null || true \
-    && sed -i 's|listen 80;|listen 8080;|g' \
-        /etc/nginx/templates/default.conf.template \
+        /etc/nginx/nginx.conf \
     && touch /tmp/nginx.pid \
     && chown -R nginx:nginx /var/cache/nginx /tmp/nginx.pid \
                             /etc/nginx/conf.d /etc/nginx/templates
