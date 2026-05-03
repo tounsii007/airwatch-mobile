@@ -87,57 +87,57 @@ RUN flutter build web --release \
 # ─── stage 2: tiny nginx serving the static bundle + API proxy ─────────────
 FROM nginx:1.27-alpine AS runner
 
-# The upstream the `/api/*` location proxies to. Override at run time with
-# `-e API_UPSTREAM=http://other-host:1234` if you point this image at a
-# non-default backend.
-ENV API_UPSTREAM=http://airwatch-api:18090
-
-# nginx's docker-entrypoint runs `envsubst` over /etc/nginx/templates/*.
-# By default it would also try to substitute nginx's own variables
-# (`$host`, `$remote_addr`, `$proxy_add_x_forwarded_for`, …) and break
-# the config. Restrict the substitution to JUST the variables we control;
-# everything else is left as a literal `$name` for nginx to interpret.
-ENV NGINX_ENVSUBST_FILTER="API_UPSTREAM"
+# Upstream URL for the /api/* reverse-proxy. Baked at build time via
+# `envsubst` (see RUN block below) — that means:
+#
+#   * the rendered config lives in a read-only image layer at runtime,
+#     so we don't need /etc/nginx/conf.d to be writable in the container;
+#   * to retarget at a different backend (e.g. the Dart sidecar at
+#     `http://airwatch-proxy:8080`), pass `--build-arg API_UPSTREAM=...`
+#     or set API_UPSTREAM in the .env file (compose forwards it to the
+#     build args block in docker-compose.yml).
+#
+# Doing the substitution at build time avoids two problems with the
+# stock image's runtime envsubst entrypoint:
+#   * /etc/nginx/conf.d is owned root:0755 by the base image; tmpfs
+#     mounts in compose's short-form syntax inherit that mode and the
+#     non-root nginx user can't write the rendered config.
+#   * The entrypoint scripts run before USER takes effect; coordinating
+#     ownership across both phases is fiddly.
+ARG API_UPSTREAM=http://airwatch-api:18090
 
 COPY --from=flutter-build /app/build/web /usr/share/nginx/html
 
-# Server config — kept as a checked-in file (nginx/default.conf.template)
-# rather than an inline `printf` so:
-#
-#   * shell-quoting fragility goes away (escaping `$host` / regex `\.`
-#     inside a multi-line printf was a recurring footgun);
-#   * the config is reviewable as plain text in the repo;
-#   * COPY auto-creates `/etc/nginx/templates/` on the way in, which is
-#     the directory the official entrypoint scripts read from.
-#
-# The official image's `20-envsubst-on-templates.sh` entry-point hook
-# renders this template at container start, substituting `${API_UPSTREAM}`
-# (and only that — see NGINX_ENVSUBST_FILTER above) into
-# `/etc/nginx/conf.d/default.conf`. The compose file mounts a tmpfs at
-# /etc/nginx/conf.d so the rendered file can be written even though the
-# rest of the root filesystem is read-only.
-COPY nginx/default.conf.template /etc/nginx/templates/default.conf.template
+# Replace the stock nginx.conf with our own — see comments in
+# nginx/nginx.conf for why. The short version: every writable path is
+# pinned to /tmp, which is tmpfs in compose and immune to read_only.
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
+
+# Per-site config template + build-time envsubst. envsubst is preinstalled
+# in nginx:alpine (it's part of the gettext package the official image
+# pulls for its own runtime envsubst hook). The single-quoted argument
+# `'${API_UPSTREAM}'` restricts substitution to that one variable so
+# nginx's own $host / $remote_addr / $proxy_add_x_forwarded_for stay
+# literal for nginx to interpret at request time.
+COPY nginx/default.conf.template /tmp/default.conf.template
+RUN envsubst '${API_UPSTREAM}' \
+        < /tmp/default.conf.template \
+        > /etc/nginx/conf.d/default.conf \
+    && rm -f /tmp/default.conf.template
 
 # ─── Drop privileges ──────────────────────────────────────────────────────
-# nginx:1.27-alpine ships an unprivileged `nginx` user (uid 101) but its
-# default ENTRYPOINT still starts as root in order to write the master
-# pid + listen on :80. The template above already binds :8080 (>1024,
-# no CAP_NET_BIND_SERVICE needed); here we relocate the pid file to
-# /tmp (which compose mounts as tmpfs) and chown all paths nginx will
-# touch at runtime.
+# nginx:1.27-alpine ships an unprivileged `nginx` user (uid 101) but the
+# stock entrypoint still starts as root for pid + :80 binding. Our
+# nginx.conf binds :8080 (>1024, no CAP_NET_BIND_SERVICE), redirects pid
+# to /tmp, and uses /dev/std{out,err} for logs — all writable for nginx
+# without any chowns. The chown below is just belt-and-suspenders for
+# the conf.d file we baked.
 #
-# This protects against the most common LPE primitive in container
-# escapes: an attacker who exploits a memory-corruption bug in nginx
-# would otherwise run as root inside the namespace. Now they run as
-# uid 101 with a read-only filesystem (see compose file).
-RUN rm -f /etc/nginx/conf.d/default.conf \
-    && sed -i \
-        -e 's|listen       80;|listen       8080;|g' \
-        -e 's|/var/run/nginx.pid|/tmp/nginx.pid|g' \
-        /etc/nginx/nginx.conf \
-    && touch /tmp/nginx.pid \
-    && chown -R nginx:nginx /var/cache/nginx /tmp/nginx.pid \
-                            /etc/nginx/conf.d /etc/nginx/templates
+# This blocks the most common LPE primitive in container escapes: an
+# attacker who exploits a memory-corruption bug in nginx would otherwise
+# run as root inside the namespace. Now they run as uid 101 with a
+# read-only filesystem (see compose file).
+RUN chown -R nginx:nginx /etc/nginx/conf.d
 
 USER nginx
 

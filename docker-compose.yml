@@ -51,15 +51,15 @@ services:
         # origin (`http://127.0.0.1:18091/...`), so no CORS, no cookie
         # mismatch. To target a hosted backend instead, override here:
         FLUTTER_API_BASE_URL: ${FLUTTER_API_BASE_URL:-/api}
+        # Where nginx's /api/* location forwards to. Baked into the
+        # rendered nginx config at build time (see Dockerfile stage 2).
+        # Override via .env to retarget without a code change — `--build`
+        # is required because the substitution happens at image build:
+        #   API_UPSTREAM=http://airwatch-proxy:8080 docker compose up --build
+        API_UPSTREAM: ${API_UPSTREAM:-http://airwatch-api:18090}
     image: airwatch-mobile-web:local
     container_name: airwatch-mobile-web
     restart: unless-stopped
-    environment:
-      # The nginx config template substitutes ${API_UPSTREAM} at startup.
-      # Default to the api container's mobile port; override to point at
-      # any other reachable backend (e.g. http://airwatch-proxy:8080 to
-      # route through the Dart sidecar instead).
-      API_UPSTREAM: ${API_UPSTREAM:-http://airwatch-api:18090}
     ports:
       # Bind to loopback by default — see the x-publish anchor above.
       # The container listens on 8080 (unprivileged port; the image runs
@@ -71,17 +71,28 @@ services:
     # Non-root: enforced inside the image (`USER nginx`); kept here as
     # belt-and-suspenders so a future image swap doesn't silently regress
     # to root. The nginx alpine image creates the `nginx` user (uid 101).
-    # Read-only: with tmpfs for the few paths nginx needs to write —
-    # /var/cache/nginx (proxy_temp, fastcgi_temp), /tmp (pid file we
-    # relocated in the Dockerfile), and /etc/nginx/conf.d (where the
-    # official 20-envsubst-on-templates.sh entrypoint script writes the
-    # rendered config from /etc/nginx/templates/*.template).
+    #
+    # Read-only root filesystem with a single writable tmpfs at /tmp —
+    # our custom nginx.conf pins every writable path (pid file, all
+    # *_temp_path directives) to /tmp, so this single tmpfs covers
+    # everything nginx needs to write at runtime. The conf.d file is
+    # already in the image (envsubst at build time, see Dockerfile), so
+    # it doesn't need a writable mount.
+    #
+    # Why long-form `volumes:` with `type: tmpfs` instead of the short-
+    # form `tmpfs:` list? Because compose's short-form takes only the
+    # path (no options) — adding `,size=…,mode=…` after a colon was
+    # silently dropped on this engine version, and the resulting tmpfs
+    # inherited the underlying directory mode (root:0755), which made
+    # /tmp non-writable for the non-root nginx user.
     user: "nginx"
     read_only: true
-    tmpfs:
-      - /var/cache/nginx:rw,size=64m
-      - /tmp:rw,size=8m
-      - /etc/nginx/conf.d:rw,size=1m
+    volumes:
+      - type: tmpfs
+        target: /tmp
+        tmpfs:
+          size: 16777216    # 16 MB — covers pid + proxy/fastcgi temp files
+          mode: 0o1777      # sticky world-writable, like a real /tmp
     cap_drop:
       - ALL
     # No cap_add — listening on 8080 doesn't need NET_BIND_SERVICE.
@@ -127,8 +138,12 @@ services:
     # ─── Hardening ───────────────────────────────────────────────────────
     user: "proxy"
     read_only: true
-    tmpfs:
-      - /tmp:rw,size=4m
+    volumes:
+      - type: tmpfs
+        target: /tmp
+        tmpfs:
+          size: 4194304     # 4 MB — proxy_server.dart writes nothing to disk
+          mode: 0o1777
     cap_drop:
       - ALL
     security_opt:
