@@ -47,14 +47,16 @@ class ARAircraftDetector {
       // Check if elevation roughly matches tilt
       if ((elevAngle - tiltAngle).abs() > 30) continue;
 
-      results.add(DetectedAircraft(
-        aircraft: ac,
-        bearingDeg: bearing,
-        distanceKm: distKm,
-        elevationDeg: elevAngle,
-        screenXFraction: 0.5 + (angleDiff / fovDegrees),
-        screenYFraction: 0.5 - ((elevAngle - tiltAngle) / 60),
-      ));
+      results.add(
+        DetectedAircraft(
+          aircraft: ac,
+          bearingDeg: bearing,
+          distanceKm: distKm,
+          elevationDeg: elevAngle,
+          screenXFraction: 0.5 + (angleDiff / fovDegrees),
+          screenYFraction: 0.5 - ((elevAngle - tiltAngle) / 60),
+        ),
+      );
     }
 
     // Sort by distance (closest first)
@@ -67,7 +69,8 @@ class ARAircraftDetector {
     final lat1 = from.latitude * math.pi / 180;
     final lat2 = to.latitude * math.pi / 180;
     final y = math.sin(dLon) * math.cos(lat2);
-    final x = math.cos(lat1) * math.sin(lat2) -
+    final x =
+        math.cos(lat1) * math.sin(lat2) -
         math.sin(lat1) * math.cos(lat2) * math.cos(dLon);
     return (math.atan2(y, x) * 180 / math.pi + 360) % 360;
   }
@@ -76,9 +79,12 @@ class ARAircraftDetector {
     const R = 6371.0;
     final dLat = (b.latitude - a.latitude) * math.pi / 180;
     final dLon = (b.longitude - a.longitude) * math.pi / 180;
-    final h = math.sin(dLat / 2) * math.sin(dLat / 2) +
-        math.cos(a.latitude * math.pi / 180) * math.cos(b.latitude * math.pi / 180) *
-            math.sin(dLon / 2) * math.sin(dLon / 2);
+    final h =
+        math.sin(dLat / 2) * math.sin(dLat / 2) +
+        math.cos(a.latitude * math.pi / 180) *
+            math.cos(b.latitude * math.pi / 180) *
+            math.sin(dLon / 2) *
+            math.sin(dLon / 2);
     return R * 2 * math.atan2(math.sqrt(h), math.sqrt(1 - h));
   }
 }

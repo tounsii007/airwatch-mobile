@@ -5,10 +5,8 @@ import 'package:airwatch_mobile/features/map/data/models/aircraft_state.dart';
 
 /// Helper — build a minimal AircraftState with just a callsign. Every other
 /// field is irrelevant to the aggregation logic.
-AircraftState _ac(String callsign) => AircraftState(
-      icao24: 'AABBCC',
-      callsign: callsign,
-    );
+AircraftState _ac(String callsign) =>
+    AircraftState(icao24: 'AABBCC', callsign: callsign);
 
 /// Custom matcher for `MapEntry<String, int>`.
 ///
@@ -16,12 +14,9 @@ AircraftState _ac(String callsign) => AircraftState(
 /// SDK leaves it as identity equality so it stays a cheap value-type),
 /// so the natural `expect(result, [MapEntry(...)])` form fails even when
 /// every key+value is identical. We compare by `key`/`value` instead.
-Matcher _entry(String key, int value) =>
-    isA<MapEntry<String, int>>().having((e) => e.key, 'key', key).having(
-          (e) => e.value,
-          'value',
-          value,
-        );
+Matcher _entry(String key, int value) => isA<MapEntry<String, int>>()
+    .having((e) => e.key, 'key', key)
+    .having((e) => e.value, 'value', value);
 
 /// Convenience: assert a list of MapEntry results matches `[(key, value), ...]`
 /// — keeps the call-site readable even with many entries.
@@ -62,20 +57,23 @@ void main() {
       expect(result.first.key, 'DLH');
     });
 
-    test('skips callsigns whose prefix is not exactly three uppercase letters', () {
-      final result = aggregateByAirlineIcao([
-        _ac('1234'),       // numeric
-        _ac('dlh400'),     // lowercase
-        _ac('DL1400'),     // letter-letter-digit
-        _ac('DLH400'),     // valid
-      ]);
-      expect(result.length, 1);
-      expect(result.first.key, 'DLH');
-    });
+    test(
+      'skips callsigns whose prefix is not exactly three uppercase letters',
+      () {
+        final result = aggregateByAirlineIcao([
+          _ac('1234'), // numeric
+          _ac('dlh400'), // lowercase
+          _ac('DL1400'), // letter-letter-digit
+          _ac('DLH400'), // valid
+        ]);
+        expect(result.length, 1);
+        expect(result.first.key, 'DLH');
+      },
+    );
 
     test('null callsign is silently dropped', () {
       final result = aggregateByAirlineIcao([
-        AircraftState(icao24: 'AABB01'),                    // null callsign
+        AircraftState(icao24: 'AABB01'), // null callsign
         AircraftState(icao24: 'AABB02', callsign: 'DLH400'),
       ]);
       _expectEntries(result, [('DLH', 1)]);
@@ -103,8 +101,11 @@ void main() {
     test('descending count beats alphabetical', () {
       final result = aggregateByAirlineIcao([
         _ac('CCA001'),
-        _ac('AAL999'), _ac('AAL998'), _ac('AAL997'),
-        _ac('BAW123'), _ac('BAW124'),
+        _ac('AAL999'),
+        _ac('AAL998'),
+        _ac('AAL997'),
+        _ac('BAW123'),
+        _ac('BAW124'),
       ]);
       _expectEntries(result, [('AAL', 3), ('BAW', 2), ('CCA', 1)]);
     });

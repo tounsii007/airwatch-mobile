@@ -14,10 +14,7 @@ class SearchService {
   final Dio _dio;
 
   SearchService({Dio? dio})
-      : _dio = dio ??
-            AppHttpClient.create(
-              receiveTimeout: AppConfig.apiTimeout,
-            );
+    : _dio = dio ?? AppHttpClient.create(receiveTimeout: AppConfig.apiTimeout);
 
   /// Session cache of all aircraft ever seen during this app session.
   /// Allows searching for flights that have landed since the app started.
@@ -28,7 +25,8 @@ class SearchService {
     _seenAircraft.addAll(liveAircraft);
   }
 
-  static final List<AirlineInfo> _airlines = FlightInfoDatasource.staticAirlineList;
+  static final List<AirlineInfo> _airlines =
+      FlightInfoDatasource.staticAirlineList;
   static final List<AirlineSearchEntry> _airlineEntries = _airlines
       .map(AirlineSearchEntry.new)
       .toList(growable: false);
@@ -74,9 +72,11 @@ class SearchService {
 
       // 2. Try /routes endpoint — static schedule data, always works regardless of flight status
       //    NOTE: Free Plan included. No rate limit concern since it's cached by Airlabs.
-      final hasFlightMatch = results.any((r) =>
-          r.type == SearchResultType.apiResult ||
-          r.type == SearchResultType.airlineFlight);
+      final hasFlightMatch = results.any(
+        (r) =>
+            r.type == SearchResultType.apiResult ||
+            r.type == SearchResultType.airlineFlight,
+      );
       if (!hasFlightMatch) {
         final routeResult = await _searchRoute(q);
         if (routeResult != null) {
@@ -88,7 +88,8 @@ class SearchService {
       //    NOTE: Free Plan limited to 50 results per call, counts against 1,000 calls/month.
       //    This is the most reliable way to find landed flights from today.
       //    TODO: Upgrade to Starter Plan (9.90 USD/month, 10,000 calls) for production use.
-      if (!hasFlightMatch && results.every((r) => r.type != SearchResultType.apiResult)) {
+      if (!hasFlightMatch &&
+          results.every((r) => r.type != SearchResultType.apiResult)) {
         final scheduleResult = await _searchSchedule(q);
         if (scheduleResult != null) {
           results.add(scheduleResult);
@@ -143,15 +144,15 @@ class SearchService {
       SearchResultType.liveAircraft => result.aircraft,
       SearchResultType.airline => null,
       SearchResultType.country => null,
-      SearchResultType.apiResult || SearchResultType.airlineFlight => liveAircraft
-          .values
-          .where(
-            (item) => FlightCodeFormatter.identifiers(
-              callsign: item.callsign,
-              fallback: item.icao24,
-            ).intersection(resultIds).isNotEmpty,
-          )
-          .firstOrNull,
+      SearchResultType.apiResult || SearchResultType.airlineFlight =>
+        liveAircraft.values
+            .where(
+              (item) => FlightCodeFormatter.identifiers(
+                callsign: item.callsign,
+                fallback: item.icao24,
+              ).intersection(resultIds).isNotEmpty,
+            )
+            .firstOrNull,
     };
   }
 
@@ -230,7 +231,10 @@ class SearchService {
       }
     } catch (e) {
       // Log API errors for debugging — don't silently swallow
-      assert(() { debugPrint('[Search] Flight lookup failed: $e'); return true; }());
+      assert(() {
+        debugPrint('[Search] Flight lookup failed: $e');
+        return true;
+      }());
     }
     return null;
   }
@@ -294,7 +298,8 @@ class SearchService {
           ),
         );
         if (response.statusCode == 200 && response.data is Map) {
-          final schedules = (response.data as Map)[ApiJsonKeys.response] as List?;
+          final schedules =
+              (response.data as Map)[ApiJsonKeys.response] as List?;
           if (schedules != null && schedules.isNotEmpty) {
             final s = schedules.first as Map;
             final flightIcao = s[ApiJsonKeys.flightIcao]?.toString();
@@ -323,7 +328,10 @@ class SearchService {
     } catch (e) {
       // NOTE: /schedules may fail on Free Plan if monthly limit (1,000) is reached.
       // Upgrade to Starter Plan (9.90 USD/month) for 10,000 calls.
-      assert(() { debugPrint('[Search] Schedule lookup failed: $e'); return true; }());
+      assert(() {
+        debugPrint('[Search] Schedule lookup failed: $e');
+        return true;
+      }());
     }
     return null;
   }
@@ -333,9 +341,14 @@ class SearchService {
     List<SearchResultItem> current,
   ) async {
     try {
+      // URL-encode the user-supplied query so a stray `&`, `#`, or `=`
+      // can't smuggle extra parameters into the upstream Airlabs call.
+      // Even though searchService trims + uppercases the input, that's
+      // not equivalent to escaping reserved URL characters.
+      final encoded = Uri.encodeQueryComponent(query);
       final response = await _dio.get(
         AppConfig.flightsUrl(
-          'airline_icao=$query&_fields=flight_icao,flight_iata,dep_iata,arr_iata,status',
+          'airline_icao=$encoded&_fields=flight_icao,flight_iata,dep_iata,arr_iata,status',
         ),
       );
       if (response.statusCode == 200 && response.data is Map) {
@@ -387,7 +400,9 @@ class SearchService {
 
     for (final entry in entries) {
       for (final prefix in entry.prefixes) {
-        buckets.putIfAbsent(prefix, () => <LiveAircraftSearchEntry>[]).add(entry);
+        buckets
+            .putIfAbsent(prefix, () => <LiveAircraftSearchEntry>[])
+            .add(entry);
       }
     }
 
@@ -406,8 +421,9 @@ class SearchService {
     // country code ("TN"). Falling back to the full list in that case
     // is cheap — even 8000 entries fit through the score() loop in <2 ms.
     final prefix = query.length >= 2 ? query.substring(0, 2) : query;
-    final candidates =
-        localeCountryCode != null ? entries : (buckets[prefix] ?? entries);
+    final candidates = localeCountryCode != null
+        ? entries
+        : (buckets[prefix] ?? entries);
 
     int? scoreOf(LiveAircraftSearchEntry e) {
       final byQuery = e.score(query);
@@ -424,16 +440,17 @@ class SearchService {
       return null;
     }
 
-    final scored = candidates
-        .map((entry) => (entry: entry, score: scoreOf(entry)))
-        .where((result) => result.score != null)
-        .map((result) => (entry: result.entry, score: result.score!))
-        .toList(growable: false)
-      ..sort((a, b) {
-        final byScore = a.score.compareTo(b.score);
-        if (byScore != 0) return byScore;
-        return a.entry.displayTitle.compareTo(b.entry.displayTitle);
-      });
+    final scored =
+        candidates
+            .map((entry) => (entry: entry, score: scoreOf(entry)))
+            .where((result) => result.score != null)
+            .map((result) => (entry: result.entry, score: result.score!))
+            .toList(growable: false)
+          ..sort((a, b) {
+            final byScore = a.score.compareTo(b.score);
+            if (byScore != 0) return byScore;
+            return a.entry.displayTitle.compareTo(b.entry.displayTitle);
+          });
 
     return scored
         .take(20)
@@ -489,16 +506,17 @@ class SearchService {
 
   List<SearchResultItem> _searchAirlines(String query) {
     final candidates = _airlineCandidates(query);
-    final scored = candidates
-        .map((entry) => (entry: entry, score: entry.score(query)))
-        .where((result) => result.score != null)
-        .map((result) => (entry: result.entry, score: result.score!))
-        .toList(growable: false)
-      ..sort((a, b) {
-        final byScore = a.score.compareTo(b.score);
-        if (byScore != 0) return byScore;
-        return a.entry.airline.name.compareTo(b.entry.airline.name);
-      });
+    final scored =
+        candidates
+            .map((entry) => (entry: entry, score: entry.score(query)))
+            .where((result) => result.score != null)
+            .map((result) => (entry: result.entry, score: result.score!))
+            .toList(growable: false)
+          ..sort((a, b) {
+            final byScore = a.score.compareTo(b.score);
+            if (byScore != 0) return byScore;
+            return a.entry.airline.name.compareTo(b.entry.airline.name);
+          });
 
     return scored
         .take(20)
@@ -555,5 +573,4 @@ class SearchService {
       if (parsed.prefix.length <= 2) FlightLookupRequest.byIata(query),
     ];
   }
-
 }

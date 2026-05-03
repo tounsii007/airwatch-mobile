@@ -11,13 +11,19 @@ void main() {
       });
 
       test('returns bright white-blue for selected aircraft', () {
-        final color = AircraftIconPainter.getAltitudeColor(10000, isSelected: true);
+        final color = AircraftIconPainter.getAltitudeColor(
+          10000,
+          isSelected: true,
+        );
         expect(color.toARGB32(), 0xFFE0F0FF);
       });
 
       test('selected overrides on-ground', () {
-        final color = AircraftIconPainter.getAltitudeColor(0,
-            onGround: true, isSelected: true);
+        final color = AircraftIconPainter.getAltitudeColor(
+          0,
+          onGround: true,
+          isSelected: true,
+        );
         expect(color.toARGB32(), 0xFFE0F0FF);
       });
 

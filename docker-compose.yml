@@ -17,13 +17,28 @@
 # group together in `docker compose ls`.
 #
 # What you get:
-#   * http://localhost:18091/         → Flutter Web preview (nginx)
-#   * http://localhost:18091/api/...  → reverse-proxied to airwatch-api
-#   * http://localhost:18092/         → Dart proxy (only with --profile proxy)
+#   * http://127.0.0.1:18091/         → Flutter Web preview (nginx)
+#   * http://127.0.0.1:18091/api/...  → reverse-proxied to airwatch-api
+#   * http://127.0.0.1:18092/         → Dart proxy (only with --profile proxy)
+#
+# Both ports default-bind to 127.0.0.1, NOT 0.0.0.0. That keeps the dev
+# preview off the LAN by default — flip the binding by setting
+# PUBLISH_INTERFACE=0.0.0.0 in .env if you genuinely need network access
+# (and have a reverse proxy with TLS in front).
+#
+# Hardening applied to every service (see entries below for details):
+#   * runs as non-root user (USER nginx / USER proxy in the Dockerfiles)
+#   * read_only root FS, with explicit tmpfs for paths that must be writable
+#   * drops every Linux capability except NET_BIND_SERVICE if needed
+#   * security_opt: no-new-privileges blocks setuid/setcap escalation
 #
 # Override anything from a sibling `.env` file (auto-loaded by compose).
 
 name: airwatch
+
+# Default to loopback-only publishing. Override with PUBLISH_INTERFACE=0.0.0.0
+# in .env if you really want this exposed on the LAN.
+x-publish: &publish "${PUBLISH_INTERFACE:-127.0.0.1}"
 
 services:
   airwatch-mobile-web:
@@ -33,7 +48,7 @@ services:
       args:
         # Relative URL — nginx in this container reverse-proxies /api/*
         # to the airwatch-api service. The browser always sees the same
-        # origin (`http://localhost:18091/...`), so no CORS, no cookie
+        # origin (`http://127.0.0.1:18091/...`), so no CORS, no cookie
         # mismatch. To target a hosted backend instead, override here:
         FLUTTER_API_BASE_URL: ${FLUTTER_API_BASE_URL:-/api}
     image: airwatch-mobile-web:local
@@ -46,10 +61,35 @@ services:
       # route through the Dart sidecar instead).
       API_UPSTREAM: ${API_UPSTREAM:-http://airwatch-api:18090}
     ports:
-      - "${MOBILE_WEB_HOST_PORT:-18091}:80"
+      # Bind to loopback by default — see the x-publish anchor above.
+      # The container listens on 8080 (unprivileged port; the image runs
+      # as `nginx` user, not root).
+      - "${PUBLISH_INTERFACE:-127.0.0.1}:${MOBILE_WEB_HOST_PORT:-18091}:8080"
     networks: [airwatch-net]
+
+    # ─── Hardening ───────────────────────────────────────────────────────
+    # Non-root: enforced inside the image (`USER nginx`); kept here as
+    # belt-and-suspenders so a future image swap doesn't silently regress
+    # to root. The nginx alpine image creates the `nginx` user (uid 101).
+    # Read-only: with tmpfs for the few paths nginx needs to write —
+    # /var/cache/nginx (proxy_temp, fastcgi_temp), /tmp (pid file we
+    # relocated in the Dockerfile), and /etc/nginx/conf.d (where the
+    # official 20-envsubst-on-templates.sh entrypoint script writes the
+    # rendered config from /etc/nginx/templates/*.template).
+    user: "nginx"
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx:rw,size=64m
+      - /tmp:rw,size=8m
+      - /etc/nginx/conf.d:rw,size=1m
+    cap_drop:
+      - ALL
+    # No cap_add — listening on 8080 doesn't need NET_BIND_SERVICE.
+    security_opt:
+      - "no-new-privileges:true"
+
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost/"]
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/"]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -77,12 +117,23 @@ services:
       # clear error and exits 1 if AIRLABS_KEY is empty at startup.
       AIRLABS_KEY: ${AIRLABS_KEY:-}
       # Allow the mobile-web nginx (which proxies /api/) to call us.
-      ALLOWED_ORIGINS: http://airwatch-mobile-web,http://localhost:${MOBILE_WEB_HOST_PORT:-18091}
+      ALLOWED_ORIGINS: http://airwatch-mobile-web,http://127.0.0.1:${MOBILE_WEB_HOST_PORT:-18091}
       PROXY_HOST: 0.0.0.0
       PORT: "8080"
     ports:
-      - "${PROXY_HOST_PORT:-18092}:8080"
+      - "${PUBLISH_INTERFACE:-127.0.0.1}:${PROXY_HOST_PORT:-18092}:8080"
     networks: [airwatch-net]
+
+    # ─── Hardening ───────────────────────────────────────────────────────
+    user: "proxy"
+    read_only: true
+    tmpfs:
+      - /tmp:rw,size=4m
+    cap_drop:
+      - ALL
+    security_opt:
+      - "no-new-privileges:true"
+
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:8080/"]
       interval: 30s

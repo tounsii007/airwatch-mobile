@@ -14,7 +14,8 @@ sealed class AirWatchException implements Exception {
   });
 
   @override
-  String toString() => '[$runtimeType] $message${code != null ? " ($code)" : ""}';
+  String toString() =>
+      '[$runtimeType] $message${code != null ? " ($code)" : ""}';
 }
 
 // ═══════════════════ NETWORK ═══════════════════
@@ -108,10 +109,7 @@ class RouteNotFoundException extends AirWatchException {
 
 /// Cache read/write error
 class CacheException extends AirWatchException {
-  const CacheException({
-    required super.message,
-    super.originalError,
-  });
+  const CacheException({required super.message, super.originalError});
 }
 
 // ═══════════════════ LOCATION ═══════════════════
@@ -140,10 +138,7 @@ class PhotoNotFoundException extends AirWatchException {
 
 /// Camera not available (for AR mode)
 class CameraException extends AirWatchException {
-  const CameraException({
-    required super.message,
-    super.originalError,
-  });
+  const CameraException({required super.message, super.originalError});
 }
 
 // ═══════════════════ HELPER ═══════════════════

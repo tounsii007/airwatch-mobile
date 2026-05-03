@@ -46,58 +46,81 @@ class FlightHistoryTile extends StatelessWidget {
               children: [
                 Icon(Icons.calendar_today_rounded, size: 11, color: primary),
                 const SizedBox(width: 5),
-                Text(dateFmt.format(depTime),
-                    style: TextStyle(
-                        fontFamily: UiConstants.bodyFont,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                        color: isDark
-                            ? AppColors.textPrimary
-                            : UiConstants.lightTextPrimary)),
+                Text(
+                  dateFmt.format(depTime),
+                  style: TextStyle(
+                    fontFamily: UiConstants.bodyFont,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: isDark
+                        ? AppColors.textPrimary
+                        : UiConstants.lightTextPrimary,
+                  ),
+                ),
                 const SizedBox(width: 6),
                 if (flight.isDelayed)
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 1,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.error.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(4),
-                      border: Border.all(color: AppColors.error.withValues(alpha: 0.3)),
+                      border: Border.all(
+                        color: AppColors.error.withValues(alpha: 0.3),
+                      ),
                     ),
-                    child: Text(context.tr('delayed').toUpperCase(),
-                        style: const TextStyle(
-                            fontFamily: UiConstants.headingFont,
-                            fontSize: 7,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.error,
-                            letterSpacing: 0.5)),
+                    child: Text(
+                      context.tr('delayed').toUpperCase(),
+                      style: const TextStyle(
+                        fontFamily: UiConstants.headingFont,
+                        fontSize: 7,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.error,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
                   )
                 else if (depDelay != null)
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 1,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.success.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(4),
                     ),
-                    child: Text(context.tr('on_time').toUpperCase(),
-                        style: const TextStyle(
-                            fontFamily: UiConstants.headingFont,
-                            fontSize: 7,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.success,
-                            letterSpacing: 0.5)),
+                    child: Text(
+                      context.tr('on_time').toUpperCase(),
+                      style: const TextStyle(
+                        fontFamily: UiConstants.headingFont,
+                        fontSize: 7,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.success,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
                   ),
                 const Spacer(),
-                Icon(Icons.timer_rounded, size: 11,
-                    color: isDark
-                        ? AppColors.textSecondary
-                        : UiConstants.lightTextSecondary),
+                Icon(
+                  Icons.timer_rounded,
+                  size: 11,
+                  color: isDark
+                      ? AppColors.textSecondary
+                      : UiConstants.lightTextSecondary,
+                ),
                 const SizedBox(width: 4),
-                Text(flight.durationText,
-                    style: TextStyle(
-                        fontFamily: UiConstants.headingFont,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                        color: primary)),
+                Text(
+                  flight.durationText,
+                  style: TextStyle(
+                    fontFamily: UiConstants.headingFont,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
+                    color: primary,
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 10),
@@ -108,37 +131,55 @@ class FlightHistoryTile extends StatelessWidget {
               children: [
                 // Departure airport
                 Expanded(
-                    child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(mainAxisSize: MainAxisSize.min, children: [
-                      Text(
-                          flight.hasDeparture
-                              ? AirportDatabase.displayCode(flight.effectiveDep)
-                              : UiConstants.missingCode,
-                          style: TextStyle(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            flight.hasDeparture
+                                ? AirportDatabase.displayCode(
+                                    flight.effectiveDep,
+                                  )
+                                : UiConstants.missingCode,
+                            style: TextStyle(
                               fontFamily: UiConstants.headingFont,
                               fontSize: 18,
                               fontWeight: FontWeight.w700,
                               color: flight.hasDeparture
                                   ? AppColors.success
-                                  : AppColors.textMuted)),
-                      if (flight.depIsInferred)
-                        const Text(' ~', style: TextStyle(fontSize: 12,
-                            color: AppColors.warning, fontWeight: FontWeight.w700)),
-                    ]),
-                    if (flight.hasDeparture)
-                      Text(
+                                  : AppColors.textMuted,
+                            ),
+                          ),
+                          if (flight.depIsInferred)
+                            const Text(
+                              ' ~',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: AppColors.warning,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                        ],
+                      ),
+                      if (flight.hasDeparture)
+                        Text(
                           AirportDatabase.getCity(flight.effectiveDep),
                           style: TextStyle(
-                              fontFamily: UiConstants.bodyFont,
-                              fontSize: 11,
-                              fontStyle: flight.depIsInferred ? FontStyle.italic : FontStyle.normal,
-                              color: isDark
-                                  ? AppColors.textSecondary
-                                  : UiConstants.lightTextSecondary)),
-                  ],
-                )),
+                            fontFamily: UiConstants.bodyFont,
+                            fontSize: 11,
+                            fontStyle: flight.depIsInferred
+                                ? FontStyle.italic
+                                : FontStyle.normal,
+                            color: isDark
+                                ? AppColors.textSecondary
+                                : UiConstants.lightTextSecondary,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
                 // Center: flight icon
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -146,46 +187,65 @@ class FlightHistoryTile extends StatelessWidget {
                     children: [
                       Icon(Icons.flight_rounded, size: 16, color: primary),
                       Container(
-                          margin: const EdgeInsets.symmetric(vertical: 2),
-                          width: 30,
-                          height: 1,
-                          color: primary.withValues(alpha: 0.3)),
+                        margin: const EdgeInsets.symmetric(vertical: 2),
+                        width: 30,
+                        height: 1,
+                        color: primary.withValues(alpha: 0.3),
+                      ),
                     ],
                   ),
                 ),
                 // Arrival airport
                 Expanded(
-                    child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Row(mainAxisSize: MainAxisSize.min, children: [
-                      if (flight.arrIsInferred)
-                        const Text('~ ', style: TextStyle(fontSize: 12,
-                            color: AppColors.warning, fontWeight: FontWeight.w700)),
-                      Text(
-                          flight.hasArrival
-                              ? AirportDatabase.displayCode(flight.effectiveArr)
-                              : UiConstants.missingCode,
-                          style: TextStyle(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (flight.arrIsInferred)
+                            const Text(
+                              '~ ',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: AppColors.warning,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          Text(
+                            flight.hasArrival
+                                ? AirportDatabase.displayCode(
+                                    flight.effectiveArr,
+                                  )
+                                : UiConstants.missingCode,
+                            style: TextStyle(
                               fontFamily: UiConstants.headingFont,
                               fontSize: 18,
                               fontWeight: FontWeight.w700,
                               color: flight.hasArrival
                                   ? AppColors.accent
-                                  : AppColors.textMuted)),
-                    ]),
-                    if (flight.hasArrival)
-                      Text(
+                                  : AppColors.textMuted,
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (flight.hasArrival)
+                        Text(
                           AirportDatabase.getCity(flight.effectiveArr),
                           style: TextStyle(
-                              fontFamily: UiConstants.bodyFont,
-                              fontSize: 11,
-                              fontStyle: flight.arrIsInferred ? FontStyle.italic : FontStyle.normal,
-                              color: isDark
-                                  ? AppColors.textSecondary
-                                  : UiConstants.lightTextSecondary)),
-                  ],
-                )),
+                            fontFamily: UiConstants.bodyFont,
+                            fontSize: 11,
+                            fontStyle: flight.arrIsInferred
+                                ? FontStyle.italic
+                                : FontStyle.normal,
+                            color: isDark
+                                ? AppColors.textSecondary
+                                : UiConstants.lightTextSecondary,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 10),
@@ -194,131 +254,160 @@ class FlightHistoryTile extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: (isDark ? Colors.white : Colors.black)
-                    .withValues(alpha: 0.04),
+                color: (isDark ? Colors.white : Colors.black).withValues(
+                  alpha: 0.04,
+                ),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
                 children: [
                   // Departure times
                   Expanded(
-                      child: Column(
-                    children: [
-                      Text(context.tr('departure'),
-                          style: TextStyle(
-                              fontFamily: UiConstants.bodyFont,
-                              fontSize: 9,
-                              letterSpacing: 1,
-                              color: isDark
-                                  ? AppColors.textMuted
-                                  : UiConstants.lightTextMuted)),
-                      const SizedBox(height: 3),
-                      if (flight.scheduledDeparture != null)
+                    child: Column(
+                      children: [
                         Text(
+                          context.tr('departure'),
+                          style: TextStyle(
+                            fontFamily: UiConstants.bodyFont,
+                            fontSize: 9,
+                            letterSpacing: 1,
+                            color: isDark
+                                ? AppColors.textMuted
+                                : UiConstants.lightTextMuted,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        if (flight.scheduledDeparture != null)
+                          Text(
                             '${context.tr('scheduled_short')}: ${timeFmt.format(flight.scheduledDeparture!)}',
                             style: TextStyle(
+                              fontFamily: UiConstants.bodyFont,
+                              fontSize: 11,
+                              color: isDark
+                                  ? AppColors.textSecondary
+                                  : UiConstants.lightTextSecondary,
+                            ),
+                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              '${context.tr('actual')}: ',
+                              style: TextStyle(
                                 fontFamily: UiConstants.bodyFont,
                                 fontSize: 11,
                                 color: isDark
                                     ? AppColors.textSecondary
-                                    : UiConstants.lightTextSecondary)),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text('${context.tr('actual')}: ',
+                                    : UiConstants.lightTextSecondary,
+                              ),
+                            ),
+                            Text(
+                              timeFmt.format(depTime),
                               style: TextStyle(
-                                  fontFamily: UiConstants.bodyFont,
-                                  fontSize: 11,
-                                  color: isDark
-                                      ? AppColors.textSecondary
-                                      : UiConstants.lightTextSecondary)),
-                          Text(timeFmt.format(depTime),
-                              style: TextStyle(
-                                  fontFamily: UiConstants.headingFont,
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w700,
-                                  color: flight.isDelayed
-                                      ? AppColors.error
-                                      : AppColors.success)),
-                        ],
-                      ),
-                      if (depDelay != null && depDelay != 0)
-                        Text(
-                          depDelay > 0
-                              ? '+${depDelay}min ${context.tr('late')}'
-                              : '${depDelay.abs()}min ${context.tr('early')}',
-                          style: TextStyle(
+                                fontFamily: UiConstants.headingFont,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                color: flight.isDelayed
+                                    ? AppColors.error
+                                    : AppColors.success,
+                              ),
+                            ),
+                          ],
+                        ),
+                        if (depDelay != null && depDelay != 0)
+                          Text(
+                            depDelay > 0
+                                ? '+${depDelay}min ${context.tr('late')}'
+                                : '${depDelay.abs()}min ${context.tr('early')}',
+                            style: TextStyle(
                               fontFamily: UiConstants.bodyFont,
                               fontSize: 10,
                               fontWeight: FontWeight.w700,
                               color: depDelay > 15
                                   ? AppColors.error
-                                  : AppColors.success),
-                        ),
-                    ],
-                  )),
+                                  : AppColors.success,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
                   Container(
-                      width: 1,
-                      height: 40,
-                      color: (isDark ? Colors.white : Colors.black)
-                          .withValues(alpha: 0.08)),
+                    width: 1,
+                    height: 40,
+                    color: (isDark ? Colors.white : Colors.black).withValues(
+                      alpha: 0.08,
+                    ),
+                  ),
                   // Arrival times
                   Expanded(
-                      child: Column(
-                    children: [
-                      Text(context.tr('arrival'),
-                          style: TextStyle(
-                              fontFamily: UiConstants.bodyFont,
-                              fontSize: 9,
-                              letterSpacing: 1,
-                              color: isDark
-                                  ? AppColors.textMuted
-                                  : UiConstants.lightTextMuted)),
-                      const SizedBox(height: 3),
-                      if (flight.scheduledArrival != null)
+                    child: Column(
+                      children: [
                         Text(
+                          context.tr('arrival'),
+                          style: TextStyle(
+                            fontFamily: UiConstants.bodyFont,
+                            fontSize: 9,
+                            letterSpacing: 1,
+                            color: isDark
+                                ? AppColors.textMuted
+                                : UiConstants.lightTextMuted,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        if (flight.scheduledArrival != null)
+                          Text(
                             '${context.tr('scheduled_short')}: ${timeFmt.format(flight.scheduledArrival!)}',
                             style: TextStyle(
+                              fontFamily: UiConstants.bodyFont,
+                              fontSize: 11,
+                              color: isDark
+                                  ? AppColors.textSecondary
+                                  : UiConstants.lightTextSecondary,
+                            ),
+                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              '${context.tr('actual')}: ',
+                              style: TextStyle(
                                 fontFamily: UiConstants.bodyFont,
                                 fontSize: 11,
                                 color: isDark
                                     ? AppColors.textSecondary
-                                    : UiConstants.lightTextSecondary)),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text('${context.tr('actual')}: ',
+                                    : UiConstants.lightTextSecondary,
+                              ),
+                            ),
+                            Text(
+                              timeFmt.format(arrTime),
                               style: TextStyle(
-                                  fontFamily: UiConstants.bodyFont,
-                                  fontSize: 11,
-                                  color: isDark
-                                      ? AppColors.textSecondary
-                                      : UiConstants.lightTextSecondary)),
-                          Text(timeFmt.format(arrTime),
-                              style: TextStyle(
-                                  fontFamily: UiConstants.headingFont,
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w700,
-                                  color: (arrDelay ?? 0) > 15
-                                      ? AppColors.error
-                                      : AppColors.success)),
-                        ],
-                      ),
-                      if (arrDelay != null && arrDelay != 0)
-                        Text(
-                          arrDelay > 0
-                              ? '+${arrDelay}min ${context.tr('late')}'
-                              : '${arrDelay.abs()}min ${context.tr('early')}',
-                          style: TextStyle(
+                                fontFamily: UiConstants.headingFont,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                color: (arrDelay ?? 0) > 15
+                                    ? AppColors.error
+                                    : AppColors.success,
+                              ),
+                            ),
+                          ],
+                        ),
+                        if (arrDelay != null && arrDelay != 0)
+                          Text(
+                            arrDelay > 0
+                                ? '+${arrDelay}min ${context.tr('late')}'
+                                : '${arrDelay.abs()}min ${context.tr('early')}',
+                            style: TextStyle(
                               fontFamily: 'Rajdhani',
                               fontSize: 10,
                               fontWeight: FontWeight.w700,
                               color: arrDelay > 15
                                   ? AppColors.error
-                                  : AppColors.success),
-                        ),
-                    ],
-                  )),
+                                  : AppColors.success,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -326,24 +415,39 @@ class FlightHistoryTile extends StatelessWidget {
             const SizedBox(height: 8),
 
             // ── Row 4: Extra info line ──
-            if (flight.depDistanceText.isNotEmpty || flight.arrDistanceText.isNotEmpty)
+            if (flight.depDistanceText.isNotEmpty ||
+                flight.arrDistanceText.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(bottom: 6),
                 child: Row(
                   children: [
                     if (flight.depDistanceText.isNotEmpty)
-                      Expanded(child: Text(
-                        '${context.tr('dep')}: ${flight.depDistanceText}',
-                        style: TextStyle(fontFamily: UiConstants.bodyFont, fontSize: 10,
-                            color: isDark ? AppColors.textMuted : UiConstants.lightTextMuted),
-                      )),
+                      Expanded(
+                        child: Text(
+                          '${context.tr('dep')}: ${flight.depDistanceText}',
+                          style: TextStyle(
+                            fontFamily: UiConstants.bodyFont,
+                            fontSize: 10,
+                            color: isDark
+                                ? AppColors.textMuted
+                                : UiConstants.lightTextMuted,
+                          ),
+                        ),
+                      ),
                     if (flight.arrDistanceText.isNotEmpty)
-                      Expanded(child: Text(
-                        '${context.tr('arr')}: ${flight.arrDistanceText}',
-                        textAlign: TextAlign.end,
-                        style: TextStyle(fontFamily: UiConstants.bodyFont, fontSize: 10,
-                            color: isDark ? AppColors.textMuted : UiConstants.lightTextMuted),
-                      )),
+                      Expanded(
+                        child: Text(
+                          '${context.tr('arr')}: ${flight.arrDistanceText}',
+                          textAlign: TextAlign.end,
+                          style: TextStyle(
+                            fontFamily: UiConstants.bodyFont,
+                            fontSize: 10,
+                            color: isDark
+                                ? AppColors.textMuted
+                                : UiConstants.lightTextMuted,
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -353,31 +457,52 @@ class FlightHistoryTile extends StatelessWidget {
               spacing: 6,
               runSpacing: 4,
               children: [
-                _SmallTag(label: 'ICAO', value: flight.icao24.toUpperCase(),
-                    color: primary, isDark: isDark),
+                _SmallTag(
+                  label: 'ICAO',
+                  value: flight.icao24.toUpperCase(),
+                  color: primary,
+                  isDark: isDark,
+                ),
                 if (aircraftMeta?.registration != null)
-                  _SmallTag(label: 'REG', value: aircraftMeta?.registration ?? '',
-                      color: primary, isDark: isDark),
+                  _SmallTag(
+                    label: 'REG',
+                    value: aircraftMeta?.registration ?? '',
+                    color: primary,
+                    isDark: isDark,
+                  ),
                 if (aircraftMeta?.typecode != null)
-                  _SmallTag(label: 'TYPE', value: aircraftMeta?.typecode ?? '',
-                      color: AppColors.accent, isDark: isDark),
+                  _SmallTag(
+                    label: 'TYPE',
+                    value: aircraftMeta?.typecode ?? '',
+                    color: AppColors.accent,
+                    isDark: isDark,
+                  ),
                 if (flight.callsign != null && flight.callsign!.isNotEmpty)
                   _SmallTag(
-                      label: 'FLT',
-                      value: FlightCodeFormatter.displayFlightCode(
-                        flightIata: flight.flightIata,
-                        flightIcao: flight.flightIcao,
-                        callsign: flight.callsign,
-                        fallback: flight.callsign,
-                      ),
-                      color: primary,
-                      isDark: isDark),
+                    label: 'FLT',
+                    value: FlightCodeFormatter.displayFlightCode(
+                      flightIata: flight.flightIata,
+                      flightIcao: flight.flightIcao,
+                      callsign: flight.callsign,
+                      fallback: flight.callsign,
+                    ),
+                    color: primary,
+                    isDark: isDark,
+                  ),
                 if (flight.depCandidatesCount > 0)
-                  _SmallTag(label: 'DEP?', value: '${flight.depCandidatesCount}',
-                      color: AppColors.textMuted, isDark: isDark),
+                  _SmallTag(
+                    label: 'DEP?',
+                    value: '${flight.depCandidatesCount}',
+                    color: AppColors.textMuted,
+                    isDark: isDark,
+                  ),
                 if (flight.arrCandidatesCount > 0)
-                  _SmallTag(label: 'ARR?', value: '${flight.arrCandidatesCount}',
-                      color: AppColors.textMuted, isDark: isDark),
+                  _SmallTag(
+                    label: 'ARR?',
+                    value: '${flight.arrCandidatesCount}',
+                    color: AppColors.textMuted,
+                    isDark: isDark,
+                  ),
               ],
             ),
           ],
@@ -393,11 +518,12 @@ class _SmallTag extends StatelessWidget {
   final String label, value;
   final Color color;
   final bool isDark;
-  const _SmallTag(
-      {required this.label,
-      required this.value,
-      required this.color,
-      required this.isDark});
+  const _SmallTag({
+    required this.label,
+    required this.value,
+    required this.color,
+    required this.isDark,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -411,19 +537,23 @@ class _SmallTag extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('$label ',
-              style: TextStyle(
-                  fontFamily: UiConstants.bodyFont,
-                  fontSize: 9,
-                  color: isDark
-                      ? AppColors.textMuted
-                        : UiConstants.lightTextMuted)),
-          Text(value,
-              style: TextStyle(
-                  fontFamily: UiConstants.headingFont,
-                  fontSize: 9,
-                  fontWeight: FontWeight.w700,
-                  color: color)),
+          Text(
+            '$label ',
+            style: TextStyle(
+              fontFamily: UiConstants.bodyFont,
+              fontSize: 9,
+              color: isDark ? AppColors.textMuted : UiConstants.lightTextMuted,
+            ),
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              fontFamily: UiConstants.headingFont,
+              fontSize: 9,
+              fontWeight: FontWeight.w700,
+              color: color,
+            ),
+          ),
         ],
       ),
     );

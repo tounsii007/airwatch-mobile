@@ -85,8 +85,9 @@ class _AirlineDetailScreenState extends State<AirlineDetailScreen> {
           }).toList();
 
     return Scaffold(
-      backgroundColor:
-          isDark ? AppColors.background : UiConstants.lightBackground,
+      backgroundColor: isDark
+          ? AppColors.background
+          : UiConstants.lightBackground,
       body: SafeArea(
         child: Column(
           children: [
@@ -100,11 +101,13 @@ class _AirlineDetailScreenState extends State<AirlineDetailScreen> {
               child: Container(
                 decoration: BoxDecoration(
                   color: isDark ? AppColors.surface : UiConstants.lightSurface,
-                  borderRadius:
-                      BorderRadius.circular(AppConfig.inputBorderRadius),
+                  borderRadius: BorderRadius.circular(
+                    AppConfig.inputBorderRadius,
+                  ),
                   border: Border.all(
-                    color:
-                        isDark ? AppColors.glassBorder : UiConstants.lightBorder,
+                    color: isDark
+                        ? AppColors.glassBorder
+                        : UiConstants.lightBorder,
                   ),
                 ),
                 child: TextField(
@@ -154,29 +157,28 @@ class _AirlineDetailScreenState extends State<AirlineDetailScreen> {
             // Flights list
             Expanded(
               child: _isLoading
-                  ? Center(
-                      child: CircularProgressIndicator(color: primary))
+                  ? Center(child: CircularProgressIndicator(color: primary))
                   : filtered.isEmpty
-                      ? Center(
-                          child: Text(
-                            context.tr('no_flights'),
-                            style: TextStyle(
-                              fontFamily: UiConstants.bodyFont,
-                              color: isDark
-                                  ? AppColors.textMuted
-                                  : UiConstants.lightTextMuted,
-                            ),
-                          ),
-                        )
-                      : ListView.builder(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          itemCount: filtered.length,
-                          itemBuilder: (_, i) => _FlightTile(
-                            flight: filtered[i],
-                            isDark: isDark,
-                            primary: primary,
-                          ),
+                  ? Center(
+                      child: Text(
+                        context.tr('no_flights'),
+                        style: TextStyle(
+                          fontFamily: UiConstants.bodyFont,
+                          color: isDark
+                              ? AppColors.textMuted
+                              : UiConstants.lightTextMuted,
                         ),
+                      ),
+                    )
+                  : ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount: filtered.length,
+                      itemBuilder: (_, i) => _FlightTile(
+                        flight: filtered[i],
+                        isDark: isDark,
+                        primary: primary,
+                      ),
+                    ),
             ),
           ],
         ),
@@ -187,7 +189,8 @@ class _AirlineDetailScreenState extends State<AirlineDetailScreen> {
   Widget _buildHeader(bool isDark, Color primary, String? logoUrl) {
     final countryCode = CountryDatabase.codeOf(widget.country);
     final flagPath = CountryDatabase.flagAssetPathOf(
-        countryCode ?? widget.country);
+      countryCode ?? widget.country,
+    );
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
@@ -198,8 +201,7 @@ class _AirlineDetailScreenState extends State<AirlineDetailScreen> {
             child: GlassPanel(
               padding: const EdgeInsets.all(8),
               borderRadius: 10,
-              child:
-                  Icon(Icons.arrow_back_rounded, size: 18, color: primary),
+              child: Icon(Icons.arrow_back_rounded, size: 18, color: primary),
             ),
           ),
           const SizedBox(width: 12),
@@ -238,8 +240,12 @@ class _AirlineDetailScreenState extends State<AirlineDetailScreen> {
                     ),
                     if (flagPath != null) ...[
                       const SizedBox(width: 8),
-                      SvgPicture.asset(flagPath,
-                          width: 22, height: 16, fit: BoxFit.cover),
+                      SvgPicture.asset(
+                        flagPath,
+                        width: 22,
+                        height: 16,
+                        fit: BoxFit.cover,
+                      ),
                     ],
                   ],
                 ),
@@ -252,8 +258,11 @@ class _AirlineDetailScreenState extends State<AirlineDetailScreen> {
                 ? SizedBox(
                     width: 20,
                     height: 20,
-                    child:
-                        CircularProgressIndicator(strokeWidth: 2, color: primary))
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: primary,
+                    ),
+                  )
                 : Icon(Icons.refresh_rounded, color: primary, size: 22),
           ),
         ],
@@ -264,8 +273,7 @@ class _AirlineDetailScreenState extends State<AirlineDetailScreen> {
   Widget _buildInfoRow(bool isDark, Color primary) {
     final locale = Localizations.localeOf(context).languageCode;
     final countryDisplay = widget.country != null
-        ? localizeCountry(
-            CountryDatabase.displayName(widget.country), locale)
+        ? localizeCountry(CountryDatabase.displayName(widget.country), locale)
         : '';
 
     return Padding(
@@ -296,7 +304,12 @@ class _AirlineDetailScreenState extends State<AirlineDetailScreen> {
   }
 
   Widget _buildStats(
-      bool isDark, Color primary, int airborne, int grounded, int routes) {
+    bool isDark,
+    Color primary,
+    int airborne,
+    int grounded,
+    int routes,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
@@ -335,8 +348,11 @@ class _CodeChip extends StatelessWidget {
   final Color color;
   final bool isDark;
 
-  const _CodeChip(
-      {required this.label, required this.color, required this.isDark});
+  const _CodeChip({
+    required this.label,
+    required this.color,
+    required this.isDark,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -384,21 +400,26 @@ class _StatCard extends StatelessWidget {
           children: [
             Icon(icon, size: 16, color: color),
             const SizedBox(height: 4),
-            Text(value,
-                style: TextStyle(
-                  fontFamily: UiConstants.headingFont,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                  color: color,
-                )),
-            Text(label,
-                style: TextStyle(
-                  fontFamily: UiConstants.bodyFont,
-                  fontSize: 9,
-                  color:
-                      isDark ? AppColors.textMuted : UiConstants.lightTextMuted,
-                  letterSpacing: 1,
-                )),
+            Text(
+              value,
+              style: TextStyle(
+                fontFamily: UiConstants.headingFont,
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: color,
+              ),
+            ),
+            Text(
+              label,
+              style: TextStyle(
+                fontFamily: UiConstants.bodyFont,
+                fontSize: 9,
+                color: isDark
+                    ? AppColors.textMuted
+                    : UiConstants.lightTextMuted,
+                letterSpacing: 1,
+              ),
+            ),
           ],
         ),
       ),
@@ -419,10 +440,11 @@ class _FlightTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final statusColor =
-        FlightStatusUtils.statusColor(flight.status, primary: primary);
-    final statusLabel =
-        FlightStatusUtils.statusLabel(context, flight.status);
+    final statusColor = FlightStatusUtils.statusColor(
+      flight.status,
+      primary: primary,
+    );
+    final statusLabel = FlightStatusUtils.statusLabel(context, flight.status);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 4),
@@ -458,16 +480,15 @@ class _FlightTile extends StatelessWidget {
                 ),
               ),
             ),
-            if (flight.aircraftIcao != null &&
-                flight.aircraftIcao!.isNotEmpty)
+            if (flight.aircraftIcao != null && flight.aircraftIcao!.isNotEmpty)
               Container(
                 margin: const EdgeInsets.only(right: 8),
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 5, vertical: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                 decoration: BoxDecoration(
                   color: primary.withValues(alpha: 0.1),
-                  borderRadius:
-                      BorderRadius.circular(AppConfig.tagBorderRadius),
+                  borderRadius: BorderRadius.circular(
+                    AppConfig.tagBorderRadius,
+                  ),
                 ),
                 child: Text(
                   flight.aircraftIcao!,
@@ -481,8 +502,7 @@ class _FlightTile extends StatelessWidget {
               ),
             if (statusLabel.isNotEmpty)
               Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 6, vertical: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
                   color: statusColor.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(4),

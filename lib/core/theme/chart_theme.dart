@@ -26,9 +26,9 @@ class ChartTheme {
   ChartTheme._();
 
   // ── Palette helpers ──────────────────────────────────────────────────────
-  static Color  get gridColor   => AppColors.glassBorder;
-  static Color  get axisColor   => AppColors.textMuted;
-  static double get gridStroke  => 0.6;
+  static Color get gridColor => AppColors.glassBorder;
+  static Color get axisColor => AppColors.textMuted;
+  static double get gridStroke => 0.6;
 
   /// Tooltip box used by every line / bar chart. Glass-panel-ish, with the
   /// app's text-muted colour for labels so it sits naturally inside the
@@ -43,13 +43,13 @@ class ChartTheme {
   /// stay clean while a Stats screen can opt in to axis labels.
   static LineChartData lineChart({
     required List<FlSpot> spots,
-    required Color        primary,
-    bool                  showAxes      = false,
-    bool                  showGrid      = false,
-    bool                  fillBelow     = true,
-    bool                  enableTooltip = false,
-    double?               minY,
-    double?               maxY,
+    required Color primary,
+    bool showAxes = false,
+    bool showGrid = false,
+    bool fillBelow = true,
+    bool enableTooltip = false,
+    double? minY,
+    double? maxY,
   }) {
     return LineChartData(
       titlesData: FlTitlesData(
@@ -60,18 +60,22 @@ class ChartTheme {
             reservedSize: 32,
             getTitlesWidget: (v, _) => Padding(
               padding: const EdgeInsets.only(right: 4),
-              child: Text(_compact(v),
-                  style: TextStyle(fontSize: 9, color: axisColor)),
+              child: Text(
+                _compact(v),
+                style: TextStyle(fontSize: 9, color: axisColor),
+              ),
             ),
           ),
         ),
         rightTitles: const AxisTitles(),
-        topTitles:   const AxisTitles(),
+        topTitles: const AxisTitles(),
         bottomTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: showAxes,
-            getTitlesWidget: (v, _) => Text(v.toStringAsFixed(0),
-                style: TextStyle(fontSize: 9, color: axisColor)),
+            getTitlesWidget: (v, _) => Text(
+              v.toStringAsFixed(0),
+              style: TextStyle(fontSize: 9, color: axisColor),
+            ),
           ),
         ),
       ),
@@ -87,15 +91,18 @@ class ChartTheme {
               touchTooltipData: LineTouchTooltipData(
                 getTooltipColor: (_) => tooltipBg,
                 tooltipBorder: const BorderSide(color: AppColors.glassBorder),
-                tooltipPadding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                tooltipPadding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 4,
+                ),
                 getTooltipItems: (touched) => touched.map((t) {
                   return LineTooltipItem(
                     t.y.toStringAsFixed(0),
                     TextStyle(
-                        color: primary,
-                        fontWeight: FontWeight.w800,
-                        fontSize: 11),
+                      color: primary,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 11,
+                    ),
                   );
                 }).toList(),
               ),
@@ -111,10 +118,7 @@ class ChartTheme {
           color: primary,
           dotData: const FlDotData(show: false),
           belowBarData: fillBelow
-              ? BarAreaData(
-                  show: true,
-                  color: primary.withValues(alpha: 0.18),
-                )
+              ? BarAreaData(show: true, color: primary.withValues(alpha: 0.18))
               : BarAreaData(),
         ),
       ],
@@ -127,14 +131,20 @@ class ChartTheme {
   /// `palette` so multi-series bars stay visually distinct.
   static BarChartData barChart({
     required List<double> values,
-    Color?                primary,
-    List<Color>?          palette,
-    double                rodWidth = 12,
-    bool                  showAxes = false,
-    bool                  enableTooltip = false,
+    Color? primary,
+    List<Color>? palette,
+    double rodWidth = 12,
+    bool showAxes = false,
+    bool enableTooltip = false,
   }) {
-    final colours = palette ??
-        [primary ?? AppColors.primary, AppColors.success, AppColors.accent, AppColors.info];
+    final colours =
+        palette ??
+        [
+          primary ?? AppColors.primary,
+          AppColors.success,
+          AppColors.accent,
+          AppColors.info,
+        ];
     return BarChartData(
       titlesData: FlTitlesData(
         show: showAxes,
@@ -142,12 +152,14 @@ class ChartTheme {
           sideTitles: SideTitles(
             showTitles: showAxes,
             reservedSize: 26,
-            getTitlesWidget: (v, _) => Text(_compact(v),
-                style: TextStyle(fontSize: 9, color: axisColor)),
+            getTitlesWidget: (v, _) => Text(
+              _compact(v),
+              style: TextStyle(fontSize: 9, color: axisColor),
+            ),
           ),
         ),
         rightTitles: const AxisTitles(),
-        topTitles:   const AxisTitles(),
+        topTitles: const AxisTitles(),
         bottomTitles: const AxisTitles(),
       ),
       gridData: FlGridData(
@@ -161,28 +173,34 @@ class ChartTheme {
           ? BarTouchData(
               touchTooltipData: BarTouchTooltipData(
                 getTooltipColor: (_) => tooltipBg,
-                tooltipPadding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                tooltipPadding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 4,
+                ),
                 getTooltipItem: (group, _, rod, _) => BarTooltipItem(
                   rod.toY.toStringAsFixed(0),
                   TextStyle(
-                      color: rod.color ?? colours.first,
-                      fontWeight: FontWeight.w800,
-                      fontSize: 11),
+                    color: rod.color ?? colours.first,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 11,
+                  ),
                 ),
               ),
             )
           : BarTouchData(enabled: false),
       barGroups: [
         for (var i = 0; i < values.length; i++)
-          BarChartGroupData(x: i, barRods: [
-            BarChartRodData(
-              toY: values[i],
-              color: colours[i % colours.length],
-              width: rodWidth,
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ]),
+          BarChartGroupData(
+            x: i,
+            barRods: [
+              BarChartRodData(
+                toY: values[i],
+                color: colours[i % colours.length],
+                width: rodWidth,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ],
+          ),
       ],
     );
   }

@@ -37,10 +37,44 @@
         </intent>
     </queries>
 
+    <!--
+      Security hardening on the <application> element:
+
+        android:allowBackup="false"
+            Disables Google Auto Backup. Without this, the geofence
+            list, settings, alert read-state and any future cached
+            session data would be transparently uploaded to the user's
+            Google Drive when the device backs up. Auto Backup is
+            convenient for stateless games — for an app that handles
+            location data and admin sessions, it's a privacy-bleed
+            channel that's hard to audit. We persist nothing the user
+            can't recreate from a fresh install (favourites are an
+            in-app re-add).
+
+        android:dataExtractionRules="@xml/data_extraction_rules"
+            Android 12+ replacement for android:fullBackupContent.
+            The XML file scopes any backup that does happen
+            (e.g. a manual `adb backup`) to nothing, matching the
+            allowBackup=false signal.
+
+        android:fullBackupContent="@xml/backup_rules"
+            Android 11- equivalent. Same intent — empty include list.
+
+        android:usesCleartextTraffic="false"
+            Defence-in-depth: if a future config bug ever sets
+            API_BASE_URL to http://, the platform refuses the request
+            instead of silently downgrading. Combined with the
+            release-mode guard in AppConfig.apiBaseUrl, plaintext
+            traffic is blocked at two layers.
+    -->
     <application
         android:label="AirWatch"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:usesCleartextTraffic="false">
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -74,10 +108,17 @@
              fires APPWIDGET_UPDATE at this receiver; the receiver
              reads the data the Flutter side persisted and rebuilds
              the RemoteViews. The metadata file at xml/flight_widget_info
-             defines the visible cell size + initial layout. -->
+             defines the visible cell size + initial layout.
+
+             android:permission="android.permission.BIND_APPWIDGET" —
+             defence-in-depth. Only the system AppWidget host (which
+             holds this signature-level permission) can deliver the
+             APPWIDGET_UPDATE intent here, blocking any local app from
+             spoofing widget refreshes through `adb shell am broadcast`. -->
         <receiver
             android:name=".FlightWidgetProvider"
-            android:exported="true">
+            android:exported="true"
+            android:permission="android.permission.BIND_APPWIDGET">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

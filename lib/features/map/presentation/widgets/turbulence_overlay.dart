@@ -28,9 +28,7 @@ class TurbulenceOverlayLayer extends ConsumerWidget {
       polygons: [
         for (final z in zones)
           Polygon(
-            points: [
-              for (final p in z.polygon) LatLng(p[0], p[1]),
-            ],
+            points: [for (final p in z.polygon) LatLng(p[0], p[1])],
             color: severityColor(z.severity).withValues(alpha: 0.18),
             borderColor: severityColor(z.severity).withValues(alpha: 0.85),
             borderStrokeWidth: 1.4,

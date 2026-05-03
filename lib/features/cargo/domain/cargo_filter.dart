@@ -53,7 +53,15 @@ const Set<String> cargoAirlineIcaoCodes = {
 /// the live feed. Subset of [cargoAirlineIcaos] — only the carriers that
 /// reliably encode the ICAO into the callsign (e.g. "FDX1234").
 const Set<String> _cargoCallsignPrefixes = {
-  'FDX', 'UPS', 'GTI', 'CLX', 'BOX', 'TAY', 'GEC', 'ABX', 'WGN',
+  'FDX',
+  'UPS',
+  'GTI',
+  'CLX',
+  'BOX',
+  'TAY',
+  'GEC',
+  'ABX',
+  'WGN',
 };
 
 /// True when the callsign string most likely identifies a cargo flight.

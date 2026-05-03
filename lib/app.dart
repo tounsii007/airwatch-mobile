@@ -47,11 +47,7 @@ class AirwatchMobileApp extends ConsumerWidget {
       theme: themeData,
       darkTheme: themeData,
       locale: localeFromLanguage(appLanguage),
-      supportedLocales: const [
-        Locale('en'),
-        Locale('de'),
-        Locale('fr'),
-      ],
+      supportedLocales: const [Locale('en'), Locale('de'), Locale('fr')],
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
@@ -59,9 +55,7 @@ class AirwatchMobileApp extends ConsumerWidget {
       ],
       themeMode: themeMode == AppThemeMode.system
           ? ThemeMode.system
-          : (themeMode == AppThemeMode.dark
-              ? ThemeMode.dark
-              : ThemeMode.light),
+          : (themeMode == AppThemeMode.dark ? ThemeMode.dark : ThemeMode.light),
       // Top-level wrappers:
       //  - `installHomeWidgetPublisher` ticks every 30 s and pushes a
       //    compact summary of the live feed to the OS home-screen
@@ -124,18 +118,17 @@ class _AppShellState extends ConsumerState<AppShell> {
       const MapScreen(),
       SearchScreen(onFlightSelected: _onFlightSelected),
       const AirportScreen(),
-      FavoritesScreen(onFlightTap: (cs) {
-        // Search for this callsign and switch to map
-        setState(() => _currentIndex = 0);
-      }),
+      FavoritesScreen(
+        onFlightTap: (cs) {
+          // Search for this callsign and switch to map
+          setState(() => _currentIndex = 0);
+        },
+      ),
       const SettingsScreen(),
     ];
 
     return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: screens,
-      ),
+      body: IndexedStack(index: _currentIndex, children: screens),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: isDark ? AppColors.surface : Colors.white,
@@ -256,53 +249,74 @@ class _NavItem extends StatelessWidget {
             Stack(
               clipBehavior: Clip.none,
               children: [
-            Container(
-              decoration: isActive && isDark
-                  ? BoxDecoration(
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: color.withValues(alpha: 0.5),
-                          blurRadius: 14,
-                          spreadRadius: -2,
-                        ),
-                        BoxShadow(
-                          color: color.withValues(alpha: 0.25),
-                          blurRadius: 24,
-                          spreadRadius: -4,
-                        ),
-                      ],
-                    )
-                  : null,
-              child: Icon(
-                icon,
-                size: isActive ? 26 : 22,
-                color: isActive
-                    ? color
-                    : (isDark ? AppColors.textMuted : UiConstants.lightHintText),
-                shadows: isActive && isDark
-                    ? [Shadow(color: color.withValues(alpha: 0.6), blurRadius: 10)]
-                    : null,
-              ),
-            ),
-            // Badge
-            if (badge > 0)
-              Positioned(
-                top: -4, right: -8,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-                  decoration: BoxDecoration(
-                    color: AppColors.error,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [BoxShadow(color: AppColors.error.withValues(alpha: 0.4), blurRadius: 4)],
+                Container(
+                  decoration: isActive && isDark
+                      ? BoxDecoration(
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: color.withValues(alpha: 0.5),
+                              blurRadius: 14,
+                              spreadRadius: -2,
+                            ),
+                            BoxShadow(
+                              color: color.withValues(alpha: 0.25),
+                              blurRadius: 24,
+                              spreadRadius: -4,
+                            ),
+                          ],
+                        )
+                      : null,
+                  child: Icon(
+                    icon,
+                    size: isActive ? 26 : 22,
+                    color: isActive
+                        ? color
+                        : (isDark
+                              ? AppColors.textMuted
+                              : UiConstants.lightHintText),
+                    shadows: isActive && isDark
+                        ? [
+                            Shadow(
+                              color: color.withValues(alpha: 0.6),
+                              blurRadius: 10,
+                            ),
+                          ]
+                        : null,
                   ),
-                  child: Text('$badge', style: const TextStyle(
-                    fontFamily: UiConstants.headingFont, fontSize: 8, fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                  )),
                 ),
-              ),
-            ],
+                // Badge
+                if (badge > 0)
+                  Positioned(
+                    top: -4,
+                    right: -8,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 5,
+                        vertical: 1,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.error,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.error.withValues(alpha: 0.4),
+                            blurRadius: 4,
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        '$badge',
+                        style: const TextStyle(
+                          fontFamily: UiConstants.headingFont,
+                          fontSize: 8,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
             const SizedBox(height: 4),
             Text(
@@ -313,10 +327,17 @@ class _NavItem extends StatelessWidget {
                 fontWeight: FontWeight.w700,
                 color: isActive
                     ? color
-                    : (isDark ? AppColors.textMuted : UiConstants.lightHintText),
+                    : (isDark
+                          ? AppColors.textMuted
+                          : UiConstants.lightHintText),
                 letterSpacing: 1,
                 shadows: isActive && isDark
-                    ? [Shadow(color: color.withValues(alpha: 0.4), blurRadius: 6)]
+                    ? [
+                        Shadow(
+                          color: color.withValues(alpha: 0.4),
+                          blurRadius: 6,
+                        ),
+                      ]
                     : null,
               ),
             ),
@@ -331,8 +352,14 @@ class _NavItem extends StatelessWidget {
                 borderRadius: BorderRadius.circular(1.5),
                 boxShadow: isActive && isDark
                     ? [
-                        BoxShadow(color: color.withValues(alpha: 0.7), blurRadius: 6),
-                        BoxShadow(color: color.withValues(alpha: 0.3), blurRadius: 12),
+                        BoxShadow(
+                          color: color.withValues(alpha: 0.7),
+                          blurRadius: 6,
+                        ),
+                        BoxShadow(
+                          color: color.withValues(alpha: 0.3),
+                          blurRadius: 12,
+                        ),
                       ]
                     : null,
               ),

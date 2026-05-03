@@ -19,22 +19,40 @@ class AirlabsFlightsDatasource {
   Stream<List<AircraftState>> get stateStream => _controller.stream;
 
   AirlabsFlightsDatasource({Dio? dio})
-      : _dio = dio ??
-            AppHttpClient.create(
-              connectTimeout: AppConfig.longTimeout,
-              receiveTimeout: const Duration(seconds: 60),
-            );
+    : _dio =
+          dio ??
+          AppHttpClient.create(
+            connectTimeout: AppConfig.longTimeout,
+            receiveTimeout: const Duration(seconds: 60),
+          );
 
   /// Fetch all flights with essential fields
   Future<List<AircraftState>> getAllFlights() async {
     try {
       // Request only needed fields to reduce payload (~50% smaller)
       final fields = [
-        'hex', 'reg_number', 'flag', 'lat', 'lng', 'alt', 'dir',
-        'speed', 'v_speed', 'squawk', 'flight_icao', 'flight_iata',
-        'flight_number', 'airline_icao', 'airline_iata', 'aircraft_icao',
-        'dep_icao', 'dep_iata', 'arr_icao', 'arr_iata',
-        'status', 'updated',
+        'hex',
+        'reg_number',
+        'flag',
+        'lat',
+        'lng',
+        'alt',
+        'dir',
+        'speed',
+        'v_speed',
+        'squawk',
+        'flight_icao',
+        'flight_iata',
+        'flight_number',
+        'airline_icao',
+        'airline_iata',
+        'aircraft_icao',
+        'dep_icao',
+        'dep_iata',
+        'arr_icao',
+        'arr_iata',
+        'status',
+        'updated',
       ].join(',');
 
       final url = AppConfig.flightsUrl('_fields=$fields');
@@ -55,7 +73,9 @@ class AirlabsFlightsDatasource {
             .where((a) => a.hasPosition)
             .toList();
 
-        debugPrint('[Airlabs Flights] Got ${result.length} aircraft (raw: ${flights.length})');
+        debugPrint(
+          '[Airlabs Flights] Got ${result.length} aircraft (raw: ${flights.length})',
+        );
         return result;
       }
       if (response.statusCode == 429) {
@@ -64,7 +84,10 @@ class AirlabsFlightsDatasource {
       }
       if (response.statusCode == 401) {
         debugPrint('[Airlabs Flights] Unauthorized — check API key');
-        throw const NetworkException(message: 'Invalid Airlabs API key', statusCode: 401);
+        throw const NetworkException(
+          message: 'Invalid Airlabs API key',
+          statusCode: 401,
+        );
       }
       return [];
     } on AirWatchException {
@@ -87,12 +110,15 @@ class AirlabsFlightsDatasource {
     final status = f[ApiJsonKeys.status]?.toString();
     return AircraftState(
       icao24: f[ApiJsonKeys.hex]?.toString() ?? '',
-      callsign: f[ApiJsonKeys.flightIcao]?.toString() ?? f[ApiJsonKeys.flightIata]?.toString(),
+      callsign:
+          f[ApiJsonKeys.flightIcao]?.toString() ??
+          f[ApiJsonKeys.flightIata]?.toString(),
       originCountry: f[ApiJsonKeys.flag]?.toString(),
       latitude: lat,
       longitude: lng,
       baroAltitude: (f[ApiJsonKeys.alt] as num?)?.toDouble(),
-      onGround: (f[ApiJsonKeys.alt] as num?)?.toDouble() == 0 || status == 'landed',
+      onGround:
+          (f[ApiJsonKeys.alt] as num?)?.toDouble() == 0 || status == 'landed',
       velocity: _kmhToMs((f[ApiJsonKeys.speed] as num?)?.toDouble()),
       trueTrack: (f[ApiJsonKeys.dir] as num?)?.toDouble(),
       verticalRate: _kmhToMs((f[ApiJsonKeys.vSpeed] as num?)?.toDouble()),
@@ -121,7 +147,8 @@ class AirlabsFlightsDatasource {
         t.startsWith('A33') || // A330
         t.startsWith('B76') || // B767
         t.startsWith('IL9') || // IL-96
-        t.startsWith('A30')) { // A300, A310
+        t.startsWith('A30')) {
+      // A300, A310
       return AppConfig.categoryHighPerf; // 6 = widebody
     }
 
@@ -140,11 +167,12 @@ class AirlabsFlightsDatasource {
         t.startsWith('E14') || // E145
         t.startsWith('E13') || // E135
         t.startsWith('B71') || // B717
-        t.startsWith('MD') ||  // MD-80/90
+        t.startsWith('MD') || // MD-80/90
         t.startsWith('F10') || // Fokker 100
         t.startsWith('F70') || // Fokker 70
         t.startsWith('SU9') || // Sukhoi Superjet
-        t.startsWith('ARJ')) { // ARJ21
+        t.startsWith('ARJ')) {
+      // ARJ21
       return AppConfig.categoryHighVortex; // 4 = narrowbody
     }
 
@@ -157,7 +185,8 @@ class AirlabsFlightsDatasource {
         t.startsWith('L41') || // L-410
         t.startsWith('AN2') || // AN-24/26
         t.startsWith('JS4') || // Jetstream 41
-        t.startsWith('SB2')) { // Saab 2000
+        t.startsWith('SB2')) {
+      // Saab 2000
       return AppConfig.categoryLarge; // 3 = turboprop
     }
 
@@ -174,17 +203,20 @@ class AirlabsFlightsDatasource {
         t.startsWith('SR2') || // Cirrus SR22
         t.startsWith('M20') || // Mooney
         t.startsWith('PC1') || // Pilatus PC-12
-        t.startsWith('TBM')) { // TBM 700/850/900
+        t.startsWith('TBM')) {
+      // TBM 700/850/900
       return AppConfig.categorySmall; // 2 = light
     }
 
     // Helicopter
-    if (t.startsWith('R22') || t.startsWith('R44') || t.startsWith('R66') || // Robinson
-        t.startsWith('EC') ||  // Eurocopter/Airbus H-series
-        t.startsWith('AS') ||  // Aerospatiale
-        t.startsWith('B4') ||  // Bell 400-series
-        t.startsWith('B2') ||  // Bell 200-series
-        t.startsWith('H1') ||  // Airbus H145/H160
+    if (t.startsWith('R22') ||
+        t.startsWith('R44') ||
+        t.startsWith('R66') || // Robinson
+        t.startsWith('EC') || // Eurocopter/Airbus H-series
+        t.startsWith('AS') || // Aerospatiale
+        t.startsWith('B4') || // Bell 400-series
+        t.startsWith('B2') || // Bell 200-series
+        t.startsWith('H1') || // Airbus H145/H160
         t.startsWith('S76') || // Sikorsky S-76
         t.startsWith('S92') || // Sikorsky S-92
         t.startsWith('A10') || // AgustaWestland AW109/139
@@ -192,7 +224,8 @@ class AirlabsFlightsDatasource {
         t.startsWith('A16') || // AW169
         t.startsWith('A18') || // AW189
         t.startsWith('MD5') || // MD500
-        t.startsWith('UH')) {  // Utility helicopters
+        t.startsWith('UH')) {
+      // Utility helicopters
       return AppConfig.categoryHelicopter; // 8 = helicopter
     }
 

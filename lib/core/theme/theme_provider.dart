@@ -29,14 +29,16 @@ class ThemeNotifier extends Notifier<AppThemeMode> {
   }
 
   Future<void> toggle() async {
-    final next =
-        state == AppThemeMode.dark ? AppThemeMode.light : AppThemeMode.dark;
+    final next = state == AppThemeMode.dark
+        ? AppThemeMode.light
+        : AppThemeMode.dark;
     await setTheme(next);
   }
 }
 
-final themeProvider =
-    NotifierProvider<ThemeNotifier, AppThemeMode>(ThemeNotifier.new);
+final themeProvider = NotifierProvider<ThemeNotifier, AppThemeMode>(
+  ThemeNotifier.new,
+);
 
 final themeDataProvider = Provider<ThemeData>((ref) {
   final mode = ref.watch(themeProvider);
@@ -76,28 +78,56 @@ final ThemeData _darkTheme = ThemeData(
   ),
   textTheme: const TextTheme(
     headlineLarge: TextStyle(
-        fontFamily: UiConstants.headingFont, fontSize: 28, fontWeight: FontWeight.w700,
-        color: AppColors.textPrimary, letterSpacing: 2),
+      fontFamily: UiConstants.headingFont,
+      fontSize: 28,
+      fontWeight: FontWeight.w700,
+      color: AppColors.textPrimary,
+      letterSpacing: 2,
+    ),
     headlineMedium: TextStyle(
-        fontFamily: UiConstants.headingFont, fontSize: 20, fontWeight: FontWeight.w700,
-        color: AppColors.textPrimary, letterSpacing: 1.5),
+      fontFamily: UiConstants.headingFont,
+      fontSize: 20,
+      fontWeight: FontWeight.w700,
+      color: AppColors.textPrimary,
+      letterSpacing: 1.5,
+    ),
     headlineSmall: TextStyle(
-        fontFamily: UiConstants.headingFont, fontSize: 16, fontWeight: FontWeight.w700,
-        color: AppColors.textPrimary, letterSpacing: 1),
+      fontFamily: UiConstants.headingFont,
+      fontSize: 16,
+      fontWeight: FontWeight.w700,
+      color: AppColors.textPrimary,
+      letterSpacing: 1,
+    ),
     titleLarge: TextStyle(
-        fontFamily: UiConstants.bodyFont, fontSize: 22, fontWeight: FontWeight.w700,
-        color: AppColors.textPrimary),
+      fontFamily: UiConstants.bodyFont,
+      fontSize: 22,
+      fontWeight: FontWeight.w700,
+      color: AppColors.textPrimary,
+    ),
     titleMedium: TextStyle(
-        fontFamily: UiConstants.bodyFont, fontSize: 18, fontWeight: FontWeight.w500,
-        color: AppColors.textPrimary),
+      fontFamily: UiConstants.bodyFont,
+      fontSize: 18,
+      fontWeight: FontWeight.w500,
+      color: AppColors.textPrimary,
+    ),
     bodyLarge: TextStyle(
-        fontFamily: UiConstants.bodyFont, fontSize: 16, fontWeight: FontWeight.w500,
-        color: AppColors.textSecondary),
+      fontFamily: UiConstants.bodyFont,
+      fontSize: 16,
+      fontWeight: FontWeight.w500,
+      color: AppColors.textSecondary,
+    ),
     bodyMedium: TextStyle(
-        fontFamily: UiConstants.bodyFont, fontSize: 14, color: AppColors.textSecondary),
+      fontFamily: UiConstants.bodyFont,
+      fontSize: 14,
+      color: AppColors.textSecondary,
+    ),
     labelLarge: TextStyle(
-        fontFamily: UiConstants.bodyFont, fontSize: 14, fontWeight: FontWeight.w700,
-        color: AppColors.primary, letterSpacing: 1),
+      fontFamily: UiConstants.bodyFont,
+      fontSize: 14,
+      fontWeight: FontWeight.w700,
+      color: AppColors.primary,
+      letterSpacing: 1,
+    ),
   ),
   iconTheme: const IconThemeData(color: AppColors.primary),
   cardTheme: CardThemeData(
@@ -133,34 +163,66 @@ final ThemeData _lightTheme = ThemeData(
     elevation: 0,
     centerTitle: true,
     titleTextStyle: TextStyle(
-        fontFamily: UiConstants.headingFont, fontSize: 18, fontWeight: FontWeight.w700,
-        color: UiConstants.lightPrimary, letterSpacing: 2),
+      fontFamily: UiConstants.headingFont,
+      fontSize: 18,
+      fontWeight: FontWeight.w700,
+      color: UiConstants.lightPrimary,
+      letterSpacing: 2,
+    ),
     iconTheme: IconThemeData(color: UiConstants.lightPrimary),
   ),
   textTheme: const TextTheme(
     headlineLarge: TextStyle(
-        fontFamily: UiConstants.headingFont, fontSize: 28, fontWeight: FontWeight.w700,
-        color: UiConstants.lightTextPrimary, letterSpacing: 2),
+      fontFamily: UiConstants.headingFont,
+      fontSize: 28,
+      fontWeight: FontWeight.w700,
+      color: UiConstants.lightTextPrimary,
+      letterSpacing: 2,
+    ),
     headlineMedium: TextStyle(
-        fontFamily: UiConstants.headingFont, fontSize: 20, fontWeight: FontWeight.w700,
-        color: UiConstants.lightTextPrimary, letterSpacing: 1.5),
+      fontFamily: UiConstants.headingFont,
+      fontSize: 20,
+      fontWeight: FontWeight.w700,
+      color: UiConstants.lightTextPrimary,
+      letterSpacing: 1.5,
+    ),
     headlineSmall: TextStyle(
-        fontFamily: UiConstants.headingFont, fontSize: 16, fontWeight: FontWeight.w700,
-        color: UiConstants.lightTextPrimary, letterSpacing: 1),
+      fontFamily: UiConstants.headingFont,
+      fontSize: 16,
+      fontWeight: FontWeight.w700,
+      color: UiConstants.lightTextPrimary,
+      letterSpacing: 1,
+    ),
     titleLarge: TextStyle(
-        fontFamily: UiConstants.bodyFont, fontSize: 22, fontWeight: FontWeight.w700,
-        color: UiConstants.lightTextPrimary),
+      fontFamily: UiConstants.bodyFont,
+      fontSize: 22,
+      fontWeight: FontWeight.w700,
+      color: UiConstants.lightTextPrimary,
+    ),
     titleMedium: TextStyle(
-        fontFamily: UiConstants.bodyFont, fontSize: 18, fontWeight: FontWeight.w500,
-        color: UiConstants.lightTextPrimary),
+      fontFamily: UiConstants.bodyFont,
+      fontSize: 18,
+      fontWeight: FontWeight.w500,
+      color: UiConstants.lightTextPrimary,
+    ),
     bodyLarge: TextStyle(
-        fontFamily: UiConstants.bodyFont, fontSize: 16, fontWeight: FontWeight.w500,
-        color: Color(0xFF4A5568)),
+      fontFamily: UiConstants.bodyFont,
+      fontSize: 16,
+      fontWeight: FontWeight.w500,
+      color: Color(0xFF4A5568),
+    ),
     bodyMedium: TextStyle(
-        fontFamily: UiConstants.bodyFont, fontSize: 14, color: Color(0xFF4A5568)),
+      fontFamily: UiConstants.bodyFont,
+      fontSize: 14,
+      color: Color(0xFF4A5568),
+    ),
     labelLarge: TextStyle(
-        fontFamily: UiConstants.bodyFont, fontSize: 14, fontWeight: FontWeight.w700,
-        color: UiConstants.lightPrimary, letterSpacing: 1),
+      fontFamily: UiConstants.bodyFont,
+      fontSize: 14,
+      fontWeight: FontWeight.w700,
+      color: UiConstants.lightPrimary,
+      letterSpacing: 1,
+    ),
   ),
   iconTheme: const IconThemeData(color: UiConstants.lightPrimary),
   cardTheme: CardThemeData(

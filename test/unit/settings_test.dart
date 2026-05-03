@@ -51,12 +51,15 @@ void main() {
     });
 
     test('tileUrl varies by theme', () {
-      expect(const SettingsState().tileUrl,
-          contains('dark'));
-      expect(const SettingsState(mapTheme: MapTheme.lightAviation).tileUrl,
-          contains('light'));
-      expect(const SettingsState(mapTheme: MapTheme.satellite).tileUrl,
-          contains('arcgis'));
+      expect(const SettingsState().tileUrl, contains('dark'));
+      expect(
+        const SettingsState(mapTheme: MapTheme.lightAviation).tileUrl,
+        contains('light'),
+      );
+      expect(
+        const SettingsState(mapTheme: MapTheme.satellite).tileUrl,
+        contains('arcgis'),
+      );
     });
 
     test('copyWith changes only specified fields', () {

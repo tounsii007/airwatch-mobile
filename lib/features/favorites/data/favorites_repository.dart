@@ -30,34 +30,34 @@ class FavoriteItem {
   /// by [FavoritesNotifier.togglePin] without breaking the immutable
   /// model semantics expected by Riverpod.
   FavoriteItem copyWith({bool? pinned}) => FavoriteItem(
-        id: id,
-        type: type,
-        label: label,
-        subtitle: subtitle,
-        pinned: pinned ?? this.pinned,
-        addedAt: addedAt,
-      );
+    id: id,
+    type: type,
+    label: label,
+    subtitle: subtitle,
+    pinned: pinned ?? this.pinned,
+    addedAt: addedAt,
+  );
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'type': type.index,
-        'label': label,
-        'subtitle': subtitle,
-        'addedAt': addedAt.toIso8601String(),
-        'pinned': pinned,
-      };
+    'id': id,
+    'type': type.index,
+    'label': label,
+    'subtitle': subtitle,
+    'addedAt': addedAt.toIso8601String(),
+    'pinned': pinned,
+  };
 
   factory FavoriteItem.fromJson(Map<String, dynamic> json) => FavoriteItem(
-        id: json['id'] as String,
-        type: FavoriteType.values[json['type'] as int],
-        label: json['label'] as String,
-        subtitle: json['subtitle'] as String?,
-        // `pinned` was added in v2 of the favourites schema. Older
-        // serialised payloads silently default to `false`, no migration
-        // needed.
-        pinned: (json['pinned'] as bool?) ?? false,
-        addedAt: DateTime.parse(json['addedAt'] as String),
-      );
+    id: json['id'] as String,
+    type: FavoriteType.values[json['type'] as int],
+    label: json['label'] as String,
+    subtitle: json['subtitle'] as String?,
+    // `pinned` was added in v2 of the favourites schema. Older
+    // serialised payloads silently default to `false`, no migration
+    // needed.
+    pinned: (json['pinned'] as bool?) ?? false,
+    addedAt: DateTime.parse(json['addedAt'] as String),
+  );
 }
 
 class FavoritesNotifier extends Notifier<List<FavoriteItem>> {
@@ -82,7 +82,10 @@ class FavoritesNotifier extends Notifier<List<FavoriteItem>> {
 
   Future<void> _save() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_key, jsonEncode(state.map((e) => e.toJson()).toList()));
+    await prefs.setString(
+      _key,
+      jsonEncode(state.map((e) => e.toJson()).toList()),
+    );
   }
 
   bool isFavorite(String id) => state.any((f) => f.id == id);
@@ -90,15 +93,13 @@ class FavoritesNotifier extends Notifier<List<FavoriteItem>> {
   /// Whether the given id is currently pinned. Returns false for items
   /// that aren't favourited at all — callers can safely use this to
   /// decide whether to render a "filled pin" icon.
-  bool isPinned(String id) =>
-      state.firstWhere(
+  bool isPinned(String id) => state
+      .firstWhere(
         (f) => f.id == id,
-        orElse: () => FavoriteItem(
-          id: '',
-          type: FavoriteType.flight,
-          label: '',
-        ),
-      ).pinned;
+        orElse: () =>
+            FavoriteItem(id: '', type: FavoriteType.flight, label: ''),
+      )
+      .pinned;
 
   void toggle(FavoriteItem item) {
     if (isFavorite(item.id)) {
@@ -143,4 +144,5 @@ class FavoritesNotifier extends Notifier<List<FavoriteItem>> {
 
 final favoritesProvider =
     NotifierProvider<FavoritesNotifier, List<FavoriteItem>>(
-        FavoritesNotifier.new);
+      FavoritesNotifier.new,
+    );

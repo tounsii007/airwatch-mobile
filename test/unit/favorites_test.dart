@@ -28,8 +28,15 @@ void main() {
     });
 
     test('addedAt defaults to now', () {
-      final item = FavoriteItem(id: 'test', type: FavoriteType.flight, label: 'test');
-      expect(item.addedAt.difference(DateTime.now()).inSeconds.abs(), lessThan(2));
+      final item = FavoriteItem(
+        id: 'test',
+        type: FavoriteType.flight,
+        label: 'test',
+      );
+      expect(
+        item.addedAt.difference(DateTime.now()).inSeconds.abs(),
+        lessThan(2),
+      );
     });
 
     test('pinned defaults to false', () {
@@ -70,12 +77,12 @@ void main() {
         subtitle: 'American Airlines',
       );
       final pinned = original.copyWith(pinned: true);
-      expect(pinned.id,       original.id);
-      expect(pinned.type,     original.type);
-      expect(pinned.label,    original.label);
+      expect(pinned.id, original.id);
+      expect(pinned.type, original.type);
+      expect(pinned.label, original.label);
       expect(pinned.subtitle, original.subtitle);
-      expect(pinned.addedAt,  original.addedAt);
-      expect(pinned.pinned,   isTrue);
+      expect(pinned.addedAt, original.addedAt);
+      expect(pinned.pinned, isTrue);
       // Original is unchanged.
       expect(original.pinned, isFalse);
     });

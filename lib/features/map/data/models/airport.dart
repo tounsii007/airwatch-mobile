@@ -46,14 +46,14 @@ class Airport {
   }
 
   Map<String, dynamic> toJson() => {
-        'icao': icao,
-        'iata': iata,
-        'name': name,
-        'city': city,
-        'country': country,
-        'latitude': latitude,
-        'longitude': longitude,
-        'elevation': elevation,
-        'timezone': timezone,
-      };
+    'icao': icao,
+    'iata': iata,
+    'name': name,
+    'city': city,
+    'country': country,
+    'latitude': latitude,
+    'longitude': longitude,
+    'elevation': elevation,
+    'timezone': timezone,
+  };
 }

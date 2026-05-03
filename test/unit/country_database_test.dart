@@ -31,17 +31,20 @@ void main() {
       expect(caribbean.first.code, 'BQ');
     });
 
-    test('search applies limit and returns alphabetical defaults for empty query', () {
-      final results = CountryDatabase.search('', limit: 5);
+    test(
+      'search applies limit and returns alphabetical defaults for empty query',
+      () {
+        final results = CountryDatabase.search('', limit: 5);
 
-      expect(results, hasLength(5));
-      expect(results.map((country) => country.code).toList(), [
-        'AF',
-        'AX',
-        'AL',
-        'DZ',
-        'AS',
-      ]);
-    });
+        expect(results, hasLength(5));
+        expect(results.map((country) => country.code).toList(), [
+          'AF',
+          'AX',
+          'AL',
+          'DZ',
+          'AS',
+        ]);
+      },
+    );
   });
 }

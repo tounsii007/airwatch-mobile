@@ -33,8 +33,10 @@ class _HomeWidgetPublisherState extends State<HomeWidgetPublisher> {
     // ~30 min/day get rate-limited by the system anyway, but a more
     // frequent in-app cadence means the widget is always fresh when
     // the user returns to the home screen.
-    _publishTimer =
-        Timer.periodic(const Duration(seconds: 30), (_) => _publish());
+    _publishTimer = Timer.periodic(
+      const Duration(seconds: 30),
+      (_) => _publish(),
+    );
   }
 
   @override
@@ -62,12 +64,14 @@ class _HomeWidgetPublisherState extends State<HomeWidgetPublisher> {
       (acc, e) => (acc == null || e.value > acc.value) ? e : acc,
     );
 
-    HomeWidgetService.instance.publish(HomeWidgetPayload(
-      liveFlights: flights.length,
-      topAirlineIcao: top?.key,
-      topAirlineCount: top?.value ?? 0,
-      updatedAt: DateTime.now(),
-    ));
+    HomeWidgetService.instance.publish(
+      HomeWidgetPayload(
+        liveFlights: flights.length,
+        topAirlineIcao: top?.key,
+        topAirlineCount: top?.value ?? 0,
+        updatedAt: DateTime.now(),
+      ),
+    );
   }
 
   @override

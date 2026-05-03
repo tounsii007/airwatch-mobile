@@ -24,7 +24,7 @@ void main() {
 
     test('London ↔ New York is ~5570 km (±15 km tolerance)', () {
       const london = (51.5074, -0.1278);
-      const ny     = (40.7128, -74.0060);
+      const ny = (40.7128, -74.0060);
       final d = haversineKm(london.$1, london.$2, ny.$1, ny.$2);
       expect(d, closeTo(5570, 15));
     });

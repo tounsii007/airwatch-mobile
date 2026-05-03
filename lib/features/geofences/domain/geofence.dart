@@ -60,62 +60,62 @@ class GeoFence {
   }) : createdAt = createdAt ?? DateTime.now();
 
   GeoFence copyWith({bool? active, String? name}) => GeoFence(
-        id: id,
-        name: name ?? this.name,
-        type: type,
-        centerLat: centerLat,
-        centerLon: centerLon,
-        radiusKm: radiusKm,
-        northLat: northLat,
-        southLat: southLat,
-        eastLon: eastLon,
-        westLon: westLon,
-        minAltitudeFt: minAltitudeFt,
-        maxAltitudeFt: maxAltitudeFt,
-        airlineFilter: airlineFilter,
-        active: active ?? this.active,
-        createdAt: createdAt,
-      );
+    id: id,
+    name: name ?? this.name,
+    type: type,
+    centerLat: centerLat,
+    centerLon: centerLon,
+    radiusKm: radiusKm,
+    northLat: northLat,
+    southLat: southLat,
+    eastLon: eastLon,
+    westLon: westLon,
+    minAltitudeFt: minAltitudeFt,
+    maxAltitudeFt: maxAltitudeFt,
+    airlineFilter: airlineFilter,
+    active: active ?? this.active,
+    createdAt: createdAt,
+  );
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'type': type.name,
-        'centerLat': centerLat,
-        'centerLon': centerLon,
-        'radiusKm': radiusKm,
-        'northLat': northLat,
-        'southLat': southLat,
-        'eastLon': eastLon,
-        'westLon': westLon,
-        'minAltitudeFt': minAltitudeFt,
-        'maxAltitudeFt': maxAltitudeFt,
-        'airlineFilter': airlineFilter,
-        'active': active,
-        'createdAt': createdAt.toIso8601String(),
-      };
+    'id': id,
+    'name': name,
+    'type': type.name,
+    'centerLat': centerLat,
+    'centerLon': centerLon,
+    'radiusKm': radiusKm,
+    'northLat': northLat,
+    'southLat': southLat,
+    'eastLon': eastLon,
+    'westLon': westLon,
+    'minAltitudeFt': minAltitudeFt,
+    'maxAltitudeFt': maxAltitudeFt,
+    'airlineFilter': airlineFilter,
+    'active': active,
+    'createdAt': createdAt.toIso8601String(),
+  };
 
   factory GeoFence.fromJson(Map<String, dynamic> j) => GeoFence(
-        id: j['id'] as String,
-        name: j['name'] as String,
-        type: GeoFenceType.values.firstWhere(
-          (e) => e.name == j['type'],
-          orElse: () => GeoFenceType.circle,
-        ),
-        centerLat: (j['centerLat'] as num?)?.toDouble(),
-        centerLon: (j['centerLon'] as num?)?.toDouble(),
-        radiusKm: (j['radiusKm'] as num?)?.toDouble(),
-        northLat: (j['northLat'] as num?)?.toDouble(),
-        southLat: (j['southLat'] as num?)?.toDouble(),
-        eastLon: (j['eastLon'] as num?)?.toDouble(),
-        westLon: (j['westLon'] as num?)?.toDouble(),
-        minAltitudeFt: (j['minAltitudeFt'] as num?)?.toDouble(),
-        maxAltitudeFt: (j['maxAltitudeFt'] as num?)?.toDouble(),
-        airlineFilter: j['airlineFilter'] as String?,
-        active: (j['active'] as bool?) ?? true,
-        createdAt: DateTime.tryParse(j['createdAt'] as String? ?? '') ??
-            DateTime.now(),
-      );
+    id: j['id'] as String,
+    name: j['name'] as String,
+    type: GeoFenceType.values.firstWhere(
+      (e) => e.name == j['type'],
+      orElse: () => GeoFenceType.circle,
+    ),
+    centerLat: (j['centerLat'] as num?)?.toDouble(),
+    centerLon: (j['centerLon'] as num?)?.toDouble(),
+    radiusKm: (j['radiusKm'] as num?)?.toDouble(),
+    northLat: (j['northLat'] as num?)?.toDouble(),
+    southLat: (j['southLat'] as num?)?.toDouble(),
+    eastLon: (j['eastLon'] as num?)?.toDouble(),
+    westLon: (j['westLon'] as num?)?.toDouble(),
+    minAltitudeFt: (j['minAltitudeFt'] as num?)?.toDouble(),
+    maxAltitudeFt: (j['maxAltitudeFt'] as num?)?.toDouble(),
+    airlineFilter: j['airlineFilter'] as String?,
+    active: (j['active'] as bool?) ?? true,
+    createdAt:
+        DateTime.tryParse(j['createdAt'] as String? ?? '') ?? DateTime.now(),
+  );
 }
 
 /// True when the aircraft's current position satisfies every active
@@ -136,10 +136,7 @@ bool aircraftIsInsideFence(AircraftState ac, GeoFence f) {
     if (f.centerLat == null || f.centerLon == null || f.radiusKm == null) {
       return false;
     }
-    final dist = GeoUtils.distanceKm(
-      LatLng(f.centerLat!, f.centerLon!),
-      pos,
-    );
+    final dist = GeoUtils.distanceKm(LatLng(f.centerLat!, f.centerLon!), pos);
     inside = dist <= f.radiusKm!;
   } else {
     if (f.northLat == null ||
@@ -148,7 +145,8 @@ bool aircraftIsInsideFence(AircraftState ac, GeoFence f) {
         f.westLon == null) {
       return false;
     }
-    inside = pos.latitude <= f.northLat! &&
+    inside =
+        pos.latitude <= f.northLat! &&
         pos.latitude >= f.southLat! &&
         pos.longitude <= f.eastLon! &&
         pos.longitude >= f.westLon!;

@@ -22,10 +22,7 @@ class AirportDetailsService {
   final Dio _dio;
 
   AirportDetailsService({Dio? dio})
-      : _dio = dio ??
-            AppHttpClient.create(
-              receiveTimeout: AppConfig.apiTimeout,
-            );
+    : _dio = dio ?? AppHttpClient.create(receiveTimeout: AppConfig.apiTimeout);
 
   Future<AirportDetailsBundle> load(String iataCode) async {
     final airport = await _loadAirport(iataCode);

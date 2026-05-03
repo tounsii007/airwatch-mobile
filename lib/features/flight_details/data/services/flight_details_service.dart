@@ -20,13 +20,11 @@ class FlightDetailsService {
   final FlightInfoDatasource _datasource;
 
   FlightDetailsService({Dio? dio, FlightInfoDatasource? datasource})
-      : _dio = dio ??
-            AppHttpClient.create(
-              
-            ),
-        _datasource = datasource ?? FlightInfoDatasource();
+    : _dio = dio ?? AppHttpClient.create(),
+      _datasource = datasource ?? FlightInfoDatasource();
 
-  AirlineInfo? resolveAirline(String? callsign) => _datasource.resolveAirline(callsign);
+  AirlineInfo? resolveAirline(String? callsign) =>
+      _datasource.resolveAirline(callsign);
 
   Future<FlightDetailsData> load(AircraftState aircraft) async {
     final airline = resolveAirline(aircraft.callsign);
@@ -79,7 +77,8 @@ class FlightDetailsService {
     final data = response.data as Map;
     final meta = _parseAircraft(aircraft, data['aircraft']);
     final route =
-        _parseFlightRoute(cs, data['flight']) ?? _parseRouteDb(cs, data['route_db']);
+        _parseFlightRoute(cs, data['flight']) ??
+        _parseRouteDb(cs, data['route_db']);
     final photoUrl = data['photo_url']?.toString();
 
     if (route != null) {
@@ -93,7 +92,9 @@ class FlightDetailsService {
       airline: airline,
       route: route,
       metadata: meta,
-      aircraftPhotoUrl: photoUrl != null ? AppConfig.imageProxyUrl(photoUrl) : null,
+      aircraftPhotoUrl: photoUrl != null
+          ? AppConfig.imageProxyUrl(photoUrl)
+          : null,
     );
   }
 
@@ -156,8 +157,10 @@ class FlightDetailsService {
       arrDelay: raw['arr_delayed'] as int?,
       scheduledDep: raw['dep_time']?.toString(),
       scheduledArr: raw['arr_time']?.toString(),
-      actualDep: raw['dep_estimated']?.toString() ?? raw['dep_actual']?.toString(),
-      actualArr: raw['arr_estimated']?.toString() ?? raw['arr_actual']?.toString(),
+      actualDep:
+          raw['dep_estimated']?.toString() ?? raw['dep_actual']?.toString(),
+      actualArr:
+          raw['arr_estimated']?.toString() ?? raw['arr_actual']?.toString(),
       depTerminal: raw['dep_terminal']?.toString(),
       depGate: raw['dep_gate']?.toString(),
       arrTerminal: raw['arr_terminal']?.toString(),

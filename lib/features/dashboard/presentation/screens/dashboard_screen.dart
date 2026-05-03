@@ -90,10 +90,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final flights = asyncFlights.value?.values ?? const <AircraftState>[];
 
     final builders = <String, Widget Function()>{
-      'live':     () => _LiveSparklineTile(label: s.dashLiveFlights, samples: List.unmodifiable(_liveSamples)),
-      'saved':    () => _SavedTile(label: s.dashSavedItems, count: favorites.length),
-      'top':      () => _TopAirlinesTile(label: s.dashTopAirlines, flights: flights),
-      'altitude': () => _AltitudeHistogramTile(label: s.dashAltBands, flights: flights),
+      'live': () => _LiveSparklineTile(
+        label: s.dashLiveFlights,
+        samples: List.unmodifiable(_liveSamples),
+      ),
+      'saved': () =>
+          _SavedTile(label: s.dashSavedItems, count: favorites.length),
+      'top': () => _TopAirlinesTile(label: s.dashTopAirlines, flights: flights),
+      'altitude': () =>
+          _AltitudeHistogramTile(label: s.dashAltBands, flights: flights),
     };
 
     return Scaffold(
@@ -113,11 +118,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           // the user clearly sees what they're moving.
           dragWidgetBuilderV2: DragWidgetBuilderV2(
             isScreenshotDragWidget: true,
-            builder: (_, child, _) => Material(
-              color: Colors.transparent,
-              elevation: 8,
-              child: child,
-            ),
+            builder: (_, child, _) =>
+                Material(color: Colors.transparent, elevation: 8, child: child),
           ),
           onReorder: (oldIdx, newIdx) {
             setState(() {
@@ -147,13 +149,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
 class _LiveSparklineTile extends StatelessWidget {
   const _LiveSparklineTile({required this.label, required this.samples});
-  final String    label;
+  final String label;
   final List<int> samples;
 
   @override
   Widget build(BuildContext context) {
     final spots = <FlSpot>[
-      for (var i = 0; i < samples.length; i++) FlSpot(i.toDouble(), samples[i].toDouble()),
+      for (var i = 0; i < samples.length; i++)
+        FlSpot(i.toDouble(), samples[i].toDouble()),
     ];
     final current = samples.isEmpty ? '—' : samples.last.toString();
 
@@ -178,7 +181,7 @@ class _LiveSparklineTile extends StatelessWidget {
 class _SavedTile extends StatelessWidget {
   const _SavedTile({required this.label, required this.count});
   final String label;
-  final int    count;
+  final int count;
 
   @override
   Widget build(BuildContext context) {
@@ -192,10 +195,16 @@ class _SavedTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             const Icon(Icons.flight_rounded, color: AppColors.accent, size: 22),
-            Icon(Icons.local_airport_rounded,
-                color: AppColors.accent.withValues(alpha: 0.7), size: 22),
-            Icon(Icons.business_rounded,
-                color: AppColors.accent.withValues(alpha: 0.5), size: 22),
+            Icon(
+              Icons.local_airport_rounded,
+              color: AppColors.accent.withValues(alpha: 0.7),
+              size: 22,
+            ),
+            Icon(
+              Icons.business_rounded,
+              color: AppColors.accent.withValues(alpha: 0.5),
+              size: 22,
+            ),
           ],
         ),
       ),
@@ -205,7 +214,7 @@ class _SavedTile extends StatelessWidget {
 
 class _TopAirlinesTile extends StatelessWidget {
   const _TopAirlinesTile({required this.label, required this.flights});
-  final String                  label;
+  final String label;
   final Iterable<AircraftState> flights;
 
   @override
@@ -243,7 +252,7 @@ class _TopAirlinesTile extends StatelessWidget {
 
 class _AltitudeHistogramTile extends StatelessWidget {
   const _AltitudeHistogramTile({required this.label, required this.flights});
-  final String                  label;
+  final String label;
   final Iterable<AircraftState> flights;
 
   @override
@@ -255,9 +264,13 @@ class _AltitudeHistogramTile extends StatelessWidget {
       final altMeters = f.baroAltitude;
       if (altMeters == null) continue;
       final ft = altMeters * 3.281;
-      if (ft < 10000)      { low++;  }
-      else if (ft < 30000) { mid++;  }
-      else                 { high++; }
+      if (ft < 10000) {
+        low++;
+      } else if (ft < 30000) {
+        mid++;
+      } else {
+        high++;
+      }
     }
     final total = low + mid + high;
 
@@ -270,7 +283,11 @@ class _AltitudeHistogramTile extends StatelessWidget {
           : BarChart(
               ChartTheme.barChart(
                 values: [low.toDouble(), mid.toDouble(), high.toDouble()],
-                palette: const [AppColors.warning, AppColors.success, AppColors.info],
+                palette: const [
+                  AppColors.warning,
+                  AppColors.success,
+                  AppColors.info,
+                ],
                 rodWidth: 18,
                 enableTooltip: true,
               ),
@@ -290,7 +307,7 @@ class _Tile extends StatelessWidget {
 
   final String label;
   final String value;
-  final Color  color;
+  final Color color;
   final Widget child;
 
   @override
@@ -300,14 +317,26 @@ class _Tile extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label,
-              style: const TextStyle(
-                  fontSize: 10, letterSpacing: 1.2,
-                  color: AppColors.textMuted, fontWeight: FontWeight.w700)),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 10,
+              letterSpacing: 1.2,
+              color: AppColors.textMuted,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
           const SizedBox(height: 4),
-          Text(value,
-              maxLines: 1, overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: color)),
+          Text(
+            value,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w800,
+              color: color,
+            ),
+          ),
           const SizedBox(height: 6),
           Expanded(child: child),
         ],

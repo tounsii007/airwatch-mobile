@@ -156,7 +156,8 @@ const Map<MapStyleId, MapStyleDef> kMapStyles = {
   ),
   MapStyleId.satellite: MapStyleDef(
     label: 'SAT',
-    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    url:
+        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
     attribution: '© Esri',
     dark: false,
     colors: _satellitePalette,
@@ -164,14 +165,16 @@ const Map<MapStyleId, MapStyleDef> kMapStyles = {
   ),
   MapStyleId.streets: MapStyleDef(
     label: 'STR',
-    url: 'https://basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}@2x.png',
+    url:
+        'https://basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}@2x.png',
     attribution: '© CARTO © OSM',
     dark: false,
     colors: _streetsPalette,
   ),
   MapStyleId.terrain: MapStyleDef(
     label: 'TER',
-    url: 'https://basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}@2x.png',
+    url:
+        'https://basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}@2x.png',
     attribution: '© CARTO © OSM',
     dark: false,
     colors: _terrainPalette,

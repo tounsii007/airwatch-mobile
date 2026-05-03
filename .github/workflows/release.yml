@@ -20,9 +20,18 @@ on:
     tags:
       - 'v*.*.*'
 
+# Read-only by default; jobs opt in to write where they actually need it.
+permissions:
+  contents: read
+
 env:
   FLUTTER_VERSION: '3.41.5'
   FLUTTER_CHANNEL: stable
+
+# NOTE — see the same note in `ci.yml`. Pin third-party actions to
+# commit SHAs (or accept Dependabot's PRs) for hardened release
+# pipelines. The `r0adkll/upload-google-play` action is especially worth
+# pinning since it handles the Play Store service-account JSON.
 
 jobs:
   android-release:
@@ -65,8 +74,14 @@ jobs:
           echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/keys/upload.jks"
           echo "KEYSTORE_PATH=$RUNNER_TEMP/keys/upload.jks" >> "$GITHUB_ENV"
 
+      # RELEASE_BUILD=true tells android/app/build.gradle.kts to refuse
+      # the silent debug-signing fallback. A genuine release MUST be
+      # signed with the upload key; a debug-signed AAB would break the
+      # Play Console upgrade path forever, and a debug-signed APK would
+      # be worse than a build failure.
       - name: Build release AAB
         env:
+          RELEASE_BUILD:  "true"
           STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           KEY_ALIAS:      ${{ secrets.ANDROID_KEY_ALIAS }}
           KEY_PASSWORD:   ${{ secrets.ANDROID_KEY_PASSWORD }}
@@ -74,6 +89,7 @@ jobs:
 
       - name: Build release APK (sideload + GitHub release artifact)
         env:
+          RELEASE_BUILD:  "true"
           STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           KEY_ALIAS:      ${{ secrets.ANDROID_KEY_ALIAS }}
           KEY_PASSWORD:   ${{ secrets.ANDROID_KEY_PASSWORD }}

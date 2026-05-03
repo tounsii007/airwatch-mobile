@@ -15,7 +15,9 @@ import 'package:airwatch_mobile/features/map/presentation/providers/flight_provi
 /// Pure aggregation — given a flight collection, return airline-ICAO →
 /// flight count, sorted descending by count. Public so it's directly
 /// unit-testable without a Flutter widget tree.
-List<MapEntry<String, int>> aggregateByAirlineIcao(Iterable<AircraftState> flights) {
+List<MapEntry<String, int>> aggregateByAirlineIcao(
+  Iterable<AircraftState> flights,
+) {
   final counts = <String, int>{};
   for (final f in flights) {
     final cs = f.callsign?.trim() ?? '';
@@ -53,9 +55,9 @@ class AirlinesScreen extends ConsumerWidget {
         elevation: 0,
       ),
       body: asyncFlights.when(
-        loading:  () => const Center(child: CircularProgressIndicator()),
-        error:    (e, _) => Center(child: Text('${s.errorPrefix}: $e')),
-        data:     (flights) => _buildList(s, flights.values),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (e, _) => Center(child: Text('${s.errorPrefix}: $e')),
+        data: (flights) => _buildList(s, flights.values),
       ),
     );
   }
@@ -79,7 +81,8 @@ class AirlinesScreen extends ConsumerWidget {
           child: Row(
             children: [
               Container(
-                width: 36, height: 36,
+                width: 36,
+                height: 36,
                 decoration: BoxDecoration(
                   color: AppColors.primary.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(8),
@@ -87,23 +90,36 @@ class AirlinesScreen extends ConsumerWidget {
                 alignment: Alignment.center,
                 child: Text(
                   entry.key.substring(0, entry.key.length.clamp(0, 3)),
-                  style: const TextStyle(fontWeight: FontWeight.w800, letterSpacing: 1),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1,
+                  ),
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: Text(entry.key, style: const TextStyle(fontWeight: FontWeight.w600)),
+                child: Text(
+                  entry.key,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.success.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                    '${entry.value} '
-                    '${entry.value == 1 ? s.airlinesFlightOne : s.airlinesFlightMany}',
-                    style: const TextStyle(color: AppColors.success, fontWeight: FontWeight.w700)),
+                  '${entry.value} '
+                  '${entry.value == 1 ? s.airlinesFlightOne : s.airlinesFlightMany}',
+                  style: const TextStyle(
+                    color: AppColors.success,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
             ],
           ),
@@ -111,5 +127,4 @@ class AirlinesScreen extends ConsumerWidget {
       },
     );
   }
-
 }

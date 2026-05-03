@@ -22,12 +22,20 @@ class AirportWebcam extends StatelessWidget {
     final webcamUrl = _getWebcamUrl(airportIata);
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.background : UiConstants.lightBackground,
+      backgroundColor: isDark
+          ? AppColors.background
+          : UiConstants.lightBackground,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: Text('$airportName Webcam',
-          style: TextStyle(fontFamily: UiConstants.headingFont, fontSize: 14,
-              fontWeight: FontWeight.w700, color: primary)),
+        title: Text(
+          '$airportName Webcam',
+          style: TextStyle(
+            fontFamily: UiConstants.headingFont,
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+            color: primary,
+          ),
+        ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back_rounded, color: primary),
           onPressed: () => Navigator.pop(context),
@@ -39,30 +47,55 @@ class AirportWebcam extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // Webcam would be displayed here via WebView or Image widget
-                  Icon(Icons.videocam_rounded, size: 64,
-                      color: primary.withValues(alpha: 0.3)),
-                  const SizedBox(height: 16),
-                  Text('Live webcam for $airportIata',
-                    style: const TextStyle(fontFamily: UiConstants.bodyFont, fontSize: 16,
-                        color: AppColors.textPrimary)),
-                  const SizedBox(height: 8),
-                  GlassPanel(
-                    padding: const EdgeInsets.all(12), borderRadius: 10,
-                    child: Text(webcamUrl, style: const TextStyle(fontFamily: UiConstants.bodyFont,
-                        fontSize: 11, color: AppColors.textSecondary)),
+                  Icon(
+                    Icons.videocam_rounded,
+                    size: 64,
+                    color: primary.withValues(alpha: 0.3),
                   ),
                   const SizedBox(height: 16),
-                  const Text('Webcam embedding requires webview_flutter package\nfor mobile or iframe for web.',
+                  Text(
+                    'Live webcam for $airportIata',
+                    style: const TextStyle(
+                      fontFamily: UiConstants.bodyFont,
+                      fontSize: 16,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  GlassPanel(
+                    padding: const EdgeInsets.all(12),
+                    borderRadius: 10,
+                    child: Text(
+                      webcamUrl,
+                      style: const TextStyle(
+                        fontFamily: UiConstants.bodyFont,
+                        fontSize: 11,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Webcam embedding requires webview_flutter package\nfor mobile or iframe for web.',
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontFamily: UiConstants.bodyFont, fontSize: 12,
-                        color: AppColors.textMuted)),
+                    style: TextStyle(
+                      fontFamily: UiConstants.bodyFont,
+                      fontSize: 12,
+                      color: AppColors.textMuted,
+                    ),
+                  ),
                 ],
               ),
             )
           : Center(
-              child: Text('No webcam available for $airportIata',
-                style: const TextStyle(fontFamily: UiConstants.bodyFont, fontSize: 14,
-                    color: AppColors.textSecondary)),
+              child: Text(
+                'No webcam available for $airportIata',
+                style: const TextStyle(
+                  fontFamily: UiConstants.bodyFont,
+                  fontSize: 14,
+                  color: AppColors.textSecondary,
+                ),
+              ),
             ),
     );
   }

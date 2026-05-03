@@ -25,7 +25,9 @@ import 'package:airwatch_mobile/core/widgets/stat_card.dart';
 ///
 /// <p>Refreshes every 30 seconds while visible (the backend already caches
 /// the aggregation server-side, so polling is cheap).
-final _statsStreamProvider = StreamProvider.autoDispose<Map<String, dynamic>>((ref) async* {
+final _statsStreamProvider = StreamProvider.autoDispose<Map<String, dynamic>>((
+  ref,
+) async* {
   final dio = AppHttpClient.create();
   while (true) {
     try {
@@ -63,11 +65,11 @@ class StatsScreen extends ConsumerWidget {
   }
 
   Widget _buildBody(AppStrings s, Map<String, dynamic> data) {
-    final total     = (data['total']     as num?)?.toInt() ?? 0;
-    final airborne  = (data['airborne']  as num?)?.toInt() ?? 0;
-    final onGround  = (data['onGround']  as num?)?.toInt() ?? 0;
-    final reqCount  = (data['requestCount'] as num?)?.toInt() ?? 0;
-    final topList   = (data['topAirlines'] as List?) ?? const [];
+    final total = (data['total'] as num?)?.toInt() ?? 0;
+    final airborne = (data['airborne'] as num?)?.toInt() ?? 0;
+    final onGround = (data['onGround'] as num?)?.toInt() ?? 0;
+    final reqCount = (data['requestCount'] as num?)?.toInt() ?? 0;
+    final topList = (data['topAirlines'] as List?) ?? const [];
 
     // Per the airwatch-web stats overhaul: only show the "AVG VIEWS /
     // FLIGHT" tile when there's actually data. With zero flights every
@@ -141,12 +143,17 @@ class StatsScreen extends ConsumerWidget {
           _SectionTitle(s.statsTopAirlines),
           const SizedBox(height: 8),
           if (topList.isEmpty)
-            Center(child: Padding(padding: const EdgeInsets.all(16), child: Text(s.statsNoData)))
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Text(s.statsNoData),
+              ),
+            )
           else
             ...topList.take(20).map((row) {
               final m = row as Map;
               return _AirlineRow(
-                icao:  (m['icao']  as String?) ?? '—',
+                icao: (m['icao'] as String?) ?? '—',
                 count: (m['count'] as num?)?.toInt() ?? 0,
                 flightsLabel: s.statsFlightsLabel,
               );
@@ -166,18 +173,27 @@ class _SectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Align(
       alignment: Alignment.centerLeft,
-      child: Text(text,
-          style: const TextStyle(
-              fontSize: 11, letterSpacing: 1.2,
-              color: AppColors.textMuted, fontWeight: FontWeight.w700)),
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontSize: 11,
+          letterSpacing: 1.2,
+          color: AppColors.textMuted,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
     );
   }
 }
 
 class _AirlineRow extends StatelessWidget {
-  const _AirlineRow({required this.icao, required this.count, required this.flightsLabel});
+  const _AirlineRow({
+    required this.icao,
+    required this.count,
+    required this.flightsLabel,
+  });
   final String icao;
-  final int    count;
+  final int count;
   final String flightsLabel;
 
   @override
@@ -192,19 +208,36 @@ class _AirlineRow extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 34, height: 34, alignment: Alignment.center,
+            width: 34,
+            height: 34,
+            alignment: Alignment.center,
             decoration: BoxDecoration(
               color: AppColors.primary.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(6),
             ),
-            child: Text(icao, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 0.5)),
+            child: Text(
+              icao,
+              style: const TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.5,
+              ),
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
-            child: Text(icao, style: const TextStyle(fontWeight: FontWeight.w600)),
+            child: Text(
+              icao,
+              style: const TextStyle(fontWeight: FontWeight.w600),
+            ),
           ),
-          Text('$count $flightsLabel',
-              style: const TextStyle(color: AppColors.success, fontWeight: FontWeight.w600)),
+          Text(
+            '$count $flightsLabel',
+            style: const TextStyle(
+              color: AppColors.success,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ],
       ),
     );

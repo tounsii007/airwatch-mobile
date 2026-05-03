@@ -4,10 +4,7 @@ class CountryInfo {
   final String code;
   final String name;
 
-  const CountryInfo({
-    required this.code,
-    required this.name,
-  });
+  const CountryInfo({required this.code, required this.name});
 
   String get flagEmoji {
     final upper = code.toUpperCase();
@@ -37,19 +34,20 @@ class CountryDatabase {
     ..._aliases,
   };
 
-  static final Map<String, List<String>> _aliasesByCode = {
-    for (final country in _countries) country.code: <String>[],
-  }..addEntries(
-      _aliases.entries.map((entry) => MapEntry(entry.value, entry.key)).where(
-            (entry) => _byCode.containsKey(entry.key),
-          ).fold<Map<String, List<String>>>(
-            <String, List<String>>{},
-            (acc, entry) {
+  static final Map<String, List<String>> _aliasesByCode =
+      {for (final country in _countries) country.code: <String>[]}..addEntries(
+        _aliases.entries
+            .map((entry) => MapEntry(entry.value, entry.key))
+            .where((entry) => _byCode.containsKey(entry.key))
+            .fold<Map<String, List<String>>>(<String, List<String>>{}, (
+              acc,
+              entry,
+            ) {
               acc.putIfAbsent(entry.key, () => <String>[]).add(entry.value);
               return acc;
-            },
-          ).entries,
-    );
+            })
+            .entries,
+      );
 
   static final List<_CountrySearchEntry> _searchEntries = _countries
       .map(
@@ -72,9 +70,7 @@ class CountryDatabase {
   /// English-name variant — bare, alias, alternate spelling — funnels
   /// its de + fr forms into the alias list.
   static List<String> _collectAliases(CountryInfo country) {
-    final out = <String>[
-      ...?_aliasesByCode[country.code],
-    ];
+    final out = <String>[...?_aliasesByCode[country.code]];
     final canonicalNorm = _normalize(country.name);
     // English-name variants for this country — drawn from both the
     // database's name and any `_aliases` key that points at the same
@@ -90,7 +86,8 @@ class CountryDatabase {
     // the same canonical form.
     for (final tEntry in countryTranslations.entries) {
       final keyNorm = _normalize(tEntry.key);
-      final matches = englishVariants.any((v) => _normalize(v) == keyNorm) ||
+      final matches =
+          englishVariants.any((v) => _normalize(v) == keyNorm) ||
           keyNorm == canonicalNorm;
       if (!matches) continue;
       for (final localized in tEntry.value.values) {
@@ -148,26 +145,20 @@ class CountryDatabase {
       return _countries.take(limit).toList(growable: false);
     }
 
-    final scored = _searchEntries
-        .map(
-          (entry) => (
-            country: entry.country,
-            score: entry.score(normalizedQuery),
-          ),
-        )
-        .where((result) => result.score != null)
-        .map(
-          (result) => (
-            country: result.country,
-            score: result.score!,
-          ),
-        )
-        .toList(growable: false)
-      ..sort((a, b) {
-        final byScore = a.score.compareTo(b.score);
-        if (byScore != 0) return byScore;
-        return a.country.name.compareTo(b.country.name);
-      });
+    final scored =
+        _searchEntries
+            .map(
+              (entry) =>
+                  (country: entry.country, score: entry.score(normalizedQuery)),
+            )
+            .where((result) => result.score != null)
+            .map((result) => (country: result.country, score: result.score!))
+            .toList(growable: false)
+          ..sort((a, b) {
+            final byScore = a.score.compareTo(b.score);
+            if (byScore != 0) return byScore;
+            return a.country.name.compareTo(b.country.name);
+          });
 
     return scored
         .take(limit)
@@ -447,7 +438,10 @@ class CountryDatabase {
     CountryInfo(code: 'RU', name: 'Russian Federation'),
     CountryInfo(code: 'RW', name: 'Rwanda'),
     CountryInfo(code: 'BL', name: 'Saint Barthelemy'),
-    CountryInfo(code: 'SH', name: 'Saint Helena, Ascension and Tristan da Cunha'),
+    CountryInfo(
+      code: 'SH',
+      name: 'Saint Helena, Ascension and Tristan da Cunha',
+    ),
     CountryInfo(code: 'KN', name: 'Saint Kitts and Nevis'),
     CountryInfo(code: 'LC', name: 'Saint Lucia'),
     CountryInfo(code: 'MF', name: 'Saint Martin'),
@@ -468,7 +462,10 @@ class CountryDatabase {
     CountryInfo(code: 'SB', name: 'Solomon Islands'),
     CountryInfo(code: 'SO', name: 'Somalia'),
     CountryInfo(code: 'ZA', name: 'South Africa'),
-    CountryInfo(code: 'GS', name: 'South Georgia and the South Sandwich Islands'),
+    CountryInfo(
+      code: 'GS',
+      name: 'South Georgia and the South Sandwich Islands',
+    ),
     CountryInfo(code: 'SS', name: 'South Sudan'),
     CountryInfo(code: 'ES', name: 'Spain'),
     CountryInfo(code: 'LK', name: 'Sri Lanka'),

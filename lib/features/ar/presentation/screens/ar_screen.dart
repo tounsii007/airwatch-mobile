@@ -75,8 +75,9 @@ class _ARScreenState extends ConsumerState<ARScreen> {
         return;
       }
       final pos = await Geolocator.getCurrentPosition(
-        locationSettings:
-            const LocationSettings(accuracy: LocationAccuracy.medium),
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.medium,
+        ),
       );
       if (mounted) setState(() => _userPos = pos);
     } catch (e) {
@@ -86,32 +87,39 @@ class _ARScreenState extends ConsumerState<ARScreen> {
 
   void _initSensors() {
     try {
-      _magSub = magnetometerEventStream().listen((e) {
-        // Heading from magnetic field components — atan2(y, x) gives
-        // the bearing in radians, +90° offset because the device's
-        // y axis points "up" in portrait. Throttled to 10 Hz to keep
-        // setState cost reasonable.
-        final raw = math.atan2(e.y, e.x) * 180 / math.pi + 90;
-        final h = (raw + 360) % 360;
-        _maybeUpdate(() => _heading = h);
-      }, onError: (e) {
-        if (mounted) setState(() => _sensorError = 'Compass: $e');
-      });
+      _magSub = magnetometerEventStream().listen(
+        (e) {
+          // Heading from magnetic field components — atan2(y, x) gives
+          // the bearing in radians, +90° offset because the device's
+          // y axis points "up" in portrait. Throttled to 10 Hz to keep
+          // setState cost reasonable.
+          final raw = math.atan2(e.y, e.x) * 180 / math.pi + 90;
+          final h = (raw + 360) % 360;
+          _maybeUpdate(() => _heading = h);
+        },
+        onError: (e) {
+          if (mounted) setState(() => _sensorError = 'Compass: $e');
+        },
+      );
 
-      _accSub = accelerometerEventStream().listen((e) {
-        // Approximate pitch + roll from gravity components. Best when
-        // the user holds the phone roughly vertical (the AR use case).
-        final pitch = math.atan2(-e.z, math.sqrt(e.x * e.x + e.y * e.y)) *
-            180 /
-            math.pi;
-        final roll = math.atan2(e.x, e.y) * 180 / math.pi;
-        _maybeUpdate(() {
-          _pitch = pitch;
-          _roll = roll;
-        });
-      }, onError: (e) {
-        if (mounted) setState(() => _sensorError = 'Tilt: $e');
-      });
+      _accSub = accelerometerEventStream().listen(
+        (e) {
+          // Approximate pitch + roll from gravity components. Best when
+          // the user holds the phone roughly vertical (the AR use case).
+          final pitch =
+              math.atan2(-e.z, math.sqrt(e.x * e.x + e.y * e.y)) *
+              180 /
+              math.pi;
+          final roll = math.atan2(e.x, e.y) * 180 / math.pi;
+          _maybeUpdate(() {
+            _pitch = pitch;
+            _roll = roll;
+          });
+        },
+        onError: (e) {
+          if (mounted) setState(() => _sensorError = 'Tilt: $e');
+        },
+      );
     } catch (e) {
       if (mounted) setState(() => _sensorError = '$e');
     }
@@ -170,7 +178,8 @@ class _ARScreenState extends ConsumerState<ARScreen> {
           IgnorePointer(
             child: Center(
               child: Container(
-                width: 56, height: 56,
+                width: 56,
+                height: 56,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
@@ -180,7 +189,8 @@ class _ARScreenState extends ConsumerState<ARScreen> {
                 ),
                 child: Center(
                   child: Container(
-                    width: 6, height: 6,
+                    width: 6,
+                    height: 6,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: primary,
@@ -204,8 +214,11 @@ class _ARScreenState extends ConsumerState<ARScreen> {
                         child: GlassPanel(
                           padding: const EdgeInsets.all(8),
                           borderRadius: 10,
-                          child: Icon(Icons.arrow_back_rounded,
-                              size: 18, color: primary),
+                          child: Icon(
+                            Icons.arrow_back_rounded,
+                            size: 18,
+                            color: primary,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 10),
@@ -226,27 +239,37 @@ class _ARScreenState extends ConsumerState<ARScreen> {
 
           // Bottom telemetry footer — heading / pitch / detected count.
           Positioned(
-            bottom: 0, left: 0, right: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
             child: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.all(12),
                 child: GlassPanel(
                   borderRadius: 12,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 10,
+                  ),
                   child: Row(
                     children: [
                       _Stat(label: 'HDG', value: '${_heading.round()}°'),
                       const SizedBox(width: 18),
                       _Stat(label: 'PITCH', value: '${_pitch.round()}°'),
                       const SizedBox(width: 18),
-                      _Stat(label: 'IN VIEW', value: detected.length.toString()),
+                      _Stat(
+                        label: 'IN VIEW',
+                        value: detected.length.toString(),
+                      ),
                       const Spacer(),
                       if (_sensorError != null)
                         Tooltip(
                           message: _sensorError!,
-                          child: const Icon(Icons.warning_amber_rounded,
-                              size: 16, color: AppColors.warning),
+                          child: const Icon(
+                            Icons.warning_amber_rounded,
+                            size: 16,
+                            color: AppColors.warning,
+                          ),
                         )
                       else
                         Icon(
@@ -270,53 +293,62 @@ class _ARScreenState extends ConsumerState<ARScreen> {
   }
 
   List<Widget> _buildAircraftLabels(
-      List<DetectedAircraft> detected, Color primary) {
+    List<DetectedAircraft> detected,
+    Color primary,
+  ) {
     return [
       for (final d in detected)
-        LayoutBuilder(builder: (ctx, constraints) {
-          final x = (d.screenXFraction * constraints.maxWidth)
-              .clamp(20.0, constraints.maxWidth - 100);
-          final y = (d.screenYFraction * constraints.maxHeight)
-              .clamp(60.0, constraints.maxHeight - 80);
-          return Positioned(
-            left: x,
-            top: y,
-            child: Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-              decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.6),
-                borderRadius: BorderRadius.circular(4),
-                border: Border.all(
-                    color: primary.withValues(alpha: 0.45), width: 0.5),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    d.aircraft.callsign?.trim() ?? d.aircraft.icao24,
-                    style: TextStyle(
-                      fontFamily: UiConstants.headingFont,
-                      fontSize: 9,
-                      fontWeight: FontWeight.w800,
-                      color: primary,
-                    ),
+        LayoutBuilder(
+          builder: (ctx, constraints) {
+            final x = (d.screenXFraction * constraints.maxWidth).clamp(
+              20.0,
+              constraints.maxWidth - 100,
+            );
+            final y = (d.screenYFraction * constraints.maxHeight).clamp(
+              60.0,
+              constraints.maxHeight - 80,
+            );
+            return Positioned(
+              left: x,
+              top: y,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.6),
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(
+                    color: primary.withValues(alpha: 0.45),
+                    width: 0.5,
                   ),
-                  Text(
-                    '${d.distanceKm.toStringAsFixed(0)} km · '
-                    '${d.elevationDeg.toStringAsFixed(0)}°',
-                    style: TextStyle(
-                      fontFamily: UiConstants.bodyFont,
-                      fontSize: 8,
-                      color: Colors.white.withValues(alpha: 0.65),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      d.aircraft.callsign?.trim() ?? d.aircraft.icao24,
+                      style: TextStyle(
+                        fontFamily: UiConstants.headingFont,
+                        fontSize: 9,
+                        fontWeight: FontWeight.w800,
+                        color: primary,
+                      ),
                     ),
-                  ),
-                ],
+                    Text(
+                      '${d.distanceKm.toStringAsFixed(0)} km · '
+                      '${d.elevationDeg.toStringAsFixed(0)}°',
+                      style: TextStyle(
+                        fontFamily: UiConstants.bodyFont,
+                        fontSize: 8,
+                        color: Colors.white.withValues(alpha: 0.65),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
-        }),
+            );
+          },
+        ),
     ];
   }
 }

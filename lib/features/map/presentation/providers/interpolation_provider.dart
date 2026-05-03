@@ -41,7 +41,9 @@ class InterpolationNotifier extends Notifier<InterpolationState> {
   void _tick() {
     if (_aircraft.isEmpty) return;
 
-    final elapsed = DateTime.now().difference(state.lastApiUpdate).inMilliseconds;
+    final elapsed = DateTime.now()
+        .difference(state.lastApiUpdate)
+        .inMilliseconds;
     // Interpolate over 5 minutes (300,000ms) = the update interval
     final t = (elapsed / 300000).clamp(0.0, 1.0);
     if (t >= 1.0) return; // No more interpolation needed
@@ -61,7 +63,9 @@ class InterpolationNotifier extends Notifier<InterpolationState> {
 
         final hdgRad = ac.trueTrack! * 3.14159265 / 180;
         final lat = ac.latitude! + distDeg * _cos(hdgRad);
-        final lng = ac.longitude! + distDeg * _sin(hdgRad) / _cos(ac.latitude! * 3.14159265 / 180);
+        final lng =
+            ac.longitude! +
+            distDeg * _sin(hdgRad) / _cos(ac.latitude! * 3.14159265 / 180);
 
         positions[entry.key] = LatLng(lat, lng);
       }
@@ -92,4 +96,5 @@ class InterpolationNotifier extends Notifier<InterpolationState> {
 
 final interpolationProvider =
     NotifierProvider<InterpolationNotifier, InterpolationState>(
-        InterpolationNotifier.new);
+      InterpolationNotifier.new,
+    );

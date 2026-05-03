@@ -6,8 +6,11 @@ void main() {
   group('MapStyle catalog — completeness + sanity', () {
     test('every MapStyleId has a catalog entry', () {
       for (final id in MapStyleId.values) {
-        expect(kMapStyles[id], isNotNull,
-            reason: '$id missing from kMapStyles');
+        expect(
+          kMapStyles[id],
+          isNotNull,
+          reason: '$id missing from kMapStyles',
+        );
       }
     });
 
@@ -19,19 +22,31 @@ void main() {
     test('every URL contains the {z}/{x}/{y} placeholders', () {
       for (final entry in kMapStyles.entries) {
         final url = entry.value.url;
-        expect(url, contains('{z}'),
-            reason: '${entry.key} URL missing {z}: $url');
-        expect(url, contains('{x}'),
-            reason: '${entry.key} URL missing {x}: $url');
-        expect(url, contains('{y}'),
-            reason: '${entry.key} URL missing {y}: $url');
+        expect(
+          url,
+          contains('{z}'),
+          reason: '${entry.key} URL missing {z}: $url',
+        );
+        expect(
+          url,
+          contains('{x}'),
+          reason: '${entry.key} URL missing {x}: $url',
+        );
+        expect(
+          url,
+          contains('{y}'),
+          reason: '${entry.key} URL missing {y}: $url',
+        );
       }
     });
 
     test('every URL is HTTPS', () {
       for (final entry in kMapStyles.entries) {
-        expect(entry.value.url, startsWith('https://'),
-            reason: '${entry.key} URL is not HTTPS: ${entry.value.url}');
+        expect(
+          entry.value.url,
+          startsWith('https://'),
+          reason: '${entry.key} URL is not HTTPS: ${entry.value.url}',
+        );
       }
     });
 
@@ -63,8 +78,11 @@ void main() {
           def.colors.selected,
         ]) {
           final alpha = (c.toARGB32() >> 24) & 0xFF;
-          expect(alpha, 0xFF,
-              reason: 'transparent / partial-alpha colour in ${def.label}');
+          expect(
+            alpha,
+            0xFF,
+            reason: 'transparent / partial-alpha colour in ${def.label}',
+          );
         }
       }
     });

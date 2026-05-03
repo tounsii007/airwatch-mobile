@@ -30,7 +30,7 @@ class AppHttpClient {
   static Dio create({
     Duration connectTimeout = AppConfig.apiTimeout,
     Duration receiveTimeout = AppConfig.longTimeout,
-    String?  baseUrl,
+    String? baseUrl,
   }) {
     final dio = Dio(
       BaseOptions(
@@ -40,9 +40,7 @@ class AppHttpClient {
         // Let services branch on status code instead of receiving an
         // exception for every 404 / 429 / 401.
         validateStatus: (status) => status != null && status < 500,
-        headers: const {
-          'Accept': 'application/json',
-        },
+        headers: const {'Accept': 'application/json'},
       ),
     );
 
@@ -69,7 +67,10 @@ class _RetryInterceptor extends Interceptor {
   static const Duration _backoff = Duration(milliseconds: 400);
 
   @override
-  Future<void> onError(DioException err, ErrorInterceptorHandler handler) async {
+  Future<void> onError(
+    DioException err,
+    ErrorInterceptorHandler handler,
+  ) async {
     final req = err.requestOptions;
     final attempt = (req.extra['attempt'] as int?) ?? 0;
     if (attempt >= 1 || !_isRetryable(err)) {
@@ -81,9 +82,9 @@ class _RetryInterceptor extends Interceptor {
       final response = await _dio.fetch<dynamic>(req);
       return handler.resolve(response);
     } catch (e) {
-      return handler.next(e is DioException
-          ? e
-          : DioException(requestOptions: req, error: e));
+      return handler.next(
+        e is DioException ? e : DioException(requestOptions: req, error: e),
+      );
     }
   }
 
@@ -120,7 +121,10 @@ class _DebugLogInterceptor extends Interceptor {
   }
 
   @override
-  void onResponse(Response<dynamic> response, ResponseInterceptorHandler handler) {
+  void onResponse(
+    Response<dynamic> response,
+    ResponseInterceptorHandler handler,
+  ) {
     debugPrint('[api] ← ${response.statusCode} ${response.requestOptions.uri}');
     handler.next(response);
   }

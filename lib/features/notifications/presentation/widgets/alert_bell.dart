@@ -48,8 +48,7 @@ class AlertBell extends ConsumerWidget {
               right: -2,
               top: -2,
               child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
                 constraints: const BoxConstraints(minWidth: 16),
                 decoration: BoxDecoration(
                   color: AppColors.error,
@@ -116,14 +115,19 @@ class _AlertsSheet extends ConsumerWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 4,
+                ),
                 child: Row(
                   children: [
-                    Icon(Icons.notifications_active_rounded,
-                        size: 18,
-                        color: alerts.isEmpty
-                            ? AppColors.textMuted
-                            : AppColors.error),
+                    Icon(
+                      Icons.notifications_active_rounded,
+                      size: 18,
+                      color: alerts.isEmpty
+                          ? AppColors.textMuted
+                          : AppColors.error,
+                    ),
                     const SizedBox(width: 8),
                     Text(
                       'ALERTS · ${alerts.length}',
@@ -147,7 +151,9 @@ class _AlertsSheet extends ConsumerWidget {
                     : ListView.separated(
                         controller: scrollCtl,
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 10),
+                          horizontal: 12,
+                          vertical: 10,
+                        ),
                         itemCount: alerts.length,
                         separatorBuilder: (_, _) => const SizedBox(height: 8),
                         itemBuilder: (_, i) => _AlertTile(alert: alerts[i]),
@@ -254,9 +260,11 @@ class _Empty extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.notifications_off_rounded,
-                size: 40,
-                color: AppColors.textMuted.withValues(alpha: 0.5)),
+            Icon(
+              Icons.notifications_off_rounded,
+              size: 40,
+              color: AppColors.textMuted.withValues(alpha: 0.5),
+            ),
             const SizedBox(height: 8),
             const Text(
               'No active alerts',

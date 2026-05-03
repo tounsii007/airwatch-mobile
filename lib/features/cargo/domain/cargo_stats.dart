@@ -17,7 +17,12 @@ class CargoStats {
     required this.operators,
   });
 
-  static const empty = CargoStats(airborne: 0, ground: 0, total: 0, operators: 0);
+  static const empty = CargoStats(
+    airborne: 0,
+    ground: 0,
+    total: 0,
+    operators: 0,
+  );
 }
 
 /// Compute the per-page cargo stats from a flight list.

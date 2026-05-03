@@ -7,10 +7,10 @@ enum TurbulenceSeverity { light, moderate, severe }
 /// `getSeverityColor` palette so a yellow polygon on the web app and on
 /// mobile mean the same thing.
 Color severityColor(TurbulenceSeverity s) => switch (s) {
-      TurbulenceSeverity.light => const Color(0xFFEAB308),
-      TurbulenceSeverity.moderate => const Color(0xFFF97316),
-      TurbulenceSeverity.severe => const Color(0xFFEF4444),
-    };
+  TurbulenceSeverity.light => const Color(0xFFEAB308),
+  TurbulenceSeverity.moderate => const Color(0xFFF97316),
+  TurbulenceSeverity.severe => const Color(0xFFEF4444),
+};
 
 /// Parsed turbulence / convective zone polygon ready to render.
 class TurbulenceZone {
@@ -53,8 +53,9 @@ List<TurbulenceZone> parseSigmetResponse(dynamic raw) {
     if (item is! Map) continue;
     final d = Map<String, dynamic>.from(item);
 
-    final hazard = (d['hazard'] ?? d['airsigmetType'] ?? d['rawAirSigmet'] ?? '')
-        .toString();
+    final hazard =
+        (d['hazard'] ?? d['airsigmetType'] ?? d['rawAirSigmet'] ?? '')
+            .toString();
     final hazLow = hazard.toLowerCase();
     if (!hazLow.contains('turb') &&
         !hazLow.contains('convective') &&
@@ -62,25 +63,26 @@ List<TurbulenceZone> parseSigmetResponse(dynamic raw) {
       continue;
     }
 
-    final severity = _severity(d['severity'] ?? d['intensity']) ??
-        (hazLow.contains('convective')
-            ? TurbulenceSeverity.moderate
-            : null);
+    final severity =
+        _severity(d['severity'] ?? d['intensity']) ??
+        (hazLow.contains('convective') ? TurbulenceSeverity.moderate : null);
     if (severity == null) continue;
 
     final polygon = _parseCoords(d);
     if (polygon == null || polygon.length < 3) continue;
 
-    out.add(TurbulenceZone(
-      id: (d['airSigmetId'] ?? d['id'] ?? 'sigmet-${out.length}').toString(),
-      hazard: hazard,
-      severity: severity,
-      polygon: polygon,
-      altitudeLowFt: (d['altitudeLow1'] as num?)?.toDouble(),
-      altitudeHighFt: (d['altitudeHi1'] as num?)?.toDouble(),
-      validFrom: (d['validTimeFrom'] ?? d['issueTime'] ?? '').toString(),
-      validTo: (d['validTimeTo'] ?? '').toString(),
-    ));
+    out.add(
+      TurbulenceZone(
+        id: (d['airSigmetId'] ?? d['id'] ?? 'sigmet-${out.length}').toString(),
+        hazard: hazard,
+        severity: severity,
+        polygon: polygon,
+        altitudeLowFt: (d['altitudeLow1'] as num?)?.toDouble(),
+        altitudeHighFt: (d['altitudeHi1'] as num?)?.toDouble(),
+        validFrom: (d['validTimeFrom'] ?? d['issueTime'] ?? '').toString(),
+        validTo: (d['validTimeTo'] ?? '').toString(),
+      ),
+    );
   }
   return out;
 }
@@ -88,7 +90,8 @@ List<TurbulenceZone> parseSigmetResponse(dynamic raw) {
 TurbulenceSeverity? _severity(dynamic raw) {
   if (raw == null) return null;
   final s = raw.toString().toLowerCase();
-  if (s.contains('sev') || s.contains('extreme')) return TurbulenceSeverity.severe;
+  if (s.contains('sev') || s.contains('extreme'))
+    return TurbulenceSeverity.severe;
   if (s.contains('mod')) return TurbulenceSeverity.moderate;
   if (s.contains('light') || s.contains('lgt')) return TurbulenceSeverity.light;
   return TurbulenceSeverity.moderate;
@@ -107,12 +110,17 @@ List<List<double>>? _parseCoords(Map<String, dynamic> d) {
         .whereType<Map>()
         .where((p) => p['lat'] != null && p['lon'] != null)
         .map<List<double>>(
-            (p) => [(p['lat'] as num).toDouble(), (p['lon'] as num).toDouble()])
+          (p) => [(p['lat'] as num).toDouble(), (p['lon'] as num).toDouble()],
+        )
         .toList();
     return pts.length >= 3 ? pts : null;
   }
   if (coords is String) {
-    final nums = coords.trim().split(RegExp(r'\s+')).map(double.tryParse).toList();
+    final nums = coords
+        .trim()
+        .split(RegExp(r'\s+'))
+        .map(double.tryParse)
+        .toList();
     if (nums.length < 6 || nums.length.isOdd) return null;
     // Reject both `null` (unparseable token) AND `NaN` (parse-able as
     // double but useless as a coordinate). `double.tryParse('NaN')`
@@ -131,7 +139,8 @@ List<List<double>>? _parseCoords(Map<String, dynamic> d) {
         .whereType<Map>()
         .where((p) => p['lat'] != null && p['lon'] != null)
         .map<List<double>>(
-            (p) => [(p['lat'] as num).toDouble(), (p['lon'] as num).toDouble()])
+          (p) => [(p['lat'] as num).toDouble(), (p['lon'] as num).toDouble()],
+        )
         .toList();
     return pts.length >= 3 ? pts : null;
   }

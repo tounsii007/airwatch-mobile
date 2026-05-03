@@ -12,11 +12,8 @@ class FlightHistoryService {
   final FlightInfoDatasource _infoDatasource;
 
   FlightHistoryService({Dio? dio, FlightInfoDatasource? infoDatasource})
-      : _dio = dio ??
-            AppHttpClient.create(
-              connectTimeout: AppConfig.longTimeout,
-            ),
-        _infoDatasource = infoDatasource ?? FlightInfoDatasource();
+    : _dio = dio ?? AppHttpClient.create(connectTimeout: AppConfig.longTimeout),
+      _infoDatasource = infoDatasource ?? FlightInfoDatasource();
 
   Future<FlightHistoryResult> search(
     String callsign, {
@@ -43,7 +40,11 @@ class FlightHistoryService {
     if (flightCode != cs) {
       final iataFlight = await _loadFlightByIata(flightCode);
       if (iataFlight != null &&
-          !flights.any((e) => e.flightIcao == iataFlight.flightIcao && e.depTime == iataFlight.depTime)) {
+          !flights.any(
+            (e) =>
+                e.flightIcao == iataFlight.flightIcao &&
+                e.depTime == iataFlight.depTime,
+          )) {
         flights.add(iataFlight);
       }
     }
@@ -53,7 +54,11 @@ class FlightHistoryService {
 
     final routeFlight = await _loadRouteFlight(cs);
     if (routeFlight != null &&
-        !flights.any((e) => e.depIata == routeFlight.depIata && e.arrIata == routeFlight.arrIata)) {
+        !flights.any(
+          (e) =>
+              e.depIata == routeFlight.depIata &&
+              e.arrIata == routeFlight.arrIata,
+        )) {
       flights.add(routeFlight);
     }
     onProgress?.call(
@@ -84,7 +89,9 @@ class FlightHistoryService {
 
   Future<HistoryFlight?> _loadCurrentFlight(String callsign) async {
     try {
-      final response = await _dio.get(AppConfig.flightUrl(flightIcao: callsign));
+      final response = await _dio.get(
+        AppConfig.flightUrl(flightIcao: callsign),
+      );
       if (response.statusCode == 200 && response.data is Map) {
         final data = response.data as Map;
         final flight = data[ApiJsonKeys.response] as Map?;
@@ -100,7 +107,9 @@ class FlightHistoryService {
 
   Future<HistoryFlight?> _loadFlightByIata(String flightIata) async {
     try {
-      final response = await _dio.get(AppConfig.flightUrl(flightIata: flightIata));
+      final response = await _dio.get(
+        AppConfig.flightUrl(flightIata: flightIata),
+      );
       if (response.statusCode == 200 && response.data is Map) {
         final data = response.data as Map;
         final flight = data[ApiJsonKeys.response] as Map?;
@@ -116,7 +125,9 @@ class FlightHistoryService {
 
   Future<HistoryFlight?> _loadRouteFlight(String callsign) async {
     try {
-      final response = await _dio.get(AppConfig.routesUrl(flightIcao: callsign));
+      final response = await _dio.get(
+        AppConfig.routesUrl(flightIcao: callsign),
+      );
       if (response.statusCode == 200 && response.data is Map) {
         final data = response.data as Map;
         final routes = data[ApiJsonKeys.response] as List?;

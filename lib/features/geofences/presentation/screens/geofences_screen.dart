@@ -41,7 +41,8 @@ class GeofencesScreen extends ConsumerWidget {
             heroTag: 'fence_draw',
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute<void>(
-                  builder: (_) => const GeoFenceDrawScreen()),
+                builder: (_) => const GeoFenceDrawScreen(),
+              ),
             ),
             backgroundColor: AppColors.primary,
             icon: const Icon(Icons.edit_location_alt_rounded),
@@ -70,8 +71,9 @@ class GeofencesScreen extends ConsumerWidget {
               itemBuilder: (_, i) => _FenceTile(
                 fence: fences[i],
                 isDark: isDark,
-                onToggle: () =>
-                    ref.read(geofencesProvider.notifier).toggleActive(fences[i].id),
+                onToggle: () => ref
+                    .read(geofencesProvider.notifier)
+                    .toggleActive(fences[i].id),
                 onRemove: () =>
                     ref.read(geofencesProvider.notifier).remove(fences[i].id),
               ),
@@ -155,7 +157,8 @@ class _FenceTile extends StatelessWidget {
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
-                if (fence.airlineFilter != null && fence.airlineFilter!.isNotEmpty)
+                if (fence.airlineFilter != null &&
+                    fence.airlineFilter!.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(top: 2),
                     child: Text(
@@ -179,8 +182,11 @@ class _FenceTile extends StatelessWidget {
           // Delete.
           IconButton(
             tooltip: 'Delete',
-            icon: const Icon(Icons.delete_outline_rounded,
-                size: 20, color: AppColors.error),
+            icon: const Icon(
+              Icons.delete_outline_rounded,
+              size: 20,
+              color: AppColors.error,
+            ),
             onPressed: onRemove,
           ),
         ],
@@ -201,8 +207,11 @@ class _Empty extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.fence_rounded,
-                size: 48, color: AppColors.textMuted.withValues(alpha: 0.5)),
+            Icon(
+              Icons.fence_rounded,
+              size: 48,
+              color: AppColors.textMuted.withValues(alpha: 0.5),
+            ),
             const SizedBox(height: 12),
             const Text(
               'No geofences yet',

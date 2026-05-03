@@ -1,0 +1,37 @@
+# Dependabot keeps the repo's external supply chain locked down.
+#
+# Two ecosystems are watched:
+#
+#   * github-actions — pins each `uses:` line to a specific commit SHA
+#     and opens a PR whenever a new release ships. This is the Github
+#     Security Advisory team's recommended way to defend against tag
+#     hijacking and stealth force-pushes by a compromised action
+#     maintainer. The first round of PRs Dependabot opens after this
+#     file lands will rewrite each `actions/checkout@v4` into
+#     `actions/checkout@<40-char-sha>  # v4.2.2`.
+#
+#   * pub — Flutter / Dart packages. Mostly transitive vulnerability
+#     watch; the lock file in pubspec.lock is the single source of
+#     truth for what actually shipped.
+#
+# Tweak the `interval` if "weekly" is too noisy. `daily` is fine for
+# a healthy repo with code-owners review.
+
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - security
+
+  - package-ecosystem: pub
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies

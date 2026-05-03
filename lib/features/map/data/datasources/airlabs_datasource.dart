@@ -11,10 +11,7 @@ class AirlabsDatasource {
   static final Map<String, AirlabsFlight?> _cache = {};
 
   AirlabsDatasource({Dio? dio})
-      : _dio = dio ??
-            AppHttpClient.create(
-              receiveTimeout: AppConfig.apiTimeout,
-            );
+    : _dio = dio ?? AppHttpClient.create(receiveTimeout: AppConfig.apiTimeout);
 
   /// Look up flight by ICAO callsign using /flight endpoint (detailed)
   Future<AirlabsFlight?> getFlightByCallsign(String callsign) async {
@@ -35,7 +32,9 @@ class AirlabsDatasource {
         if (f != null && f.isNotEmpty) {
           final result = _parseFlight(f);
           _cache[cs] = result;
-          debugPrint('[Airlabs] Found: ${result.depIata} -> ${result.arrIata} (${result.status})');
+          debugPrint(
+            '[Airlabs] Found: ${result.depIata} -> ${result.arrIata} (${result.status})',
+          );
           return result;
         }
       }
@@ -161,19 +160,50 @@ class AirlabsFlight {
   final String? squawk;
 
   AirlabsFlight({
-    this.flightIcao, this.flightIata, this.flightNumber,
-    this.airlineIcao, this.airlineIata,
-    this.depIcao, this.depIata, this.depTerminal, this.depGate,
-    this.depTime, this.depTimeUtc, this.depEstimated, this.depActual,
+    this.flightIcao,
+    this.flightIata,
+    this.flightNumber,
+    this.airlineIcao,
+    this.airlineIata,
+    this.depIcao,
+    this.depIata,
+    this.depTerminal,
+    this.depGate,
+    this.depTime,
+    this.depTimeUtc,
+    this.depEstimated,
+    this.depActual,
     this.depDelayed,
-    this.arrIcao, this.arrIata, this.arrTerminal, this.arrGate, this.arrBaggage,
-    this.arrTime, this.arrTimeUtc, this.arrEstimated, this.arrActual,
+    this.arrIcao,
+    this.arrIata,
+    this.arrTerminal,
+    this.arrGate,
+    this.arrBaggage,
+    this.arrTime,
+    this.arrTimeUtc,
+    this.arrEstimated,
+    this.arrActual,
     this.arrDelayed,
-    this.status, this.duration,
-    this.hex, this.regNumber, this.aircraftIcao,
-    this.model, this.manufacturer, this.type, this.engine, this.engineCount, this.msn,
-    this.built, this.age, this.flag,
-    this.lat, this.lng, this.altitude, this.speed, this.heading, this.squawk,
+    this.status,
+    this.duration,
+    this.hex,
+    this.regNumber,
+    this.aircraftIcao,
+    this.model,
+    this.manufacturer,
+    this.type,
+    this.engine,
+    this.engineCount,
+    this.msn,
+    this.built,
+    this.age,
+    this.flag,
+    this.lat,
+    this.lng,
+    this.altitude,
+    this.speed,
+    this.heading,
+    this.squawk,
   });
 
   bool get hasRoute => depIcao != null && arrIcao != null;
@@ -182,13 +212,15 @@ class AirlabsFlight {
   /// Full aircraft description
   String get aircraftDescription {
     if (model != null) return model!;
-    if (manufacturer != null && aircraftIcao != null) return '$manufacturer $aircraftIcao';
+    if (manufacturer != null && aircraftIcao != null)
+      return '$manufacturer $aircraftIcao';
     return aircraftIcao ?? 'Unknown';
   }
 
   /// Gate info display
   String? get depGateDisplay {
-    if (depTerminal != null && depGate != null) return 'T$depTerminal / Gate $depGate';
+    if (depTerminal != null && depGate != null)
+      return 'T$depTerminal / Gate $depGate';
     if (depGate != null) return 'Gate $depGate';
     if (depTerminal != null) return 'Terminal $depTerminal';
     return null;

@@ -15,8 +15,7 @@ List<SearchResultItem> rankAndDeduplicate(
   for (final result in results) {
     final key = dedupeKey(result);
     final existing = deduped[key];
-    if (existing == null ||
-        compareResults(result, existing, query) < 0) {
+    if (existing == null || compareResults(result, existing, query) < 0) {
       deduped[key] = result;
     }
   }
@@ -28,7 +27,8 @@ List<SearchResultItem> rankAndDeduplicate(
 
 String dedupeKey(SearchResultItem result) {
   return switch (result.type) {
-    SearchResultType.liveAircraft => 'live:${result.aircraft?.icao24 ?? result.title}',
+    SearchResultType.liveAircraft =>
+      'live:${result.aircraft?.icao24 ?? result.title}',
     SearchResultType.airline => 'airline:${result.airlineIcao ?? result.title}',
     SearchResultType.country => 'country:${result.countryCode ?? result.title}',
     SearchResultType.apiResult || SearchResultType.airlineFlight =>
@@ -36,11 +36,7 @@ String dedupeKey(SearchResultItem result) {
   };
 }
 
-int compareResults(
-  SearchResultItem a,
-  SearchResultItem b,
-  String query,
-) {
+int compareResults(SearchResultItem a, SearchResultItem b, String query) {
   final rankA = globalRank(a, query);
   final rankB = globalRank(b, query);
   final byRank = rankA.compareTo(rankB);
@@ -107,12 +103,12 @@ class FlightLookupRequest {
   final String? flightIata;
 
   const FlightLookupRequest.byIcao(String value)
-      : flightIcao = value,
-        flightIata = null;
+    : flightIcao = value,
+      flightIata = null;
 
   const FlightLookupRequest.byIata(String value)
-      : flightIcao = null,
-        flightIata = value;
+    : flightIcao = null,
+      flightIata = value;
 }
 
 class LiveAircraftSearchEntry {
@@ -125,14 +121,14 @@ class LiveAircraftSearchEntry {
   final Set<String> prefixes;
 
   LiveAircraftSearchEntry(this.aircraft)
-      : callsign = aircraft.callsign?.trim().toUpperCase() ?? '',
-        icao24 = aircraft.icao24.toUpperCase(),
-        originCountry = (aircraft.originCountry ?? '').toUpperCase(),
-        countryCode = CountryDatabase.codeOf(aircraft.originCountry),
-        iataDisplay = FlightCodeFormatter.displayFlightCode(
-          callsign: aircraft.callsign,
-        ),
-        prefixes = _prefixesFor(aircraft);
+    : callsign = aircraft.callsign?.trim().toUpperCase() ?? '',
+      icao24 = aircraft.icao24.toUpperCase(),
+      originCountry = (aircraft.originCountry ?? '').toUpperCase(),
+      countryCode = CountryDatabase.codeOf(aircraft.originCountry),
+      iataDisplay = FlightCodeFormatter.displayFlightCode(
+        callsign: aircraft.callsign,
+      ),
+      prefixes = _prefixesFor(aircraft);
 
   String get displayTitle {
     if (iataDisplay.isNotEmpty) return iataDisplay;
@@ -170,7 +166,9 @@ class LiveAircraftSearchEntry {
     void addPrefix(String value) {
       final normalized = value.toUpperCase().trim();
       if (normalized.isEmpty) return;
-      final prefix = normalized.length >= 2 ? normalized.substring(0, 2) : normalized;
+      final prefix = normalized.length >= 2
+          ? normalized.substring(0, 2)
+          : normalized;
       prefixes.add(prefix);
     }
 
@@ -182,7 +180,9 @@ class LiveAircraftSearchEntry {
       FlightCodeFormatter.displayFlightCode(callsign: aircraft.callsign),
     );
 
-    for (final token in (aircraft.originCountry ?? '').split(RegExp(r'[^A-Za-z0-9]+'))) {
+    for (final token in (aircraft.originCountry ?? '').split(
+      RegExp(r'[^A-Za-z0-9]+'),
+    )) {
       addPrefix(token);
     }
 
@@ -199,11 +199,11 @@ class AirlineSearchEntry {
   final Set<String> prefixes;
 
   AirlineSearchEntry(this.airline)
-      : icao = airline.icao.toUpperCase(),
-        iata = airline.iata.toUpperCase(),
-        name = airline.name.toUpperCase(),
-        country = airline.country.toUpperCase(),
-        prefixes = _prefixesFor(airline);
+    : icao = airline.icao.toUpperCase(),
+      iata = airline.iata.toUpperCase(),
+      name = airline.name.toUpperCase(),
+      country = airline.country.toUpperCase(),
+      prefixes = _prefixesFor(airline);
 
   int? score(String query) {
     return switch (true) {
@@ -231,7 +231,9 @@ class AirlineSearchEntry {
     void addPrefix(String value) {
       final normalized = value.toUpperCase().trim();
       if (normalized.isEmpty) return;
-      final prefix = normalized.length >= 2 ? normalized.substring(0, 2) : normalized;
+      final prefix = normalized.length >= 2
+          ? normalized.substring(0, 2)
+          : normalized;
       prefixes.add(prefix);
     }
 

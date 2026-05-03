@@ -124,10 +124,7 @@ class _MapStylePickerState extends State<MapStylePicker> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (_open) ...[
-            popover,
-            const SizedBox(width: 6),
-          ],
+          if (_open) ...[popover, const SizedBox(width: 6)],
           trigger,
         ],
       ),
@@ -163,9 +160,7 @@ class _StyleEntry extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 1),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
         decoration: BoxDecoration(
-          color: active
-              ? primary.withValues(alpha: 0.18)
-              : Colors.transparent,
+          color: active ? primary.withValues(alpha: 0.18) : Colors.transparent,
           borderRadius: BorderRadius.circular(6),
         ),
         child: Row(
@@ -192,8 +187,8 @@ class _StyleEntry extends StatelessWidget {
                 color: active
                     ? primary
                     : (isDark
-                        ? AppColors.textSecondary
-                        : UiConstants.lightTextSecondary),
+                          ? AppColors.textSecondary
+                          : UiConstants.lightTextSecondary),
                 letterSpacing: 0.8,
               ),
             ),

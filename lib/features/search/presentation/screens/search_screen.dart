@@ -70,7 +70,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
     setState(() => _isSearching = true);
 
-    final aircraft = ref.read(aircraftStreamProvider).when(
+    final aircraft = ref
+        .read(aircraftStreamProvider)
+        .when(
           data: (data) => data,
           loading: () => <String, AircraftState>{},
           error: (error, stackTrace) => <String, AircraftState>{},
@@ -94,7 +96,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final filtered = _service.filterResults(_suggestions, _activeFilter);
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.background : UiConstants.lightBackground,
+      backgroundColor: isDark
+          ? AppColors.background
+          : UiConstants.lightBackground,
       body: SafeArea(
         child: Column(
           children: [
@@ -117,7 +121,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   color: isDark ? AppColors.surface : UiConstants.lightSurface,
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(
-                    color: isDark ? AppColors.glassBorder : UiConstants.lightBorder,
+                    color: isDark
+                        ? AppColors.glassBorder
+                        : UiConstants.lightBorder,
                   ),
                 ),
                 child: TextField(
@@ -127,14 +133,18 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   style: TextStyle(
                     fontFamily: UiConstants.headingFont,
                     fontSize: UiConstants.bodyFontSize,
-                    color: isDark ? AppColors.textPrimary : UiConstants.lightTextPrimary,
+                    color: isDark
+                        ? AppColors.textPrimary
+                        : UiConstants.lightTextPrimary,
                   ),
                   decoration: InputDecoration(
                     hintText: context.tr('search_flights_hint'),
                     hintStyle: TextStyle(
                       fontFamily: UiConstants.bodyFont,
                       fontSize: UiConstants.bodyFontSize,
-                      color: isDark ? AppColors.textMuted : UiConstants.lightHintText,
+                      color: isDark
+                          ? AppColors.textMuted
+                          : UiConstants.lightHintText,
                     ),
                     prefixIcon: Icon(Icons.search_rounded, color: primary),
                     suffixIcon: _query.isNotEmpty
@@ -146,7 +156,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                             child: Icon(
                               Icons.close_rounded,
                               size: 20,
-                              color: isDark ? AppColors.textMuted : UiConstants.lightTextMuted,
+                              color: isDark
+                                  ? AppColors.textMuted
+                                  : UiConstants.lightTextMuted,
                             ),
                           )
                         : null,
@@ -169,33 +181,42 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     isActive: _activeFilter == SearchFilter.all,
                     color: primary,
                     isDark: isDark,
-                    onTap: () => setState(() => _activeFilter = SearchFilter.all),
+                    onTap: () =>
+                        setState(() => _activeFilter = SearchFilter.all),
                   ),
                   _FilterChip(
                     label: context.tr('live'),
-                    count: _suggestions.isNotEmpty ? _countForType(SearchResultType.liveAircraft) : null,
+                    count: _suggestions.isNotEmpty
+                        ? _countForType(SearchResultType.liveAircraft)
+                        : null,
                     isActive: _activeFilter == SearchFilter.live,
                     color: AppColors.success,
                     isDark: isDark,
-                    onTap: () => setState(() => _activeFilter = SearchFilter.live),
+                    onTap: () =>
+                        setState(() => _activeFilter = SearchFilter.live),
                   ),
                   _FilterChip(
                     label: context.tr('airlines'),
-                    count: _suggestions.isNotEmpty ? _countForType(SearchResultType.airline) : null,
+                    count: _suggestions.isNotEmpty
+                        ? _countForType(SearchResultType.airline)
+                        : null,
                     isActive: _activeFilter == SearchFilter.airlines,
                     color: AppColors.accent,
                     isDark: isDark,
-                    onTap: () => setState(() => _activeFilter = SearchFilter.airlines),
+                    onTap: () =>
+                        setState(() => _activeFilter = SearchFilter.airlines),
                   ),
                   _FilterChip(
                     label: context.tr('flights_upper'),
                     count: _suggestions.isNotEmpty
-                        ? _countForType(SearchResultType.apiResult) + _countForType(SearchResultType.airlineFlight)
+                        ? _countForType(SearchResultType.apiResult) +
+                              _countForType(SearchResultType.airlineFlight)
                         : null,
                     isActive: _activeFilter == SearchFilter.flights,
                     color: primary,
                     isDark: isDark,
-                    onTap: () => setState(() => _activeFilter = SearchFilter.flights),
+                    onTap: () =>
+                        setState(() => _activeFilter = SearchFilter.flights),
                   ),
                 ],
               ),
@@ -214,20 +235,20 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               child: _query.isEmpty
                   ? _emptyState(isDark)
                   : filtered.isEmpty && !_isSearching
-                      ? _noResults(isDark)
-                      : _activeFilter == SearchFilter.all
-                          ? _buildGroupedResults(filtered, isDark, primary)
-                          : ListView.builder(
-                              padding: UiConstants.searchResultsPadding,
-                              itemCount: filtered.length,
-                              itemBuilder: (_, index) => _ResultTile(
-                                result: filtered[index],
-                                isDark: isDark,
-                                primary: primary,
-                                query: _query,
-                                onTap: () => _onResultTap(filtered[index]),
-                              ),
-                            ),
+                  ? _noResults(isDark)
+                  : _activeFilter == SearchFilter.all
+                  ? _buildGroupedResults(filtered, isDark, primary)
+                  : ListView.builder(
+                      padding: UiConstants.searchResultsPadding,
+                      itemCount: filtered.length,
+                      itemBuilder: (_, index) => _ResultTile(
+                        result: filtered[index],
+                        isDark: isDark,
+                        primary: primary,
+                        query: _query,
+                        onTap: () => _onResultTap(filtered[index]),
+                      ),
+                    ),
             ),
           ],
         ),
@@ -236,7 +257,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   // Group by type for ALL filter
-  Map<SearchResultType, List<SearchResultItem>> _groupResults(List<SearchResultItem> results) {
+  Map<SearchResultType, List<SearchResultItem>> _groupResults(
+    List<SearchResultItem> results,
+  ) {
     final groups = <SearchResultType, List<SearchResultItem>>{};
     for (final r in results) {
       (groups[r.type] ??= []).add(r);
@@ -278,27 +301,33 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     switch (result.type) {
       case SearchResultType.liveAircraft:
         // Try live first, fall back to cached aircraft (landed flights)
-        final selected = _service.resolveSelectedAircraft(
-          result,
-          liveAircraft: _liveAircraftSnapshot(),
-        ) ?? result.aircraft;
+        final selected =
+            _service.resolveSelectedAircraft(
+              result,
+              liveAircraft: _liveAircraftSnapshot(),
+            ) ??
+            result.aircraft;
         if (selected != null) {
           widget.onFlightSelected(selected);
         }
       case SearchResultType.country:
         _controller.text = result.title;
-        _controller.selection = TextSelection.collapsed(offset: result.title.length);
+        _controller.selection = TextSelection.collapsed(
+          offset: result.title.length,
+        );
         _onQueryChanged(result.title);
       case SearchResultType.airline:
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (_) => AirlineDetailScreen(
-            icao: result.airlineIcao ?? '',
-            iata: result.airlineIata,
-            name: result.title,
-            // subtitle is non-nullable on SearchResultItem.
-            country: result.subtitle.split(' - ').lastOrNull,
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => AirlineDetailScreen(
+              icao: result.airlineIcao ?? '',
+              iata: result.airlineIata,
+              name: result.title,
+              // subtitle is non-nullable on SearchResultItem.
+              country: result.subtitle.split(' - ').lastOrNull,
+            ),
           ),
-        ));
+        );
       case SearchResultType.apiResult:
       case SearchResultType.airlineFlight:
         final selected = _service.resolveSelectedAircraft(
@@ -312,14 +341,20 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   Map<String, AircraftState> _liveAircraftSnapshot() {
-    return ref.read(aircraftStreamProvider).when(
+    return ref
+        .read(aircraftStreamProvider)
+        .when(
           data: (data) => data,
           loading: () => <String, AircraftState>{},
           error: (error, stackTrace) => <String, AircraftState>{},
         );
   }
 
-  Widget _buildGroupedResults(List<SearchResultItem> results, bool isDark, Color primary) {
+  Widget _buildGroupedResults(
+    List<SearchResultItem> results,
+    bool isDark,
+    Color primary,
+  ) {
     final groups = _groupResults(results);
     final widgets = <Widget>[];
 
@@ -372,7 +407,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             style: TextStyle(
               fontFamily: UiConstants.bodyFont,
               fontSize: UiConstants.bodyFontSize,
-              color: isDark ? AppColors.textSecondary : UiConstants.lightTextSecondary,
+              color: isDark
+                  ? AppColors.textSecondary
+                  : UiConstants.lightTextSecondary,
             ),
           ),
           const SizedBox(height: 8),
@@ -396,7 +433,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         style: TextStyle(
           fontFamily: UiConstants.bodyFont,
           fontSize: UiConstants.bodyFontSize,
-          color: isDark ? AppColors.textSecondary : UiConstants.lightTextSecondary,
+          color: isDark
+              ? AppColors.textSecondary
+              : UiConstants.lightTextSecondary,
         ),
       ),
     );
@@ -446,7 +485,11 @@ class _FilterChip extends StatelessWidget {
               fontSize: UiConstants.tinyFontSize,
               fontWeight: FontWeight.w700,
               letterSpacing: 1,
-              color: isActive ? color : (isDark ? AppColors.textSecondary : UiConstants.lightTextSecondary),
+              color: isActive
+                  ? color
+                  : (isDark
+                        ? AppColors.textSecondary
+                        : UiConstants.lightTextSecondary),
             ),
           ),
         ),
@@ -472,7 +515,10 @@ class _ResultTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final statusColor = FlightStatusUtils.statusColor(result.status, primary: primary);
+    final statusColor = FlightStatusUtils.statusColor(
+      result.status,
+      primary: primary,
+    );
     final statusLabel = FlightStatusUtils.statusLabel(context, result.status);
 
     return GestureDetector(
@@ -497,7 +543,9 @@ class _ResultTile extends StatelessWidget {
                         fontFamily: UiConstants.headingFont,
                         fontSize: UiConstants.captionFontSize,
                         fontWeight: FontWeight.w700,
-                        color: isDark ? AppColors.textPrimary : UiConstants.lightTextPrimary,
+                        color: isDark
+                            ? AppColors.textPrimary
+                            : UiConstants.lightTextPrimary,
                       ),
                       highlightColor: primary,
                     ),
@@ -508,7 +556,9 @@ class _ResultTile extends StatelessWidget {
                         baseStyle: TextStyle(
                           fontFamily: UiConstants.bodyFont,
                           fontSize: UiConstants.captionFontSize,
-                          color: isDark ? AppColors.textSecondary : UiConstants.lightTextSecondary,
+                          color: isDark
+                              ? AppColors.textSecondary
+                              : UiConstants.lightTextSecondary,
                         ),
                         highlightColor: primary,
                       ),
@@ -517,8 +567,10 @@ class _ResultTile extends StatelessWidget {
               ),
               if (statusLabel.isNotEmpty)
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: statusColor.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(6),
@@ -540,7 +592,9 @@ class _ResultTile extends StatelessWidget {
                 Icon(
                   Icons.chevron_right_rounded,
                   size: 16,
-                  color: isDark ? AppColors.textMuted : UiConstants.lightDisabled,
+                  color: isDark
+                      ? AppColors.textMuted
+                      : UiConstants.lightDisabled,
                 ),
             ],
           ),
@@ -552,11 +606,11 @@ class _ResultTile extends StatelessWidget {
   Widget _leadingVisual() {
     final (icon, iconColor) = switch (result.type) {
       SearchResultType.liveAircraft => (
-          Icons.flight_rounded,
-          result.altitude != null
-              ? AircraftIconPainter.getAltitudeColor(result.altitude)
-              : AppColors.success,
-        ),
+        Icons.flight_rounded,
+        result.altitude != null
+            ? AircraftIconPainter.getAltitudeColor(result.altitude)
+            : AppColors.success,
+      ),
       SearchResultType.airline => (Icons.airlines_rounded, AppColors.accent),
       SearchResultType.apiResult => (Icons.flight_takeoff_rounded, primary),
       SearchResultType.airlineFlight => (Icons.flight_rounded, primary),
@@ -596,10 +650,7 @@ class _ResultTile extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.all(7),
-      child: SvgPicture.asset(
-        assetPath,
-        fit: BoxFit.cover,
-      ),
+      child: SvgPicture.asset(assetPath, fit: BoxFit.cover),
     );
   }
 

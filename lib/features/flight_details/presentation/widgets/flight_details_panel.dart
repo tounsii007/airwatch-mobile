@@ -74,7 +74,10 @@ class _FlightDetailsPanelState extends ConsumerState<FlightDetailsPanel> {
     } catch (e) {
       debugPrint('[Refresh] Error: $e');
       if (mounted) {
-        setState(() { _isRefreshing = false; _refreshError = true; });
+        setState(() {
+          _isRefreshing = false;
+          _refreshError = true;
+        });
         _refreshRetryTimer?.cancel();
         _refreshRetryTimer = Timer(UiConstants.retryDelay, () {
           if (mounted && _refreshError) _refreshFlight(aircraft, ref);
@@ -83,7 +86,11 @@ class _FlightDetailsPanelState extends ConsumerState<FlightDetailsPanel> {
       }
     }
 
-    if (mounted) setState(() { _isRefreshing = false; _refreshError = false; });
+    if (mounted)
+      setState(() {
+        _isRefreshing = false;
+        _refreshError = false;
+      });
   }
 
   void _fetchDetails(AircraftState aircraft) {
@@ -146,12 +153,16 @@ class _FlightDetailsPanelState extends ConsumerState<FlightDetailsPanel> {
       onTrack: () => ref.read(isTrackingFlightProvider.notifier).set(true),
       onFavorite: () {
         final cs = aircraft.callsign?.trim() ?? aircraft.icao24;
-        ref.read(favoritesProvider.notifier).toggle(FavoriteItem(
-          id: cs,
-          type: FavoriteType.flight,
-          label: cs,
-          subtitle: _airline?.name ?? aircraft.originCountry,
-        ));
+        ref
+            .read(favoritesProvider.notifier)
+            .toggle(
+              FavoriteItem(
+                id: cs,
+                type: FavoriteType.flight,
+                label: cs,
+                subtitle: _airline?.name ?? aircraft.originCountry,
+              ),
+            );
       },
       onRefresh: () => _refreshFlight(aircraft, ref),
       isRefreshing: _isRefreshing,
@@ -165,7 +176,9 @@ class _FlightDetailsPanelState extends ConsumerState<FlightDetailsPanel> {
         right: 0,
         child: ConstrainedBox(
           constraints: BoxConstraints(
-            maxHeight: MediaQuery.sizeOf(context).height * AppConfig.panelMaxHeightRatio,
+            maxHeight:
+                MediaQuery.sizeOf(context).height *
+                AppConfig.panelMaxHeightRatio,
           ),
           child: content,
         ),
@@ -226,7 +239,9 @@ class _PanelContent extends ConsumerWidget {
 
     return GlassPanel(
       blur: AppConfig.panelGlassBlurDark,
-      opacity: isDark ? AppConfig.panelGlassOpacityDark : AppConfig.panelGlassOpacityLight,
+      opacity: isDark
+          ? AppConfig.panelGlassOpacityDark
+          : AppConfig.panelGlassOpacityLight,
       borderRadius: AppConfig.panelBorderRadius,
       padding: EdgeInsets.zero,
       child: SingleChildScrollView(
@@ -254,11 +269,7 @@ class _PanelContent extends ConsumerWidget {
 
             // ---- GATE / TERMINAL INFO ----
             if (route != null && route!.fromAirlabs)
-              PanelGateSection(
-                route: route!,
-                isDark: isDark,
-                primary: primary,
-              ),
+              PanelGateSection(route: route!, isDark: isDark, primary: primary),
 
             // ---- AIRCRAFT TYPE + DETAILS ----
             PanelAircraftSection(
@@ -335,15 +346,18 @@ class _PanelContent extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(14, 12, 10, 10),
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(
-          color: isDark ? AppColors.glassBorder : UiConstants.lightBorder,
-        )),
+        border: Border(
+          bottom: BorderSide(
+            color: isDark ? AppColors.glassBorder : UiConstants.lightBorder,
+          ),
+        ),
       ),
       child: Row(
         children: [
           if (logoUrl != null)
             Container(
-              width: 60, height: 32,
+              width: 60,
+              height: 32,
               margin: const EdgeInsets.only(right: 10),
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -353,8 +367,8 @@ class _PanelContent extends ConsumerWidget {
               child: CachedNetworkImage(
                 imageUrl: logoUrl,
                 fit: BoxFit.contain,
-                errorWidget: (_, error, stackTrace) => Icon(
-                    Icons.airlines_rounded, color: primary, size: 22),
+                errorWidget: (_, error, stackTrace) =>
+                    Icon(Icons.airlines_rounded, color: primary, size: 22),
                 placeholder: (_, url) => const SizedBox.shrink(),
               ),
             )
@@ -368,14 +382,22 @@ class _PanelContent extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (airline != null)
-                  Text(airline?.name ?? '', style: TextStyle(
-                    fontFamily: UiConstants.bodyFont, fontSize: UiConstants.bodyFontSize, fontWeight: FontWeight.w700,
-                    color: isDark ? AppColors.textPrimary : UiConstants.lightTextPrimary,
-                  )),
+                  Text(
+                    airline?.name ?? '',
+                    style: TextStyle(
+                      fontFamily: UiConstants.bodyFont,
+                      fontSize: UiConstants.bodyFontSize,
+                      fontWeight: FontWeight.w700,
+                      color: isDark
+                          ? AppColors.textPrimary
+                          : UiConstants.lightTextPrimary,
+                    ),
+                  ),
                 // Large flight number
                 NeonText(
                   text: _displayFlightNumber(cs),
-                  fontSize: 26, color: primary,
+                  fontSize: 26,
+                  color: primary,
                   glowRadius: isDark ? 10 : 0,
                 ),
               ],
@@ -389,10 +411,15 @@ class _PanelContent extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(6),
                 border: Border.all(color: primary.withValues(alpha: 0.3)),
               ),
-              child: Text(aircraft.originCountry ?? '', style: TextStyle(
-                fontFamily: UiConstants.bodyFont, fontSize: UiConstants.microFontSize,
-                fontWeight: FontWeight.w700, color: primary,
-              )),
+              child: Text(
+                aircraft.originCountry ?? '',
+                style: TextStyle(
+                  fontFamily: UiConstants.bodyFont,
+                  fontSize: UiConstants.microFontSize,
+                  fontWeight: FontWeight.w700,
+                  color: primary,
+                ),
+              ),
             ),
           const SizedBox(width: 4),
           // Refresh button: normal -> loading -> error (auto-retry)
@@ -410,20 +437,33 @@ class _PanelContent extends ConsumerWidget {
                     : null,
               ),
               child: isRefreshing
-                  ? SizedBox(width: 16, height: 16,
+                  ? SizedBox(
+                      width: 16,
+                      height: 16,
                       child: CircularProgressIndicator(
-                          strokeWidth: 2, color: primary))
+                        strokeWidth: 2,
+                        color: primary,
+                      ),
+                    )
                   : refreshError
-                      ? const Icon(Icons.wifi_off_rounded, size: 16,
-                          color: AppColors.error)
-                      : Icon(Icons.refresh_rounded, size: 16, color: primary),
+                  ? const Icon(
+                      Icons.wifi_off_rounded,
+                      size: 16,
+                      color: AppColors.error,
+                    )
+                  : Icon(Icons.refresh_rounded, size: 16, color: primary),
             ),
           ),
           const SizedBox(width: 4),
           GestureDetector(
             onTap: onClose,
-            child: Icon(Icons.close_rounded, size: 18,
-                color: isDark ? AppColors.textSecondary : UiConstants.lightTextMuted),
+            child: Icon(
+              Icons.close_rounded,
+              size: 18,
+              color: isDark
+                  ? AppColors.textSecondary
+                  : UiConstants.lightTextMuted,
+            ),
           ),
         ],
       ),
@@ -438,14 +478,26 @@ class _PanelContent extends ConsumerWidget {
         spacing: 6,
         runSpacing: 4,
         children: [
-          _Tag(label: 'ICAO24', value: aircraft.icao24.toUpperCase(),
-              color: primary, isDark: isDark),
+          _Tag(
+            label: 'ICAO24',
+            value: aircraft.icao24.toUpperCase(),
+            color: primary,
+            isDark: isDark,
+          ),
           if (metadata?.registration != null)
-            _Tag(label: 'REG', value: metadata?.registration ?? '',
-                color: primary, isDark: isDark),
+            _Tag(
+              label: 'REG',
+              value: metadata?.registration ?? '',
+              color: primary,
+              isDark: isDark,
+            ),
           if (metadata?.typecode != null)
-            _Tag(label: 'TYPE', value: metadata?.typecode ?? '',
-                color: AppColors.accent, isDark: isDark),
+            _Tag(
+              label: 'TYPE',
+              value: metadata?.typecode ?? '',
+              color: AppColors.accent,
+              isDark: isDark,
+            ),
         ],
       ),
     );
@@ -466,7 +518,12 @@ class _Tag extends StatelessWidget {
   final String label, value;
   final Color color;
   final bool isDark;
-  const _Tag({required this.label, required this.value, required this.color, required this.isDark});
+  const _Tag({
+    required this.label,
+    required this.value,
+    required this.color,
+    required this.isDark,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -477,13 +534,29 @@ class _Tag extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
         border: Border.all(color: color.withValues(alpha: 0.15)),
       ),
-      child: Row(mainAxisSize: MainAxisSize.min, children: [
-        Text(label, style: TextStyle(fontFamily: 'Rajdhani', fontSize: 9,
-            color: isDark ? AppColors.textMuted : const Color(0xFF9CA3AF))),
-        const SizedBox(width: 4),
-        Text(value, style: TextStyle(fontFamily: 'Orbitron', fontSize: 9,
-            fontWeight: FontWeight.w700, color: color)),
-      ]),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontFamily: 'Rajdhani',
+              fontSize: 9,
+              color: isDark ? AppColors.textMuted : const Color(0xFF9CA3AF),
+            ),
+          ),
+          const SizedBox(width: 4),
+          Text(
+            value,
+            style: TextStyle(
+              fontFamily: 'Orbitron',
+              fontSize: 9,
+              fontWeight: FontWeight.w700,
+              color: color,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

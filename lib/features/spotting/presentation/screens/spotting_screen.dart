@@ -38,7 +38,7 @@ class _SpottingScreenState extends ConsumerState<SpottingScreen> {
   static const double _radiusKm = 60.0;
 
   Position? _me;
-  String?   _error;
+  String? _error;
 
   @override
   void initState() {
@@ -50,12 +50,15 @@ class _SpottingScreenState extends ConsumerState<SpottingScreen> {
     final s = S.of(ref.read(languageProvider));
     try {
       final perm = await Geolocator.requestPermission();
-      if (perm == LocationPermission.denied || perm == LocationPermission.deniedForever) {
+      if (perm == LocationPermission.denied ||
+          perm == LocationPermission.deniedForever) {
         setState(() => _error = s.spottingPermDenied);
         return;
       }
       final pos = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(accuracy: LocationAccuracy.medium),
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.medium,
+        ),
       );
       setState(() => _me = pos);
     } catch (e) {
@@ -69,14 +72,23 @@ class _SpottingScreenState extends ConsumerState<SpottingScreen> {
 
     if (_error != null) {
       return Scaffold(
-        appBar: AppBar(title: Text(s.spotting), backgroundColor: Colors.transparent),
+        appBar: AppBar(
+          title: Text(s.spotting),
+          backgroundColor: Colors.transparent,
+        ),
         body: _ErrorState(
-            message: _error!, retryLabel: s.spottingTryAgain, onRetry: _resolveLocation),
+          message: _error!,
+          retryLabel: s.spottingTryAgain,
+          onRetry: _resolveLocation,
+        ),
       );
     }
     if (_me == null) {
       return Scaffold(
-        appBar: AppBar(title: Text(s.spotting), backgroundColor: Colors.transparent),
+        appBar: AppBar(
+          title: Text(s.spotting),
+          backgroundColor: Colors.transparent,
+        ),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
@@ -91,15 +103,21 @@ class _SpottingScreenState extends ConsumerState<SpottingScreen> {
           elevation: 0,
           bottom: TabBar(
             tabs: [
-              Tab(icon: const Icon(Icons.list_rounded),   text: s.spottingTabList),
-              Tab(icon: const Icon(Icons.radar_rounded),  text: s.spottingTabMap),
+              Tab(
+                icon: const Icon(Icons.list_rounded),
+                text: s.spottingTabList,
+              ),
+              Tab(
+                icon: const Icon(Icons.radar_rounded),
+                text: s.spottingTabMap,
+              ),
             ],
           ),
         ),
         body: asyncFlights.when(
           loading: () => const Center(child: CircularProgressIndicator()),
-          error:   (e, _) => Center(child: Text('${s.errorPrefix}: $e')),
-          data:    (flights) {
+          error: (e, _) => Center(child: Text('${s.errorPrefix}: $e')),
+          data: (flights) {
             final nearby = _filterNearby(flights.values, _me!);
             return TabBarView(
               children: [
@@ -116,14 +134,27 @@ class _SpottingScreenState extends ConsumerState<SpottingScreen> {
   /// Shared filter — returns flights inside the spotting radius, sorted by
   /// distance. Keeping this in one place means the list and map tabs always
   /// agree on what "nearby" means.
-  List<NearbyFlight> _filterNearby(Iterable<AircraftState> flights, Position me) {
+  List<NearbyFlight> _filterNearby(
+    Iterable<AircraftState> flights,
+    Position me,
+  ) {
     final out = <NearbyFlight>[];
     for (final f in flights) {
       final pos = f.position;
       if (pos == null) continue;
-      final dist = haversineKm(me.latitude, me.longitude, pos.latitude, pos.longitude);
+      final dist = haversineKm(
+        me.latitude,
+        me.longitude,
+        pos.latitude,
+        pos.longitude,
+      );
       if (dist > _radiusKm) continue;
-      final brng = bearingDeg(me.latitude, me.longitude, pos.latitude, pos.longitude);
+      final brng = bearingDeg(
+        me.latitude,
+        me.longitude,
+        pos.latitude,
+        pos.longitude,
+      );
       out.add(NearbyFlight(flight: f, distanceKm: dist, bearingDeg: brng));
     }
     out.sort((a, b) => a.distanceKm.compareTo(b.distanceKm));
@@ -136,10 +167,14 @@ class _SpottingScreenState extends ConsumerState<SpottingScreen> {
 // ─────────────────────────────────────────────────────────────────────────────
 
 class NearbyFlight {
-  NearbyFlight({required this.flight, required this.distanceKm, required this.bearingDeg});
+  NearbyFlight({
+    required this.flight,
+    required this.distanceKm,
+    required this.bearingDeg,
+  });
   final AircraftState flight;
-  final double        distanceKm;
-  final double        bearingDeg;
+  final double distanceKm;
+  final double bearingDeg;
 }
 
 /// Great-circle distance in kilometres on a spherical Earth (WGS-84 mean).
@@ -149,9 +184,12 @@ double haversineKm(double lat1, double lon1, double lat2, double lon2) {
   const r = 6371.0;
   final dLat = _deg2rad(lat2 - lat1);
   final dLon = _deg2rad(lon2 - lon1);
-  final a = math.sin(dLat / 2) * math.sin(dLat / 2) +
-      math.cos(_deg2rad(lat1)) * math.cos(_deg2rad(lat2)) *
-          math.sin(dLon / 2) * math.sin(dLon / 2);
+  final a =
+      math.sin(dLat / 2) * math.sin(dLat / 2) +
+      math.cos(_deg2rad(lat1)) *
+          math.cos(_deg2rad(lat2)) *
+          math.sin(dLon / 2) *
+          math.sin(dLon / 2);
   return r * 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
 }
 
@@ -159,8 +197,10 @@ double haversineKm(double lat1, double lon1, double lat2, double lon2) {
 /// clockwise from true north [0, 360). Exported so unit tests can verify it.
 double bearingDeg(double lat1, double lon1, double lat2, double lon2) {
   final y = math.sin(_deg2rad(lon2 - lon1)) * math.cos(_deg2rad(lat2));
-  final x = math.cos(_deg2rad(lat1)) * math.sin(_deg2rad(lat2)) -
-      math.sin(_deg2rad(lat1)) * math.cos(_deg2rad(lat2)) *
+  final x =
+      math.cos(_deg2rad(lat1)) * math.sin(_deg2rad(lat2)) -
+      math.sin(_deg2rad(lat1)) *
+          math.cos(_deg2rad(lat2)) *
           math.cos(_deg2rad(lon2 - lon1));
   final brng = _rad2deg(math.atan2(y, x));
   return (brng + 360) % 360;
@@ -176,7 +216,7 @@ double _rad2deg(double r) => r * 180 / math.pi;
 class _NearbyList extends StatelessWidget {
   const _NearbyList({required this.items, required this.emptyText});
   final List<NearbyFlight> items;
-  final String             emptyText;
+  final String emptyText;
 
   @override
   Widget build(BuildContext context) {
@@ -209,21 +249,38 @@ class _NearbyTile extends StatelessWidget {
         children: [
           Transform.rotate(
             angle: item.bearingDeg * math.pi / 180,
-            child: const Icon(Icons.navigation_rounded, color: AppColors.primary),
+            child: const Icon(
+              Icons.navigation_rounded,
+              color: AppColors.primary,
+            ),
           ),
           const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(f.callsign ?? '—', style: const TextStyle(fontWeight: FontWeight.w700)),
-                Text('${item.distanceKm.toStringAsFixed(1)} km · '
-                     '${item.bearingDeg.toStringAsFixed(0)}°',
-                  style: const TextStyle(fontSize: 11, color: AppColors.textMuted)),
+                Text(
+                  f.callsign ?? '—',
+                  style: const TextStyle(fontWeight: FontWeight.w700),
+                ),
+                Text(
+                  '${item.distanceKm.toStringAsFixed(1)} km · '
+                  '${item.bearingDeg.toStringAsFixed(0)}°',
+                  style: const TextStyle(
+                    fontSize: 11,
+                    color: AppColors.textMuted,
+                  ),
+                ),
               ],
             ),
           ),
-          Text(alt, style: const TextStyle(color: AppColors.accent, fontWeight: FontWeight.w700)),
+          Text(
+            alt,
+            style: const TextStyle(
+              color: AppColors.accent,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
         ],
       ),
     );
@@ -231,11 +288,15 @@ class _NearbyTile extends StatelessWidget {
 }
 
 class _NearbyMap extends StatelessWidget {
-  const _NearbyMap({required this.items, required this.me, required this.radiusKm});
+  const _NearbyMap({
+    required this.items,
+    required this.me,
+    required this.radiusKm,
+  });
 
   final List<NearbyFlight> items;
-  final Position           me;
-  final double             radiusKm;
+  final Position me;
+  final double radiusKm;
 
   @override
   Widget build(BuildContext context) {
@@ -262,7 +323,7 @@ class _NearbyMap extends StatelessWidget {
           circles: [
             CircleMarker(
               point: center,
-              radius: radiusKm * 1000,           // metres
+              radius: radiusKm * 1000, // metres
               useRadiusInMeter: true,
               color: AppColors.primary.withValues(alpha: 0.10),
               borderColor: AppColors.primary.withValues(alpha: 0.45),
@@ -275,8 +336,13 @@ class _NearbyMap extends StatelessWidget {
           markers: [
             Marker(
               point: center,
-              width: 28, height: 28,
-              child: const Icon(Icons.my_location, color: Colors.white, size: 22),
+              width: 28,
+              height: 28,
+              child: const Icon(
+                Icons.my_location,
+                color: Colors.white,
+                size: 22,
+              ),
             ),
           ],
         ),
@@ -290,13 +356,19 @@ class _NearbyMap extends StatelessWidget {
               for (final n in items)
                 if (n.flight.position != null)
                   Marker(
-                    point: LatLng(n.flight.position!.latitude, n.flight.position!.longitude),
+                    point: LatLng(
+                      n.flight.position!.latitude,
+                      n.flight.position!.longitude,
+                    ),
                     width: 28,
                     height: 28,
                     child: Transform.rotate(
                       angle: ((n.flight.trueTrack ?? 0) - 45) * math.pi / 180,
-                      child: const Icon(Icons.flight_rounded,
-                          size: 22, color: Colors.amberAccent),
+                      child: const Icon(
+                        Icons.flight_rounded,
+                        size: 22,
+                        color: Colors.amberAccent,
+                      ),
                     ),
                   ),
             ],
@@ -307,8 +379,13 @@ class _NearbyMap extends StatelessWidget {
                 boxShadow: [BoxShadow(blurRadius: 6, color: Colors.black38)],
               ),
               child: Center(
-                child: Text('${markers.length}',
-                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800)),
+                child: Text(
+                  '${markers.length}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
               ),
             ),
           ),
@@ -319,9 +396,13 @@ class _NearbyMap extends StatelessWidget {
 }
 
 class _ErrorState extends StatelessWidget {
-  const _ErrorState({required this.message, required this.retryLabel, required this.onRetry});
-  final String       message;
-  final String       retryLabel;
+  const _ErrorState({
+    required this.message,
+    required this.retryLabel,
+    required this.onRetry,
+  });
+  final String message;
+  final String retryLabel;
   final VoidCallback onRetry;
 
   @override
@@ -332,7 +413,11 @@ class _ErrorState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.location_off, size: 48, color: AppColors.textMuted),
+            const Icon(
+              Icons.location_off,
+              size: 48,
+              color: AppColors.textMuted,
+            ),
             const SizedBox(height: 12),
             Text(message, textAlign: TextAlign.center),
             const SizedBox(height: 16),

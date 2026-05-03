@@ -41,7 +41,8 @@ class AlertNotificationsEnabledNotifier extends Notifier<bool> {
 
 final alertNotificationsEnabledProvider =
     NotifierProvider<AlertNotificationsEnabledNotifier, bool>(
-        AlertNotificationsEnabledNotifier.new);
+      AlertNotificationsEnabledNotifier.new,
+    );
 
 /// Side-effect bridge — watches [alertsProvider] and pushes any
 /// newly-arriving alert to the OS tray. Already-tray'd alerts (by id)

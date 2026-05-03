@@ -112,7 +112,9 @@ class _PanelCo2FooterState extends State<PanelCo2Footer> {
       decoration: BoxDecoration(
         border: Border(
           top: BorderSide(
-            color: widget.isDark ? AppColors.glassBorder : UiConstants.lightBorder,
+            color: widget.isDark
+                ? AppColors.glassBorder
+                : UiConstants.lightBorder,
             width: 0.5,
           ),
         ),
@@ -120,7 +122,9 @@ class _PanelCo2FooterState extends State<PanelCo2Footer> {
       child: Row(
         children: [
           // ── Left: CO₂ estimate (or muted "no data" state) ──
-          Expanded(child: _Co2Pill(estimate: est, label: s)),
+          Expanded(
+            child: _Co2Pill(estimate: est, label: s),
+          ),
           const SizedBox(width: 8),
           // ── Right: Share button ──
           _ShareButton(
@@ -229,9 +233,7 @@ class _ShareButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.primary.withValues(alpha: 0.10),
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: AppColors.primary.withValues(alpha: 0.30),
-          ),
+          border: Border.all(color: AppColors.primary.withValues(alpha: 0.30)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,

@@ -23,7 +23,7 @@ class _FakeAdminApi implements AdminApiService {
   @override
   Future<bool> login(String username, String password, {String? totp}) async {
     lastUser = username;
-    lastPw   = password;
+    lastPw = password;
     lastTotp = totp;
     _signedIn = willSucceed;
     return willSucceed;
@@ -38,28 +38,32 @@ class _FakeAdminApi implements AdminApiService {
 
 Widget _harness({required Widget child, required AdminApiService api}) =>
     ProviderScope(
-      overrides: [
-        adminApiProvider.overrideWithValue(api),
-      ],
+      overrides: [adminApiProvider.overrideWithValue(api)],
       child: MaterialApp(home: child),
     );
 
 void main() {
   group('AdminLoginScreen', () {
-    testWidgets('renders the username + password + TOTP fields', (tester) async {
+    testWidgets('renders the username + password + TOTP fields', (
+      tester,
+    ) async {
       final api = _FakeAdminApi(willSucceed: false);
-      await tester.pumpWidget(_harness(child: const AdminLoginScreen(), api: api));
+      await tester.pumpWidget(
+        _harness(child: const AdminLoginScreen(), api: api),
+      );
       await tester.pumpAndSettle();
 
-      expect(find.text('Username'),         findsWidgets);
-      expect(find.text('Password'),         findsWidgets);
-      expect(find.text('TOTP (optional)'),  findsWidgets);
-      expect(find.text('Sign in'),          findsOneWidget);
+      expect(find.text('Username'), findsWidgets);
+      expect(find.text('Password'), findsWidgets);
+      expect(find.text('TOTP (optional)'), findsWidgets);
+      expect(find.text('Sign in'), findsOneWidget);
     });
 
     testWidgets('shows an error banner when login fails', (tester) async {
       final api = _FakeAdminApi(willSucceed: false);
-      await tester.pumpWidget(_harness(child: const AdminLoginScreen(), api: api));
+      await tester.pumpWidget(
+        _harness(child: const AdminLoginScreen(), api: api),
+      );
 
       await tester.enterText(find.byType(TextField).at(0), 'viewer');
       await tester.enterText(find.byType(TextField).at(1), 'wrong-pw');
@@ -68,12 +72,14 @@ void main() {
 
       expect(find.text('Invalid username or password'), findsOneWidget);
       expect(api.lastUser, 'viewer');
-      expect(api.lastPw,   'wrong-pw');
+      expect(api.lastPw, 'wrong-pw');
     });
 
     testWidgets('submits TOTP when the user enters one', (tester) async {
       final api = _FakeAdminApi(willSucceed: false);
-      await tester.pumpWidget(_harness(child: const AdminLoginScreen(), api: api));
+      await tester.pumpWidget(
+        _harness(child: const AdminLoginScreen(), api: api),
+      );
 
       await tester.enterText(find.byType(TextField).at(0), 'viewer');
       await tester.enterText(find.byType(TextField).at(1), 'pw');

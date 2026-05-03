@@ -20,8 +20,10 @@ void main() {
 
     test('visitedAt defaults to now when not given', () {
       final r = RecentAirport(iata: 'CDG');
-      expect(r.visitedAt.difference(DateTime.now()).inSeconds.abs(),
-          lessThan(2));
+      expect(
+        r.visitedAt.difference(DateTime.now()).inSeconds.abs(),
+        lessThan(2),
+      );
     });
 
     test('legacy v1 payload (missing visitedAt) parses to now', () {
@@ -32,8 +34,10 @@ void main() {
         // visitedAt key missing
       });
       expect(r.iata, 'CDG');
-      expect(r.visitedAt.difference(DateTime.now()).inSeconds.abs(),
-          lessThan(2));
+      expect(
+        r.visitedAt.difference(DateTime.now()).inSeconds.abs(),
+        lessThan(2),
+      );
     });
   });
 }

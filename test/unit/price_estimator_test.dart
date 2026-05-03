@@ -20,14 +20,18 @@ void main() {
     test('lowcost airline is cheaper', () {
       final standard = PriceEstimator.estimate(distanceKm: 1000);
       final lowcost = PriceEstimator.estimate(
-          distanceKm: 1000, airlineType: 'lowcost');
+        distanceKm: 1000,
+        airlineType: 'lowcost',
+      );
       expect(lowcost.economy, lessThan(standard.economy));
     });
 
     test('premium airline is more expensive', () {
       final standard = PriceEstimator.estimate(distanceKm: 1000);
       final premium = PriceEstimator.estimate(
-          distanceKm: 1000, airlineType: 'premium');
+        distanceKm: 1000,
+        airlineType: 'premium',
+      );
       expect(premium.economy, greaterThan(standard.economy));
     });
 

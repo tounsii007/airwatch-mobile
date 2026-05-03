@@ -54,10 +54,7 @@ Co2Estimate? estimateCo2({
   if (!distKm.isFinite || distKm < 1) return null;
 
   final factor = co2FactorForCategory(aircraftCategory);
-  return Co2Estimate(
-    distKm: distKm.round(),
-    co2Kg: (distKm * factor).round(),
-  );
+  return Co2Estimate(distKm: distKm.round(), co2Kg: (distKm * factor).round());
 }
 
 /// Per-km kg-CO₂ factor for a given ADS-B category.

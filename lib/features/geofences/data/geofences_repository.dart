@@ -69,5 +69,6 @@ class GeofencesNotifier extends Notifier<List<GeoFence>> {
   }
 }
 
-final geofencesProvider =
-    NotifierProvider<GeofencesNotifier, List<GeoFence>>(GeofencesNotifier.new);
+final geofencesProvider = NotifierProvider<GeofencesNotifier, List<GeoFence>>(
+  GeofencesNotifier.new,
+);

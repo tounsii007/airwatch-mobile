@@ -78,8 +78,7 @@ void main() {
     });
 
     test('Failure holds error', () {
-      final r = Result<int>.failure(
-          const NetworkException(message: 'fail'));
+      final r = Result<int>.failure(const NetworkException(message: 'fail'));
       expect(r.isSuccess, false);
       expect(r.isFailure, true);
       expect(r.dataOrNull, isNull);
@@ -88,8 +87,7 @@ void main() {
 
     test('when dispatches correctly', () {
       final success = Result.success(10);
-      final failure = Result<int>.failure(
-          const NetworkException(message: 'x'));
+      final failure = Result<int>.failure(const NetworkException(message: 'x'));
 
       expect(success.when(success: (d) => d * 2, failure: (_) => -1), 20);
       expect(failure.when(success: (d) => d * 2, failure: (_) => -1), -1);
@@ -102,7 +100,8 @@ void main() {
 
     test('map passes through failure', () {
       final r = Result<int>.failure(
-          const NetworkException(message: 'x')).map((d) => d * 3);
+        const NetworkException(message: 'x'),
+      ).map((d) => d * 3);
       expect(r.isFailure, true);
     });
 

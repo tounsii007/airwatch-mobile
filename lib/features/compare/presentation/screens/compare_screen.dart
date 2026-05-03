@@ -239,7 +239,11 @@ class _FlightPickerState extends State<_FlightPicker> {
           borderRadius: 10,
           child: Row(
             children: [
-              const Icon(Icons.search_rounded, size: 14, color: AppColors.textMuted),
+              const Icon(
+                Icons.search_rounded,
+                size: 14,
+                color: AppColors.textMuted,
+              ),
               const SizedBox(width: 6),
               Expanded(
                 child: TextField(
@@ -296,7 +300,8 @@ class _FlightPickerState extends State<_FlightPicker> {
                         ),
                       ),
                     ),
-                    if (ac.originCountry != null && ac.originCountry!.isNotEmpty)
+                    if (ac.originCountry != null &&
+                        ac.originCountry!.isNotEmpty)
                       Text(
                         ac.originCountry!,
                         style: const TextStyle(
@@ -316,20 +321,18 @@ class _FlightPickerState extends State<_FlightPicker> {
 }
 
 class _StatsGrid extends StatelessWidget {
-  const _StatsGrid({
-    required this.a,
-    required this.b,
-    required this.primary,
-  });
+  const _StatsGrid({required this.a, required this.b, required this.primary});
   final AircraftState a;
   final AircraftState b;
   final Color primary;
 
-  int? _altFt(AircraftState ac) =>
-      ac.baroAltitude == null ? null : (ac.baroAltitude! * ConversionConstants.metersToFeet).round();
+  int? _altFt(AircraftState ac) => ac.baroAltitude == null
+      ? null
+      : (ac.baroAltitude! * ConversionConstants.metersToFeet).round();
 
-  int? _spdKts(AircraftState ac) =>
-      ac.velocity == null ? null : (ac.velocity! * ConversionConstants.msToKnots).round();
+  int? _spdKts(AircraftState ac) => ac.velocity == null
+      ? null
+      : (ac.velocity! * ConversionConstants.msToKnots).round();
 
   int? _verticalFpm(AircraftState ac) => ac.verticalRate == null
       ? null
@@ -503,4 +506,3 @@ class _Row extends StatelessWidget {
     );
   }
 }
-

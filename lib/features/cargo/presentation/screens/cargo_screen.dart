@@ -74,8 +74,9 @@ class _CargoScreenState extends ConsumerState<CargoScreen> {
           // Sort by altitude descending — same default order as the
           // web's `byAltitudeDesc` so a quick scan shows the highest /
           // most-active cargo flights first.
-          cargo.sort((a, b) =>
-              (b.baroAltitude ?? 0).compareTo(a.baroAltitude ?? 0));
+          cargo.sort(
+            (a, b) => (b.baroAltitude ?? 0).compareTo(a.baroAltitude ?? 0),
+          );
           final stats = computeCargoStats(cargo);
           final filtered = filterCargo(cargo, _search, _status);
           return _buildBody(s, stats, filtered, cargo.isNotEmpty);
@@ -146,18 +147,17 @@ class _CargoScreenState extends ConsumerState<CargoScreen> {
             hint: s.cargoHint,
           )
         else if (filtered.isEmpty)
-          _EmptyBox(
-            icon: Icons.search_off_rounded,
-            text: s.searchNoResults,
-          )
+          _EmptyBox(icon: Icons.search_off_rounded, text: s.searchNoResults)
         else
-          ...filtered.map((ac) => Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: _CargoCard(
-                  aircraft: ac,
-                  language: ref.watch(languageProvider),
-                ),
-              )),
+          ...filtered.map(
+            (ac) => Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: _CargoCard(
+                aircraft: ac,
+                language: ref.watch(languageProvider),
+              ),
+            ),
+          ),
       ],
     );
   }
@@ -183,7 +183,8 @@ class _StatsRow extends ConsumerWidget {
           child: GestureDetector(
             onTap: () => onToggle(CargoStatusFilter.airborne),
             child: Opacity(
-              opacity: status == CargoStatusFilter.airborne ||
+              opacity:
+                  status == CargoStatusFilter.airborne ||
                       status == CargoStatusFilter.all
                   ? 1.0
                   : 0.5,
@@ -201,7 +202,8 @@ class _StatsRow extends ConsumerWidget {
           child: GestureDetector(
             onTap: () => onToggle(CargoStatusFilter.ground),
             child: Opacity(
-              opacity: status == CargoStatusFilter.ground ||
+              opacity:
+                  status == CargoStatusFilter.ground ||
                       status == CargoStatusFilter.all
                   ? 1.0
                   : 0.5,
@@ -247,8 +249,11 @@ class _CargoSearchField extends StatelessWidget {
       borderRadius: 12,
       child: Row(
         children: [
-          const Icon(Icons.search_rounded,
-              size: 18, color: AppColors.textMuted),
+          const Icon(
+            Icons.search_rounded,
+            size: 18,
+            color: AppColors.textMuted,
+          ),
           const SizedBox(width: 8),
           Expanded(
             child: TextField(
@@ -278,8 +283,11 @@ class _CargoSearchField extends StatelessWidget {
                 controller.clear();
                 onChanged('');
               },
-              child: const Icon(Icons.close_rounded,
-                  size: 16, color: AppColors.textMuted),
+              child: const Icon(
+                Icons.close_rounded,
+                size: 16,
+                color: AppColors.textMuted,
+              ),
             ),
         ],
       ),
@@ -356,14 +364,11 @@ class _CargoCard extends ConsumerWidget {
     final originCountry = aircraft.originCountry;
     final localizedCountry = (originCountry == null || originCountry.isEmpty)
         ? null
-        : localizeCountry(
-            originCountry,
-            switch (language) {
-              AppLanguage.de => 'de',
-              AppLanguage.fr => 'fr',
-              AppLanguage.en => 'en',
-            },
-          );
+        : localizeCountry(originCountry, switch (language) {
+            AppLanguage.de => 'de',
+            AppLanguage.fr => 'fr',
+            AppLanguage.en => 'en',
+          });
     final cityFromAirport = _maybeCityFromCallsign(cs, language);
 
     return GlassPanel(
@@ -383,8 +388,11 @@ class _CargoCard extends ConsumerWidget {
                 color: AppColors.accent.withValues(alpha: 0.30),
               ),
             ),
-            child: const Icon(Icons.local_shipping_outlined,
-                size: 20, color: AppColors.accent),
+            child: const Icon(
+              Icons.local_shipping_outlined,
+              size: 20,
+              color: AppColors.accent,
+            ),
           ),
           const SizedBox(width: 12),
           // Title block + status pill.

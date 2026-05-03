@@ -32,77 +32,73 @@ const Set<String> _tier1Hubs = {
   'LIS', 'MXP', 'BER',
 
   // ─── Middle East — capital-level per country ────────────────────────────
-  'DXB', 'AUH',                      // UAE
-  'DOH',                              // Qatar
-  'JED', 'RUH',                      // Saudi Arabia
-  'TLV',                              // Israel
-  'IKA', 'THR',                      // Iran
-  'BGW',                              // Iraq
-  'KWI',                              // Kuwait
-  'BAH',                              // Bahrain
-  'MCT',                              // Oman
-  'SAH',                              // Yemen
-  'AMM',                              // Jordan
-  'BEY',                              // Lebanon
-  'DAM',                              // Syria
-  'LCA',                              // Cyprus
-
+  'DXB', 'AUH', // UAE
+  'DOH', // Qatar
+  'JED', 'RUH', // Saudi Arabia
+  'TLV', // Israel
+  'IKA', 'THR', // Iran
+  'BGW', // Iraq
+  'KWI', // Kuwait
+  'BAH', // Bahrain
+  'MCT', // Oman
+  'SAH', // Yemen
+  'AMM', // Jordan
+  'BEY', // Lebanon
+  'DAM', // Syria
+  'LCA', // Cyprus
   // ─── North Africa — capital + major hub ─────────────────────────────────
-  'CAI', 'HRG',                      // Egypt
-  'CMN', 'RAK',                      // Morocco
-  'ALG',                              // Algeria
-  'TUN',                              // Tunisia
-  'TIP',                              // Libya
-
+  'CAI', 'HRG', // Egypt
+  'CMN', 'RAK', // Morocco
+  'ALG', // Algeria
+  'TUN', // Tunisia
+  'TIP', // Libya
   // ─── Sub-Saharan Africa — country capitals ──────────────────────────────
-  'JNB', 'CPT',                      // South Africa
-  'NBO',                              // Kenya
-  'ADD',                              // Ethiopia
-  'LOS', 'ABV',                      // Nigeria
-  'ACC',                              // Ghana
-  'DKR',                              // Senegal
-  'ABJ',                              // Ivory Coast
-  'DAR',                              // Tanzania
-  'EBB',                              // Uganda
-  'KGL',                              // Rwanda
-  'LAD',                              // Angola
-  'KRT',                              // Sudan
-  'FIH',                              // DR Congo
-  'MRU',                              // Mauritius
-  'TNR',                              // Madagascar
-
+  'JNB', 'CPT', // South Africa
+  'NBO', // Kenya
+  'ADD', // Ethiopia
+  'LOS', 'ABV', // Nigeria
+  'ACC', // Ghana
+  'DKR', // Senegal
+  'ABJ', // Ivory Coast
+  'DAR', // Tanzania
+  'EBB', // Uganda
+  'KGL', // Rwanda
+  'LAD', // Angola
+  'KRT', // Sudan
+  'FIH', // DR Congo
+  'MRU', // Mauritius
+  'TNR', // Madagascar
   // ─── Asia — country-level capitals ──────────────────────────────────────
-  'HND', 'NRT',                      // Japan
-  'PEK', 'PVG',                      // China
-  'HKG',                              // Hong Kong
-  'TPE',                              // Taiwan
-  'ICN',                              // South Korea
-  'SIN',                              // Singapore
-  'KUL',                              // Malaysia
-  'BKK',                              // Thailand
-  'CGK',                              // Indonesia
-  'MNL',                              // Philippines
-  'HAN', 'SGN',                      // Vietnam
-  'PNH',                              // Cambodia
-  'VTE',                              // Laos
-  'RGN',                              // Myanmar
-  'DEL', 'BOM',                      // India
-  'DAC',                              // Bangladesh
-  'KTM',                              // Nepal
-  'CMB',                              // Sri Lanka
-  'MLE',                              // Maldives
-  'KHI', 'ISB', 'LHE',               // Pakistan
-  'KBL',                              // Afghanistan
-  'TAS',                              // Uzbekistan
-  'ALA', 'NQZ',                      // Kazakhstan
-  'GYD',                              // Azerbaijan
-  'EVN',                              // Armenia
-  'TBS',                              // Georgia
-  'UBN',                              // Mongolia
-
+  'HND', 'NRT', // Japan
+  'PEK', 'PVG', // China
+  'HKG', // Hong Kong
+  'TPE', // Taiwan
+  'ICN', // South Korea
+  'SIN', // Singapore
+  'KUL', // Malaysia
+  'BKK', // Thailand
+  'CGK', // Indonesia
+  'MNL', // Philippines
+  'HAN', 'SGN', // Vietnam
+  'PNH', // Cambodia
+  'VTE', // Laos
+  'RGN', // Myanmar
+  'DEL', 'BOM', // India
+  'DAC', // Bangladesh
+  'KTM', // Nepal
+  'CMB', // Sri Lanka
+  'MLE', // Maldives
+  'KHI', 'ISB', 'LHE', // Pakistan
+  'KBL', // Afghanistan
+  'TAS', // Uzbekistan
+  'ALA', 'NQZ', // Kazakhstan
+  'GYD', // Azerbaijan
+  'EVN', // Armenia
+  'TBS', // Georgia
+  'UBN', // Mongolia
   // ─── North America — country / state capital coverage ──────────────────
   'JFK', 'LAX', 'ORD', 'ATL', 'DFW', 'DEN', 'SFO', 'MIA',
-  'ANC',                              // Alaska
+  'ANC', // Alaska
   // Canada
   'YYZ', 'YUL', 'YVR', 'YYC',
   'YOW', 'YEG', 'YHZ', 'YWG',
@@ -114,18 +110,17 @@ const Set<String> _tier1Hubs = {
   'TIJ',
 
   // ─── Caribbean & Central America — capitals ────────────────────────────
-  'HAV',                              // Cuba
-  'SJU',                              // Puerto Rico
-  'SDQ',                              // Dominican Republic
-  'KIN',                              // Jamaica
-  'NAS',                              // Bahamas
-  'GUA',                              // Guatemala
-  'SAL',                              // El Salvador
-  'TGU',                              // Honduras
-  'MGA',                              // Nicaragua
-  'SJO',                              // Costa Rica
-  'PTY',                              // Panama
-
+  'HAV', // Cuba
+  'SJU', // Puerto Rico
+  'SDQ', // Dominican Republic
+  'KIN', // Jamaica
+  'NAS', // Bahamas
+  'GUA', // Guatemala
+  'SAL', // El Salvador
+  'TGU', // Honduras
+  'MGA', // Nicaragua
+  'SJO', // Costa Rica
+  'PTY', // Panama
   // ─── South America — capital + major hub per country ───────────────────
   'GRU', 'GIG', 'BSB',
   'EZE', 'AEP',
@@ -411,9 +406,9 @@ class AirportMarkersLayer extends StatelessWidget {
     final dotSize = zoom < 5 ? 5.0 : 7.0;
 
     void openAirport(BuildContext ctx, String iata) {
-      Navigator.of(ctx).push(MaterialPageRoute(
-        builder: (_) => AirportDetailScreen(iataCode: iata),
-      ));
+      Navigator.of(ctx).push(
+        MaterialPageRoute(builder: (_) => AirportDetailScreen(iataCode: iata)),
+      );
     }
 
     final markers = <Marker>[];

@@ -129,10 +129,7 @@ class StatCard extends StatelessWidget {
                                 textBaseline: TextBaseline.alphabetic,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  CountUp(
-                                    value: value!,
-                                    decimals: decimals,
-                                  ),
+                                  CountUp(value: value!, decimals: decimals),
                                   if (unit != null) ...[
                                     const SizedBox(width: 3),
                                     Text(
@@ -192,9 +189,7 @@ class StatCard extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: accent.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: accent.withValues(alpha: 0.30),
-                      ),
+                      border: Border.all(color: accent.withValues(alpha: 0.30)),
                     ),
                     child: Icon(icon, size: 18, color: accent),
                   )
@@ -267,11 +262,7 @@ class _TrendChip extends StatelessWidget {
     };
     return Text(
       glyph,
-      style: TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.w800,
-        color: color,
-      ),
+      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: color),
     );
   }
 }

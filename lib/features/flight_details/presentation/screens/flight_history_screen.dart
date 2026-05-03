@@ -82,7 +82,8 @@ class _FlightHistoryScreenState extends State<FlightHistoryScreen> {
         _airline = result.airline;
         _isLoading = false;
         if (result.flights.isEmpty) {
-          _error = '${context.tr('no_flights_found')} "$cs".\n'
+          _error =
+              '${context.tr('no_flights_found')} "$cs".\n'
               '${context.tr('search_callsign_hint')}';
         }
       });
@@ -100,7 +101,9 @@ class _FlightHistoryScreenState extends State<FlightHistoryScreen> {
     final primary = isDark ? AppColors.primary : UiConstants.lightPrimary;
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.background : UiConstants.lightBackground,
+      backgroundColor: isDark
+          ? AppColors.background
+          : UiConstants.lightBackground,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: NeonText(
@@ -123,10 +126,14 @@ class _FlightHistoryScreenState extends State<FlightHistoryScreen> {
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: isDark ? AppColors.surface : UiConstants.lightSurface,
+                        color: isDark
+                            ? AppColors.surface
+                            : UiConstants.lightSurface,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: isDark ? AppColors.glassBorder : UiConstants.lightBorder,
+                          color: isDark
+                              ? AppColors.glassBorder
+                              : UiConstants.lightBorder,
                         ),
                       ),
                       child: TextField(
@@ -135,16 +142,23 @@ class _FlightHistoryScreenState extends State<FlightHistoryScreen> {
                         style: TextStyle(
                           fontFamily: UiConstants.headingFont,
                           fontSize: 14,
-                          color: isDark ? AppColors.textPrimary : UiConstants.lightTextPrimary,
+                          color: isDark
+                              ? AppColors.textPrimary
+                              : UiConstants.lightTextPrimary,
                         ),
                         decoration: InputDecoration(
                           hintText: context.tr('search_callsign_hint'),
                           hintStyle: TextStyle(
                             fontFamily: UiConstants.bodyFont,
                             fontSize: 14,
-                            color: isDark ? AppColors.textMuted : UiConstants.lightHintText,
+                            color: isDark
+                                ? AppColors.textMuted
+                                : UiConstants.lightHintText,
                           ),
-                          prefixIcon: Icon(Icons.history_rounded, color: primary),
+                          prefixIcon: Icon(
+                            Icons.history_rounded,
+                            color: primary,
+                          ),
                           border: InputBorder.none,
                           contentPadding: const EdgeInsets.all(12),
                         ),
@@ -160,16 +174,25 @@ class _FlightHistoryScreenState extends State<FlightHistoryScreen> {
                       decoration: BoxDecoration(
                         color: primary.withValues(alpha: isDark ? 0.2 : 0.1),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: primary.withValues(alpha: 0.3)),
+                        border: Border.all(
+                          color: primary.withValues(alpha: 0.3),
+                        ),
                       ),
-                      child: Icon(Icons.search_rounded, color: primary, size: 22),
+                      child: Icon(
+                        Icons.search_rounded,
+                        color: primary,
+                        size: 22,
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
-            if (_airline != null || _aircraftMeta != null) _buildInfoHeader(isDark, primary),
-            if (_searchedCallsign.isNotEmpty && !_isLoading && _flights.isNotEmpty)
+            if (_airline != null || _aircraftMeta != null)
+              _buildInfoHeader(isDark, primary),
+            if (_searchedCallsign.isNotEmpty &&
+                !_isLoading &&
+                _flights.isNotEmpty)
               _buildSummary(isDark, primary),
             const SizedBox(height: 4),
             Expanded(child: _buildContent(isDark, primary)),
@@ -195,52 +218,62 @@ class _FlightHistoryScreenState extends State<FlightHistoryScreen> {
             if (logoUrl != null)
               Padding(
                 padding: const EdgeInsets.only(right: 10),
-                child: Image.network(logoUrl, width: 50, height: 24,
-                    fit: BoxFit.contain,
-                    errorBuilder: (_, error, stackTrace) =>
-                        Icon(Icons.airlines_rounded, color: primary, size: 22)),
+                child: Image.network(
+                  logoUrl,
+                  width: 50,
+                  height: 24,
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, error, stackTrace) =>
+                      Icon(Icons.airlines_rounded, color: primary, size: 22),
+                ),
               ),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (_airline != null)
-                    Text(_airline?.name ?? '',
-                        style: TextStyle(
-                            fontFamily: UiConstants.bodyFont,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                            color: isDark
-                                ? AppColors.textPrimary
-                                : UiConstants.lightTextPrimary)),
+                    Text(
+                      _airline?.name ?? '',
+                      style: TextStyle(
+                        fontFamily: UiConstants.bodyFont,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: isDark
+                            ? AppColors.textPrimary
+                            : UiConstants.lightTextPrimary,
+                      ),
+                    ),
                   if (_aircraftMeta != null)
                     Text(
                       '${_aircraftMeta?.displayType ?? ''} • ${_aircraftMeta?.registration ?? ''}',
                       style: TextStyle(
-                          fontFamily: UiConstants.bodyFont,
-                          fontSize: 12,
-                          color: isDark
-                              ? AppColors.textSecondary
-                              : UiConstants.lightTextSecondary),
+                        fontFamily: UiConstants.bodyFont,
+                        fontSize: 12,
+                        color: isDark
+                            ? AppColors.textSecondary
+                            : UiConstants.lightTextSecondary,
+                      ),
                     ),
                 ],
               ),
             ),
             if (_aircraftMeta?.typecode != null)
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
                   color: primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(6),
                   border: Border.all(color: primary.withValues(alpha: 0.2)),
                 ),
-                child: Text(_aircraftMeta?.typecode ?? '',
-                    style: TextStyle(
-                        fontFamily: UiConstants.headingFont,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                        color: primary)),
+                child: Text(
+                  _aircraftMeta?.typecode ?? '',
+                  style: TextStyle(
+                    fontFamily: UiConstants.headingFont,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
+                    color: primary,
+                  ),
+                ),
               ),
           ],
         ),
@@ -280,23 +313,32 @@ class _FlightHistoryScreenState extends State<FlightHistoryScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(AirportDatabase.fullDisplay(dep),
-                      style: const TextStyle(
-                          fontFamily: UiConstants.bodyFont,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.success)),
+                  Text(
+                    AirportDatabase.fullDisplay(dep),
+                    style: const TextStyle(
+                      fontFamily: UiConstants.bodyFont,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.success,
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Icon(Icons.arrow_forward_rounded,
-                        size: 14, color: primary),
+                    child: Icon(
+                      Icons.arrow_forward_rounded,
+                      size: 14,
+                      color: primary,
+                    ),
                   ),
-                  Text(AirportDatabase.fullDisplay(arr),
-                      style: const TextStyle(
-                          fontFamily: UiConstants.bodyFont,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.accent)),
+                  Text(
+                    AirportDatabase.fullDisplay(arr),
+                    style: const TextStyle(
+                      fontFamily: UiConstants.bodyFont,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.accent,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -304,29 +346,34 @@ class _FlightHistoryScreenState extends State<FlightHistoryScreen> {
           Row(
             children: [
               _StatChip(
-                  label: '${_flights.length}',
-                  subtitle: context.tr('flights_count'),
-                  color: primary,
-                  isDark: isDark),
+                label: '${_flights.length}',
+                subtitle: context.tr('flights_count'),
+                color: primary,
+                isDark: isDark,
+              ),
               const SizedBox(width: 6),
               _StatChip(
-                  label: '$onTimeCount',
-                  subtitle: context.tr('on_time'),
-                  color: AppColors.success,
-                  isDark: isDark),
+                label: '$onTimeCount',
+                subtitle: context.tr('on_time'),
+                color: AppColors.success,
+                isDark: isDark,
+              ),
               const SizedBox(width: 6),
               _StatChip(
-                  label: '$delayedCount',
-                  subtitle: context.tr('delayed'),
-                  color: delayedCount > 0 ? AppColors.error : AppColors.success,
-                  isDark: isDark),
+                label: '$delayedCount',
+                subtitle: context.tr('delayed'),
+                color: delayedCount > 0 ? AppColors.error : AppColors.success,
+                isDark: isDark,
+              ),
               if (delayedCount > 0) ...[
                 const SizedBox(width: 6),
                 _StatChip(
-                    label: '~${(totalDelayMinutes / delayedCount.clamp(1, 999)).round()}m',
-                    subtitle: context.tr('avg_delay'),
-                    color: AppColors.warning,
-                    isDark: isDark),
+                  label:
+                      '~${(totalDelayMinutes / delayedCount.clamp(1, 999)).round()}m',
+                  subtitle: context.tr('avg_delay'),
+                  color: AppColors.warning,
+                  isDark: isDark,
+                ),
               ],
             ],
           ),
@@ -338,47 +385,74 @@ class _FlightHistoryScreenState extends State<FlightHistoryScreen> {
   Widget _buildContent(bool isDark, Color primary) {
     // Show results live while still loading
     if (_isLoading && _flights.isNotEmpty) {
-      return Column(children: [
-        // Loading progress bar at top
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-          child: Row(children: [
-            SizedBox(width: 14, height: 14,
-                child: CircularProgressIndicator(strokeWidth: 2, color: primary)),
-            const SizedBox(width: 8),
-            Text('${context.tr('searching')} ${_flights.length} ${context.tr('found')}',
-                style: TextStyle(fontFamily: UiConstants.bodyFont, fontSize: 12,
-                    color: isDark ? AppColors.textSecondary : UiConstants.lightTextSecondary)),
-            const Spacer(),
-            if (_loadTotal > 0)
-              Text('$_loadProgress/$_loadTotal',
-                  style: TextStyle(fontFamily: UiConstants.headingFont, fontSize: 9,
-                      color: isDark ? AppColors.textMuted : UiConstants.lightTextMuted)),
-          ]),
-        ),
-        if (_loadTotal > 0)
+      return Column(
+        children: [
+          // Loading progress bar at top
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: LinearProgressIndicator(
-              value: _loadProgress / _loadTotal.clamp(1, 999),
-              color: primary,
-              backgroundColor: primary.withValues(alpha: 0.1),
-              minHeight: 2,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 14,
+                  height: 14,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: primary,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  '${context.tr('searching')} ${_flights.length} ${context.tr('found')}',
+                  style: TextStyle(
+                    fontFamily: UiConstants.bodyFont,
+                    fontSize: 12,
+                    color: isDark
+                        ? AppColors.textSecondary
+                        : UiConstants.lightTextSecondary,
+                  ),
+                ),
+                const Spacer(),
+                if (_loadTotal > 0)
+                  Text(
+                    '$_loadProgress/$_loadTotal',
+                    style: TextStyle(
+                      fontFamily: UiConstants.headingFont,
+                      fontSize: 9,
+                      color: isDark
+                          ? AppColors.textMuted
+                          : UiConstants.lightTextMuted,
+                    ),
+                  ),
+              ],
             ),
           ),
-        const SizedBox(height: 4),
-        // Live results list
-        Expanded(
-          child: ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            itemCount: _flights.length,
-            itemBuilder: (ctx, i) => FlightHistoryTile(
-              flight: _flights[i], isDark: isDark, primary: primary,
-              airline: _airline, aircraftMeta: _aircraftMeta,
+          if (_loadTotal > 0)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: LinearProgressIndicator(
+                value: _loadProgress / _loadTotal.clamp(1, 999),
+                color: primary,
+                backgroundColor: primary.withValues(alpha: 0.1),
+                minHeight: 2,
+              ),
+            ),
+          const SizedBox(height: 4),
+          // Live results list
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              itemCount: _flights.length,
+              itemBuilder: (ctx, i) => FlightHistoryTile(
+                flight: _flights[i],
+                isDark: isDark,
+                primary: primary,
+                airline: _airline,
+                aircraftMeta: _aircraftMeta,
+              ),
             ),
           ),
-        ),
-      ]);
+        ],
+      );
     }
 
     // Pure loading state (no results yet)
@@ -389,9 +463,16 @@ class _FlightHistoryScreenState extends State<FlightHistoryScreen> {
           children: [
             CircularProgressIndicator(color: primary),
             const SizedBox(height: 16),
-            Text(context.s.searchingDays,
-                style: TextStyle(fontFamily: UiConstants.bodyFont, fontSize: 14,
-                    color: isDark ? AppColors.textSecondary : UiConstants.lightTextSecondary)),
+            Text(
+              context.s.searchingDays,
+              style: TextStyle(
+                fontFamily: UiConstants.bodyFont,
+                fontSize: 14,
+                color: isDark
+                    ? AppColors.textSecondary
+                    : UiConstants.lightTextSecondary,
+              ),
+            ),
             if (_loadTotal > 0) ...[
               const SizedBox(height: 8),
               SizedBox(
@@ -403,9 +484,16 @@ class _FlightHistoryScreenState extends State<FlightHistoryScreen> {
                 ),
               ),
               const SizedBox(height: 4),
-              Text('$_loadProgress / $_loadTotal ${context.tr('time_windows')}',
-                  style: TextStyle(fontFamily: UiConstants.bodyFont, fontSize: 11,
-                      color: isDark ? AppColors.textMuted : UiConstants.lightTextMuted)),
+              Text(
+                '$_loadProgress / $_loadTotal ${context.tr('time_windows')}',
+                style: TextStyle(
+                  fontFamily: UiConstants.bodyFont,
+                  fontSize: 11,
+                  color: isDark
+                      ? AppColors.textMuted
+                      : UiConstants.lightTextMuted,
+                ),
+              ),
             ],
           ],
         ),
@@ -414,38 +502,48 @@ class _FlightHistoryScreenState extends State<FlightHistoryScreen> {
 
     if (_error != null) {
       return Center(
-          child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Text(_error!,
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Text(
+            _error!,
             textAlign: TextAlign.center,
             style: TextStyle(
-                fontFamily: UiConstants.bodyFont,
-                fontSize: 14,
-                color: isDark
-                    ? AppColors.textSecondary
-                    : UiConstants.lightTextSecondary)),
-      ));
+              fontFamily: UiConstants.bodyFont,
+              fontSize: 14,
+              color: isDark
+                  ? AppColors.textSecondary
+                  : UiConstants.lightTextSecondary,
+            ),
+          ),
+        ),
+      );
     }
 
     if (_flights.isEmpty) {
       return Center(
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.history_rounded,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.history_rounded,
               size: 48,
-              color: isDark ? AppColors.textMuted : UiConstants.lightDisabled),
-          const SizedBox(height: 12),
-          Text(context.tr('search_callsign_prompt'),
+              color: isDark ? AppColors.textMuted : UiConstants.lightDisabled,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              context.tr('search_callsign_prompt'),
               textAlign: TextAlign.center,
               style: TextStyle(
-                  fontFamily: UiConstants.bodyFont,
-                  fontSize: 14,
-                  color: isDark
-                      ? AppColors.textSecondary
-                      : UiConstants.lightTextSecondary)),
-        ],
-      ));
+                fontFamily: UiConstants.bodyFont,
+                fontSize: 14,
+                color: isDark
+                    ? AppColors.textSecondary
+                    : UiConstants.lightTextSecondary,
+              ),
+            ),
+          ],
+        ),
+      );
     }
 
     return ListView.builder(
@@ -468,11 +566,12 @@ class _StatChip extends StatelessWidget {
   final String label, subtitle;
   final Color color;
   final bool isDark;
-  const _StatChip(
-      {required this.label,
-      required this.subtitle,
-      required this.color,
-      required this.isDark});
+  const _StatChip({
+    required this.label,
+    required this.subtitle,
+    required this.color,
+    required this.isDark,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -486,24 +585,29 @@ class _StatChip extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Text(label,
-                style: TextStyle(
-                    fontFamily: UiConstants.headingFont,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: color)),
-            Text(subtitle,
-                style: TextStyle(
-                    fontFamily: UiConstants.bodyFont,
-                    fontSize: 9,
-                    color: isDark
-                        ? AppColors.textMuted
-                        : UiConstants.lightTextMuted,
-                    letterSpacing: 0.5)),
+            Text(
+              label,
+              style: TextStyle(
+                fontFamily: UiConstants.headingFont,
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                color: color,
+              ),
+            ),
+            Text(
+              subtitle,
+              style: TextStyle(
+                fontFamily: UiConstants.bodyFont,
+                fontSize: 9,
+                color: isDark
+                    ? AppColors.textMuted
+                    : UiConstants.lightTextMuted,
+                letterSpacing: 0.5,
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 }
-

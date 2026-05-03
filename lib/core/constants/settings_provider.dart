@@ -5,6 +5,7 @@ import 'conversion_constants.dart';
 // ═══════════════════ UNIT PREFERENCES ═══════════════════
 
 enum AltitudeUnit { feet, meters }
+
 enum SpeedUnit { knots, kmh, mph }
 
 /// Visual style of the base-map tiles. Kept identical to the web app's
@@ -182,5 +183,6 @@ class SettingsNotifier extends Notifier<SettingsState> {
   }
 }
 
-final settingsProvider =
-    NotifierProvider<SettingsNotifier, SettingsState>(SettingsNotifier.new);
+final settingsProvider = NotifierProvider<SettingsNotifier, SettingsState>(
+  SettingsNotifier.new,
+);

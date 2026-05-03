@@ -44,8 +44,7 @@ class AirlineFlightInfo {
     );
   }
 
-  String get displayCode =>
-      flightIata.isNotEmpty ? flightIata : flightIcao;
+  String get displayCode => flightIata.isNotEmpty ? flightIata : flightIcao;
 
   String get route => '$depIata → $arrIata';
 

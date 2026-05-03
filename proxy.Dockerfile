@@ -58,12 +58,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # expects libc + libpthread, which debian:stable-slim provides.
 COPY --from=proxy-build /server /usr/local/bin/airwatch-proxy
 
+# Create an unprivileged user — same defence-in-depth motivation as the
+# nginx Dockerfile. system/no-shell so a runtime exploit can't drop into
+# an interactive shell.
+RUN useradd --system --no-create-home --shell /usr/sbin/nologin proxy
+
 # `proxy_server.dart` reads PROXY_HOST/PORT/AIRLABS_KEY from env. Default
 # to 0.0.0.0 so the container is reachable from the Docker network — the
 # Dart code defaults to `localhost`, which would only bind the loopback
 # interface inside the container and reject neighbours.
 ENV PROXY_HOST=0.0.0.0
 ENV PORT=8080
+
+USER proxy
 
 EXPOSE 8080
 

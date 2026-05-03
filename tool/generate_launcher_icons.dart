@@ -37,14 +37,14 @@ import 'package:image/image.dart' as img;
 // chrome the moment it opens.
 // ─────────────────────────────────────────────────────────────────────────────
 
-const _bgDeep         = 0xFF0A1628;   // AppColors.background
-const _bgSurface      = 0xFF0F1D32;   // AppColors.surface
-const _primary        = 0xFF7A9ABF;   // AppColors.primary
-const _primaryLight   = 0xFFB0C4D8;   // AppColors.primaryLight
-const _primaryDark    = 0xFF4A6B8A;   // AppColors.primaryDark
-const _accent         = 0xFFD4A574;   // AppColors.accent
-const _accentLight    = 0xFFE8C49A;   // AppColors.accentLight
-const _silver         = 0xFFD0D8E4;   // AppColors.textPrimary
+const _bgDeep = 0xFF0A1628; // AppColors.background
+const _bgSurface = 0xFF0F1D32; // AppColors.surface
+const _primary = 0xFF7A9ABF; // AppColors.primary
+const _primaryLight = 0xFFB0C4D8; // AppColors.primaryLight
+const _primaryDark = 0xFF4A6B8A; // AppColors.primaryDark
+const _accent = 0xFFD4A574; // AppColors.accent
+const _accentLight = 0xFFE8C49A; // AppColors.accentLight
+const _silver = 0xFFD0D8E4; // AppColors.textPrimary
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Master canvas size. Every other size is resampled from this — picking 1024
@@ -66,10 +66,10 @@ class _AndroidTarget {
 }
 
 const _androidLegacy = <_AndroidTarget>[
-  _AndroidTarget('mdpi',     48),
-  _AndroidTarget('hdpi',     72),
-  _AndroidTarget('xhdpi',    96),
-  _AndroidTarget('xxhdpi',  144),
+  _AndroidTarget('mdpi', 48),
+  _AndroidTarget('hdpi', 72),
+  _AndroidTarget('xhdpi', 96),
+  _AndroidTarget('xxhdpi', 144),
   _AndroidTarget('xxxhdpi', 192),
 ];
 
@@ -77,10 +77,10 @@ const _androidLegacy = <_AndroidTarget>[
 // canvas; vendor masks may crop everything outside it. We keep the radar
 // rings well inside that zone (see [_drawForeground]).
 const _androidAdaptive = <_AndroidTarget>[
-  _AndroidTarget('mdpi',    108),
-  _AndroidTarget('hdpi',    162),
-  _AndroidTarget('xhdpi',   216),
-  _AndroidTarget('xxhdpi',  324),
+  _AndroidTarget('mdpi', 108),
+  _AndroidTarget('hdpi', 162),
+  _AndroidTarget('xhdpi', 216),
+  _AndroidTarget('xxhdpi', 324),
   _AndroidTarget('xxxhdpi', 432),
 ];
 
@@ -94,21 +94,21 @@ class _IosTarget {
 }
 
 const _iosTargets = <_IosTarget>[
-  _IosTarget('Icon-App-20x20@1x.png',     20),
-  _IosTarget('Icon-App-20x20@2x.png',     40),
-  _IosTarget('Icon-App-20x20@3x.png',     60),
-  _IosTarget('Icon-App-29x29@1x.png',     29),
-  _IosTarget('Icon-App-29x29@2x.png',     58),
-  _IosTarget('Icon-App-29x29@3x.png',     87),
-  _IosTarget('Icon-App-40x40@1x.png',     40),
-  _IosTarget('Icon-App-40x40@2x.png',     80),
-  _IosTarget('Icon-App-40x40@3x.png',    120),
-  _IosTarget('Icon-App-60x60@2x.png',    120),
-  _IosTarget('Icon-App-60x60@3x.png',    180),
-  _IosTarget('Icon-App-76x76@1x.png',     76),
-  _IosTarget('Icon-App-76x76@2x.png',    152),
-  _IosTarget('Icon-App-83.5x83.5@2x.png',167),
-  _IosTarget('Icon-App-1024x1024@1x.png',1024),
+  _IosTarget('Icon-App-20x20@1x.png', 20),
+  _IosTarget('Icon-App-20x20@2x.png', 40),
+  _IosTarget('Icon-App-20x20@3x.png', 60),
+  _IosTarget('Icon-App-29x29@1x.png', 29),
+  _IosTarget('Icon-App-29x29@2x.png', 58),
+  _IosTarget('Icon-App-29x29@3x.png', 87),
+  _IosTarget('Icon-App-40x40@1x.png', 40),
+  _IosTarget('Icon-App-40x40@2x.png', 80),
+  _IosTarget('Icon-App-40x40@3x.png', 120),
+  _IosTarget('Icon-App-60x60@2x.png', 120),
+  _IosTarget('Icon-App-60x60@3x.png', 180),
+  _IosTarget('Icon-App-76x76@1x.png', 76),
+  _IosTarget('Icon-App-76x76@2x.png', 152),
+  _IosTarget('Icon-App-83.5x83.5@2x.png', 167),
+  _IosTarget('Icon-App-1024x1024@1x.png', 1024),
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -119,11 +119,15 @@ const _iosTargets = <_IosTarget>[
 /// [outerHex] (corners). The fall-off uses squared distance for a softer
 /// roll, which reads better at small icon sizes than a linear ramp.
 void _fillRadial(img.Image image, int innerHex, int outerHex) {
-  final cx = image.width  / 2;
+  final cx = image.width / 2;
   final cy = image.height / 2;
   final maxR = math.sqrt(cx * cx + cy * cy);
-  final iR = (innerHex >> 16) & 0xFF, iG = (innerHex >> 8) & 0xFF, iB = innerHex & 0xFF;
-  final oR = (outerHex >> 16) & 0xFF, oG = (outerHex >> 8) & 0xFF, oB = outerHex & 0xFF;
+  final iR = (innerHex >> 16) & 0xFF,
+      iG = (innerHex >> 8) & 0xFF,
+      iB = innerHex & 0xFF;
+  final oR = (outerHex >> 16) & 0xFF,
+      oG = (outerHex >> 8) & 0xFF,
+      oB = outerHex & 0xFF;
   for (var y = 0; y < image.height; y++) {
     for (var x = 0; x < image.width; x++) {
       final dx = x - cx;
@@ -149,7 +153,7 @@ void _drawRing(
   int hex, {
   int alpha = 255,
 }) {
-  final cx = image.width  / 2;
+  final cx = image.width / 2;
   final cy = image.height / 2;
   final inner = r - thickness / 2;
   final outer = r + thickness / 2;
@@ -158,16 +162,16 @@ void _drawRing(
 
   // Iterate only over the bounding annulus to keep this fast on large
   // canvases — O(r·thickness) instead of O(width·height).
-  final yMin = math.max(0,                  (cy - outer - fade).floor());
-  final yMax = math.min(image.height - 1,   (cy + outer + fade).ceil());
-  final xMin = math.max(0,                  (cx - outer - fade).floor());
-  final xMax = math.min(image.width  - 1,   (cx + outer + fade).ceil());
+  final yMin = math.max(0, (cy - outer - fade).floor());
+  final yMax = math.min(image.height - 1, (cy + outer + fade).ceil());
+  final xMin = math.max(0, (cx - outer - fade).floor());
+  final xMax = math.min(image.width - 1, (cx + outer + fade).ceil());
 
   for (var y = yMin; y <= yMax; y++) {
     for (var x = xMin; x <= xMax; x++) {
       final dx = x - cx;
       final dy = y - cy;
-      final d  = math.sqrt(dx * dx + dy * dy);
+      final d = math.sqrt(dx * dx + dy * dy);
       double a;
       if (d < inner - fade || d > outer + fade) {
         continue;
@@ -194,7 +198,7 @@ void _drawSweep(
   int hex, {
   int alphaPeak = 200,
 }) {
-  final cx = image.width  / 2;
+  final cx = image.width / 2;
   final cy = image.height / 2;
   final cR = (hex >> 16) & 0xFF, cG = (hex >> 8) & 0xFF, cB = hex & 0xFF;
 
@@ -203,16 +207,16 @@ void _drawSweep(
   final a0 = toRad(startDeg);
   final a1 = toRad(endDeg);
 
-  final yMin = math.max(0,                  (cy - rOuter).floor());
-  final yMax = math.min(image.height - 1,   (cy + rOuter).ceil());
-  final xMin = math.max(0,                  (cx - rOuter).floor());
-  final xMax = math.min(image.width  - 1,   (cx + rOuter).ceil());
+  final yMin = math.max(0, (cy - rOuter).floor());
+  final yMax = math.min(image.height - 1, (cy + rOuter).ceil());
+  final xMin = math.max(0, (cx - rOuter).floor());
+  final xMax = math.min(image.width - 1, (cx + rOuter).ceil());
 
   for (var y = yMin; y <= yMax; y++) {
     for (var x = xMin; x <= xMax; x++) {
       final dx = x - cx;
       final dy = y - cy;
-      final d  = math.sqrt(dx * dx + dy * dy);
+      final d = math.sqrt(dx * dx + dy * dy);
       if (d > rOuter) continue;
       final ang = math.atan2(dy, dx);
       // Normalise so a0 is 0 in the local angular frame.
@@ -223,8 +227,8 @@ void _drawSweep(
       final span = a1 - a0;
       if (rel > span) continue;
       // Trailing fade: bright at the leading edge, soft at the tail.
-      final t = rel / span;            // 0 leading → 1 trailing
-      final a = (1 - t) * (1 - t);     // quadratic ease-out tail
+      final t = rel / span; // 0 leading → 1 trailing
+      final a = (1 - t) * (1 - t); // quadratic ease-out tail
       final radial = 1 - (d / rOuter); // fade inward as well
       final alpha = (alphaPeak * a * radial).round();
       if (alpha <= 0) continue;
@@ -243,8 +247,16 @@ void _fillPolygon(
 }) {
   if (pts.length < 3) return;
   final cR = (hex >> 16) & 0xFF, cG = (hex >> 8) & 0xFF, cB = hex & 0xFF;
-  final yMin = pts.map((p) => p[1]).reduce(math.min).floor().clamp(0, image.height - 1);
-  final yMax = pts.map((p) => p[1]).reduce(math.max).ceil().clamp(0, image.height - 1);
+  final yMin = pts
+      .map((p) => p[1])
+      .reduce(math.min)
+      .floor()
+      .clamp(0, image.height - 1);
+  final yMax = pts
+      .map((p) => p[1])
+      .reduce(math.max)
+      .ceil()
+      .clamp(0, image.height - 1);
   for (var y = yMin; y <= yMax; y++) {
     final xs = <double>[];
     for (var i = 0; i < pts.length; i++) {
@@ -331,9 +343,21 @@ void _drawCommonForeground(img.Image canvas, {double scale = 1.0}) {
 
   // Three concentric rings — outer dim, middle medium, inner bright. The
   // ratios were eyeballed against a 192 px Pixel-launcher mock.
-  _drawRing(canvas, base * 0.78, math.max(2, w * 0.012), _primaryDark,  alpha: 220);
-  _drawRing(canvas, base * 0.55, math.max(2, w * 0.014), _primary,      alpha: 230);
-  _drawRing(canvas, base * 0.32, math.max(2, w * 0.016), _primaryLight, alpha: 245);
+  _drawRing(
+    canvas,
+    base * 0.78,
+    math.max(2, w * 0.012),
+    _primaryDark,
+    alpha: 220,
+  );
+  _drawRing(canvas, base * 0.55, math.max(2, w * 0.014), _primary, alpha: 230);
+  _drawRing(
+    canvas,
+    base * 0.32,
+    math.max(2, w * 0.016),
+    _primaryLight,
+    alpha: 245,
+  );
 
   // A subtle hairline at the very rim — this is what gives the glyph a
   // "machined" feel on retina displays.
@@ -341,30 +365,31 @@ void _drawCommonForeground(img.Image canvas, {double scale = 1.0}) {
 
   // Sweep arc — 35° wide leading at the 1 o'clock position. Bright bronze
   // peak fading both rotationally and inward.
-  _drawSweep(canvas,  35, 70, base * 0.78, _accentLight, alphaPeak: 230);
-  _drawSweep(canvas,  20, 35, base * 0.78, _accent,      alphaPeak: 90);
+  _drawSweep(canvas, 35, 70, base * 0.78, _accentLight, alphaPeak: 230);
+  _drawSweep(canvas, 20, 35, base * 0.78, _accent, alphaPeak: 90);
 
   // Aircraft glyph at centre. Defined as a small triangle (fuselage+nose)
   // plus a tail line; the silhouette is slightly tilted to suggest motion.
   // Coordinates are in canvas pixels.
-  final s = base * 0.20;                      // half-length of the fuselage
-  const theta = -25 * math.pi / 180;          // heading offset (NNE)
+  final s = base * 0.20; // half-length of the fuselage
+  const theta = -25 * math.pi / 180; // heading offset (NNE)
   List<double> rot(double x, double y) {
     final rx = x * math.cos(theta) - y * math.sin(theta);
     final ry = x * math.sin(theta) + y * math.cos(theta);
     return [cx + rx, cx + ry];
   }
-  final nose      = rot(0,        -s * 1.10);
-  final tailLeft  = rot(-s * 0.85, s * 0.40);
-  final tailRight = rot( s * 0.85, s * 0.40);
-  final tailBase  = rot(0,         s * 0.25);
+
+  final nose = rot(0, -s * 1.10);
+  final tailLeft = rot(-s * 0.85, s * 0.40);
+  final tailRight = rot(s * 0.85, s * 0.40);
+  final tailBase = rot(0, s * 0.25);
   // Body
   _fillPolygon(canvas, [nose, tailLeft, tailBase], _silver);
   _fillPolygon(canvas, [nose, tailRight, tailBase], _accentLight);
   // Tail fin (vertical stabiliser)
-  final finTip   = rot(0,  s * 0.65);
-  final finLeft  = rot(-s * 0.18, s * 0.30);
-  final finRight = rot( s * 0.18, s * 0.30);
+  final finTip = rot(0, s * 0.65);
+  final finLeft = rot(-s * 0.18, s * 0.30);
+  final finRight = rot(s * 0.18, s * 0.30);
   _fillPolygon(canvas, [finTip, finLeft, finRight], _silver);
 }
 
@@ -379,14 +404,18 @@ void _writePng(img.Image image, String path) {
   stdout.writeln('  → $path');
 }
 
-img.Image _resize(img.Image src, int size) =>
-    img.copyResize(src, width: size, height: size, interpolation: img.Interpolation.cubic);
+img.Image _resize(img.Image src, int size) => img.copyResize(
+  src,
+  width: size,
+  height: size,
+  interpolation: img.Interpolation.cubic,
+);
 
 void main() {
   stdout.writeln('Rendering AirWatch launcher master…');
-  final masterLegacy        = _renderLegacy(_masterSize);
-  final masterAdaptiveFg    = _renderAdaptiveForeground(_masterSize);
-  final masterAdaptiveBg    = _renderAdaptiveBackground(_masterSize);
+  final masterLegacy = _renderLegacy(_masterSize);
+  final masterAdaptiveFg = _renderAdaptiveForeground(_masterSize);
+  final masterAdaptiveBg = _renderAdaptiveBackground(_masterSize);
 
   stdout.writeln('Android (legacy mipmap-*):');
   for (final t in _androidLegacy) {
@@ -397,8 +426,14 @@ void main() {
   stdout.writeln('Android (adaptive foreground/background):');
   for (final t in _androidAdaptive) {
     final dir = 'android/app/src/main/res/mipmap-${t.density}';
-    _writePng(_resize(masterAdaptiveFg, t.size), '$dir/ic_launcher_foreground.png');
-    _writePng(_resize(masterAdaptiveBg, t.size), '$dir/ic_launcher_background.png');
+    _writePng(
+      _resize(masterAdaptiveFg, t.size),
+      '$dir/ic_launcher_foreground.png',
+    );
+    _writePng(
+      _resize(masterAdaptiveBg, t.size),
+      '$dir/ic_launcher_background.png',
+    );
   }
 
   stdout.writeln('iOS (Assets.xcassets/AppIcon.appiconset):');

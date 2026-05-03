@@ -51,8 +51,10 @@ class NotificationService {
     // Android 8+ requires explicit channel registration. We declare
     // both up-front so the channel UI in system settings shows up
     // even before we've fired the first notification.
-    final androidImpl = _plugin.resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>();
+    final androidImpl = _plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
     if (androidImpl != null) {
       await androidImpl.createNotificationChannel(
         const AndroidNotificationChannel(
@@ -60,7 +62,7 @@ class NotificationService {
           'Emergency squawks',
           description:
               'Critical aviation alerts: 7500 hijack, 7600 radio failure, '
-                  '7700 general emergency.',
+              '7700 general emergency.',
           importance: Importance.max,
         ),
       );
@@ -68,8 +70,7 @@ class NotificationService {
         const AndroidNotificationChannel(
           _channelGeofence,
           'Geofence alerts',
-          description:
-              'Fires when an aircraft enters one of your saved zones.',
+          description: 'Fires when an aircraft enters one of your saved zones.',
           importance: Importance.high,
         ),
       );
@@ -79,10 +80,14 @@ class NotificationService {
   /// Ask the OS for permission to post notifications. Required on
   /// Android 13+ (POST_NOTIFICATIONS runtime permission) and iOS.
   Future<bool> requestPermissions() async {
-    final android = _plugin.resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>();
-    final ios = _plugin.resolvePlatformSpecificImplementation<
-        IOSFlutterLocalNotificationsPlugin>();
+    final android = _plugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+    final ios = _plugin
+        .resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin
+        >();
 
     bool granted = true;
     if (android != null) {
@@ -92,7 +97,11 @@ class NotificationService {
       granted = granted && (r ?? true);
     }
     if (ios != null) {
-      final r = await ios.requestPermissions(alert: true, badge: true, sound: true);
+      final r = await ios.requestPermissions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
       granted = granted && (r ?? true);
     }
     return granted;

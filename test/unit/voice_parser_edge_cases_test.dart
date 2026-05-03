@@ -13,14 +13,12 @@ void main() {
     });
 
     test('extra leading + trailing whitespace is trimmed', () {
-      final cmd =
-          parseVoiceCommand('   track DLH123   \n', AppLanguage.en);
+      final cmd = parseVoiceCommand('   track DLH123   \n', AppLanguage.en);
       expect((cmd as VShowFlight).callsign, 'DLH123');
     });
 
     test('inner double-space matches as if single', () {
-      final cmd =
-          parseVoiceCommand('show  flight  DLH123', AppLanguage.en);
+      final cmd = parseVoiceCommand('show  flight  DLH123', AppLanguage.en);
       expect(cmd, isA<VShowFlight>());
     });
 
@@ -39,8 +37,7 @@ void main() {
     });
 
     test('3-letter / 5-digit (max digits) matches (e.g. DLH12345)', () {
-      final cmd =
-          parseVoiceCommand('show flight DLH12345', AppLanguage.en);
+      final cmd = parseVoiceCommand('show flight DLH12345', AppLanguage.en);
       expect((cmd as VShowFlight).callsign, 'DLH12345');
     });
 
@@ -91,8 +88,10 @@ void main() {
     test('random sentence with no keywords returns null', () {
       // Has to truly contain no recognised keywords. "the cat sat on
       // the mat" is genuinely unparseable.
-      expect(parseVoiceCommand('the cat sat on the mat', AppLanguage.en),
-          isNull);
+      expect(
+        parseVoiceCommand('the cat sat on the mat', AppLanguage.en),
+        isNull,
+      );
     });
 
     test('"weather" anywhere in the sentence triggers toggleRadar', () {
@@ -100,8 +99,10 @@ void main() {
       // sentence containing "weather" toggles the radar. Documented
       // here so future tightening of the regex doesn't silently
       // change this.
-      final maybeRadar =
-          parseVoiceCommand('how is the weather right now', AppLanguage.en);
+      final maybeRadar = parseVoiceCommand(
+        'how is the weather right now',
+        AppLanguage.en,
+      );
       expect(maybeRadar, isA<VToggleRadar>());
     });
 
@@ -145,10 +146,8 @@ void main() {
     test('"radar" works in DE and FR via fallback', () {
       // German pattern matches "radar" — but if it didn't, the EN
       // fallback would still cover it.
-      expect(parseVoiceCommand('radar', AppLanguage.de),
-          isA<VToggleRadar>());
-      expect(parseVoiceCommand('radar', AppLanguage.fr),
-          isA<VToggleRadar>());
+      expect(parseVoiceCommand('radar', AppLanguage.de), isA<VToggleRadar>());
+      expect(parseVoiceCommand('radar', AppLanguage.fr), isA<VToggleRadar>());
     });
   });
 
@@ -175,8 +174,7 @@ void main() {
 
     test('"flughafen CDG" via the second DE pattern', () {
       // Pattern: (?:zeige?)\s+flughafen\s+(\S{3,})
-      final cmd =
-          parseVoiceCommand('zeige flughafen CDG', AppLanguage.de);
+      final cmd = parseVoiceCommand('zeige flughafen CDG', AppLanguage.de);
       expect(cmd, isA<VGoToAirport>());
       expect((cmd as VGoToAirport).query, 'CDG');
     });
@@ -186,8 +184,7 @@ void main() {
   group('French locale specifics', () {
     test('accent variations — "à" vs "a"', () {
       // Pattern uses `[àa]`, so both should match.
-      final accented =
-          parseVoiceCommand('aller à CDG', AppLanguage.fr);
+      final accented = parseVoiceCommand('aller à CDG', AppLanguage.fr);
       final plain = parseVoiceCommand('aller a CDG', AppLanguage.fr);
       expect(accented, isA<VGoToAirport>());
       expect(plain, isA<VGoToAirport>());
@@ -195,10 +192,11 @@ void main() {
 
     test('"aéroport" with diacritic vs "aeroport" without', () {
       // Pattern: (?:l')?a[ée]roport — both forms should match.
-      final accented =
-          parseVoiceCommand('aller à aéroport CDG', AppLanguage.fr);
-      final plain =
-          parseVoiceCommand('aller a aeroport CDG', AppLanguage.fr);
+      final accented = parseVoiceCommand(
+        'aller à aéroport CDG',
+        AppLanguage.fr,
+      );
+      final plain = parseVoiceCommand('aller a aeroport CDG', AppLanguage.fr);
       expect((accented as VGoToAirport).query, 'CDG');
       expect((plain as VGoToAirport).query, 'CDG');
     });
@@ -226,12 +224,14 @@ void main() {
       expect(cmd, isNull);
     });
 
-    test('numeric query (4 digits) — regex matches \\w which includes digits',
-        () {
-      // \w covers digits, so the catch-all can match a numeric query.
-      // This is by design — some airports have numeric ICAO-ish codes.
-      final cmd = parseVoiceCommand('go to 1234', AppLanguage.en);
-      expect(cmd, isA<VGoToAirport>());
-    });
+    test(
+      'numeric query (4 digits) — regex matches \\w which includes digits',
+      () {
+        // \w covers digits, so the catch-all can match a numeric query.
+        // This is by design — some airports have numeric ICAO-ish codes.
+        final cmd = parseVoiceCommand('go to 1234', AppLanguage.en);
+        expect(cmd, isA<VGoToAirport>());
+      },
+    );
   });
 }

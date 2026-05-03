@@ -123,10 +123,7 @@ class _RadarOverlayPainter extends CustomPainter {
       ..shader = SweepGradient(
         startAngle: sweepAngle - 0.6,
         endAngle: sweepAngle,
-        colors: [
-          color.withValues(alpha: 0.0),
-          color.withValues(alpha: 0.06),
-        ],
+        colors: [color.withValues(alpha: 0.0), color.withValues(alpha: 0.06)],
       ).createShader(Rect.fromCircle(center: center, radius: maxRadius));
     canvas.drawCircle(center, maxRadius, sweepPaint);
 
@@ -135,20 +132,18 @@ class _RadarOverlayPainter extends CustomPainter {
       ..color = color.withValues(alpha: 0.04)
       ..strokeWidth = 0.5;
     canvas.drawLine(
-        Offset(center.dx, center.dy - maxRadius),
-        Offset(center.dx, center.dy + maxRadius),
-        crossPaint);
+      Offset(center.dx, center.dy - maxRadius),
+      Offset(center.dx, center.dy + maxRadius),
+      crossPaint,
+    );
     canvas.drawLine(
-        Offset(center.dx - maxRadius, center.dy),
-        Offset(center.dx + maxRadius, center.dy),
-        crossPaint);
+      Offset(center.dx - maxRadius, center.dy),
+      Offset(center.dx + maxRadius, center.dy),
+      crossPaint,
+    );
 
     // ── Center dot ──
-    canvas.drawCircle(
-      center,
-      3,
-      Paint()..color = color.withValues(alpha: 0.3),
-    );
+    canvas.drawCircle(center, 3, Paint()..color = color.withValues(alpha: 0.3));
     canvas.drawCircle(
       center,
       1.5,

@@ -25,7 +25,7 @@ class AdminLoginScreen extends ConsumerStatefulWidget {
 
 class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
   final _user = TextEditingController(text: 'viewer');
-  final _pw   = TextEditingController();
+  final _pw = TextEditingController();
   final _totp = TextEditingController();
   bool _busy = false;
   String? _error;
@@ -39,13 +39,18 @@ class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
   }
 
   Future<void> _submit() async {
-    setState(() { _busy = true; _error = null; });
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
     final s = S.of(ref.read(languageProvider));
-    final ok = await ref.read(adminSignedInProvider.notifier).login(
-      _user.text.trim(),
-      _pw.text,
-      totp: _totp.text.trim().isEmpty ? null : _totp.text.trim(),
-    );
+    final ok = await ref
+        .read(adminSignedInProvider.notifier)
+        .login(
+          _user.text.trim(),
+          _pw.text,
+          totp: _totp.text.trim().isEmpty ? null : _totp.text.trim(),
+        );
     if (!mounted) return;
     if (ok) {
       unawaited(
@@ -54,7 +59,10 @@ class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
         ),
       );
     } else {
-      setState(() { _busy = false; _error = s.adminBadCreds; });
+      setState(() {
+        _busy = false;
+        _error = s.adminBadCreds;
+      });
     }
   }
 
@@ -76,13 +84,29 @@ class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.shield_moon_outlined, size: 48, color: AppColors.primary),
+                const Icon(
+                  Icons.shield_moon_outlined,
+                  size: 48,
+                  color: AppColors.primary,
+                ),
                 const SizedBox(height: 12),
-                Text(s.adminLogin,
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800, letterSpacing: 1)),
+                Text(
+                  s.adminLogin,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1,
+                  ),
+                ),
                 const SizedBox(height: 4),
-                const Text('airwatch-api',
-                    style: TextStyle(fontSize: 11, color: AppColors.textMuted, letterSpacing: 1)),
+                const Text(
+                  'airwatch-api',
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: AppColors.textMuted,
+                    letterSpacing: 1,
+                  ),
+                ),
                 const SizedBox(height: 24),
                 TextField(
                   controller: _user,
@@ -109,7 +133,7 @@ class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
                 TextField(
                   controller: _totp,
                   decoration: InputDecoration(
-                    labelText:  s.adminTotpLabel,
+                    labelText: s.adminTotpLabel,
                     helperText: s.adminTotpHint,
                     border: const OutlineInputBorder(),
                   ),
@@ -127,7 +151,11 @@ class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
                   child: FilledButton(
                     onPressed: _busy ? null : _submit,
                     child: _busy
-                        ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
+                        ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
                         : Text(s.adminSignIn),
                   ),
                 ),

@@ -20,12 +20,22 @@ class UiConstants {
   static const Duration retryDelay = Duration(seconds: 5);
 
   static const EdgeInsets screenPadding = EdgeInsets.symmetric(horizontal: 16);
-  static const EdgeInsets searchHeaderPadding = EdgeInsets.fromLTRB(16, 8, 16, 0);
+  static const EdgeInsets searchHeaderPadding = EdgeInsets.fromLTRB(
+    16,
+    8,
+    16,
+    0,
+  );
   static const EdgeInsets searchResultsPadding = EdgeInsets.symmetric(
     horizontal: 16,
     vertical: 4,
   );
-  static const EdgeInsets panelHeaderPadding = EdgeInsets.fromLTRB(14, 12, 10, 10);
+  static const EdgeInsets panelHeaderPadding = EdgeInsets.fromLTRB(
+    14,
+    12,
+    10,
+    10,
+  );
   static const EdgeInsets panelSectionPadding = EdgeInsets.symmetric(
     horizontal: 14,
     vertical: 12,

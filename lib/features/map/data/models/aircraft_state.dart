@@ -20,6 +20,7 @@ class AircraftState {
   final bool spiFlag;
   final int positionSource;
   final int category;
+
   /// Flight status from Airlabs: 'en-route', 'landed', 'scheduled', 'cancelled'
   final String? flightStatus;
 
@@ -52,11 +53,11 @@ class AircraftState {
     this.previousPosition,
     DateTime? lastUpdate,
     List<LatLng>? trail,
-  })  : position = (latitude != null && longitude != null)
-            ? LatLng(latitude, longitude)
-            : null,
-        lastUpdate = lastUpdate ?? DateTime.now(),
-        trail = trail ?? [];
+  }) : position = (latitude != null && longitude != null)
+           ? LatLng(latitude, longitude)
+           : null,
+       lastUpdate = lastUpdate ?? DateTime.now(),
+       trail = trail ?? [];
 
   @Deprecated('OpenSky data source is disabled. Use Airlabs parser instead.')
   factory AircraftState.fromOpenSkyList(List<dynamic> data) {
@@ -134,18 +135,18 @@ class AircraftState {
   bool get hasPosition => latitude != null && longitude != null;
 
   Map<String, dynamic> toJson() => {
-        'icao24': icao24,
-        'callsign': callsign,
-        'origin_country': originCountry,
-        'latitude': latitude,
-        'longitude': longitude,
-        'baro_altitude': baroAltitude,
-        'on_ground': onGround,
-        'velocity': velocity,
-        'true_track': trueTrack,
-        'vertical_rate': verticalRate,
-        'geo_altitude': geoAltitude,
-        'category': category,
-        'flight_status': flightStatus,
-      };
+    'icao24': icao24,
+    'callsign': callsign,
+    'origin_country': originCountry,
+    'latitude': latitude,
+    'longitude': longitude,
+    'baro_altitude': baroAltitude,
+    'on_ground': onGround,
+    'velocity': velocity,
+    'true_track': trueTrack,
+    'vertical_rate': verticalRate,
+    'geo_altitude': geoAltitude,
+    'category': category,
+    'flight_status': flightStatus,
+  };
 }

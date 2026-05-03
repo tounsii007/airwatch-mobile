@@ -8,25 +8,23 @@ import 'package:airwatch_mobile/features/notifications/presentation/widgets/aler
 
 Widget _wrap({required List<AppAlert> alerts}) {
   return ProviderScope(
-    overrides: [
-      alertsProvider.overrideWith((ref) => alerts),
-    ],
+    overrides: [alertsProvider.overrideWith((ref) => alerts)],
     child: MaterialApp(
       theme: ThemeData.dark(),
       home: const Scaffold(
         body: SafeArea(
-          child: Padding(
-            padding: EdgeInsets.all(8),
-            child: AlertBell(),
-          ),
+          child: Padding(padding: EdgeInsets.all(8), child: AlertBell()),
         ),
       ),
     ),
   );
 }
 
-AppAlert _alert({required AlertKind kind, String id = 'x', String title = 'Test'}) =>
-    AppAlert(id: id, kind: kind, title: title, firedAt: DateTime.now());
+AppAlert _alert({
+  required AlertKind kind,
+  String id = 'x',
+  String title = 'Test',
+}) => AppAlert(id: id, kind: kind, title: title, firedAt: DateTime.now());
 
 void main() {
   group('AlertBell widget', () {
@@ -54,13 +52,17 @@ void main() {
     });
 
     testWidgets('tap opens the alerts bottom-sheet', (tester) async {
-      await tester.pumpWidget(_wrap(alerts: [
-        _alert(
-          kind: AlertKind.squawk,
-          id: 'sq-1',
-          title: 'Emergency squawk',
+      await tester.pumpWidget(
+        _wrap(
+          alerts: [
+            _alert(
+              kind: AlertKind.squawk,
+              id: 'sq-1',
+              title: 'Emergency squawk',
+            ),
+          ],
         ),
-      ]));
+      );
       await tester.tap(find.byIcon(Icons.notifications_active_rounded));
       await tester.pumpAndSettle();
       expect(find.text('ALERTS · 1'), findsOneWidget);

@@ -26,58 +26,74 @@ Widget _harness({
   required Map<String, AircraftState> seed,
 }) {
   return ProviderScope(
-    overrides: [
-      aircraftStreamProvider.overrideWith((_) => Stream.value(seed)),
-    ],
+    overrides: [aircraftStreamProvider.overrideWith((_) => Stream.value(seed))],
     child: MaterialApp(home: child),
   );
 }
 
 void main() {
   group('AirlinesScreen', () {
-    testWidgets('renders the empty-state string when no airline matches', (tester) async {
-      await tester.pumpWidget(_harness(
-        child: const AirlinesScreen(),
-        seed: const {}, // empty flight feed
-      ));
+    testWidgets('renders the empty-state string when no airline matches', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _harness(
+          child: const AirlinesScreen(),
+          seed: const {}, // empty flight feed
+        ),
+      );
       // First frame is the loading spinner; pumping again drains the override.
       await tester.pumpAndSettle();
 
       // The English locale-default copy is exposed via S.of('en').noAirlinesActive.
-      expect(find.text('No airborne flights match an airline yet'), findsOneWidget);
+      expect(
+        find.text('No airborne flights match an airline yet'),
+        findsOneWidget,
+      );
     });
 
-    testWidgets('groups by ICAO code and shows the count badge', (tester) async {
+    testWidgets('groups by ICAO code and shows the count badge', (
+      tester,
+    ) async {
       final seed = {
         'a1': _ac('a1', 'DLH400'),
         'a2': _ac('a2', 'DLH401'),
         'a3': _ac('a3', 'AFR123'),
       };
-      await tester.pumpWidget(_harness(child: const AirlinesScreen(), seed: seed));
+      await tester.pumpWidget(
+        _harness(child: const AirlinesScreen(), seed: seed),
+      );
       await tester.pumpAndSettle();
 
       // Lufthansa (DLH) has 2 flights, Air France (AFR) has 1 — both must be rendered.
       expect(find.text('DLH'), findsWidgets);
       expect(find.text('AFR'), findsWidgets);
       expect(find.text('2 flights'), findsOneWidget);
-      expect(find.text('1 flight'),  findsOneWidget);
+      expect(find.text('1 flight'), findsOneWidget);
     });
 
-    testWidgets('orders carriers by descending count (Lufthansa above Air France)',
-        (tester) async {
-      final seed = {
-        'a1': _ac('a1', 'AFR123'),
-        'a2': _ac('a2', 'DLH400'),
-        'a3': _ac('a3', 'DLH401'),
-      };
-      await tester.pumpWidget(_harness(child: const AirlinesScreen(), seed: seed));
-      await tester.pumpAndSettle();
+    testWidgets(
+      'orders carriers by descending count (Lufthansa above Air France)',
+      (tester) async {
+        final seed = {
+          'a1': _ac('a1', 'AFR123'),
+          'a2': _ac('a2', 'DLH400'),
+          'a3': _ac('a3', 'DLH401'),
+        };
+        await tester.pumpWidget(
+          _harness(child: const AirlinesScreen(), seed: seed),
+        );
+        await tester.pumpAndSettle();
 
-      // Find the y-positions of the two ICAO labels in the rendered list.
-      final dlhCenter = tester.getCenter(find.text('DLH').first);
-      final afrCenter = tester.getCenter(find.text('AFR').first);
-      expect(dlhCenter.dy, lessThan(afrCenter.dy),
-          reason: 'DLH (count 2) should render above AFR (count 1)');
-    });
+        // Find the y-positions of the two ICAO labels in the rendered list.
+        final dlhCenter = tester.getCenter(find.text('DLH').first);
+        final afrCenter = tester.getCenter(find.text('AFR').first);
+        expect(
+          dlhCenter.dy,
+          lessThan(afrCenter.dy),
+          reason: 'DLH (count 2) should render above AFR (count 1)',
+        );
+      },
+    );
   });
 }

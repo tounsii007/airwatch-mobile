@@ -53,21 +53,30 @@ class FlightDetails {
 
   static String _guessTypeFromCategory(int category) {
     switch (category) {
-      case 1: return 'Light Aircraft';
-      case 2: return 'Small Aircraft';
-      case 3: return 'Large Aircraft';
-      case 4: return 'High Vortex Large';
-      case 5: return 'Heavy Aircraft';
-      case 6: return 'High Performance';
-      case 7: return 'Rotorcraft';
-      default: return 'Unknown Type';
+      case 1:
+        return 'Light Aircraft';
+      case 2:
+        return 'Small Aircraft';
+      case 3:
+        return 'Large Aircraft';
+      case 4:
+        return 'High Vortex Large';
+      case 5:
+        return 'Heavy Aircraft';
+      case 6:
+        return 'High Performance';
+      case 7:
+        return 'Rotorcraft';
+      default:
+        return 'Unknown Type';
     }
   }
 }
 
 /// Provider that fetches full details when an aircraft is selected
-final flightDetailsProvider =
-    FutureProvider.autoDispose<FlightDetails?>((ref) async {
+final flightDetailsProvider = FutureProvider.autoDispose<FlightDetails?>((
+  ref,
+) async {
   final aircraft = ref.watch(selectedAircraftNotifierProvider);
   if (aircraft == null) return null;
 
@@ -81,14 +90,12 @@ final flightDetailsProvider =
 
   // Start async fetches in parallel
   final routeFuture = datasource.getRouteByCallsign(
-      aircraft.callsign?.trim() ?? '');
+    aircraft.callsign?.trim() ?? '',
+  );
   final metadataFuture = datasource.getAircraftByIcao24(aircraft.icao24);
 
   // Return immediately with what we have, then update
-  final results = await Future.wait([
-    routeFuture,
-    metadataFuture,
-  ]);
+  final results = await Future.wait([routeFuture, metadataFuture]);
 
   final route = results[0] as FlightRouteInfo?;
   final metadata = results[1] as AircraftMetadata?;
@@ -124,8 +131,24 @@ final _selectedAircraftProviderProxy = Provider<AircraftState?>((ref) {
 });
 
 const Map<String, String> _airlineLookupByIcao = {
-  'AAL': 'AA', 'AFR': 'AF', 'BAW': 'BA', 'DAL': 'DL', 'DLH': 'LH',
-  'EIN': 'EI', 'ETD': 'EY', 'EZY': 'U2', 'IBE': 'IB', 'KLM': 'KL',
-  'QFA': 'QF', 'QTR': 'QR', 'RYR': 'FR', 'SAS': 'SK', 'SIA': 'SQ',
-  'SWR': 'LX', 'THY': 'TK', 'UAE': 'EK', 'UAL': 'UA', 'WZZ': 'W6',
+  'AAL': 'AA',
+  'AFR': 'AF',
+  'BAW': 'BA',
+  'DAL': 'DL',
+  'DLH': 'LH',
+  'EIN': 'EI',
+  'ETD': 'EY',
+  'EZY': 'U2',
+  'IBE': 'IB',
+  'KLM': 'KL',
+  'QFA': 'QF',
+  'QTR': 'QR',
+  'RYR': 'FR',
+  'SAS': 'SK',
+  'SIA': 'SQ',
+  'SWR': 'LX',
+  'THY': 'TK',
+  'UAE': 'EK',
+  'UAL': 'UA',
+  'WZZ': 'W6',
 };

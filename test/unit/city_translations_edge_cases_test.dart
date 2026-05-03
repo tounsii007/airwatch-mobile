@@ -37,11 +37,13 @@ void main() {
       expect(localizeCity('Rome Fiumicino', 'de'), 'Rom Fiumicino');
     });
 
-    test('compound where prefix translation EQUALS English — left untouched',
-        () {
-      // Lyon has the same form in en + de + fr.
-      expect(localizeCity('Lyon Saint-Exupery', 'de'), 'Lyon Saint-Exupery');
-    });
+    test(
+      'compound where prefix translation EQUALS English — left untouched',
+      () {
+        // Lyon has the same form in en + de + fr.
+        expect(localizeCity('Lyon Saint-Exupery', 'de'), 'Lyon Saint-Exupery');
+      },
+    );
 
     test('compound with unknown prefix returns input', () {
       expect(localizeCity('Atlantis Beach', 'de'), 'Atlantis Beach');

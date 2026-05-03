@@ -22,9 +22,15 @@ class AirportScheduleTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = flight.displayCode.isNotEmpty ? flight.displayCode : UiConstants.missingCode;
-    final depIata = flight.depIata.isNotEmpty ? flight.depIata : UiConstants.missingCode;
-    final arrIata = flight.arrIata.isNotEmpty ? flight.arrIata : UiConstants.missingCode;
+    final cs = flight.displayCode.isNotEmpty
+        ? flight.displayCode
+        : UiConstants.missingCode;
+    final depIata = flight.depIata.isNotEmpty
+        ? flight.depIata
+        : UiConstants.missingCode;
+    final arrIata = flight.arrIata.isNotEmpty
+        ? flight.arrIata
+        : UiConstants.missingCode;
     final status = flight.status;
     final scheduledTime = isDep ? flight.depTime : flight.arrTime;
     final delay = isDep ? flight.depDelayed : flight.arrDelayed;
@@ -55,8 +61,7 @@ class AirportScheduleTile extends StatelessWidget {
             ),
             Container(
               margin: const EdgeInsets.only(right: 6),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
               constraints: const BoxConstraints(minWidth: 40),
               decoration: BoxDecoration(
                 color: (delay != null && delay > 0)
@@ -120,8 +125,7 @@ class AirportScheduleTile extends StatelessWidget {
             const SizedBox(width: 6),
             if (statusText.isNotEmpty)
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                 decoration: BoxDecoration(
                   color: statusColor.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(4),

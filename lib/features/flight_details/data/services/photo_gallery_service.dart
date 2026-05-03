@@ -29,11 +29,12 @@ class PhotoGalleryService {
   final Dio _dio;
 
   PhotoGalleryService({Dio? dio})
-      : _dio = dio ??
-            AppHttpClient.create(
-              connectTimeout: AppConfig.shortTimeout,
-              receiveTimeout: AppConfig.shortTimeout,
-            );
+    : _dio =
+          dio ??
+          AppHttpClient.create(
+            connectTimeout: AppConfig.shortTimeout,
+            receiveTimeout: AppConfig.shortTimeout,
+          );
 
   /// Fetch every photo for the given hex ICAO24. Returns an empty list
   /// when the API has none or the call fails — the gallery shows a
@@ -59,12 +60,14 @@ class PhotoGalleryService {
             : null;
         final src = big ?? small;
         if (src == null || src.isEmpty) continue;
-        out.add(AircraftPhoto(
-          thumbnailUrl: small ?? src,
-          fullUrl: AppConfig.imageProxyUrl(src),
-          photographer: p['photographer']?.toString(),
-          sourceLink: p['link']?.toString(),
-        ));
+        out.add(
+          AircraftPhoto(
+            thumbnailUrl: small ?? src,
+            fullUrl: AppConfig.imageProxyUrl(src),
+            photographer: p['photographer']?.toString(),
+            sourceLink: p['link']?.toString(),
+          ),
+        );
       }
       return out;
     } on DioException {

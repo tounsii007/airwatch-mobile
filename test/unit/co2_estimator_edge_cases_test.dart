@@ -71,29 +71,34 @@ void main() {
       }
     });
 
-    test('factors are physically ordered: heavier-than-light, smaller > bigger',
-        () {
-      final small = co2FactorForCategory(2);
-      final large = co2FactorForCategory(3);
-      final heavy = co2FactorForCategory(6);
-      // Smaller jets emit more per km because of worse load factor.
-      expect(small, greaterThan(large));
-      expect(large, greaterThan(heavy));
-    });
+    test(
+      'factors are physically ordered: heavier-than-light, smaller > bigger',
+      () {
+        final small = co2FactorForCategory(2);
+        final large = co2FactorForCategory(3);
+        final heavy = co2FactorForCategory(6);
+        // Smaller jets emit more per km because of worse load factor.
+        expect(small, greaterThan(large));
+        expect(large, greaterThan(heavy));
+      },
+    );
   });
 
   // ───────────────────────────────────────────────────────────────────────
   group('integer rounding', () {
-    test('exactly-halfway km rounds correctly (banker\'s rounding doesn\'t apply)', () {
-      // FRA-MUC ≈ 305 km, factor 0.12 → 36.6 kg → rounds to 37.
-      final est = estimateCo2(
-        departure: const LatLng(50.0379, 8.5622),
-        arrival: const LatLng(48.354, 11.786),
-        aircraftCategory: 3,
-      );
-      expect(est!.co2Kg, isA<int>());
-      expect(est.co2Kg, closeTo(37, 1));
-    });
+    test(
+      'exactly-halfway km rounds correctly (banker\'s rounding doesn\'t apply)',
+      () {
+        // FRA-MUC ≈ 305 km, factor 0.12 → 36.6 kg → rounds to 37.
+        final est = estimateCo2(
+          departure: const LatLng(50.0379, 8.5622),
+          arrival: const LatLng(48.354, 11.786),
+          aircraftCategory: 3,
+        );
+        expect(est!.co2Kg, isA<int>());
+        expect(est.co2Kg, closeTo(37, 1));
+      },
+    );
 
     test('symmetric — A→B distance equals B→A distance', () {
       final ab = estimateCo2(
@@ -115,26 +120,25 @@ void main() {
   group('null inputs — all paths reject cleanly', () {
     test('null dep, null arr, null both', () {
       expect(
-          estimateCo2(
-            departure: null,
-            arrival: const LatLng(0, 0),
-            aircraftCategory: 3,
-          ),
-          isNull);
+        estimateCo2(
+          departure: null,
+          arrival: const LatLng(0, 0),
+          aircraftCategory: 3,
+        ),
+        isNull,
+      );
       expect(
-          estimateCo2(
-            departure: const LatLng(0, 0),
-            arrival: null,
-            aircraftCategory: 3,
-          ),
-          isNull);
+        estimateCo2(
+          departure: const LatLng(0, 0),
+          arrival: null,
+          aircraftCategory: 3,
+        ),
+        isNull,
+      );
       expect(
-          estimateCo2(
-            departure: null,
-            arrival: null,
-            aircraftCategory: 3,
-          ),
-          isNull);
+        estimateCo2(departure: null, arrival: null, aircraftCategory: 3),
+        isNull,
+      );
     });
 
     test('null aircraft category falls back to default factor (0.10)', () {

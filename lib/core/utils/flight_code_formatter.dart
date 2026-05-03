@@ -4,10 +4,7 @@ class ParsedFlightCode {
   final String prefix;
   final String suffix;
 
-  const ParsedFlightCode({
-    required this.prefix,
-    required this.suffix,
-  });
+  const ParsedFlightCode({required this.prefix, required this.suffix});
 }
 
 class FlightCodeFormatter {
@@ -35,15 +32,13 @@ class FlightCodeFormatter {
 
   static ParsedFlightCode? parseFlightCode(String? value) {
     final normalized = _normalize(value);
-    final match =
-        RegExp(r'^([A-Z0-9]{2,3})([0-9]{1,4}[A-Z]?)$').firstMatch(normalized);
+    final match = RegExp(
+      r'^([A-Z0-9]{2,3})([0-9]{1,4}[A-Z]?)$',
+    ).firstMatch(normalized);
     if (match == null) {
       return null;
     }
-    return ParsedFlightCode(
-      prefix: match.group(1)!,
-      suffix: match.group(2)!,
-    );
+    return ParsedFlightCode(prefix: match.group(1)!, suffix: match.group(2)!);
   }
 
   static String displayFlightCode({

@@ -32,7 +32,10 @@ void main() {
 
     test('aircraft inside the radius matches', () {
       // ~30 km north of FRA — well inside 50 km.
-      expect(aircraftIsInsideFence(_ac(lat: 50.30, lon: 8.5622), fence), isTrue);
+      expect(
+        aircraftIsInsideFence(_ac(lat: 50.30, lon: 8.5622), fence),
+        isTrue,
+      );
     });
 
     test('aircraft outside the radius does not match', () {
@@ -42,7 +45,10 @@ void main() {
 
     test('disabled fence never matches', () {
       final disabled = fence.copyWith(active: false);
-      expect(aircraftIsInsideFence(_ac(lat: 50.04, lon: 8.56), disabled), isFalse);
+      expect(
+        aircraftIsInsideFence(_ac(lat: 50.04, lon: 8.56), disabled),
+        isFalse,
+      );
     });
   });
 

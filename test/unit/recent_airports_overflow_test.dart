@@ -16,8 +16,7 @@ void main() {
     test('cap kicks in at 20 — oldest entry falls off', () async {
       final container = ProviderContainer();
       addTearDown(container.dispose);
-      final notifier =
-          container.read(recentAirportsProvider.notifier);
+      final notifier = container.read(recentAirportsProvider.notifier);
 
       for (var i = 0; i < 25; i++) {
         notifier.record(iata: 'A${i.toString().padLeft(2, '0')}');
@@ -33,8 +32,7 @@ void main() {
     test('re-recording the same IATA dedupes (no growth)', () async {
       final container = ProviderContainer();
       addTearDown(container.dispose);
-      final notifier =
-          container.read(recentAirportsProvider.notifier);
+      final notifier = container.read(recentAirportsProvider.notifier);
 
       notifier.record(iata: 'CDG');
       notifier.record(iata: 'JFK');
@@ -49,8 +47,7 @@ void main() {
     test('lowercase IATA is normalised on record', () async {
       final container = ProviderContainer();
       addTearDown(container.dispose);
-      final notifier =
-          container.read(recentAirportsProvider.notifier);
+      final notifier = container.read(recentAirportsProvider.notifier);
 
       notifier.record(iata: 'cdg');
       notifier.record(iata: 'CDG'); // should dedupe (same after upcasing)
@@ -61,8 +58,7 @@ void main() {
     test('whitespace-padded IATA is trimmed', () async {
       final container = ProviderContainer();
       addTearDown(container.dispose);
-      final notifier =
-          container.read(recentAirportsProvider.notifier);
+      final notifier = container.read(recentAirportsProvider.notifier);
 
       notifier.record(iata: '   CDG  ');
       expect(container.read(recentAirportsProvider).first.iata, 'CDG');
@@ -71,8 +67,7 @@ void main() {
     test('empty IATA is silently ignored (no zombie entries)', () async {
       final container = ProviderContainer();
       addTearDown(container.dispose);
-      final notifier =
-          container.read(recentAirportsProvider.notifier);
+      final notifier = container.read(recentAirportsProvider.notifier);
 
       notifier.record(iata: '');
       notifier.record(iata: '   ');
@@ -82,8 +77,7 @@ void main() {
     test('clear() empties the list', () async {
       final container = ProviderContainer();
       addTearDown(container.dispose);
-      final notifier =
-          container.read(recentAirportsProvider.notifier);
+      final notifier = container.read(recentAirportsProvider.notifier);
 
       notifier.record(iata: 'CDG');
       notifier.record(iata: 'JFK');
@@ -97,8 +91,7 @@ void main() {
       // This test documents that behaviour.
       final container = ProviderContainer();
       addTearDown(container.dispose);
-      final notifier =
-          container.read(recentAirportsProvider.notifier);
+      final notifier = container.read(recentAirportsProvider.notifier);
 
       notifier.record(iata: 'CDG'); // no city
       notifier.record(iata: 'CDG', city: 'Paris', country: 'FR');

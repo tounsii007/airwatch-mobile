@@ -49,12 +49,18 @@ class _MapScreenState extends ConsumerState<MapScreen>
     try {
       _detectLocationTimer = Timer(const Duration(milliseconds: 500), () {
         if (!mounted) return;
-        _mapController.move(const LatLng(AppConfig.defaultLat, AppConfig.defaultLon), AppConfig.defaultZoom);
+        _mapController.move(
+          const LatLng(AppConfig.defaultLat, AppConfig.defaultLon),
+          AppConfig.defaultZoom,
+        );
       });
       return;
     } catch (_) {
       if (!mounted) return; // Guard against disposed widget
-      _mapController.move(const LatLng(AppConfig.defaultLat, AppConfig.defaultLon), AppConfig.defaultZoom);
+      _mapController.move(
+        const LatLng(AppConfig.defaultLat, AppConfig.defaultLon),
+        AppConfig.defaultZoom,
+      );
     }
   }
 
@@ -181,7 +187,8 @@ class _MapScreenState extends ConsumerState<MapScreen>
                 aircraft: aircraft,
                 selectedAircraft: selectedAircraft,
                 currentZoom: _currentZoom,
-                onSelect: (ac) => ref.read(selectedAircraftProvider.notifier).set(ac),
+                onSelect: (ac) =>
+                    ref.read(selectedAircraftProvider.notifier).set(ac),
               ),
             ],
           ),
@@ -199,17 +206,30 @@ class _MapScreenState extends ConsumerState<MapScreen>
 
           // Map controls (zoom clamped to min/max)
           MapControls(
-            onZoomIn: _currentZoom < AppConfig.maxZoom ? () => _mapController.move(
-              _mapController.camera.center,
-              (_mapController.camera.zoom + 1).clamp(AppConfig.minZoom, AppConfig.maxZoom),
-            ) : null,
-            onZoomOut: _currentZoom > 3 ? () => _mapController.move(
-              _mapController.camera.center,
-              (_mapController.camera.zoom - 1).clamp(3.0, AppConfig.maxZoom),
-            ) : null,
+            onZoomIn: _currentZoom < AppConfig.maxZoom
+                ? () => _mapController.move(
+                    _mapController.camera.center,
+                    (_mapController.camera.zoom + 1).clamp(
+                      AppConfig.minZoom,
+                      AppConfig.maxZoom,
+                    ),
+                  )
+                : null,
+            onZoomOut: _currentZoom > 3
+                ? () => _mapController.move(
+                    _mapController.camera.center,
+                    (_mapController.camera.zoom - 1).clamp(
+                      3.0,
+                      AppConfig.maxZoom,
+                    ),
+                  )
+                : null,
             onMyLocation: () {
               // Default to center of map
-              _mapController.move(const LatLng(AppConfig.defaultLat, AppConfig.defaultLon), 8);
+              _mapController.move(
+                const LatLng(AppConfig.defaultLat, AppConfig.defaultLon),
+                8,
+              );
             },
             onToggleSearch: () {
               setState(() => _showSearch = !_showSearch);
@@ -257,24 +277,24 @@ class _MapScreenState extends ConsumerState<MapScreen>
             ),
             child: TextField(
               controller: _searchController,
-              onChanged: (v) =>
-                  ref.read(searchQueryProvider.notifier).set(v),
+              onChanged: (v) => ref.read(searchQueryProvider.notifier).set(v),
               style: TextStyle(
                 fontFamily: UiConstants.bodyFont,
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
-                color: isDark ? AppColors.textPrimary : UiConstants.lightTextPrimary,
+                color: isDark
+                    ? AppColors.textPrimary
+                    : UiConstants.lightTextPrimary,
               ),
               decoration: InputDecoration(
                 hintText: context.tr('search_map_hint'),
                 hintStyle: TextStyle(
                   fontFamily: UiConstants.bodyFont,
-                  color: isDark ? AppColors.textMuted : UiConstants.lightHintText,
+                  color: isDark
+                      ? AppColors.textMuted
+                      : UiConstants.lightHintText,
                 ),
-                prefixIcon: Icon(
-                  Icons.search_rounded,
-                  color: primaryColor,
-                ),
+                prefixIcon: Icon(Icons.search_rounded, color: primaryColor),
                 suffixIcon: _searchController.text.isNotEmpty
                     ? GestureDetector(
                         onTap: () {
@@ -283,13 +303,17 @@ class _MapScreenState extends ConsumerState<MapScreen>
                         },
                         child: Icon(
                           Icons.close_rounded,
-                          color: isDark ? AppColors.textMuted : UiConstants.lightTextMuted,
+                          color: isDark
+                              ? AppColors.textMuted
+                              : UiConstants.lightTextMuted,
                         ),
                       )
                     : null,
                 border: InputBorder.none,
                 contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16, vertical: 14),
+                  horizontal: 16,
+                  vertical: 14,
+                ),
               ),
             ),
           ),
@@ -305,7 +329,9 @@ class _MapScreenState extends ConsumerState<MapScreen>
                     : Colors.white.withValues(alpha: 0.98),
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(
-                  color: isDark ? AppColors.glassBorder : UiConstants.lightBorder,
+                  color: isDark
+                      ? AppColors.glassBorder
+                      : UiConstants.lightBorder,
                 ),
               ),
               child: ListView.builder(
@@ -327,7 +353,9 @@ class _MapScreenState extends ConsumerState<MapScreen>
                         fontFamily: UiConstants.headingFont,
                         fontSize: 12,
                         fontWeight: FontWeight.w700,
-                        color: isDark ? AppColors.textPrimary : UiConstants.lightTextPrimary,
+                        color: isDark
+                            ? AppColors.textPrimary
+                            : UiConstants.lightTextPrimary,
                       ),
                     ),
                     subtitle: Text(
@@ -335,7 +363,9 @@ class _MapScreenState extends ConsumerState<MapScreen>
                       style: TextStyle(
                         fontFamily: UiConstants.bodyFont,
                         fontSize: 12,
-                        color: isDark ? AppColors.textSecondary : UiConstants.lightTextSecondary,
+                        color: isDark
+                            ? AppColors.textSecondary
+                            : UiConstants.lightTextSecondary,
                       ),
                     ),
                     onTap: () {
@@ -381,7 +411,10 @@ class _InterpolatedMarkerLayer extends ConsumerWidget {
 
     // Get visible bounds with margin
     final bounds = camera.visibleBounds;
-    final margin = (AppConfig.viewportMarginBase - currentZoom).clamp(AppConfig.viewportMarginMin, AppConfig.viewportMarginMax);
+    final margin = (AppConfig.viewportMarginBase - currentZoom).clamp(
+      AppConfig.viewportMarginMin,
+      AppConfig.viewportMarginMax,
+    );
     final south = bounds.south - margin;
     final north = bounds.north + margin;
     final west = bounds.west - margin;
@@ -397,16 +430,19 @@ class _InterpolatedMarkerLayer extends ConsumerWidget {
 
     // Step 2: Clustering at low zoom levels
     List<_MarkerData> markerData;
-    if (currentZoom < AppConfig.clusterZoomThreshold && visible.length > AppConfig.clusterMinCount) {
+    if (currentZoom < AppConfig.clusterZoomThreshold &&
+        visible.length > AppConfig.clusterMinCount) {
       markerData = _clusterAircraft(visible, currentZoom);
     } else {
       markerData = visible.map((ac) => _MarkerData(aircraft: ac)).toList();
     }
 
     // Step 3: Build markers (max ~800 for performance)
-    if (markerData.length > AppConfig.maxVisibleMarkers && currentZoom < AppConfig.maxMarkersSamplingZoom) {
+    if (markerData.length > AppConfig.maxVisibleMarkers &&
+        currentZoom < AppConfig.maxMarkersSamplingZoom) {
       // Too many even after culling — sample every Nth
-      final step = (markerData.length / AppConfig.maxMarkersSamplingTarget).ceil();
+      final step = (markerData.length / AppConfig.maxMarkersSamplingTarget)
+          .ceil();
       markerData = [
         for (int i = 0; i < markerData.length; i += step) markerData[i],
       ];
@@ -414,8 +450,9 @@ class _InterpolatedMarkerLayer extends ConsumerWidget {
 
     // Always include selected aircraft
     if (selectedAircraft != null && selectedAircraft!.hasPosition) {
-      final hasSelected = markerData.any((m) =>
-          m.aircraft?.icao24 == selectedAircraft!.icao24);
+      final hasSelected = markerData.any(
+        (m) => m.aircraft?.icao24 == selectedAircraft!.icao24,
+      );
       if (!hasSelected) {
         markerData.add(_MarkerData(aircraft: selectedAircraft));
       }
@@ -424,11 +461,13 @@ class _InterpolatedMarkerLayer extends ConsumerWidget {
     final markers = markerData.map((md) {
       if (md.isCluster) {
         // Unique key from grid position (lat/lon rounded)
-        final ck = 'c_${md.clusterCenter!.latitude.toStringAsFixed(1)}_${md.clusterCenter!.longitude.toStringAsFixed(1)}';
+        final ck =
+            'c_${md.clusterCenter!.latitude.toStringAsFixed(1)}_${md.clusterCenter!.longitude.toStringAsFixed(1)}';
         return Marker(
           key: ValueKey(ck),
           point: md.clusterCenter!,
-          width: 36, height: 36,
+          width: 36,
+          height: 36,
           child: _ClusterDot(count: md.clusterCount, zoom: currentZoom),
         );
       }
@@ -436,8 +475,16 @@ class _InterpolatedMarkerLayer extends ConsumerWidget {
       final ac = md.aircraft!;
       final isSelected = ac.icao24 == selectedAircraft?.icao24;
       final baseSize = _baseSize(ac.category);
-      final zoomScale = (currentZoom / AppConfig.markerZoomScaleDivisor).clamp(AppConfig.markerZoomScaleMin, AppConfig.markerZoomScaleMax);
-      final markerSize = isSelected ? AppConfig.selectedMarkerSize : (baseSize * zoomScale).clamp(AppConfig.markerSizeMin, AppConfig.markerSizeMax);
+      final zoomScale = (currentZoom / AppConfig.markerZoomScaleDivisor).clamp(
+        AppConfig.markerZoomScaleMin,
+        AppConfig.markerZoomScaleMax,
+      );
+      final markerSize = isSelected
+          ? AppConfig.selectedMarkerSize
+          : (baseSize * zoomScale).clamp(
+              AppConfig.markerSizeMin,
+              AppConfig.markerSizeMax,
+            );
 
       // Use interpolated position if available (smooth movement)
       final point = interpPositions[ac.icao24] ?? ac.position!;
@@ -446,7 +493,9 @@ class _InterpolatedMarkerLayer extends ConsumerWidget {
         key: ValueKey(ac.icao24),
         point: point,
         width: isSelected ? AppConfig.selectedMarkerOverflowWidth : markerSize,
-        height: isSelected ? markerSize + AppConfig.selectedMarkerExtraHeight : markerSize,
+        height: isSelected
+            ? markerSize + AppConfig.selectedMarkerExtraHeight
+            : markerSize,
         child: AnimatedAircraftMarker(
           key: ValueKey('marker_${ac.icao24}'),
           aircraft: ac,
@@ -461,9 +510,15 @@ class _InterpolatedMarkerLayer extends ConsumerWidget {
   }
 
   /// Simple grid-based clustering for low zoom levels
-  List<_MarkerData> _clusterAircraft(List<AircraftState> aircraft, double zoom) {
+  List<_MarkerData> _clusterAircraft(
+    List<AircraftState> aircraft,
+    double zoom,
+  ) {
     // Grid cell size in degrees — larger cells at lower zoom
-    final cellSize = (AppConfig.clusterCellSizeBase - zoom).clamp(AppConfig.clusterCellSizeMin, AppConfig.clusterCellSizeMax);
+    final cellSize = (AppConfig.clusterCellSizeBase - zoom).clamp(
+      AppConfig.clusterCellSizeMin,
+      AppConfig.clusterCellSizeMax,
+    );
     final clusters = <String, List<AircraftState>>{};
 
     for (final ac in aircraft) {
@@ -489,17 +544,23 @@ class _InterpolatedMarkerLayer extends ConsumerWidget {
           sumLat += ac.latitude!;
           sumLng += ac.longitude!;
         }
-        result.add(_MarkerData(
-          clusterCenter: LatLng(sumLat / cluster.length, sumLng / cluster.length),
-          clusterCount: cluster.length,
-        ));
+        result.add(
+          _MarkerData(
+            clusterCenter: LatLng(
+              sumLat / cluster.length,
+              sumLng / cluster.length,
+            ),
+            clusterCount: cluster.length,
+          ),
+        );
       }
     }
     return result;
   }
 
   double _baseSize(int category) =>
-      AppConfig.categoryMarkerSizes[category] ?? AppConfig.categoryMarkerSizeDefault;
+      AppConfig.categoryMarkerSizes[category] ??
+      AppConfig.categoryMarkerSizeDefault;
 }
 
 class _MarkerData {
@@ -528,16 +589,18 @@ class _ClusterDot extends StatelessWidget {
         shape: BoxShape.circle,
         color: color.withValues(alpha: 0.2),
         border: Border.all(color: color.withValues(alpha: 0.5), width: 1.5),
-        boxShadow: isDark ? [
-          BoxShadow(color: color.withValues(alpha: 0.3), blurRadius: 8),
-        ] : null,
+        boxShadow: isDark
+            ? [BoxShadow(color: color.withValues(alpha: 0.3), blurRadius: 8)]
+            : null,
       ),
       child: Center(
         child: Text(
           '$count',
           style: TextStyle(
-            fontFamily: UiConstants.headingFont, fontSize: 9,
-            fontWeight: FontWeight.w700, color: color,
+            fontFamily: UiConstants.headingFont,
+            fontSize: 9,
+            fontWeight: FontWeight.w700,
+            color: color,
           ),
         ),
       ),

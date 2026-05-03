@@ -52,7 +52,8 @@ class GlassPanel extends StatelessWidget {
             padding: padding ?? const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: isDark
-                  ? (backgroundColor ?? AppColors.surface.withValues(alpha: opacity))
+                  ? (backgroundColor ??
+                        AppColors.surface.withValues(alpha: opacity))
                   : (backgroundColor ?? Colors.white.withValues(alpha: 0.88)),
               borderRadius: BorderRadius.circular(borderRadius),
               border: Border.all(

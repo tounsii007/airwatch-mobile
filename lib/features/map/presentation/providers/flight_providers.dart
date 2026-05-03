@@ -8,7 +8,9 @@ import '../../data/datasources/airlabs_flights_datasource.dart';
 import '../../data/models/aircraft_state.dart';
 import '../widgets/map_styles.dart';
 
-final airlabsFlightsDatasourceProvider = Provider<AirlabsFlightsDatasource>((ref) {
+final airlabsFlightsDatasourceProvider = Provider<AirlabsFlightsDatasource>((
+  ref,
+) {
   final ds = AirlabsFlightsDatasource();
   ref.onDispose(() => ds.dispose());
   return ds;
@@ -17,6 +19,7 @@ final airlabsFlightsDatasourceProvider = Provider<AirlabsFlightsDatasource>((ref
 // --- Simple state providers using Notifier ---
 
 enum AltitudeFilter { all, low, medium, high, ground }
+
 enum CategoryFilter { all, jets, helicopters, cargo, light, ground }
 
 // Altitude filter
@@ -28,7 +31,8 @@ class AltitudeFilterNotifier extends Notifier<AltitudeFilter> {
 
 final altitudeFilterProvider =
     NotifierProvider<AltitudeFilterNotifier, AltitudeFilter>(
-        AltitudeFilterNotifier.new);
+      AltitudeFilterNotifier.new,
+    );
 
 // Category filter
 class CategoryFilterNotifier extends Notifier<CategoryFilter> {
@@ -39,7 +43,8 @@ class CategoryFilterNotifier extends Notifier<CategoryFilter> {
 
 final categoryFilterProvider =
     NotifierProvider<CategoryFilterNotifier, CategoryFilter>(
-        CategoryFilterNotifier.new);
+      CategoryFilterNotifier.new,
+    );
 
 // Selected aircraft
 class SelectedAircraftNotifier extends Notifier<AircraftState?> {
@@ -50,7 +55,8 @@ class SelectedAircraftNotifier extends Notifier<AircraftState?> {
 
 final selectedAircraftProvider =
     NotifierProvider<SelectedAircraftNotifier, AircraftState?>(
-        SelectedAircraftNotifier.new);
+      SelectedAircraftNotifier.new,
+    );
 
 // Map center
 class MapCenterNotifier extends Notifier<LatLng> {
@@ -59,8 +65,9 @@ class MapCenterNotifier extends Notifier<LatLng> {
   void set(LatLng value) => state = value;
 }
 
-final mapCenterProvider =
-    NotifierProvider<MapCenterNotifier, LatLng>(MapCenterNotifier.new);
+final mapCenterProvider = NotifierProvider<MapCenterNotifier, LatLng>(
+  MapCenterNotifier.new,
+);
 
 // Map zoom
 class MapZoomNotifier extends Notifier<double> {
@@ -69,17 +76,19 @@ class MapZoomNotifier extends Notifier<double> {
   void set(double value) => state = value;
 }
 
-final mapZoomProvider =
-    NotifierProvider<MapZoomNotifier, double>(MapZoomNotifier.new);
+final mapZoomProvider = NotifierProvider<MapZoomNotifier, double>(
+  MapZoomNotifier.new,
+);
 
 // Map bounds
 class MapBounds {
   final double south, north, west, east;
-  MapBounds(
-      {required this.south,
-      required this.north,
-      required this.west,
-      required this.east});
+  MapBounds({
+    required this.south,
+    required this.north,
+    required this.west,
+    required this.east,
+  });
 }
 
 class MapBoundsNotifier extends Notifier<MapBounds?> {
@@ -88,12 +97,14 @@ class MapBoundsNotifier extends Notifier<MapBounds?> {
   void set(MapBounds? value) => state = value;
 }
 
-final mapBoundsProvider =
-    NotifierProvider<MapBoundsNotifier, MapBounds?>(MapBoundsNotifier.new);
+final mapBoundsProvider = NotifierProvider<MapBoundsNotifier, MapBounds?>(
+  MapBoundsNotifier.new,
+);
 
 // --- Real-time aircraft stream (Airlabs — 5 min interval) ---
-final aircraftStreamProvider =
-    StreamProvider<Map<String, AircraftState>>((ref) {
+final aircraftStreamProvider = StreamProvider<Map<String, AircraftState>>((
+  ref,
+) {
   final ds = ref.watch(airlabsFlightsDatasourceProvider);
   ds.startPolling();
   ref.onDispose(() => ds.stopPolling());
@@ -113,8 +124,7 @@ final aircraftStreamProvider =
 });
 
 // Filtered aircraft based on altitude + category
-final filteredAircraftProvider =
-    Provider<Map<String, AircraftState>>((ref) {
+final filteredAircraftProvider = Provider<Map<String, AircraftState>>((ref) {
   final aircraftAsync = ref.watch(aircraftStreamProvider);
   final altFilter = ref.watch(altitudeFilterProvider);
   final catFilter = ref.watch(categoryFilterProvider);
@@ -131,50 +141,55 @@ final filteredAircraftProvider =
         return aircraft;
       }
 
-      return Map.fromEntries(aircraft.entries.where((entry) {
-        final a = entry.value;
-        // Cargo-only filter — orthogonal to the category dropdown.
-        if (cargoOnly) {
-          final cs = (a.callsign ?? '').toUpperCase().trim();
-          if (cs.length < 3) return false;
-          if (!_cargoCallsignPrefixes.contains(cs.substring(0, 3))) {
-            return false;
+      return Map.fromEntries(
+        aircraft.entries.where((entry) {
+          final a = entry.value;
+          // Cargo-only filter — orthogonal to the category dropdown.
+          if (cargoOnly) {
+            final cs = (a.callsign ?? '').toUpperCase().trim();
+            if (cs.length < 3) return false;
+            if (!_cargoCallsignPrefixes.contains(cs.substring(0, 3))) {
+              return false;
+            }
           }
-        }
 
-        // Altitude filter
-        if (altFilter != AltitudeFilter.all) {
-          if (altFilter == AltitudeFilter.ground) {
-            if (!a.onGround) return false;
-          } else {
-            final alt = a.altitude;
-            if (alt == null) return false;
-            final feet = alt * ConversionConstants.metersToFeet;
-            final pass = switch (altFilter) {
-              AltitudeFilter.low => feet < AppConfig.altitudeLowMax,
-              AltitudeFilter.medium => feet >= AppConfig.altitudeLowMax && feet < AppConfig.altitudeMedMax,
-              AltitudeFilter.high => feet >= AppConfig.altitudeMedMax,
+          // Altitude filter
+          if (altFilter != AltitudeFilter.all) {
+            if (altFilter == AltitudeFilter.ground) {
+              if (!a.onGround) return false;
+            } else {
+              final alt = a.altitude;
+              if (alt == null) return false;
+              final feet = alt * ConversionConstants.metersToFeet;
+              final pass = switch (altFilter) {
+                AltitudeFilter.low => feet < AppConfig.altitudeLowMax,
+                AltitudeFilter.medium =>
+                  feet >= AppConfig.altitudeLowMax &&
+                      feet < AppConfig.altitudeMedMax,
+                AltitudeFilter.high => feet >= AppConfig.altitudeMedMax,
+                _ => true,
+              };
+              if (!pass) return false;
+            }
+          }
+
+          // Category filter
+          if (catFilter != CategoryFilter.all) {
+            final pass = switch (catFilter) {
+              CategoryFilter.helicopters => a.category == 8,
+              CategoryFilter.cargo => a.category == 6,
+              CategoryFilter.light => a.category == 2 || a.category == 9,
+              CategoryFilter.jets =>
+                a.category >= 4 && a.category <= 7 && a.category != 6,
+              CategoryFilter.ground => a.onGround,
               _ => true,
             };
             if (!pass) return false;
           }
-        }
 
-        // Category filter
-        if (catFilter != CategoryFilter.all) {
-          final pass = switch (catFilter) {
-            CategoryFilter.helicopters => a.category == 8,
-            CategoryFilter.cargo => a.category == 6,
-            CategoryFilter.light => a.category == 2 || a.category == 9,
-            CategoryFilter.jets => a.category >= 4 && a.category <= 7 && a.category != 6,
-            CategoryFilter.ground => a.onGround,
-            _ => true,
-          };
-          if (!pass) return false;
-        }
-
-        return true;
-      }));
+          return true;
+        }),
+      );
     },
     loading: () => {},
     error: (_, _) => {},
@@ -193,8 +208,9 @@ class SearchQueryNotifier extends Notifier<String> {
   void set(String value) => state = value;
 }
 
-final searchQueryProvider =
-    NotifierProvider<SearchQueryNotifier, String>(SearchQueryNotifier.new);
+final searchQueryProvider = NotifierProvider<SearchQueryNotifier, String>(
+  SearchQueryNotifier.new,
+);
 
 // Search results — search directly from aircraft stream
 final searchResultsProvider = Provider<List<AircraftState>>((ref) {
@@ -204,11 +220,14 @@ final searchResultsProvider = Provider<List<AircraftState>>((ref) {
 
   final aircraftAsync = ref.watch(aircraftStreamProvider);
   return aircraftAsync.when(
-    data: (aircraft) => aircraft.values.where((a) {
-      return (a.callsign?.toLowerCase().contains(q) ?? false) ||
-          a.icao24.toLowerCase().contains(q) ||
-          (a.originCountry?.toLowerCase().contains(q) ?? false);
-    }).take(50).toList(),
+    data: (aircraft) => aircraft.values
+        .where((a) {
+          return (a.callsign?.toLowerCase().contains(q) ?? false) ||
+              a.icao24.toLowerCase().contains(q) ||
+              (a.originCountry?.toLowerCase().contains(q) ?? false);
+        })
+        .take(50)
+        .toList(),
     loading: () => [],
     error: (_, _) => [],
   );
@@ -224,14 +243,18 @@ class BoolNotifier extends Notifier<bool> {
   void toggle() => state = !state;
 }
 
-final isTrackingFlightProvider =
-    NotifierProvider<BoolNotifier, bool>(() => BoolNotifier(false));
-final showTrailsProvider =
-    NotifierProvider<BoolNotifier, bool>(() => BoolNotifier(true));
-final showHeatmapProvider =
-    NotifierProvider<BoolNotifier, bool>(() => BoolNotifier(false));
-final showRadarProvider =
-    NotifierProvider<BoolNotifier, bool>(() => BoolNotifier(true));
+final isTrackingFlightProvider = NotifierProvider<BoolNotifier, bool>(
+  () => BoolNotifier(false),
+);
+final showTrailsProvider = NotifierProvider<BoolNotifier, bool>(
+  () => BoolNotifier(true),
+);
+final showHeatmapProvider = NotifierProvider<BoolNotifier, bool>(
+  () => BoolNotifier(false),
+);
+final showRadarProvider = NotifierProvider<BoolNotifier, bool>(
+  () => BoolNotifier(true),
+);
 
 // Map focus trigger — set when a flight is selected from outside the map
 // (search screen, airport schedule, favorites) to pan + zoom to the aircraft.
@@ -251,8 +274,9 @@ class MapFocusNotifier extends Notifier<MapFocusTrigger?> {
   void clear() => state = null;
 }
 
-final mapFocusProvider =
-    NotifierProvider<MapFocusNotifier, MapFocusTrigger?>(MapFocusNotifier.new);
+final mapFocusProvider = NotifierProvider<MapFocusNotifier, MapFocusTrigger?>(
+  MapFocusNotifier.new,
+);
 
 // ── Cargo-airline ICAO callsign prefixes (for showCargoOnlyProvider) ─────
 //
@@ -261,9 +285,32 @@ final mapFocusProvider =
 // sync with `cargo_filter.dart` in the cargo feature so both screens
 // agree on what counts as cargo.
 const Set<String> _cargoCallsignPrefixes = {
-  'FDX', 'UPS', 'GTI', 'GEC', 'CLX', 'BOX', 'ABX', 'TAY', 'NPT', 'WGN',
-  'ATG', 'SQC', 'ADB', 'CKS', 'AEC', 'GMI', 'FPO', 'TGX', 'KFS', 'MSC',
-  'DHK', 'DHL', 'CKK', 'CAO', 'NCA', 'ABW',
+  'FDX',
+  'UPS',
+  'GTI',
+  'GEC',
+  'CLX',
+  'BOX',
+  'ABX',
+  'TAY',
+  'NPT',
+  'WGN',
+  'ATG',
+  'SQC',
+  'ADB',
+  'CKS',
+  'AEC',
+  'GMI',
+  'FPO',
+  'TGX',
+  'KFS',
+  'MSC',
+  'DHK',
+  'DHL',
+  'CKK',
+  'CAO',
+  'NCA',
+  'ABW',
 };
 
 // ── Voice-driven map zoom ─────────────────────────────────────────────────
@@ -280,8 +327,9 @@ class MapZoomCommandNotifier extends Notifier<int> {
   void zoomOut() => state = state - 1;
 }
 
-final mapZoomCommandProvider =
-    NotifierProvider<MapZoomCommandNotifier, int>(MapZoomCommandNotifier.new);
+final mapZoomCommandProvider = NotifierProvider<MapZoomCommandNotifier, int>(
+  MapZoomCommandNotifier.new,
+);
 
 // ── Cargo-only map filter ─────────────────────────────────────────────────
 //
@@ -317,8 +365,9 @@ class CargoOnlyNotifier extends Notifier<bool> {
   void toggle() => set(!state);
 }
 
-final showCargoOnlyProvider =
-    NotifierProvider<CargoOnlyNotifier, bool>(CargoOnlyNotifier.new);
+final showCargoOnlyProvider = NotifierProvider<CargoOnlyNotifier, bool>(
+  CargoOnlyNotifier.new,
+);
 
 // ── Basemap style ──────────────────────────────────────────────────────────
 //
@@ -331,5 +380,6 @@ class MapStyleNotifier extends Notifier<MapStyleId> {
   void set(MapStyleId value) => state = value;
 }
 
-final mapStyleProvider =
-    NotifierProvider<MapStyleNotifier, MapStyleId>(MapStyleNotifier.new);
+final mapStyleProvider = NotifierProvider<MapStyleNotifier, MapStyleId>(
+  MapStyleNotifier.new,
+);

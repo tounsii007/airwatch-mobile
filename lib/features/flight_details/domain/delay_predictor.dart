@@ -48,12 +48,12 @@ class DelayPrediction {
 
 const Set<String> _delayProneHubs = {
   'JFK', 'EWR', 'LGA', 'SFO', 'LAX', // US East/West coast majors
-  'LHR', 'LGW', 'STN',                // London cluster
-  'CDG', 'ORY',                        // Paris
-  'FCO', 'MXP', 'LIN',                 // Italy
-  'IST', 'SAW',                        // Istanbul
-  'PEK', 'PVG', 'CAN',                 // China
-  'DEL', 'BOM',                        // India
+  'LHR', 'LGW', 'STN', // London cluster
+  'CDG', 'ORY', // Paris
+  'FCO', 'MXP', 'LIN', // Italy
+  'IST', 'SAW', // Istanbul
+  'PEK', 'PVG', 'CAN', // China
+  'DEL', 'BOM', // India
 };
 
 /// Run the heuristic prediction. Pure function — no I/O, no network.
@@ -90,16 +90,15 @@ DelayPrediction predictDelay({
   // routing + weather diversions.
   final dep = route?.departureAirport ?? '';
   final arr = route?.arrivalAirport ?? '';
-  final isInternational = dep.isNotEmpty && arr.isNotEmpty &&
-      _country(dep) != _country(arr);
+  final isInternational =
+      dep.isNotEmpty && arr.isNotEmpty && _country(dep) != _country(arr);
   if (isInternational) {
     risk += 8;
     factors.add('International route');
   }
 
   // Delay-prone hub on either end.
-  final hubHit = _delayProneHubs.contains(dep) ||
-      _delayProneHubs.contains(arr);
+  final hubHit = _delayProneHubs.contains(dep) || _delayProneHubs.contains(arr);
   if (hubHit) {
     risk += 14;
     factors.add('Heavy traffic hub');
@@ -141,8 +140,8 @@ DelayPrediction predictDelay({
   final confidence = factors.length >= 4
       ? PredictionConfidence.high
       : factors.length >= 2
-          ? PredictionConfidence.medium
-          : PredictionConfidence.low;
+      ? PredictionConfidence.medium
+      : PredictionConfidence.low;
 
   final explanation = _explain(risk, estMin, factors);
 

@@ -7,11 +7,7 @@ class HeatmapOverlay extends StatelessWidget {
   final List<AircraftState> aircraft;
   final double opacity;
 
-  const HeatmapOverlay({
-    super.key,
-    required this.aircraft,
-    this.opacity = 0.4,
-  });
+  const HeatmapOverlay({super.key, required this.aircraft, this.opacity = 0.4});
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +22,7 @@ class HeatmapOverlay extends StatelessWidget {
     return IgnorePointer(
       child: CustomPaint(
         size: Size.infinite,
-        painter: _HeatmapPainter(
-          points: points,
-          opacity: opacity,
-        ),
+        painter: _HeatmapPainter(points: points, opacity: opacity),
       ),
     );
   }
@@ -61,8 +54,7 @@ class _HeatmapPainter extends CustomPainter {
             const Color(0xFF00E5FF),
             const Color(0xFFFF0080),
             intensity,
-          )!
-              .withValues(alpha: opacity * intensity),
+          )!.withValues(alpha: opacity * intensity),
           Colors.transparent,
         ],
       );
@@ -80,7 +72,10 @@ class _HeatmapPainter extends CustomPainter {
     }
   }
 
-  List<_Cluster> _clusterPoints(List<LatLng> points, {required double gridSize}) {
+  List<_Cluster> _clusterPoints(
+    List<LatLng> points, {
+    required double gridSize,
+  }) {
     final Map<String, _Cluster> grid = {};
 
     for (final point in points) {

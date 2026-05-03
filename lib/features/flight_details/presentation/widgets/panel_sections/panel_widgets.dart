@@ -8,8 +8,15 @@ class FlightDataCard extends StatelessWidget {
   final String? title2, value2;
   final Color borderColor;
   final bool isDark;
-  const FlightDataCard({super.key, required this.title1, required this.value1,
-      this.title2, this.value2, required this.borderColor, required this.isDark});
+  const FlightDataCard({
+    super.key,
+    required this.title1,
+    required this.value1,
+    this.title2,
+    this.value2,
+    required this.borderColor,
+    required this.isDark,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,29 +25,72 @@ class FlightDataCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: borderColor.withValues(alpha: isDark ? 0.06 : 0.04),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: borderColor.withValues(alpha: isDark ? 0.5 : 0.3), width: 1.5),
-        boxShadow: isDark ? [
-          BoxShadow(color: borderColor.withValues(alpha: 0.1), blurRadius: 12, spreadRadius: -4),
-        ] : null,
+        border: Border.all(
+          color: borderColor.withValues(alpha: isDark ? 0.5 : 0.3),
+          width: 1.5,
+        ),
+        boxShadow: isDark
+            ? [
+                BoxShadow(
+                  color: borderColor.withValues(alpha: 0.1),
+                  blurRadius: 12,
+                  spreadRadius: -4,
+                ),
+              ]
+            : null,
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(title1, style: TextStyle(fontFamily: UiConstants.bodyFont, fontSize: 10,
-            fontWeight: FontWeight.w500, letterSpacing: 1,
-            color: isDark ? AppColors.textMuted : UiConstants.lightTextMuted)),
-        const SizedBox(height: 2),
-        Text(value1, style: TextStyle(fontFamily: UiConstants.headingFont, fontSize: 14,
-            fontWeight: FontWeight.w700, color: borderColor)),
-        if (title2 != null) ...[
-          const SizedBox(height: 4),
-          Text(title2!, style: TextStyle(fontFamily: UiConstants.bodyFont, fontSize: 10,
-              fontWeight: FontWeight.w500, letterSpacing: 1,
-              color: isDark ? AppColors.textMuted : UiConstants.lightTextMuted)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title1,
+            style: TextStyle(
+              fontFamily: UiConstants.bodyFont,
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
+              letterSpacing: 1,
+              color: isDark ? AppColors.textMuted : UiConstants.lightTextMuted,
+            ),
+          ),
           const SizedBox(height: 2),
-          Text(value2!, style: TextStyle(fontFamily: UiConstants.headingFont, fontSize: 14,
+          Text(
+            value1,
+            style: TextStyle(
+              fontFamily: UiConstants.headingFont,
+              fontSize: 14,
               fontWeight: FontWeight.w700,
-              color: isDark ? AppColors.textPrimary : UiConstants.lightTextPrimary)),
+              color: borderColor,
+            ),
+          ),
+          if (title2 != null) ...[
+            const SizedBox(height: 4),
+            Text(
+              title2!,
+              style: TextStyle(
+                fontFamily: UiConstants.bodyFont,
+                fontSize: 10,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 1,
+                color: isDark
+                    ? AppColors.textMuted
+                    : UiConstants.lightTextMuted,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              value2!,
+              style: TextStyle(
+                fontFamily: UiConstants.headingFont,
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: isDark
+                    ? AppColors.textPrimary
+                    : UiConstants.lightTextPrimary,
+              ),
+            ),
+          ],
         ],
-      ]),
+      ),
     );
   }
 }
@@ -50,8 +100,13 @@ class FlightTag extends StatelessWidget {
   final String label, value;
   final Color color;
   final bool isDark;
-  const FlightTag({super.key, required this.label, required this.value,
-      required this.color, required this.isDark});
+  const FlightTag({
+    super.key,
+    required this.label,
+    required this.value,
+    required this.color,
+    required this.isDark,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -62,13 +117,29 @@ class FlightTag extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
         border: Border.all(color: color.withValues(alpha: 0.15)),
       ),
-      child: Row(mainAxisSize: MainAxisSize.min, children: [
-        Text(label, style: TextStyle(fontFamily: UiConstants.bodyFont, fontSize: 9,
-            color: isDark ? AppColors.textMuted : UiConstants.lightTextMuted)),
-        const SizedBox(width: 4),
-        Text(value, style: TextStyle(fontFamily: UiConstants.headingFont, fontSize: 9,
-            fontWeight: FontWeight.w700, color: color)),
-      ]),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontFamily: UiConstants.bodyFont,
+              fontSize: 9,
+              color: isDark ? AppColors.textMuted : UiConstants.lightTextMuted,
+            ),
+          ),
+          const SizedBox(width: 4),
+          Text(
+            value,
+            style: TextStyle(
+              fontFamily: UiConstants.headingFont,
+              fontSize: 9,
+              fontWeight: FontWeight.w700,
+              color: color,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -77,19 +148,39 @@ class FlightTag extends StatelessWidget {
 class AltitudeLegendDot extends StatelessWidget {
   final Color color;
   final String label;
-  const AltitudeLegendDot({super.key, required this.color, required this.label});
+  const AltitudeLegendDot({
+    super.key,
+    required this.color,
+    required this.label,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Row(mainAxisSize: MainAxisSize.min, children: [
-      Container(width: 8, height: 8, decoration: BoxDecoration(
-        color: color, shape: BoxShape.circle,
-        boxShadow: [BoxShadow(color: color.withValues(alpha: 0.4), blurRadius: 4)],
-      )),
-      const SizedBox(width: 4),
-      Text(label, style: const TextStyle(fontFamily: UiConstants.bodyFont, fontSize: 10,
-          color: AppColors.textSecondary)),
-    ]);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 8,
+          height: 8,
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(color: color.withValues(alpha: 0.4), blurRadius: 4),
+            ],
+          ),
+        ),
+        const SizedBox(width: 4),
+        Text(
+          label,
+          style: const TextStyle(
+            fontFamily: UiConstants.bodyFont,
+            fontSize: 10,
+            color: AppColors.textSecondary,
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -106,8 +197,14 @@ class FlightActionButton extends StatelessWidget {
   /// a separate slot on the action row.
   final VoidCallback? onLongPress;
 
-  const FlightActionButton({super.key, required this.label, required this.color,
-      required this.isDark, required this.onTap, this.onLongPress});
+  const FlightActionButton({
+    super.key,
+    required this.label,
+    required this.color,
+    required this.isDark,
+    required this.onTap,
+    this.onLongPress,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -117,16 +214,29 @@ class FlightActionButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
-          color: color, borderRadius: BorderRadius.circular(22),
-          boxShadow: isDark ? [
-            BoxShadow(color: color.withValues(alpha: 0.4), blurRadius: 10, spreadRadius: -2),
-          ] : null,
+          color: color,
+          borderRadius: BorderRadius.circular(22),
+          boxShadow: isDark
+              ? [
+                  BoxShadow(
+                    color: color.withValues(alpha: 0.4),
+                    blurRadius: 10,
+                    spreadRadius: -2,
+                  ),
+                ]
+              : null,
         ),
         child: Center(
-          child: Text(label, style: const TextStyle(
-            fontFamily: UiConstants.headingFont, fontSize: 11, fontWeight: FontWeight.w700,
-            color: Colors.white, letterSpacing: 1.5,
-          )),
+          child: Text(
+            label,
+            style: const TextStyle(
+              fontFamily: UiConstants.headingFont,
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
+              letterSpacing: 1.5,
+            ),
+          ),
         ),
       ),
     );
@@ -139,8 +249,13 @@ class DetailChip extends StatelessWidget {
   final String label;
   final Color color;
   final bool isDark;
-  const DetailChip({super.key, required this.icon, required this.label,
-      required this.color, required this.isDark});
+  const DetailChip({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.isDark,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -151,12 +266,22 @@ class DetailChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: color.withValues(alpha: 0.15)),
       ),
-      child: Row(mainAxisSize: MainAxisSize.min, children: [
-        Icon(icon, size: 10, color: color.withValues(alpha: 0.7)),
-        const SizedBox(width: 4),
-        Text(label, style: TextStyle(fontFamily: UiConstants.bodyFont, fontSize: 10,
-            fontWeight: FontWeight.w600, color: color)),
-      ]),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 10, color: color.withValues(alpha: 0.7)),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontFamily: UiConstants.bodyFont,
+              fontSize: 10,
+              fontWeight: FontWeight.w600,
+              color: color,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -169,7 +294,9 @@ class RouteLinePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final y = size.height / 2;
-    final dash = Paint()..color = color.withValues(alpha: 0.35)..strokeWidth = 1.5;
+    final dash = Paint()
+      ..color = color.withValues(alpha: 0.35)
+      ..strokeWidth = 1.5;
     var x = 0.0;
     while (x < size.width) {
       canvas.drawLine(Offset(x, y), Offset(x + 5, y), dash);
@@ -177,14 +304,32 @@ class RouteLinePainter extends CustomPainter {
     }
     final cx = size.width / 2;
     canvas.drawPath(
-      Path()..moveTo(cx + 7, y)..lineTo(cx + 2, y - 2)..lineTo(cx - 3, y - 2)
-        ..lineTo(cx, y - 5)..lineTo(cx - 2, y - 5)..lineTo(cx - 6, y - 2)
-        ..lineTo(cx - 7, y)..lineTo(cx - 6, y + 2)..lineTo(cx - 2, y + 5)
-        ..lineTo(cx, y + 5)..lineTo(cx - 3, y + 2)..lineTo(cx + 2, y + 2)..close(),
+      Path()
+        ..moveTo(cx + 7, y)
+        ..lineTo(cx + 2, y - 2)
+        ..lineTo(cx - 3, y - 2)
+        ..lineTo(cx, y - 5)
+        ..lineTo(cx - 2, y - 5)
+        ..lineTo(cx - 6, y - 2)
+        ..lineTo(cx - 7, y)
+        ..lineTo(cx - 6, y + 2)
+        ..lineTo(cx - 2, y + 5)
+        ..lineTo(cx, y + 5)
+        ..lineTo(cx - 3, y + 2)
+        ..lineTo(cx + 2, y + 2)
+        ..close(),
       Paint()..color = color,
     );
-    canvas.drawCircle(Offset(2, y), 2.5, Paint()..color = const Color(0xFF4ADE80));
-    canvas.drawCircle(Offset(size.width - 2, y), 2.5, Paint()..color = const Color(0xFFD4A574));
+    canvas.drawCircle(
+      Offset(2, y),
+      2.5,
+      Paint()..color = const Color(0xFF4ADE80),
+    );
+    canvas.drawCircle(
+      Offset(size.width - 2, y),
+      2.5,
+      Paint()..color = const Color(0xFFD4A574),
+    );
   }
 
   @override

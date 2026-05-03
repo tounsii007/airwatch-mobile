@@ -8,7 +8,8 @@ class GeoUtils {
   static double distanceKm(LatLng from, LatLng to) {
     final dLat = _toRad(to.latitude - from.latitude);
     final dLon = _toRad(to.longitude - from.longitude);
-    final a = math.sin(dLat / 2) * math.sin(dLat / 2) +
+    final a =
+        math.sin(dLat / 2) * math.sin(dLat / 2) +
         math.cos(_toRad(from.latitude)) *
             math.cos(_toRad(to.latitude)) *
             math.sin(dLon / 2) *
@@ -28,8 +29,8 @@ class GeoUtils {
   static double bearing(LatLng from, LatLng to) {
     final dLon = _toRad(to.longitude - from.longitude);
     final y = math.sin(dLon) * math.cos(_toRad(to.latitude));
-    final x = math.cos(_toRad(from.latitude)) *
-            math.sin(_toRad(to.latitude)) -
+    final x =
+        math.cos(_toRad(from.latitude)) * math.sin(_toRad(to.latitude)) -
         math.sin(_toRad(from.latitude)) *
             math.cos(_toRad(to.latitude)) *
             math.cos(dLon);
@@ -38,24 +39,36 @@ class GeoUtils {
 
   /// Get destination point given bearing and distance
   static LatLng destinationPoint(
-      LatLng from, double bearingDeg, double distanceKm) {
+    LatLng from,
+    double bearingDeg,
+    double distanceKm,
+  ) {
     final d = distanceKm / earthRadiusKm;
     final bearing = _toRad(bearingDeg);
     final lat1 = _toRad(from.latitude);
     final lng1 = _toRad(from.longitude);
 
-    final lat2 = math.asin(math.sin(lat1) * math.cos(d) +
-        math.cos(lat1) * math.sin(d) * math.cos(bearing));
-    final lng2 = lng1 +
-        math.atan2(math.sin(bearing) * math.sin(d) * math.cos(lat1),
-            math.cos(d) - math.sin(lat1) * math.sin(lat2));
+    final lat2 = math.asin(
+      math.sin(lat1) * math.cos(d) +
+          math.cos(lat1) * math.sin(d) * math.cos(bearing),
+    );
+    final lng2 =
+        lng1 +
+        math.atan2(
+          math.sin(bearing) * math.sin(d) * math.cos(lat1),
+          math.cos(d) - math.sin(lat1) * math.sin(lat2),
+        );
 
     return LatLng(_toDeg(lat2), _toDeg(lng2));
   }
 
   /// Check if point is within visible bounds with margin
   static bool isInBounds(
-      LatLng point, LatLng sw, LatLng ne, {double margin = 1.0}) {
+    LatLng point,
+    LatLng sw,
+    LatLng ne, {
+    double margin = 1.0,
+  }) {
     return point.latitude >= sw.latitude - margin &&
         point.latitude <= ne.latitude + margin &&
         point.longitude >= sw.longitude - margin &&

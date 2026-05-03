@@ -46,7 +46,8 @@ class UiText {
       'flights_count': 'Flights',
       'airlines_count': 'Airlines',
       'airports_count': 'Airports',
-      'no_favorites_help': 'Tap the star icon on any flight,\nairline, or airport to save it here.',
+      'no_favorites_help':
+          'Tap the star icon on any flight,\nairline, or airport to save it here.',
       'dark_radar': 'Dark Radar',
       'neon_theme': 'Neon theme',
       'light_aviation': 'Light Aviation',
@@ -94,7 +95,8 @@ class UiText {
       'found': 'found',
       'time_windows': 'time windows',
       'search_callsign_hint': 'Flight number (e.g. TU744 or TAR744)',
-      'search_callsign_prompt': 'Search for a flight number or callsign\nto see 7-day history',
+      'search_callsign_prompt':
+          'Search for a flight number or callsign\nto see 7-day history',
       'on_time': 'On Time',
       'delayed': 'Delayed',
       'avg_delay': 'Avg Delay',
@@ -152,7 +154,8 @@ class UiText {
       'flights_count': 'Flüge',
       'airlines_count': 'Airlines',
       'airports_count': 'Flughäfen',
-      'no_favorites_help': 'Tippe auf das Sternsymbol bei einem Flug,\neiner Airline oder einem Flughafen, um ihn hier zu speichern.',
+      'no_favorites_help':
+          'Tippe auf das Sternsymbol bei einem Flug,\neiner Airline oder einem Flughafen, um ihn hier zu speichern.',
       'dark_radar': 'Dunkles Radar',
       'neon_theme': 'Neon-Design',
       'light_aviation': 'Helle Aviation',
@@ -200,7 +203,8 @@ class UiText {
       'found': 'gefunden',
       'time_windows': 'Zeitfenster',
       'search_callsign_hint': 'Flugnummer (z. B. TU744 oder TAR744)',
-      'search_callsign_prompt': 'Suche nach einer Flugnummer oder einem Rufzeichen,\num den 7-Tage-Verlauf zu sehen',
+      'search_callsign_prompt':
+          'Suche nach einer Flugnummer oder einem Rufzeichen,\num den 7-Tage-Verlauf zu sehen',
       'on_time': 'Pünktlich',
       'delayed': 'Verspätet',
       'avg_delay': 'Ø Verspätung',
@@ -258,7 +262,8 @@ class UiText {
       'flights_count': 'Vols',
       'airlines_count': 'Compagnies',
       'airports_count': 'Aéroports',
-      'no_favorites_help': 'Touchez l’étoile sur un vol,\nune compagnie ou un aéroport pour l’enregistrer ici.',
+      'no_favorites_help':
+          'Touchez l’étoile sur un vol,\nune compagnie ou un aéroport pour l’enregistrer ici.',
       'dark_radar': 'Radar sombre',
       'neon_theme': 'Thème néon',
       'light_aviation': 'Aviation claire',
@@ -306,7 +311,8 @@ class UiText {
       'found': 'trouvé(s)',
       'time_windows': 'fenêtres temporelles',
       'search_callsign_hint': 'Indicatif (ex. TAR744)',
-      'search_callsign_prompt': 'Recherchez un indicatif de vol\npour voir l’historique sur 7 jours',
+      'search_callsign_prompt':
+          'Recherchez un indicatif de vol\npour voir l’historique sur 7 jours',
       'on_time': 'À l’heure',
       'delayed': 'Retardé',
       'avg_delay': 'Retard moy.',
@@ -340,11 +346,17 @@ class UiText {
     },
   };
 
-  static String statusLabel(BuildContext context, String? status, {bool compact = false}) {
+  static String statusLabel(
+    BuildContext context,
+    String? status, {
+    bool compact = false,
+  }) {
     return switch (status?.toLowerCase()) {
       'en-route' || 'active' => context.tr(compact ? 'live_badge' : 'live'),
       'landed' => context.tr(compact ? 'landed_badge' : 'landed_badge'),
-      'scheduled' => context.tr(compact ? 'scheduled_badge' : 'scheduled_badge'),
+      'scheduled' => context.tr(
+        compact ? 'scheduled_badge' : 'scheduled_badge',
+      ),
       'on ground' => context.tr(compact ? 'ground_badge' : 'on_ground'),
       'cancelled' => context.tr('cancelled_short'),
       _ => status?.toUpperCase() ?? '',

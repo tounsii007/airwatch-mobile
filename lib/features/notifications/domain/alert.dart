@@ -40,16 +40,16 @@ class AppAlert {
   /// Visual icon + colour for the bell badge / list tile. Centralised
   /// here so the hub UI never has to switch on the kind.
   IconData get icon => switch (kind) {
-        AlertKind.squawk => Icons.warning_amber_rounded,
-        AlertKind.geofence => Icons.fence_rounded,
-        AlertKind.system => Icons.cloud_off_rounded,
-        AlertKind.info => Icons.info_outline_rounded,
-      };
+    AlertKind.squawk => Icons.warning_amber_rounded,
+    AlertKind.geofence => Icons.fence_rounded,
+    AlertKind.system => Icons.cloud_off_rounded,
+    AlertKind.info => Icons.info_outline_rounded,
+  };
 
   Color get accent => switch (kind) {
-        AlertKind.squawk => AppColors.error,
-        AlertKind.geofence => AppColors.warning,
-        AlertKind.system => AppColors.textMuted,
-        AlertKind.info => AppColors.info,
-      };
+    AlertKind.squawk => AppColors.error,
+    AlertKind.geofence => AppColors.warning,
+    AlertKind.system => AppColors.textMuted,
+    AlertKind.info => AppColors.info,
+  };
 }

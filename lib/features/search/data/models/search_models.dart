@@ -1,6 +1,12 @@
 import 'package:airwatch_mobile/features/map/data/models/aircraft_state.dart';
 
-enum SearchResultType { liveAircraft, airline, apiResult, airlineFlight, country }
+enum SearchResultType {
+  liveAircraft,
+  airline,
+  apiResult,
+  airlineFlight,
+  country,
+}
 
 enum SearchFilter { all, live, airlines, flights, countries }
 

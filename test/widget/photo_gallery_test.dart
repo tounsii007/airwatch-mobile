@@ -6,9 +6,9 @@ import 'package:airwatch_mobile/features/flight_details/presentation/screens/pho
 void main() {
   group('PhotoGalleryScreen widget', () {
     testWidgets('renders without throwing for a known ICAO24', (tester) async {
-      await tester.pumpWidget(const MaterialApp(
-        home: PhotoGalleryScreen(icao24: 'AABBCC'),
-      ));
+      await tester.pumpWidget(
+        const MaterialApp(home: PhotoGalleryScreen(icao24: 'AABBCC')),
+      );
       // Initial frame — loading spinner placeholder.
       expect(find.byType(PhotoGalleryScreen), findsOneWidget);
       expect(tester.takeException(), isNull);
@@ -18,11 +18,12 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
     });
 
-    testWidgets('empty state shows "No photos available" + close button',
-        (tester) async {
-      await tester.pumpWidget(const MaterialApp(
-        home: PhotoGalleryScreen(icao24: ''),
-      ));
+    testWidgets('empty state shows "No photos available" + close button', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const MaterialApp(home: PhotoGalleryScreen(icao24: '')),
+      );
       // Empty icao24 → service returns empty list immediately.
       await tester.pump(const Duration(milliseconds: 200));
       expect(find.text('No photos available'), findsOneWidget);

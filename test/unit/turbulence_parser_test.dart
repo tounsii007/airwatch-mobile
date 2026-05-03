@@ -81,12 +81,18 @@ void main() {
 
   group('severityColor', () {
     test('light is yellow, moderate is orange, severe is red', () {
-      expect(severityColor(TurbulenceSeverity.light).toARGB32().toRadixString(16),
-          contains('eab308'));
-      expect(severityColor(TurbulenceSeverity.moderate).toARGB32().toRadixString(16),
-          contains('f97316'));
-      expect(severityColor(TurbulenceSeverity.severe).toARGB32().toRadixString(16),
-          contains('ef4444'));
+      expect(
+        severityColor(TurbulenceSeverity.light).toARGB32().toRadixString(16),
+        contains('eab308'),
+      );
+      expect(
+        severityColor(TurbulenceSeverity.moderate).toARGB32().toRadixString(16),
+        contains('f97316'),
+      );
+      expect(
+        severityColor(TurbulenceSeverity.severe).toARGB32().toRadixString(16),
+        contains('ef4444'),
+      );
     });
   });
 }

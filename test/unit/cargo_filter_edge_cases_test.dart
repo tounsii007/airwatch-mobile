@@ -6,8 +6,11 @@ void main() {
   group('isCargoCallsign — known carrier list', () {
     test('all listed carriers match', () {
       for (final code in cargoAirlineIcaoCodes) {
-        expect(isCargoCallsign('${code}001'), isTrue,
-            reason: '$code should be cargo');
+        expect(
+          isCargoCallsign('${code}001'),
+          isTrue,
+          reason: '$code should be cargo',
+        );
       }
     });
 
@@ -46,8 +49,7 @@ void main() {
       expect(isCargoCallsign('  FDX1234  '), isTrue);
     });
 
-    test('lowercase callsign — strict reject (real-world ADS-B is upper)',
-        () {
+    test('lowercase callsign — strict reject (real-world ADS-B is upper)', () {
       // The implementation is intentionally case-sensitive — the
       // upstream feed only ever sends uppercase ICAO codes, so a
       // lower-case "fdx" is suspicious data we don't want to tag as

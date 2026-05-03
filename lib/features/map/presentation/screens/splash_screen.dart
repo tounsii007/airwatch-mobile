@@ -25,22 +25,30 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-    _logoScale = AnimationController(vsync: this,
-        duration: const Duration(milliseconds: 1200))
-      ..forward(from: 0);
-    _logoGlow = AnimationController(vsync: this,
-        duration: const Duration(seconds: 2))
-      ..repeat(reverse: true);
-    _textSlide = AnimationController(vsync: this,
-        duration: const Duration(milliseconds: 1000));
-    _bgShift = AnimationController(vsync: this,
-        duration: const Duration(seconds: 8))
-      ..repeat();
-    _gridAnim = AnimationController(vsync: this,
-        duration: const Duration(seconds: 4))
-      ..repeat();
-    _fadeOut = AnimationController(vsync: this,
-        duration: const Duration(milliseconds: 500));
+    _logoScale = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..forward(from: 0);
+    _logoGlow = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
+    _textSlide = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+    );
+    _bgShift = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 8),
+    )..repeat();
+    _gridAnim = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 4),
+    )..repeat();
+    _fadeOut = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
 
     // Sequence: logo appears → text slides in → hold → fade out
     _textSlideTimer = Timer(const Duration(milliseconds: 600), () {
@@ -79,7 +87,14 @@ class _SplashScreenState extends State<SplashScreen>
     return Scaffold(
       backgroundColor: const Color(0xFF0A1628),
       body: AnimatedBuilder(
-        animation: Listenable.merge([_logoScale, _logoGlow, _textSlide, _bgShift, _fadeOut, _gridAnim]),
+        animation: Listenable.merge([
+          _logoScale,
+          _logoGlow,
+          _textSlide,
+          _bgShift,
+          _fadeOut,
+          _gridAnim,
+        ]),
         builder: (context, _) {
           final opacity = (1.0 - _fadeOut.value).clamp(0.0, 1.0);
 
@@ -145,7 +160,8 @@ class _SplashScreenState extends State<SplashScreen>
                       // Metallic "A" logo
                       Transform.scale(
                         scale: Curves.elasticOut.transform(
-                            _logoScale.value.clamp(0.0, 1.0)),
+                          _logoScale.value.clamp(0.0, 1.0),
+                        ),
                         child: _AirwatchLogo(
                           glowIntensity: _logoGlow.value,
                           size: 120,
@@ -154,30 +170,34 @@ class _SplashScreenState extends State<SplashScreen>
                       const SizedBox(height: 24),
                       // "AIRWATCH" text
                       SlideTransition(
-                        position: Tween<Offset>(
-                          begin: const Offset(0, 0.5),
-                          end: Offset.zero,
-                        ).animate(CurvedAnimation(
-                          parent: _textSlide,
-                          curve: Curves.easeOutCubic,
-                        )),
+                        position:
+                            Tween<Offset>(
+                              begin: const Offset(0, 0.5),
+                              end: Offset.zero,
+                            ).animate(
+                              CurvedAnimation(
+                                parent: _textSlide,
+                                curve: Curves.easeOutCubic,
+                              ),
+                            ),
                         child: FadeTransition(
                           opacity: _textSlide,
                           child: Column(
                             children: [
                               // App name with metallic shader
                               ShaderMask(
-                                shaderCallback: (bounds) => const LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    Color(0xFFCCD6E0),
-                                    Color(0xFF8A9BB0),
-                                    Color(0xFFE0E8F0),
-                                    Color(0xFF7A8DA0),
-                                  ],
-                                  stops: [0.0, 0.4, 0.6, 1.0],
-                                ).createShader(bounds),
+                                shaderCallback: (bounds) =>
+                                    const LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        Color(0xFFCCD6E0),
+                                        Color(0xFF8A9BB0),
+                                        Color(0xFFE0E8F0),
+                                        Color(0xFF7A8DA0),
+                                      ],
+                                      stops: [0.0, 0.4, 0.6, 1.0],
+                                    ).createShader(bounds),
                                 child: const Text(
                                   'AIRWATCH',
                                   style: TextStyle(
@@ -197,7 +217,9 @@ class _SplashScreenState extends State<SplashScreen>
                                   fontFamily: 'Rajdhani',
                                   fontSize: 11,
                                   fontWeight: FontWeight.w500,
-                                  color: const Color(0xFF8A9BB0).withValues(alpha: 0.6),
+                                  color: const Color(
+                                    0xFF8A9BB0,
+                                  ).withValues(alpha: 0.6),
                                   letterSpacing: 5,
                                 ),
                               ),
@@ -237,10 +259,9 @@ class _AirwatchLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: size, height: size,
-      child: CustomPaint(
-        painter: _LogoPainter(glowIntensity: glowIntensity),
-      ),
+      width: size,
+      height: size,
+      child: CustomPaint(painter: _LogoPainter(glowIntensity: glowIntensity)),
     );
   }
 }
@@ -259,19 +280,21 @@ class _LogoPainter extends CustomPainter {
       Offset(cx, cx),
       40 * s,
       Paint()
-        ..color = const Color(0xFF4A6B8A).withValues(alpha: 0.08 + glowIntensity * 0.06)
+        ..color = const Color(
+          0xFF4A6B8A,
+        ).withValues(alpha: 0.08 + glowIntensity * 0.06)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 20),
     );
 
     // The "A" arrow shape — metallic look
     final path = Path()
-      ..moveTo(cx, 10 * s)              // Top point
-      ..lineTo(cx + 35 * s, 75 * s)     // Bottom right
-      ..lineTo(cx + 25 * s, 75 * s)     // Inner right
-      ..lineTo(cx + 18 * s, 55 * s)     // Right notch top
-      ..lineTo(cx - 18 * s, 55 * s)     // Left notch top
-      ..lineTo(cx - 25 * s, 75 * s)     // Inner left
-      ..lineTo(cx - 35 * s, 75 * s)     // Bottom left
+      ..moveTo(cx, 10 * s) // Top point
+      ..lineTo(cx + 35 * s, 75 * s) // Bottom right
+      ..lineTo(cx + 25 * s, 75 * s) // Inner right
+      ..lineTo(cx + 18 * s, 55 * s) // Right notch top
+      ..lineTo(cx - 18 * s, 55 * s) // Left notch top
+      ..lineTo(cx - 25 * s, 75 * s) // Inner left
+      ..lineTo(cx - 35 * s, 75 * s) // Bottom left
       ..close();
 
     // Metallic gradient fill
@@ -279,7 +302,11 @@ class _LogoPainter extends CustomPainter {
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       colors: [
-        Color.lerp(const Color(0xFFD0D8E0), const Color(0xFFE8F0F8), glowIntensity)!,
+        Color.lerp(
+          const Color(0xFFD0D8E0),
+          const Color(0xFFE8F0F8),
+          glowIntensity,
+        )!,
         const Color(0xFFA0AEC0),
         const Color(0xFFCCD6E0),
         const Color(0xFF8090A4),
@@ -290,7 +317,9 @@ class _LogoPainter extends CustomPainter {
     canvas.drawPath(
       path,
       Paint()
-        ..shader = gradient.createShader(Rect.fromLTWH(0, 0, size.width, size.height))
+        ..shader = gradient.createShader(
+          Rect.fromLTWH(0, 0, size.width, size.height),
+        )
         ..style = PaintingStyle.fill,
     );
 
@@ -331,7 +360,8 @@ class _LogoPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _LogoPainter old) => old.glowIntensity != glowIntensity;
+  bool shouldRepaint(covariant _LogoPainter old) =>
+      old.glowIntensity != glowIntensity;
 }
 
 /// Tech grid background
@@ -357,22 +387,29 @@ class _TechGridPainter extends CustomPainter {
 
     // Subtle circuit-like patterns at random grid intersections
     final rng = math.Random(42);
-    final dotPaint = Paint()..color = const Color(0xFF4A6B8A).withValues(alpha: 0.12);
+    final dotPaint = Paint()
+      ..color = const Color(0xFF4A6B8A).withValues(alpha: 0.12);
     for (int i = 0; i < 20; i++) {
       final x = (rng.nextInt((size.width / 40).floor()) * 40).toDouble();
       final y = (rng.nextInt((size.height / 40).floor()) * 40).toDouble();
       canvas.drawCircle(Offset(x, y), 2, dotPaint);
       // Small connecting lines
       if (rng.nextBool()) {
-        canvas.drawLine(Offset(x, y), Offset(x + 40, y),
-          Paint()..color = const Color(0xFF4A6B8A).withValues(alpha: 0.08)..strokeWidth = 0.5);
+        canvas.drawLine(
+          Offset(x, y),
+          Offset(x + 40, y),
+          Paint()
+            ..color = const Color(0xFF4A6B8A).withValues(alpha: 0.08)
+            ..strokeWidth = 0.5,
+        );
       }
     }
 
     // Animated scan line
     final scanY = size.height * progress;
     canvas.drawLine(
-      Offset(0, scanY), Offset(size.width, scanY),
+      Offset(0, scanY),
+      Offset(size.width, scanY),
       Paint()
         ..color = const Color(0xFF6B8AB0).withValues(alpha: 0.06)
         ..strokeWidth = 1,
@@ -380,7 +417,8 @@ class _TechGridPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _TechGridPainter old) => old.progress != progress;
+  bool shouldRepaint(covariant _TechGridPainter old) =>
+      old.progress != progress;
 }
 
 /// Loading bar
@@ -390,43 +428,46 @@ class _LoadingBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      Container(
-        height: 2,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(1),
-          color: const Color(0xFF2A3F5A).withValues(alpha: 0.3),
-        ),
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: FractionallySizedBox(
-            widthFactor: progress,
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(1),
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF4A6B8A), Color(0xFF8AA0B8)],
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF6B8AB0).withValues(alpha: 0.3),
-                    blurRadius: 6,
+    return Column(
+      children: [
+        Container(
+          height: 2,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(1),
+            color: const Color(0xFF2A3F5A).withValues(alpha: 0.3),
+          ),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: FractionallySizedBox(
+              widthFactor: progress,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(1),
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF4A6B8A), Color(0xFF8AA0B8)],
                   ),
-                ],
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF6B8AB0).withValues(alpha: 0.3),
+                      blurRadius: 6,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
         ),
-      ),
-      const SizedBox(height: 8),
-      Text(
-        context.tr('initializing'),
-        style: TextStyle(
-          fontFamily: 'Rajdhani', fontSize: 10,
-          color: const Color(0xFF6B8AB0).withValues(alpha: 0.4),
-          letterSpacing: 2,
+        const SizedBox(height: 8),
+        Text(
+          context.tr('initializing'),
+          style: TextStyle(
+            fontFamily: 'Rajdhani',
+            fontSize: 10,
+            color: const Color(0xFF6B8AB0).withValues(alpha: 0.4),
+            letterSpacing: 2,
+          ),
         ),
-      ),
-    ]);
+      ],
+    );
   }
 }

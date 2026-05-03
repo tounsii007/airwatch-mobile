@@ -38,10 +38,11 @@ class PanelAircraftSection extends StatelessWidget {
     final ageLabel = age == null
         ? null
         : built != null
-            ? '$age y ($built)'
-            : '$age y';
+        ? '$age y ($built)'
+        : '$age y';
 
-    if (model == null && metadata == null && !isLoading) return const SizedBox.shrink();
+    if (model == null && metadata == null && !isLoading)
+      return const SizedBox.shrink();
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -62,18 +63,26 @@ class PanelAircraftSection extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  model ?? (isLoading ? context.tr('loading') : UiConstants.unknownValue),
+                  model ??
+                      (isLoading
+                          ? context.tr('loading')
+                          : UiConstants.unknownValue),
                   style: TextStyle(
                     fontFamily: UiConstants.bodyFont,
                     fontSize: UiConstants.bodyFontSize,
                     fontWeight: FontWeight.w700,
-                    color: isDark ? AppColors.textPrimary : UiConstants.lightTextPrimary,
+                    color: isDark
+                        ? AppColors.textPrimary
+                        : UiConstants.lightTextPrimary,
                   ),
                 ),
               ),
-             if (typecode != null)
+              if (typecode != null)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 7,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(6),
@@ -99,7 +108,9 @@ class PanelAircraftSection extends StatelessWidget {
                 style: TextStyle(
                   fontFamily: UiConstants.bodyFont,
                   fontSize: 11,
-                  color: isDark ? AppColors.textSecondary : UiConstants.lightTextSecondary,
+                  color: isDark
+                      ? AppColors.textSecondary
+                      : UiConstants.lightTextSecondary,
                 ),
               ),
             ),
@@ -107,25 +118,38 @@ class PanelAircraftSection extends StatelessWidget {
           if (manufacturer != null || engine != null || age != null)
             Padding(
               padding: const EdgeInsets.only(left: 24, top: 6),
-              child: Wrap(spacing: 6, runSpacing: 4, children: [
-                if (manufacturer != null)
-                  DetailChip(icon: Icons.factory_rounded, label: manufacturer,
-                      color: primary, isDark: isDark),
-                if (engine != null)
-                  DetailChip(icon: Icons.local_fire_department_rounded,
+              child: Wrap(
+                spacing: 6,
+                runSpacing: 4,
+                children: [
+                  if (manufacturer != null)
+                    DetailChip(
+                      icon: Icons.factory_rounded,
+                      label: manufacturer,
+                      color: primary,
+                      isDark: isDark,
+                    ),
+                  if (engine != null)
+                    DetailChip(
+                      icon: Icons.local_fire_department_rounded,
                       label: '${engine[0].toUpperCase()}${engine.substring(1)}',
-                      color: AppColors.warning, isDark: isDark),
-                if (ageLabel != null)
-                  DetailChip(icon: Icons.calendar_today_rounded,
+                      color: AppColors.warning,
+                      isDark: isDark,
+                    ),
+                  if (ageLabel != null)
+                    DetailChip(
+                      icon: Icons.calendar_today_rounded,
                       label: ageLabel,
-                      color: AppColors.altitudeMedium, isDark: isDark),
-              ]),
+                      color: AppColors.altitudeMedium,
+                      isDark: isDark,
+                    ),
+                ],
+              ),
             ),
         ],
       ),
     );
   }
-
 }
 
 /// Aircraft photo with airline livery. Tappable to open the full
@@ -137,6 +161,7 @@ class PanelAircraftPhoto extends StatelessWidget {
   final AircraftMetadata? metadata;
   final bool isDark;
   final Color primary;
+
   /// ICAO24 hex of the aircraft — needed to fetch the photo gallery.
   /// Optional so a single-photo render path still works without it.
   final String? icao24;
@@ -166,76 +191,96 @@ class PanelAircraftPhoto extends StatelessWidget {
                 );
               },
         child: ClipRRect(
-        borderRadius: BorderRadius.circular(14),
-        child: Stack(
-          children: [
-            // Photo
-            CachedNetworkImage(
-              imageUrl: aircraftPhotoUrl,
-              width: double.infinity,
-              height: 110,
-              fit: BoxFit.cover,
-              placeholder: (_, url) => Container(
+          borderRadius: BorderRadius.circular(14),
+          child: Stack(
+            children: [
+              // Photo
+              CachedNetworkImage(
+                imageUrl: aircraftPhotoUrl,
+                width: double.infinity,
                 height: 110,
-                color: isDark ? AppColors.surface : const Color(0xFFF0F4F8),
-                child: Center(child: SizedBox(
-                  width: 20, height: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 1.5, color: primary.withValues(alpha: 0.3)),
-                )),
+                fit: BoxFit.cover,
+                placeholder: (_, url) => Container(
+                  height: 110,
+                  color: isDark ? AppColors.surface : const Color(0xFFF0F4F8),
+                  child: Center(
+                    child: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 1.5,
+                        color: primary.withValues(alpha: 0.3),
+                      ),
+                    ),
+                  ),
+                ),
+                errorWidget: (_, error, stackTrace) => const SizedBox.shrink(),
               ),
-              errorWidget: (_, error, stackTrace) => const SizedBox.shrink(),
-            ),
-            // Gradient overlay at bottom for text readability
-            Positioned(
-              bottom: 0, left: 0, right: 0,
-              child: Container(
-                height: 40,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.transparent,
-                      Colors.black.withValues(alpha: 0.6),
-                    ],
+              // Gradient overlay at bottom for text readability
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  height: 40,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.transparent,
+                        Colors.black.withValues(alpha: 0.6),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            // Photo credit + aircraft info + "tap to expand" hint
-            Positioned(
-              bottom: 4, left: 8, right: 8,
-              child: Row(
-                children: [
-                  Icon(Icons.camera_alt_rounded, size: 10,
-                      color: Colors.white.withValues(alpha: 0.5)),
-                  const SizedBox(width: 4),
-                  Text(
-                    'planespotters.net',
-                    style: TextStyle(fontFamily: 'Rajdhani', fontSize: 9,
-                        color: Colors.white.withValues(alpha: 0.4)),
-                  ),
-                  const Spacer(),
-                  if (icao24 != null) ...[
-                    Icon(Icons.fullscreen_rounded,
-                        size: 12,
-                        color: Colors.white.withValues(alpha: 0.55)),
-                    const SizedBox(width: 6),
-                  ],
-                  if (metadata?.registration != null)
-                    Text(
-                      metadata?.registration ?? '',
-                      style: TextStyle(fontFamily: 'Orbitron', fontSize: 9,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white.withValues(alpha: 0.6)),
+              // Photo credit + aircraft info + "tap to expand" hint
+              Positioned(
+                bottom: 4,
+                left: 8,
+                right: 8,
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.camera_alt_rounded,
+                      size: 10,
+                      color: Colors.white.withValues(alpha: 0.5),
                     ),
-                ],
+                    const SizedBox(width: 4),
+                    Text(
+                      'planespotters.net',
+                      style: TextStyle(
+                        fontFamily: 'Rajdhani',
+                        fontSize: 9,
+                        color: Colors.white.withValues(alpha: 0.4),
+                      ),
+                    ),
+                    const Spacer(),
+                    if (icao24 != null) ...[
+                      Icon(
+                        Icons.fullscreen_rounded,
+                        size: 12,
+                        color: Colors.white.withValues(alpha: 0.55),
+                      ),
+                      const SizedBox(width: 6),
+                    ],
+                    if (metadata?.registration != null)
+                      Text(
+                        metadata?.registration ?? '',
+                        style: TextStyle(
+                          fontFamily: 'Orbitron',
+                          fontSize: 9,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white.withValues(alpha: 0.6),
+                        ),
+                      ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
       ),
     );
   }

@@ -23,7 +23,22 @@ import 'dart:convert';
 void main() async {
   final port = int.tryParse(Platform.environment['PORT'] ?? '8080') ?? 8080;
   final httpsPort = int.tryParse(Platform.environment['HTTPS_PORT'] ?? '8443') ?? 8443;
-  final airlabsKey = Platform.environment['AIRLABS_KEY'] ?? '57d9c6c9-b0bf-4738-adf8-b5bc2af59b40';
+  // Fail fast — no hardcoded fallback. A committed key was leaked once
+  // and rotated; do not bring the fallback back. Set AIRLABS_KEY in the
+  // environment (or the .env file compose auto-loads) before booting.
+  final airlabsKey = Platform.environment['AIRLABS_KEY'];
+  if (airlabsKey == null || airlabsKey.isEmpty) {
+    stderr.writeln(
+      'FATAL: AIRLABS_KEY environment variable is required.\n'
+      '       Get a key at https://airlabs.co/ and export it before running:\n'
+      r'         export AIRLABS_KEY=your-key   (bash/zsh)'
+      '\n'
+      r'         $env:AIRLABS_KEY="your-key"   (PowerShell)'
+      '\n'
+      '       Or add it to .env when running under docker compose.',
+    );
+    exit(2);
+  }
   final enableHttps = Platform.environment['ENABLE_HTTPS'] == 'true';
   final bindHost = Platform.environment['PROXY_HOST'] ?? 'localhost';
   final allowedOrigins = _parseAllowedOrigins(

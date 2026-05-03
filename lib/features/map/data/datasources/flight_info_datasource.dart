@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' show debugPrint;
-import 'package:airwatch_mobile/core/constants/airline_database.dart' as airline_db;
+import 'package:airwatch_mobile/core/constants/airline_database.dart'
+    as airline_db;
 import 'package:airwatch_mobile/core/constants/api_json_keys.dart';
 import 'package:airwatch_mobile/core/constants/config.dart';
 import 'package:airwatch_mobile/core/models/airline_info.dart';
@@ -19,10 +20,7 @@ class FlightInfoDatasource {
   final AirlabsDatasource _airlabs = AirlabsDatasource();
 
   FlightInfoDatasource({Dio? dio})
-      : _dio = dio ??
-            AppHttpClient.create(
-              receiveTimeout: AppConfig.apiTimeout,
-            );
+    : _dio = dio ?? AppHttpClient.create(receiveTimeout: AppConfig.apiTimeout);
 
   // Session cache for routes — avoids repeated API calls for the same aircraft
   static final Map<String, FlightRouteInfo?> _routeCache = {};
@@ -32,8 +30,10 @@ class FlightInfoDatasource {
   /// 2. OpenSky /api/routes (fast but often 404)
   /// 3. OpenSky /api/tracks (live track, infers departure)
   /// 4. OpenSky /api/flights/aircraft (historical fallback)
-  Future<FlightRouteInfo?> getRouteByCallsign(String callsign,
-      {String? icao24}) async {
+  Future<FlightRouteInfo?> getRouteByCallsign(
+    String callsign, {
+    String? icao24,
+  }) async {
     final cacheKey = '${callsign.trim()}_${icao24 ?? ""}';
 
     // Check cache first
@@ -220,7 +220,9 @@ class FlightInfoDatasource {
   /// We can match it against known airport positions.
   // ignore: unused_element
   Future<FlightRouteInfo?> _tryTracksEndpoint(
-      String icao24, String callsign) async {
+    String icao24,
+    String callsign,
+  ) async {
     try {
       final hex = icao24.trim().toLowerCase();
       // time=0 means "get the current live track"
@@ -271,37 +273,83 @@ class FlightInfoDatasource {
     // Import would create circular dep, so we use a simple inline list
     // of major airports with coordinates
     const airports = <String, List<double>>{
-      'EDDF': [50.033, 8.571], 'EDDM': [48.354, 11.786], 'EDDB': [52.362, 13.509],
-      'EDDL': [51.290, 6.767], 'EDDH': [53.630, 9.988], 'EDDS': [48.690, 9.222],
-      'EDDK': [50.866, 7.143], 'DTTA': [36.851, 10.227], 'DTMB': [35.758, 10.755],
-      'DTNH': [36.076, 10.438], 'DTTJ': [33.875, 10.775],
-      'GMMN': [33.367, -7.590], 'GMMX': [31.607, -8.036], 'GMFF': [33.927, -4.978],
-      'GMAD': [30.325, -9.413], 'GMTN': [35.727, -5.917],
-      'LFPG': [49.010, 2.548], 'LFPO': [48.723, 2.379], 'LFML': [43.436, 5.215],
-      'LFLL': [45.726, 5.091], 'LFBO': [43.629, 1.364], 'LFMN': [43.658, 7.216],
-      'EGLL': [51.470, -0.454], 'EGKK': [51.148, -0.190], 'EGCC': [53.354, -2.275],
-      'LTFM': [41.262, 28.742], 'LTFJ': [40.899, 29.309], 'LTAI': [36.899, 30.800],
-      'EHAM': [52.309, 4.764], 'EBBR': [50.902, 4.485],
-      'LSZH': [47.458, 8.548], 'LSGG': [46.238, 6.109], 'LOWW': [48.110, 16.570],
-      'LEMD': [40.472, -3.561], 'LEBL': [41.297, 2.079], 'LEPA': [39.552, 2.739],
-      'LIRF': [41.800, 12.239], 'LIMC': [45.630, 8.723], 'LIPZ': [45.505, 12.352],
-      'LPPT': [38.774, -9.134], 'LGAV': [37.936, 23.944], 'EIDW': [53.421, -6.270],
-      'EPWA': [52.166, 20.967], 'EKCH': [55.618, 12.656], 'ENGM': [60.194, 11.100],
-      'ESSA': [59.652, 17.919], 'EFHK': [60.317, 24.963],
-      'OMDB': [25.253, 55.366], 'OTHH': [25.261, 51.565],
-      'HECA': [30.122, 31.406], 'DAAG': [36.691, 3.215],
-      'HAAB': [8.978, 38.799], 'FAOR': [-26.134, 28.242],
-      'KJFK': [40.640, -73.779], 'KLAX': [33.943, -118.408], 'KORD': [41.978, -87.905],
-      'KATL': [33.637, -84.428], 'KMIA': [25.796, -80.287], 'KIAD': [38.944, -77.456],
-      'VHHH': [22.309, 113.915], 'ZBAA': [40.080, 116.584],
-      'RJTT': [35.553, 139.780], 'RKSI': [37.463, 126.441],
-      'WSSS': [1.350, 103.994], 'VTBS': [13.681, 100.747],
-      'VIDP': [28.556, 77.100], 'CYYZ': [43.677, -79.631],
-      'YSSY': [-33.947, 151.177], 'SBGR': [-23.432, -46.470],
-      'LHBP': [47.439, 19.262], 'LKPR': [50.101, 14.260],
-      'LROP': [44.572, 26.085], 'UUEE': [55.973, 37.414],
-      'LLBG': [32.011, 34.887], 'OEJN': [21.680, 39.157],
-      'FIMP': [-20.430, 57.684], 'BIKF': [63.985, -22.606],
+      'EDDF': [50.033, 8.571],
+      'EDDM': [48.354, 11.786],
+      'EDDB': [52.362, 13.509],
+      'EDDL': [51.290, 6.767],
+      'EDDH': [53.630, 9.988],
+      'EDDS': [48.690, 9.222],
+      'EDDK': [50.866, 7.143],
+      'DTTA': [36.851, 10.227],
+      'DTMB': [35.758, 10.755],
+      'DTNH': [36.076, 10.438],
+      'DTTJ': [33.875, 10.775],
+      'GMMN': [33.367, -7.590],
+      'GMMX': [31.607, -8.036],
+      'GMFF': [33.927, -4.978],
+      'GMAD': [30.325, -9.413],
+      'GMTN': [35.727, -5.917],
+      'LFPG': [49.010, 2.548],
+      'LFPO': [48.723, 2.379],
+      'LFML': [43.436, 5.215],
+      'LFLL': [45.726, 5.091],
+      'LFBO': [43.629, 1.364],
+      'LFMN': [43.658, 7.216],
+      'EGLL': [51.470, -0.454],
+      'EGKK': [51.148, -0.190],
+      'EGCC': [53.354, -2.275],
+      'LTFM': [41.262, 28.742],
+      'LTFJ': [40.899, 29.309],
+      'LTAI': [36.899, 30.800],
+      'EHAM': [52.309, 4.764],
+      'EBBR': [50.902, 4.485],
+      'LSZH': [47.458, 8.548],
+      'LSGG': [46.238, 6.109],
+      'LOWW': [48.110, 16.570],
+      'LEMD': [40.472, -3.561],
+      'LEBL': [41.297, 2.079],
+      'LEPA': [39.552, 2.739],
+      'LIRF': [41.800, 12.239],
+      'LIMC': [45.630, 8.723],
+      'LIPZ': [45.505, 12.352],
+      'LPPT': [38.774, -9.134],
+      'LGAV': [37.936, 23.944],
+      'EIDW': [53.421, -6.270],
+      'EPWA': [52.166, 20.967],
+      'EKCH': [55.618, 12.656],
+      'ENGM': [60.194, 11.100],
+      'ESSA': [59.652, 17.919],
+      'EFHK': [60.317, 24.963],
+      'OMDB': [25.253, 55.366],
+      'OTHH': [25.261, 51.565],
+      'HECA': [30.122, 31.406],
+      'DAAG': [36.691, 3.215],
+      'HAAB': [8.978, 38.799],
+      'FAOR': [-26.134, 28.242],
+      'KJFK': [40.640, -73.779],
+      'KLAX': [33.943, -118.408],
+      'KORD': [41.978, -87.905],
+      'KATL': [33.637, -84.428],
+      'KMIA': [25.796, -80.287],
+      'KIAD': [38.944, -77.456],
+      'VHHH': [22.309, 113.915],
+      'ZBAA': [40.080, 116.584],
+      'RJTT': [35.553, 139.780],
+      'RKSI': [37.463, 126.441],
+      'WSSS': [1.350, 103.994],
+      'VTBS': [13.681, 100.747],
+      'VIDP': [28.556, 77.100],
+      'CYYZ': [43.677, -79.631],
+      'YSSY': [-33.947, 151.177],
+      'SBGR': [-23.432, -46.470],
+      'LHBP': [47.439, 19.262],
+      'LKPR': [50.101, 14.260],
+      'LROP': [44.572, 26.085],
+      'UUEE': [55.973, 37.414],
+      'LLBG': [32.011, 34.887],
+      'OEJN': [21.680, 39.157],
+      'FIMP': [-20.430, 57.684],
+      'BIKF': [63.985, -22.606],
     };
 
     String? nearest;
@@ -326,7 +374,9 @@ class FlightInfoDatasource {
   /// Prefers flights with the same callsign.
   // ignore: unused_element
   Future<FlightRouteInfo?> _tryFlightsAircraftEndpoint(
-      String icao24, String callsign) async {
+    String icao24,
+    String callsign,
+  ) async {
     final hex = icao24.trim().toLowerCase();
     final cs = callsign.trim().toUpperCase();
     final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
@@ -340,7 +390,9 @@ class FlightInfoDatasource {
 
         final url =
             '${AppConfig.openSkyUrl}/api/flights/aircraft?icao24=$hex&begin=$begin&end=$end';
-        debugPrint('[FlightInfo] Trying /flights/aircraft (${daysBack}d back): $url');
+        debugPrint(
+          '[FlightInfo] Trying /flights/aircraft (${daysBack}d back): $url',
+        );
         final response = await _dio.get(url);
 
         if (response.statusCode == 200 && response.data is List) {
@@ -362,7 +414,8 @@ class FlightInfoDatasource {
           final dep = best['estDepartureAirport']?.toString();
           final arr = best['estArrivalAirport']?.toString();
 
-          if ((dep != null && dep.isNotEmpty) || (arr != null && arr.isNotEmpty)) {
+          if ((dep != null && dep.isNotEmpty) ||
+              (arr != null && arr.isNotEmpty)) {
             return FlightRouteInfo(
               callsign: cs,
               departureAirport: dep ?? '',
@@ -483,7 +536,8 @@ class FlightRouteInfo {
   final String arrivalAirport;
   final String? operatorIata;
   final String? flightNumber;
-  final String source; // 'airlabs', 'routes', 'tracks', 'flights/aircraft', 'none'
+  final String
+  source; // 'airlabs', 'routes', 'tracks', 'flights/aircraft', 'none'
 
   // Extended fields from Airlabs
   final String? depCity, arrCity;
@@ -508,17 +562,28 @@ class FlightRouteInfo {
     this.operatorIata,
     this.flightNumber,
     this.source = 'routes',
-    this.depCity, this.arrCity,
-    this.depName, this.arrName,
+    this.depCity,
+    this.arrCity,
+    this.depName,
+    this.arrName,
     this.status,
-    this.depDelay, this.arrDelay,
-    this.scheduledDep, this.scheduledArr,
-    this.actualDep, this.actualArr,
-    this.depTerminal, this.depGate,
-    this.arrTerminal, this.arrGate, this.arrBaggage,
+    this.depDelay,
+    this.arrDelay,
+    this.scheduledDep,
+    this.scheduledArr,
+    this.actualDep,
+    this.actualArr,
+    this.depTerminal,
+    this.depGate,
+    this.arrTerminal,
+    this.arrGate,
+    this.arrBaggage,
     this.duration,
-    this.aircraftModel, this.aircraftManufacturer,
-    this.engineType, this.aircraftAge, this.aircraftBuilt,
+    this.aircraftModel,
+    this.aircraftManufacturer,
+    this.engineType,
+    this.aircraftAge,
+    this.aircraftBuilt,
   });
 
   bool get hasDepDelay => depDelay != null && depDelay! > 0;
@@ -552,4 +617,3 @@ class AircraftMetadata {
     return model ?? typecode ?? 'Unknown';
   }
 }
-

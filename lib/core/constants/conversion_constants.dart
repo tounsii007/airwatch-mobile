@@ -21,6 +21,7 @@ class ConversionConstants {
   /// 1 852 m by international agreement.
   static const double msToKnots = 3600.0 / 1852.0;
   static const double msToKmh = 3.6;
+
   /// 1 m/s in miles per hour. `3600 / 1609.344` — international mile.
   static const double msToMph = 3600.0 / 1609.344;
 

@@ -36,13 +36,13 @@ class AdminSignedInNotifier extends Notifier<bool> {
 /// tearing the stream down.
 final adminOverviewStreamProvider =
     StreamProvider.autoDispose<Map<String, dynamic>?>((ref) async* {
-  final service = ref.read(adminApiProvider);
-  while (true) {
-    if (!service.isSignedIn) {
-      yield null;
-    } else {
-      yield await service.fetchOverview();
-    }
-    await Future<void>.delayed(const Duration(seconds: 3));
-  }
-});
+      final service = ref.read(adminApiProvider);
+      while (true) {
+        if (!service.isSignedIn) {
+          yield null;
+        } else {
+          yield await service.fetchOverview();
+        }
+        await Future<void>.delayed(const Duration(seconds: 3));
+      }
+    });

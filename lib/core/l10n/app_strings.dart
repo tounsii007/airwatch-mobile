@@ -17,7 +17,10 @@ enum AppLanguage { en, de, fr }
 
 class LanguageNotifier extends Notifier<AppLanguage> {
   @override
-  AppLanguage build() { _load(); return AppLanguage.en; }
+  AppLanguage build() {
+    _load();
+    return AppLanguage.en;
+  }
 
   Future<void> _load() async {
     final p = await SharedPreferences.getInstance();
@@ -32,8 +35,9 @@ class LanguageNotifier extends Notifier<AppLanguage> {
   }
 }
 
-final languageProvider =
-    NotifierProvider<LanguageNotifier, AppLanguage>(LanguageNotifier.new);
+final languageProvider = NotifierProvider<LanguageNotifier, AppLanguage>(
+  LanguageNotifier.new,
+);
 
 /// Get localized strings for a language.
 /// Usage: S.of(AppLanguage.de).altitude → "HÖHE"
@@ -47,14 +51,14 @@ class S {
   static AppStrings of(AppLanguage lang) => _instances[lang] ?? StringsEn();
 
   static AppStrings ofLocale(Locale locale) => switch (locale.languageCode) {
-        'de' => StringsDe(),
-        'fr' => StringsFr(),
-        _ => StringsEn(),
-      };
+    'de' => StringsDe(),
+    'fr' => StringsFr(),
+    _ => StringsEn(),
+  };
 }
 
 Locale localeFromLanguage(AppLanguage lang) => switch (lang) {
-      AppLanguage.de => const Locale('de'),
-      AppLanguage.fr => const Locale('fr'),
-      AppLanguage.en => const Locale('en'),
-    };
+  AppLanguage.de => const Locale('de'),
+  AppLanguage.fr => const Locale('fr'),
+  AppLanguage.en => const Locale('en'),
+};

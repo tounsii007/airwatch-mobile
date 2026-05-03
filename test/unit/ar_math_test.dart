@@ -104,8 +104,7 @@ void main() {
       expect(p.y, closeTo(0.5, 1e-9));
     });
 
-    test('aircraft 30° to the right at 0° pitch → x = 1.0 (right edge)',
-        () {
+    test('aircraft 30° to the right at 0° pitch → x = 1.0 (right edge)', () {
       final p = projectToScreen(
         aircraftBearingDeg: 120,
         aircraftElevationDeg: 0,

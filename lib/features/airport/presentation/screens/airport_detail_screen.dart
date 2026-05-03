@@ -27,7 +27,8 @@ class AirportDetailScreen extends ConsumerStatefulWidget {
   const AirportDetailScreen({super.key, required this.iataCode, this.name});
 
   @override
-  ConsumerState<AirportDetailScreen> createState() => _AirportDetailScreenState();
+  ConsumerState<AirportDetailScreen> createState() =>
+      _AirportDetailScreenState();
 }
 
 class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
@@ -112,7 +113,9 @@ class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
         // bundled `airportFullDatabase` so the recent list survives
         // a backend outage.
         final dbEntry = lookupAirportByIata(widget.iataCode);
-        ref.read(recentAirportsProvider.notifier).record(
+        ref
+            .read(recentAirportsProvider.notifier)
+            .record(
               iata: widget.iataCode,
               city: dbEntry?.city,
               country: dbEntry?.country,
@@ -131,7 +134,9 @@ class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
     final primary = isDark ? AppColors.primary : UiConstants.lightPrimary;
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.background : UiConstants.lightBackground,
+      backgroundColor: isDark
+          ? AppColors.background
+          : UiConstants.lightBackground,
       body: SafeArea(
         child: Column(
           children: [
@@ -146,8 +151,9 @@ class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
                   color: isDark ? AppColors.surface : UiConstants.lightSurface,
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
-                    color:
-                        isDark ? AppColors.glassBorder : UiConstants.lightBorder,
+                    color: isDark
+                        ? AppColors.glassBorder
+                        : UiConstants.lightBorder,
                   ),
                 ),
                 child: TextField(
@@ -156,17 +162,24 @@ class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
                   style: TextStyle(
                     fontFamily: UiConstants.bodyFont,
                     fontSize: 13,
-                    color: isDark ? AppColors.textPrimary : UiConstants.lightTextPrimary,
+                    color: isDark
+                        ? AppColors.textPrimary
+                        : UiConstants.lightTextPrimary,
                   ),
                   decoration: InputDecoration(
                     hintText: context.tr('search_flights'),
                     hintStyle: TextStyle(
                       fontFamily: UiConstants.bodyFont,
                       fontSize: 13,
-                      color: isDark ? AppColors.textMuted : UiConstants.lightHintText,
+                      color: isDark
+                          ? AppColors.textMuted
+                          : UiConstants.lightHintText,
                     ),
-                    prefixIcon:
-                        Icon(Icons.search_rounded, size: 18, color: primary),
+                    prefixIcon: Icon(
+                      Icons.search_rounded,
+                      size: 18,
+                      color: primary,
+                    ),
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.symmetric(vertical: 10),
                   ),
@@ -176,8 +189,9 @@ class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
             TabBar(
               controller: _tabController,
               labelColor: primary,
-              unselectedLabelColor:
-                  isDark ? AppColors.textMuted : UiConstants.lightTextMuted,
+              unselectedLabelColor: isDark
+                  ? AppColors.textMuted
+                  : UiConstants.lightTextMuted,
               indicatorColor: primary,
               labelStyle: const TextStyle(
                 fontFamily: UiConstants.headingFont,
@@ -212,8 +226,7 @@ class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
                     label: 'TIME',
                     active: _sortMode == _ScheduleSort.time,
                     primary: primary,
-                    onTap: () =>
-                        setState(() => _sortMode = _ScheduleSort.time),
+                    onTap: () => setState(() => _sortMode = _ScheduleSort.time),
                   ),
                   const SizedBox(width: 6),
                   _SortChip(
@@ -272,12 +285,21 @@ class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
                       glowRadius: isDark ? 8 : 0,
                     ),
                     const SizedBox(width: 8),
-                    Builder(builder: (_) {
-                      final country = airportCountry(widget.iataCode);
-                      final flagPath = CountryDatabase.flagAssetPathOf(country);
-                      if (flagPath == null) return const SizedBox.shrink();
-                      return SvgPicture.asset(flagPath, width: 22, height: 16, fit: BoxFit.cover);
-                    }),
+                    Builder(
+                      builder: (_) {
+                        final country = airportCountry(widget.iataCode);
+                        final flagPath = CountryDatabase.flagAssetPathOf(
+                          country,
+                        );
+                        if (flagPath == null) return const SizedBox.shrink();
+                        return SvgPicture.asset(
+                          flagPath,
+                          width: 22,
+                          height: 16,
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    ),
                   ],
                 ),
                 if (airportName.isNotEmpty)
@@ -286,7 +308,9 @@ class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
                     style: TextStyle(
                       fontFamily: UiConstants.bodyFont,
                       fontSize: 12,
-                      color: isDark ? AppColors.textSecondary : UiConstants.lightTextSecondary,
+                      color: isDark
+                          ? AppColors.textSecondary
+                          : UiConstants.lightTextSecondary,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -303,9 +327,7 @@ class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
                     : primary.withValues(alpha: isDark ? 0.1 : 0.06),
                 borderRadius: BorderRadius.circular(8),
                 border: _refreshError
-                    ? Border.all(
-                        color: AppColors.error.withValues(alpha: 0.3),
-                      )
+                    ? Border.all(color: AppColors.error.withValues(alpha: 0.3))
                     : null,
               ),
               child: _isRefreshing
@@ -318,12 +340,12 @@ class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
                       ),
                     )
                   : _refreshError
-                      ? const Icon(
-                          Icons.wifi_off_rounded,
-                          size: 18,
-                          color: AppColors.error,
-                        )
-                      : Icon(Icons.refresh_rounded, size: 18, color: primary),
+                  ? const Icon(
+                      Icons.wifi_off_rounded,
+                      size: 18,
+                      color: AppColors.error,
+                    )
+                  : Icon(Icons.refresh_rounded, size: 18, color: primary),
             ),
           ),
         ],
@@ -385,7 +407,9 @@ class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
                                   fontFamily: UiConstants.headingFont,
                                   fontSize: 14,
                                   fontWeight: FontWeight.w700,
-                                  color: isDark ? AppColors.textPrimary : UiConstants.lightTextPrimary,
+                                  color: isDark
+                                      ? AppColors.textPrimary
+                                      : UiConstants.lightTextPrimary,
                                 ),
                               ),
                               const SizedBox(width: 6),
@@ -479,7 +503,11 @@ class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
             borderRadius: 12,
             child: Column(
               children: [
-                const Icon(Icons.schedule_rounded, size: 16, color: AppColors.accent),
+                const Icon(
+                  Icons.schedule_rounded,
+                  size: 16,
+                  color: AppColors.accent,
+                ),
                 const SizedBox(height: 2),
                 Text(
                   localTime,
@@ -557,7 +585,9 @@ class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
           style: TextStyle(
             fontFamily: 'Rajdhani',
             fontSize: 14,
-            color: isDark ? AppColors.textSecondary : UiConstants.lightTextSecondary,
+            color: isDark
+                ? AppColors.textSecondary
+                : UiConstants.lightTextSecondary,
           ),
         ),
       );
@@ -582,8 +612,9 @@ class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
   }
 
   void _onFlightTap(AirportScheduleFlight flight) {
-    final flightCode =
-        flight.flightIcao.isNotEmpty ? flight.flightIcao : flight.flightIata;
+    final flightCode = flight.flightIcao.isNotEmpty
+        ? flight.flightIcao
+        : flight.flightIata;
     if (flightCode.isEmpty) {
       return;
     }
@@ -604,25 +635,45 @@ class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
       'America/Mexico_City' => -5,
       // Europe
       'Europe/London' || 'Europe/Dublin' || 'Europe/Lisbon' => 1,
-      'Europe/Berlin' || 'Europe/Paris' || 'Europe/Rome' ||
-      'Europe/Madrid' || 'Europe/Amsterdam' || 'Europe/Brussels' ||
-      'Europe/Zurich' || 'Europe/Vienna' || 'Europe/Warsaw' ||
-      'Europe/Prague' || 'Europe/Copenhagen' || 'Europe/Oslo' ||
-      'Europe/Stockholm' || 'Europe/Belgrade' || 'Europe/Budapest' => 2,
-      'Europe/Athens' || 'Europe/Bucharest' || 'Europe/Helsinki' ||
-      'Europe/Istanbul' || 'Europe/Kiev' || 'Europe/Moscow' => 3,
+      'Europe/Berlin' ||
+      'Europe/Paris' ||
+      'Europe/Rome' ||
+      'Europe/Madrid' ||
+      'Europe/Amsterdam' ||
+      'Europe/Brussels' ||
+      'Europe/Zurich' ||
+      'Europe/Vienna' ||
+      'Europe/Warsaw' ||
+      'Europe/Prague' ||
+      'Europe/Copenhagen' ||
+      'Europe/Oslo' ||
+      'Europe/Stockholm' ||
+      'Europe/Belgrade' ||
+      'Europe/Budapest' => 2,
+      'Europe/Athens' ||
+      'Europe/Bucharest' ||
+      'Europe/Helsinki' ||
+      'Europe/Istanbul' ||
+      'Europe/Kiev' ||
+      'Europe/Moscow' => 3,
       // Middle East / Africa
       'Asia/Dubai' || 'Asia/Muscat' => 4,
-      'Asia/Riyadh' || 'Asia/Kuwait' || 'Asia/Qatar' ||
-      'Africa/Nairobi' || 'Africa/Addis_Ababa' => 3,
+      'Asia/Riyadh' ||
+      'Asia/Kuwait' ||
+      'Asia/Qatar' ||
+      'Africa/Nairobi' ||
+      'Africa/Addis_Ababa' => 3,
       'Africa/Cairo' => 2,
       'Africa/Casablanca' || 'Africa/Tunis' || 'Africa/Algiers' => 1,
       'Africa/Johannesburg' => 2,
       // Asia / Pacific
       'Asia/Kolkata' || 'Asia/Calcutta' => 5,
       'Asia/Bangkok' || 'Asia/Jakarta' => 7,
-      'Asia/Singapore' || 'Asia/Hong_Kong' || 'Asia/Shanghai' ||
-      'Asia/Taipei' || 'Asia/Kuala_Lumpur' => 8,
+      'Asia/Singapore' ||
+      'Asia/Hong_Kong' ||
+      'Asia/Shanghai' ||
+      'Asia/Taipei' ||
+      'Asia/Kuala_Lumpur' => 8,
       'Asia/Tokyo' || 'Asia/Seoul' => 9,
       'Asia/Karachi' => 5,
       'Australia/Sydney' => 10,
@@ -645,10 +696,6 @@ class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
     return '☁️';
   }
 }
-
-
-
-
 
 /// Pill button used by the schedule-sort toggle. Stays small + dense
 /// so the row never wraps, even on narrow phone screens.
@@ -673,9 +720,7 @@ class _SortChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
         decoration: BoxDecoration(
-          color: active
-              ? primary.withValues(alpha: 0.18)
-              : Colors.transparent,
+          color: active ? primary.withValues(alpha: 0.18) : Colors.transparent,
           borderRadius: BorderRadius.circular(4),
           border: Border.all(
             color: active

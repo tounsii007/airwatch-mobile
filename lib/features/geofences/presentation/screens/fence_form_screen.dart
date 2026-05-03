@@ -62,7 +62,9 @@ class _FenceFormScreenState extends ConsumerState<FenceFormScreen> {
       setState(() => _error = 'Name required');
       return;
     }
-    final result = _type == GeoFenceType.circle ? _buildCircle(name) : _buildRect(name);
+    final result = _type == GeoFenceType.circle
+        ? _buildCircle(name)
+        : _buildRect(name);
     if (result is _Err) {
       setState(() => _error = result.message);
       return;
@@ -85,17 +87,21 @@ class _FenceFormScreenState extends ConsumerState<FenceFormScreen> {
     if (r == null || r <= 0) {
       return const _Err('Radius must be > 0 km');
     }
-    return _Ok(GeoFence(
-      id: 'fence-${DateTime.now().millisecondsSinceEpoch}',
-      name: name,
-      type: GeoFenceType.circle,
-      centerLat: lat,
-      centerLon: lon,
-      radiusKm: r,
-      minAltitudeFt: double.tryParse(_minAlt.text),
-      maxAltitudeFt: double.tryParse(_maxAlt.text),
-      airlineFilter: _airline.text.trim().isEmpty ? null : _airline.text.trim(),
-    ));
+    return _Ok(
+      GeoFence(
+        id: 'fence-${DateTime.now().millisecondsSinceEpoch}',
+        name: name,
+        type: GeoFenceType.circle,
+        centerLat: lat,
+        centerLon: lon,
+        radiusKm: r,
+        minAltitudeFt: double.tryParse(_minAlt.text),
+        maxAltitudeFt: double.tryParse(_maxAlt.text),
+        airlineFilter: _airline.text.trim().isEmpty
+            ? null
+            : _airline.text.trim(),
+      ),
+    );
   }
 
   _BuildResult _buildRect(String name) {
@@ -108,18 +114,22 @@ class _FenceFormScreenState extends ConsumerState<FenceFormScreen> {
     }
     if (n <= s) return const _Err('North must be greater than south');
     if (e <= w) return const _Err('East must be greater than west');
-    return _Ok(GeoFence(
-      id: 'fence-${DateTime.now().millisecondsSinceEpoch}',
-      name: name,
-      type: GeoFenceType.rectangle,
-      northLat: n,
-      southLat: s,
-      eastLon: e,
-      westLon: w,
-      minAltitudeFt: double.tryParse(_minAlt.text),
-      maxAltitudeFt: double.tryParse(_maxAlt.text),
-      airlineFilter: _airline.text.trim().isEmpty ? null : _airline.text.trim(),
-    ));
+    return _Ok(
+      GeoFence(
+        id: 'fence-${DateTime.now().millisecondsSinceEpoch}',
+        name: name,
+        type: GeoFenceType.rectangle,
+        northLat: n,
+        southLat: s,
+        eastLon: e,
+        westLon: w,
+        minAltitudeFt: double.tryParse(_minAlt.text),
+        maxAltitudeFt: double.tryParse(_maxAlt.text),
+        airlineFilter: _airline.text.trim().isEmpty
+            ? null
+            : _airline.text.trim(),
+      ),
+    );
   }
 
   @override
@@ -181,17 +191,42 @@ class _FenceFormScreenState extends ConsumerState<FenceFormScreen> {
             _Field(label: 'Name', controller: _name),
 
             if (_type == GeoFenceType.circle) ...[
-              _Field(label: 'Center latitude (-90..90)', controller: _centerLat,
-                  keyboardType: TextInputType.number),
-              _Field(label: 'Center longitude (-180..180)', controller: _centerLon,
-                  keyboardType: TextInputType.number),
-              _Field(label: 'Radius (km)', controller: _radius,
-                  keyboardType: TextInputType.number),
+              _Field(
+                label: 'Center latitude (-90..90)',
+                controller: _centerLat,
+                keyboardType: TextInputType.number,
+              ),
+              _Field(
+                label: 'Center longitude (-180..180)',
+                controller: _centerLon,
+                keyboardType: TextInputType.number,
+              ),
+              _Field(
+                label: 'Radius (km)',
+                controller: _radius,
+                keyboardType: TextInputType.number,
+              ),
             ] else ...[
-              _Field(label: 'North latitude', controller: _north, keyboardType: TextInputType.number),
-              _Field(label: 'South latitude', controller: _south, keyboardType: TextInputType.number),
-              _Field(label: 'East longitude', controller: _east, keyboardType: TextInputType.number),
-              _Field(label: 'West longitude', controller: _west, keyboardType: TextInputType.number),
+              _Field(
+                label: 'North latitude',
+                controller: _north,
+                keyboardType: TextInputType.number,
+              ),
+              _Field(
+                label: 'South latitude',
+                controller: _south,
+                keyboardType: TextInputType.number,
+              ),
+              _Field(
+                label: 'East longitude',
+                controller: _east,
+                keyboardType: TextInputType.number,
+              ),
+              _Field(
+                label: 'West longitude',
+                controller: _west,
+                keyboardType: TextInputType.number,
+              ),
             ],
 
             const SizedBox(height: 8),
@@ -206,17 +241,25 @@ class _FenceFormScreenState extends ConsumerState<FenceFormScreen> {
               ),
             ),
             const SizedBox(height: 6),
-            _Field(label: 'Min altitude (ft)', controller: _minAlt,
-                keyboardType: TextInputType.number),
-            _Field(label: 'Max altitude (ft)', controller: _maxAlt,
-                keyboardType: TextInputType.number),
+            _Field(
+              label: 'Min altitude (ft)',
+              controller: _minAlt,
+              keyboardType: TextInputType.number,
+            ),
+            _Field(
+              label: 'Max altitude (ft)',
+              controller: _maxAlt,
+              keyboardType: TextInputType.number,
+            ),
             _Field(label: 'Airline ICAO (e.g. DLH)', controller: _airline),
 
             if (_error != null)
               Padding(
                 padding: const EdgeInsets.only(top: 8),
-                child: Text(_error!,
-                    style: const TextStyle(color: AppColors.error, fontSize: 12)),
+                child: Text(
+                  _error!,
+                  style: const TextStyle(color: AppColors.error, fontSize: 12),
+                ),
               ),
           ],
         ),
@@ -285,7 +328,11 @@ class _TypeButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 14, color: active ? AppColors.primary : AppColors.textMuted),
+            Icon(
+              icon,
+              size: 14,
+              color: active ? AppColors.primary : AppColors.textMuted,
+            ),
             const SizedBox(width: 6),
             Text(
               label,

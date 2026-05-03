@@ -54,8 +54,7 @@ class CountUp extends StatefulWidget {
   State<CountUp> createState() => _CountUpState();
 }
 
-class _CountUpState extends State<CountUp>
-    with SingleTickerProviderStateMixin {
+class _CountUpState extends State<CountUp> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _tween;
   // Source-of-truth for the previous value. We tween FROM this TO the
@@ -67,8 +66,10 @@ class _CountUpState extends State<CountUp>
     super.initState();
     _from = widget.value.toDouble();
     _controller = AnimationController(vsync: this, duration: widget.duration);
-    _tween = Tween<double>(begin: _from, end: _from)
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
+    _tween = Tween<double>(
+      begin: _from,
+      end: _from,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
     _controller.value = 1.0; // start at the resting position, no flicker.
   }
 
@@ -86,21 +87,24 @@ class _CountUpState extends State<CountUp>
       // SchedulerBinding check matches Flutter's recommended way of
       // honouring system-level animation preferences.
       final disableAnims =
-          SchedulerBinding.instance.platformDispatcher.accessibilityFeatures
+          SchedulerBinding
+              .instance
+              .platformDispatcher
+              .accessibilityFeatures
               .disableAnimations ||
-              MediaQuery.of(context).disableAnimations;
+          MediaQuery.of(context).disableAnimations;
       if (disableAnims) {
         setState(() {
           _from = to;
-          _tween = Tween<double>(begin: to, end: to)
-              .animate(_controller);
+          _tween = Tween<double>(begin: to, end: to).animate(_controller);
         });
         _controller.value = 1.0;
         return;
       }
 
       _tween = Tween<double>(begin: _from, end: to).animate(
-          CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
+        CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic),
+      );
       _controller
         ..duration = widget.duration
         ..forward(from: 0).whenComplete(() {

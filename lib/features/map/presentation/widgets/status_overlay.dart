@@ -31,47 +31,92 @@ class StatusOverlay extends ConsumerWidget {
             opacity: isDark ? 0.3 : 0.85,
             child: Row(
               children: [
-                NeonText(text: 'AIRWATCH', fontSize: 13, color: primary,
-                    glowRadius: isDark ? 10 : 0),
+                NeonText(
+                  text: 'AIRWATCH',
+                  fontSize: 13,
+                  color: primary,
+                  glowRadius: isDark ? 10 : 0,
+                ),
                 const SizedBox(width: 10),
                 const _PulsingDot(color: AppColors.success),
                 const SizedBox(width: 5),
-                Text(context.tr('live'), style: TextStyle(
-                  fontFamily: UiConstants.headingFont, fontSize: 9, fontWeight: FontWeight.w700,
-                  color: AppColors.success, letterSpacing: 1,
-                  shadows: isDark ? [Shadow(color: AppColors.success.withValues(alpha: 0.5), blurRadius: 6)] : null,
-                )),
+                Text(
+                  context.tr('live'),
+                  style: TextStyle(
+                    fontFamily: UiConstants.headingFont,
+                    fontSize: 9,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.success,
+                    letterSpacing: 1,
+                    shadows: isDark
+                        ? [
+                            Shadow(
+                              color: AppColors.success.withValues(alpha: 0.5),
+                              blurRadius: 6,
+                            ),
+                          ]
+                        : null,
+                  ),
+                ),
                 const Spacer(),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
                   decoration: BoxDecoration(
                     color: primary.withValues(alpha: isDark ? 0.12 : 0.08),
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(color: primary.withValues(alpha: 0.2)),
                   ),
-                  child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    Icon(Icons.flight_rounded, size: 12, color: primary),
-                    const SizedBox(width: 4),
-                    Text('$count', style: TextStyle(
-                      fontFamily: UiConstants.headingFont, fontSize: 12, fontWeight: FontWeight.w700,
-                      color: primary,
-                      shadows: isDark ? [Shadow(color: primary.withValues(alpha: 0.4), blurRadius: 4)] : null,
-                    )),
-                  ]),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.flight_rounded, size: 12, color: primary),
+                      const SizedBox(width: 4),
+                      Text(
+                        '$count',
+                        style: TextStyle(
+                          fontFamily: UiConstants.headingFont,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: primary,
+                          shadows: isDark
+                              ? [
+                                  Shadow(
+                                    color: primary.withValues(alpha: 0.4),
+                                    blurRadius: 4,
+                                  ),
+                                ]
+                              : null,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 if (filter != AltitudeFilter.all) ...[
                   const SizedBox(width: 6),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
                     decoration: BoxDecoration(
                       color: _fColor(filter).withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(6),
-                      border: Border.all(color: _fColor(filter).withValues(alpha: 0.3)),
+                      border: Border.all(
+                        color: _fColor(filter).withValues(alpha: 0.3),
+                      ),
                     ),
-                    child: Text(_fLabel(filter), style: TextStyle(
-                      fontFamily: UiConstants.headingFont, fontSize: 7, fontWeight: FontWeight.w700,
-                      color: _fColor(filter),
-                    )),
+                    child: Text(
+                      _fLabel(filter),
+                      style: TextStyle(
+                        fontFamily: UiConstants.headingFont,
+                        fontSize: 7,
+                        fontWeight: FontWeight.w700,
+                        color: _fColor(filter),
+                      ),
+                    ),
                   ),
                 ],
               ],
@@ -83,20 +128,20 @@ class StatusOverlay extends ConsumerWidget {
   }
 
   Color _fColor(AltitudeFilter f) => switch (f) {
-        AltitudeFilter.low => AppColors.altitudeLow,
-        AltitudeFilter.medium => AppColors.altitudeMedium,
-        AltitudeFilter.high => AppColors.altitudeHigh,
-        AltitudeFilter.ground => Color(UiConstants.lightTextSecondary.toARGB32()),
-        AltitudeFilter.all => AppColors.primary,
-      };
+    AltitudeFilter.low => AppColors.altitudeLow,
+    AltitudeFilter.medium => AppColors.altitudeMedium,
+    AltitudeFilter.high => AppColors.altitudeHigh,
+    AltitudeFilter.ground => Color(UiConstants.lightTextSecondary.toARGB32()),
+    AltitudeFilter.all => AppColors.primary,
+  };
 
   String _fLabel(AltitudeFilter f) => switch (f) {
-        AltitudeFilter.low => '< 10K',
-        AltitudeFilter.medium => '10-30K',
-        AltitudeFilter.high => '> 30K',
-        AltitudeFilter.ground => 'GND',
-        AltitudeFilter.all => 'ALL',
-      };
+    AltitudeFilter.low => '< 10K',
+    AltitudeFilter.medium => '10-30K',
+    AltitudeFilter.high => '> 30K',
+    AltitudeFilter.ground => 'GND',
+    AltitudeFilter.all => 'ALL',
+  };
 }
 
 class _PulsingDot extends StatefulWidget {
@@ -112,7 +157,10 @@ class _PulsingDotState extends State<_PulsingDot>
   @override
   void initState() {
     super.initState();
-    _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 1500));
+    _c = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    );
     // Defer `.repeat()` to the next frame. Calling it synchronously inside
     // `initState` triggers an `elapsedInSeconds >= 0.0` assertion under
     // `flutter_test`'s FakeAsync clock — the controller records its start
@@ -125,20 +173,30 @@ class _PulsingDotState extends State<_PulsingDot>
       if (mounted) _c.repeat(reverse: true);
     });
   }
+
   @override
-  void dispose() { _c.dispose(); super.dispose(); }
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: _c,
       builder: (context, child) => Container(
-        width: 8, height: 8,
+        width: 8,
+        height: 8,
         decoration: BoxDecoration(
-          shape: BoxShape.circle, color: widget.color,
-          boxShadow: [BoxShadow(
-            color: widget.color.withValues(alpha: 0.5 * _c.value),
-            blurRadius: 8 * _c.value, spreadRadius: 2 * _c.value,
-          )],
+          shape: BoxShape.circle,
+          color: widget.color,
+          boxShadow: [
+            BoxShadow(
+              color: widget.color.withValues(alpha: 0.5 * _c.value),
+              blurRadius: 8 * _c.value,
+              spreadRadius: 2 * _c.value,
+            ),
+          ],
         ),
       ),
     );

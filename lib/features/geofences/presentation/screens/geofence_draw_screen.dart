@@ -116,7 +116,9 @@ class _GeoFenceDrawScreenState extends ConsumerState<GeoFenceDrawScreen> {
         content: TextField(
           controller: ctl,
           autofocus: true,
-          decoration: const InputDecoration(hintText: 'e.g. Frankfurt approach'),
+          decoration: const InputDecoration(
+            hintText: 'e.g. Frankfurt approach',
+          ),
         ),
         actions: [
           TextButton(
@@ -141,8 +143,8 @@ class _GeoFenceDrawScreenState extends ConsumerState<GeoFenceDrawScreen> {
     final hint = _firstTap == null
         ? 'Tap to place ${_shape == GeoFenceType.circle ? "the center" : "the first corner"}'
         : (_secondTap == null
-            ? 'Tap to set ${_shape == GeoFenceType.circle ? "the radius" : "the opposite corner"}'
-            : 'Save when ready, or tap Reset to redraw');
+              ? 'Tap to set ${_shape == GeoFenceType.circle ? "the radius" : "the opposite corner"}'
+              : 'Save when ready, or tap Reset to redraw');
 
     return Scaffold(
       appBar: AppBar(
@@ -184,7 +186,10 @@ class _GeoFenceDrawScreenState extends ConsumerState<GeoFenceDrawScreen> {
         children: [
           FlutterMap(
             options: MapOptions(
-              initialCenter: const LatLng(AppConfig.defaultLat, AppConfig.defaultLon),
+              initialCenter: const LatLng(
+                AppConfig.defaultLat,
+                AppConfig.defaultLon,
+              ),
               initialZoom: AppConfig.defaultZoom,
               minZoom: AppConfig.minZoom,
               maxZoom: AppConfig.maxZoom,
@@ -270,7 +275,9 @@ class _GeoFenceDrawScreenState extends ConsumerState<GeoFenceDrawScreen> {
                 const SizedBox(height: 8),
                 GlassPanel(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 8),
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                   borderRadius: 10,
                   child: Text(
                     hint,
@@ -324,12 +331,7 @@ class _GeoFenceDrawScreenState extends ConsumerState<GeoFenceDrawScreen> {
     return PolygonLayer(
       polygons: [
         Polygon(
-          points: [
-            LatLng(n, w),
-            LatLng(n, e),
-            LatLng(s, e),
-            LatLng(s, w),
-          ],
+          points: [LatLng(n, w), LatLng(n, e), LatLng(s, e), LatLng(s, w)],
           color: AppColors.primary.withValues(alpha: 0.15),
           borderColor: AppColors.primary.withValues(alpha: 0.85),
           borderStrokeWidth: 1.6,
@@ -351,10 +353,7 @@ class _Dot extends StatelessWidget {
         shape: BoxShape.circle,
         border: Border.all(color: Colors.white, width: 2),
         boxShadow: [
-          BoxShadow(
-            color: color.withValues(alpha: 0.5),
-            blurRadius: 8,
-          ),
+          BoxShadow(color: color.withValues(alpha: 0.5), blurRadius: 8),
         ],
       ),
     );
@@ -395,9 +394,11 @@ class _ShapeButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon,
-                size: 14,
-                color: active ? AppColors.primary : AppColors.textMuted),
+            Icon(
+              icon,
+              size: 14,
+              color: active ? AppColors.primary : AppColors.textMuted,
+            ),
             const SizedBox(width: 6),
             Text(
               label,

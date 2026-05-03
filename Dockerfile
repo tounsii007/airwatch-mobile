@@ -126,8 +126,14 @@ RUN printf '%s\n' \
     '        proxy_pass         ${API_UPSTREAM}/;' \
     '        proxy_http_version 1.1;' \
     '        proxy_set_header   Host              $host;' \
+    '        # Set X-Real-IP / X-Forwarded-For to the immediate client' \
+    '        # ($remote_addr) only — NOT $proxy_add_x_forwarded_for, which' \
+    '        # would APPEND to whatever the client sent. An attacker can' \
+    '        # set their own X-Forwarded-For: 127.0.0.1 to spoof internal' \
+    '        # access for an upstream that trusts that header. Overwriting' \
+    '        # forces the upstream to see the real connection IP.' \
     '        proxy_set_header   X-Real-IP         $remote_addr;' \
-    '        proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for;' \
+    '        proxy_set_header   X-Forwarded-For   $remote_addr;' \
     '        proxy_set_header   X-Forwarded-Proto $scheme;' \
     '        # WebSocket upgrade for the live-flights stream.' \
     '        proxy_set_header   Upgrade           $http_upgrade;' \
@@ -152,7 +158,31 @@ RUN printf '%s\n' \
 # our template wins.
 RUN rm -f /etc/nginx/conf.d/default.conf
 
-EXPOSE 80
+# ─── Drop privileges ──────────────────────────────────────────────────────
+# nginx:1.27-alpine ships an unprivileged `nginx` user (uid 101) but its
+# default ENTRYPOINT still starts as root in order to write the master
+# pid + listen on :80. We rewrite the config to bind :8080 (>1024, so no
+# CAP_NET_BIND_SERVICE needed) and rewrap the entry-points + log paths
+# the unprivileged user can write to. The compose file then publishes
+# host port → container 8080.
+#
+# This protects against the most common LPE primitive in container
+# escapes: an attacker who exploits a memory-corruption bug in nginx
+# would otherwise run as root inside the namespace. Now they run as
+# uid 101 with a read-only filesystem (see compose file).
+RUN sed -i \
+        -e 's|listen       80;|listen       8080;|g' \
+        -e 's|/var/run/nginx.pid|/tmp/nginx.pid|g' \
+        /etc/nginx/nginx.conf 2>/dev/null || true \
+    && sed -i 's|listen 80;|listen 8080;|g' \
+        /etc/nginx/templates/default.conf.template \
+    && touch /tmp/nginx.pid \
+    && chown -R nginx:nginx /var/cache/nginx /tmp/nginx.pid \
+                            /etc/nginx/conf.d /etc/nginx/templates
+
+USER nginx
+
+EXPOSE 8080
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD wget -qO- http://localhost/ || exit 1
+    CMD wget -qO- http://localhost:8080/ || exit 1

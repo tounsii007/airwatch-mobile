@@ -13,11 +13,12 @@ class TurbulenceDatasource {
   final Dio _dio;
 
   TurbulenceDatasource({Dio? dio})
-      : _dio = dio ??
-            AppHttpClient.create(
-              connectTimeout: AppConfig.shortTimeout,
-              receiveTimeout: AppConfig.shortTimeout,
-            );
+    : _dio =
+          dio ??
+          AppHttpClient.create(
+            connectTimeout: AppConfig.shortTimeout,
+            receiveTimeout: AppConfig.shortTimeout,
+          );
 
   /// Fetch the latest SIGMET response and parse it. Returns an empty
   /// list on any error — the overlay degrades gracefully when the
@@ -26,9 +27,7 @@ class TurbulenceDatasource {
     try {
       final r = await _dio.get<dynamic>('${AppConfig.apiBaseUrl}/turbulence');
       if (r.statusCode != 200) return const [];
-      final data = r.data is String
-          ? jsonDecode(r.data as String)
-          : r.data;
+      final data = r.data is String ? jsonDecode(r.data as String) : r.data;
       return parseSigmetResponse(data);
     } on DioException {
       return const [];

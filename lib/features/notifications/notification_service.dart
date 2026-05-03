@@ -22,11 +22,13 @@ class NotificationService {
     for (final alert in _alerts) {
       if (alert.callsign == callsign) {
         if (alert.onStatusChange && status != alert.lastStatus) {
-          _controller.add(FlightAlert(
-            callsign: callsign,
-            message: '$callsign is now ${status?.toUpperCase() ?? "UNKNOWN"}',
-            type: AlertType.statusChange,
-          ));
+          _controller.add(
+            FlightAlert(
+              callsign: callsign,
+              message: '$callsign is now ${status?.toUpperCase() ?? "UNKNOWN"}',
+              type: AlertType.statusChange,
+            ),
+          );
           alert.lastStatus = status;
         }
       }
@@ -36,10 +38,9 @@ class NotificationService {
   /// Subscribe to alerts for a flight
   static void subscribe(String callsign, {bool onStatusChange = true}) {
     _alerts.removeWhere((a) => a.callsign == callsign);
-    _alerts.add(FlightAlert(
-      callsign: callsign,
-      onStatusChange: onStatusChange,
-    ));
+    _alerts.add(
+      FlightAlert(callsign: callsign, onStatusChange: onStatusChange),
+    );
     debugPrint('[Notifications] Subscribed to $callsign');
   }
 
@@ -55,7 +56,9 @@ class NotificationService {
   static Future<void> save() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setStringList(
-        'notification_subs', _alerts.map((a) => a.callsign).toList());
+      'notification_subs',
+      _alerts.map((a) => a.callsign).toList(),
+    );
   }
 
   /// Load subscriptions

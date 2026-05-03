@@ -108,19 +108,26 @@ airwatch-mobile/
                    │  Docker bridge: airwatch_airwatch-net      │
                    │                                            │
    browser  ──►   ┌┴────────────────┐    /api/*  ┌─────────────┴┐
-  (host:18091)    │ airwatch-mobile │ ────────►  │ airwatch-api │
-                  │ -web   nginx:80 │ ◄────────  │     :18090   │
-                  └─────────────────┘            └──────┬───────┘
-                                                        │ JDBC
-                                                ┌───────▼───────┐
-                                                │ airwatch-     │
-                                                │ postgres:55432│
-                                                └───────────────┘
+ (127.0.0.1:     │ airwatch-mobile │ ────────►  │ airwatch-api │
+   18091)        │ -web nginx:8080 │ ◄────────  │     :18090   │
+                  │ user=nginx,ro,  │            └──────┬───────┘
+                  │ no-new-privs    │                   │ JDBC
+                  └─────────────────┘            ┌──────▼─────────┐
+                                                 │ airwatch-      │
+                                                 │ postgres:55432 │
+                                                 └────────────────┘
 ```
 
 Same-origin from the browser's perspective — every request goes to
-`http://localhost:18091/...`, and nginx forwards `/api/*` to the API
+`http://127.0.0.1:18091/...`, and nginx forwards `/api/*` to the API
 container by Docker DNS name. No CORS, no cookie-domain juggling.
+
+**Hardening defaults** — the mobile-web and proxy containers run as
+non-root (`USER nginx` / `USER proxy`) on a read-only root filesystem
+with `cap_drop: [ALL]` and `no-new-privileges`. Host ports default-bind
+to `127.0.0.1`, so the preview is reachable from the host but not from
+the LAN. Override `PUBLISH_INTERFACE=0.0.0.0` in `.env` if you need
+LAN access (and put a TLS terminator in front).
 
 ### Bring it up
 

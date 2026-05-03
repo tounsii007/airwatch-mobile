@@ -69,10 +69,7 @@ class _CompassPainter extends CustomPainter {
   final double headingDeg;
   final double horizontalFovDeg;
 
-  _CompassPainter({
-    required this.headingDeg,
-    required this.horizontalFovDeg,
-  });
+  _CompassPainter({required this.headingDeg, required this.horizontalFovDeg});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -92,11 +89,7 @@ class _CompassPainter extends CustomPainter {
       ..strokeWidth = 1.5;
 
     // Centre indicator — the heading line.
-    canvas.drawLine(
-      Offset(cx, 0),
-      Offset(cx, size.height * 0.55),
-      centerPaint,
-    );
+    canvas.drawLine(Offset(cx, 0), Offset(cx, size.height * 0.55), centerPaint);
 
     // Cardinal labels live at exact 0/90/180/270; minor ticks at
     // every 15° in between. We iterate the visible window only:
@@ -104,7 +97,11 @@ class _CompassPainter extends CustomPainter {
     final start = headingDeg - horizontalFovDeg / 2;
     final end = headingDeg + horizontalFovDeg / 2;
 
-    for (var deg = (start.floor() ~/ 15) * 15; deg.toDouble() <= end; deg += 15) {
+    for (
+      var deg = (start.floor() ~/ 15) * 15;
+      deg.toDouble() <= end;
+      deg += 15
+    ) {
       final normalized = normalizeDeg(deg.toDouble());
       final dx = shortestAngleDiff(headingDeg, normalized);
       if (dx.abs() > horizontalFovDeg / 2) continue;
@@ -132,10 +129,7 @@ class _CompassPainter extends CustomPainter {
           ),
           textDirection: TextDirection.ltr,
         )..layout();
-        tp.paint(
-          canvas,
-          Offset(px - tp.width / 2, size.height * 0.62),
-        );
+        tp.paint(canvas, Offset(px - tp.width / 2, size.height * 0.62));
       }
     }
   }
@@ -157,6 +151,5 @@ class _CompassPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _CompassPainter old) =>
-      old.headingDeg != headingDeg ||
-      old.horizontalFovDeg != horizontalFovDeg;
+      old.headingDeg != headingDeg || old.horizontalFovDeg != horizontalFovDeg;
 }

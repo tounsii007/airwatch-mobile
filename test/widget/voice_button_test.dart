@@ -5,15 +5,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:airwatch_mobile/features/voice/presentation/voice_button.dart';
 
 Widget _wrap(Widget child) => ProviderScope(
-      child: MaterialApp(
-        theme: ThemeData.dark(),
-        home: Scaffold(
-          body: SafeArea(
-            child: Center(child: child),
-          ),
-        ),
-      ),
-    );
+  child: MaterialApp(
+    theme: ThemeData.dark(),
+    home: Scaffold(
+      body: SafeArea(child: Center(child: child)),
+    ),
+  ),
+);
 
 void main() {
   group('VoiceButton widget', () {
@@ -26,8 +24,9 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('initially shows mic-off (unavailable in test env)',
-        (tester) async {
+    testWidgets('initially shows mic-off (unavailable in test env)', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap(const VoiceButton()));
       // Pump twice to give the async initSpeech a chance to settle.
       await tester.pump();

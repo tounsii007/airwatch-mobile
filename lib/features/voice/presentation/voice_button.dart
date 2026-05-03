@@ -59,12 +59,15 @@ class _VoiceButtonState extends ConsumerState<VoiceButton> {
 
   Future<void> _initSpeech() async {
     try {
-      final ok = await _speech.initialize(onError: (_) {}, onStatus: (s) {
-        if (!mounted) return;
-        if (s == 'done' || s == 'notListening') {
-          setState(() => _listening = false);
-        }
-      });
+      final ok = await _speech.initialize(
+        onError: (_) {},
+        onStatus: (s) {
+          if (!mounted) return;
+          if (s == 'done' || s == 'notListening') {
+            setState(() => _listening = false);
+          }
+        },
+      );
       if (!mounted) return;
       setState(() {
         _initialized = true;
@@ -98,9 +101,7 @@ class _VoiceButtonState extends ConsumerState<VoiceButton> {
     };
     await _speech.listen(
       localeId: localeId,
-      listenOptions: stt.SpeechListenOptions(
-        cancelOnError: true,
-      ),
+      listenOptions: stt.SpeechListenOptions(cancelOnError: true),
       onResult: (res) {
         if (!mounted) return;
         setState(() => _heard = res.recognizedWords);
@@ -175,10 +176,9 @@ class _VoiceButtonState extends ConsumerState<VoiceButton> {
       }
     }
     if (hit == null) return;
-    ref.read(mapFocusProvider.notifier).focusOn(
-          LatLng(hit.lat, hit.lon),
-          zoom: 9,
-        );
+    ref
+        .read(mapFocusProvider.notifier)
+        .focusOn(LatLng(hit.lat, hit.lon), zoom: 9);
   }
 
   @override

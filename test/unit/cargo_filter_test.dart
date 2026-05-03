@@ -9,26 +9,26 @@ import 'package:airwatch_mobile/features/map/data/models/aircraft_state.dart';
 void main() {
   group('isCargoCallsign', () {
     test('classic cargo callsigns hit', () {
-      expect(isCargoCallsign('FDX1234'),  isTrue, reason: 'FedEx');
-      expect(isCargoCallsign('UPS5'),     isTrue, reason: 'UPS Airlines');
-      expect(isCargoCallsign('GEC123A'),  isTrue, reason: 'Lufthansa Cargo');
-      expect(isCargoCallsign('DHK99'),    isTrue);
-      expect(isCargoCallsign('CLX07'),    isTrue);
-      expect(isCargoCallsign('GTI90'),    isTrue);
+      expect(isCargoCallsign('FDX1234'), isTrue, reason: 'FedEx');
+      expect(isCargoCallsign('UPS5'), isTrue, reason: 'UPS Airlines');
+      expect(isCargoCallsign('GEC123A'), isTrue, reason: 'Lufthansa Cargo');
+      expect(isCargoCallsign('DHK99'), isTrue);
+      expect(isCargoCallsign('CLX07'), isTrue);
+      expect(isCargoCallsign('GTI90'), isTrue);
     });
 
     test('passenger carriers do not match', () {
-      expect(isCargoCallsign('DLH400'),   isFalse, reason: 'Lufthansa pax');
-      expect(isCargoCallsign('BAW100'),   isFalse, reason: 'British Airways');
-      expect(isCargoCallsign('AFR1'),     isFalse, reason: 'Air France');
-      expect(isCargoCallsign('UAL5'),     isFalse, reason: 'United');
-      expect(isCargoCallsign('AAL3'),     isFalse, reason: 'American');
+      expect(isCargoCallsign('DLH400'), isFalse, reason: 'Lufthansa pax');
+      expect(isCargoCallsign('BAW100'), isFalse, reason: 'British Airways');
+      expect(isCargoCallsign('AFR1'), isFalse, reason: 'Air France');
+      expect(isCargoCallsign('UAL5'), isFalse, reason: 'United');
+      expect(isCargoCallsign('AAL3'), isFalse, reason: 'American');
     });
 
     test('null / blank / too-short input yields false', () {
       expect(isCargoCallsign(null), isFalse);
-      expect(isCargoCallsign(''),   isFalse);
-      expect(isCargoCallsign('A'),  isFalse);
+      expect(isCargoCallsign(''), isFalse);
+      expect(isCargoCallsign('A'), isFalse);
       expect(isCargoCallsign('AB'), isFalse);
     });
 
@@ -50,8 +50,11 @@ void main() {
     test('every entry is a 3-letter ICAO code', () {
       for (final code in cargoAirlineIcaoCodes) {
         expect(code.length, 3, reason: 'bad code: $code');
-        expect(RegExp(r'^[A-Z]{3}$').hasMatch(code), isTrue,
-            reason: 'non-uppercase letters in: $code');
+        expect(
+          RegExp(r'^[A-Z]{3}$').hasMatch(code),
+          isTrue,
+          reason: 'non-uppercase letters in: $code',
+        );
       }
     });
 
@@ -78,10 +81,7 @@ void main() {
 
     test('all-status filter is a no-op on the search-empty path', () {
       final flights = [ac('FDX1'), ac('UPS5', onGround: true)];
-      expect(
-        filterCargo(flights, '', CargoStatusFilter.all),
-        hasLength(2),
-      );
+      expect(filterCargo(flights, '', CargoStatusFilter.all), hasLength(2));
     });
 
     test('airborne filter drops on-ground entries', () {
@@ -120,7 +120,7 @@ void main() {
       final flights = [
         AircraftState(icao24: 'A1', callsign: 'FDX1234'),
         AircraftState(icao24: 'A2', callsign: 'FDX5678'),
-        AircraftState(icao24: 'A3', callsign: 'UPS999',  onGround: true),
+        AircraftState(icao24: 'A3', callsign: 'UPS999', onGround: true),
       ];
       final stats = computeCargoStats(flights);
       expect(stats.total, 3);

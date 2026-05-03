@@ -56,11 +56,17 @@ class HomeWidgetService {
       await Future.wait([
         HomeWidget.saveWidgetData<int>('live_flights', payload.liveFlights),
         HomeWidget.saveWidgetData<String?>(
-            'top_airline_icao', payload.topAirlineIcao),
+          'top_airline_icao',
+          payload.topAirlineIcao,
+        ),
         HomeWidget.saveWidgetData<int>(
-            'top_airline_count', payload.topAirlineCount),
+          'top_airline_count',
+          payload.topAirlineCount,
+        ),
         HomeWidget.saveWidgetData<String>(
-            'updated_at', payload.updatedAt.toIso8601String()),
+          'updated_at',
+          payload.updatedAt.toIso8601String(),
+        ),
       ]);
       await HomeWidget.updateWidget(
         name: _androidProvider,

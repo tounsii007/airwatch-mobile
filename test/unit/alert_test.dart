@@ -6,12 +6,8 @@ import 'package:airwatch_mobile/features/notifications/domain/alert.dart';
 
 void main() {
   group('AppAlert kind → icon + accent', () {
-    AppAlert make(AlertKind k) => AppAlert(
-          id: 'x',
-          kind: k,
-          title: 't',
-          firedAt: DateTime.now(),
-        );
+    AppAlert make(AlertKind k) =>
+        AppAlert(id: 'x', kind: k, title: 't', firedAt: DateTime.now());
 
     test('squawk uses warning icon + error red', () {
       final a = make(AlertKind.squawk);

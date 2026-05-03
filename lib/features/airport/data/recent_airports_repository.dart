@@ -20,19 +20,19 @@ class RecentAirport {
   }) : visitedAt = visitedAt ?? DateTime.now();
 
   Map<String, dynamic> toJson() => {
-        'iata': iata,
-        'city': city,
-        'country': country,
-        'visitedAt': visitedAt.toIso8601String(),
-      };
+    'iata': iata,
+    'city': city,
+    'country': country,
+    'visitedAt': visitedAt.toIso8601String(),
+  };
 
   factory RecentAirport.fromJson(Map<String, dynamic> j) => RecentAirport(
-        iata: j['iata'] as String,
-        city: j['city'] as String?,
-        country: j['country'] as String?,
-        visitedAt: DateTime.tryParse(j['visitedAt'] as String? ?? '') ??
-            DateTime.now(),
-      );
+    iata: j['iata'] as String,
+    city: j['city'] as String?,
+    country: j['country'] as String?,
+    visitedAt:
+        DateTime.tryParse(j['visitedAt'] as String? ?? '') ?? DateTime.now(),
+  );
 }
 
 /// SharedPreferences-backed Riverpod store of recent airport visits.
@@ -84,9 +84,7 @@ class RecentAirportsNotifier extends Notifier<List<RecentAirport>> {
       RecentAirport(iata: code, city: city, country: country),
       ...filtered,
     ];
-    state = next.length > _maxEntries
-        ? next.sublist(0, _maxEntries)
-        : next;
+    state = next.length > _maxEntries ? next.sublist(0, _maxEntries) : next;
     _save();
   }
 
@@ -98,4 +96,5 @@ class RecentAirportsNotifier extends Notifier<List<RecentAirport>> {
 
 final recentAirportsProvider =
     NotifierProvider<RecentAirportsNotifier, List<RecentAirport>>(
-        RecentAirportsNotifier.new);
+      RecentAirportsNotifier.new,
+    );

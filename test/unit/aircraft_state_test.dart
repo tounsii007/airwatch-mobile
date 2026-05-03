@@ -5,9 +5,24 @@ void main() {
   group('AircraftState', () {
     test('fromOpenSkyList parses correctly', () {
       final data = [
-        'abc123', 'DLH123  ', 'Germany', 1700000000, 1700000001,
-        8.571, 50.033, 10000.0, false, 250.0, 90.0, 0.0,
-        null, 10500.0, '1234', false, 0, 4,
+        'abc123',
+        'DLH123  ',
+        'Germany',
+        1700000000,
+        1700000001,
+        8.571,
+        50.033,
+        10000.0,
+        false,
+        250.0,
+        90.0,
+        0.0,
+        null,
+        10500.0,
+        '1234',
+        false,
+        0,
+        4,
       ];
 
       final state = AircraftState.fromOpenSkyList(data);
@@ -42,10 +57,7 @@ void main() {
     });
 
     test('altitude falls back to geoAltitude', () {
-      final state = AircraftState(
-        icao24: 'test',
-        geoAltitude: 9500,
-      );
+      final state = AircraftState(icao24: 'test', geoAltitude: 9500);
       expect(state.altitude, 9500);
     });
 

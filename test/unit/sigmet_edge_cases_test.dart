@@ -8,8 +8,7 @@ void main() {
       expect(parseSigmetResponse(null), isEmpty);
       expect(parseSigmetResponse('a string'), isEmpty);
       expect(parseSigmetResponse(42), isEmpty);
-      expect(parseSigmetResponse(<String, dynamic>{'wrong': 'shape'}),
-          isEmpty);
+      expect(parseSigmetResponse(<String, dynamic>{'wrong': 'shape'}), isEmpty);
     });
 
     test('list with non-map entries skips them silently', () {
@@ -35,26 +34,24 @@ void main() {
       expect(parseSigmetResponse(r), isEmpty);
     });
 
-    test('coord string with odd number of values (incomplete pair) skipped',
-        () {
-      final r = [
-        {
-          'hazard': 'TURB',
-          'severity': 'mod',
-          'coords': '0 0 1 1 2', // missing trailing lon
-        },
-      ];
-      expect(parseSigmetResponse(r), isEmpty);
-    });
+    test(
+      'coord string with odd number of values (incomplete pair) skipped',
+      () {
+        final r = [
+          {
+            'hazard': 'TURB',
+            'severity': 'mod',
+            'coords': '0 0 1 1 2', // missing trailing lon
+          },
+        ];
+        expect(parseSigmetResponse(r), isEmpty);
+      },
+    );
 
     test('polygon with exactly 3 vertices is the boundary — accepted', () {
       // Exactly 3 = minimum to form a triangle.
       final r = [
-        {
-          'hazard': 'TURB',
-          'severity': 'mod',
-          'coords': '50 8 51 9 49 10',
-        },
+        {'hazard': 'TURB', 'severity': 'mod', 'coords': '50 8 51 9 49 10'},
       ];
       expect(parseSigmetResponse(r), hasLength(1));
       expect(parseSigmetResponse(r).first.polygon, hasLength(3));
@@ -62,11 +59,7 @@ void main() {
 
     test('polygon with 2 vertices is rejected (line, not polygon)', () {
       final r = [
-        {
-          'hazard': 'TURB',
-          'severity': 'mod',
-          'coords': '50 8 51 9',
-        },
+        {'hazard': 'TURB', 'severity': 'mod', 'coords': '50 8 51 9'},
       ];
       expect(parseSigmetResponse(r), isEmpty);
     });
@@ -105,8 +98,10 @@ void main() {
         final r = [
           {'hazard': 'TURB', 'severity': s, 'coords': '0 0 1 1 2 2'},
         ];
-        expect(parseSigmetResponse(r).first.severity,
-            TurbulenceSeverity.severe);
+        expect(
+          parseSigmetResponse(r).first.severity,
+          TurbulenceSeverity.severe,
+        );
       }
     });
 
@@ -115,8 +110,10 @@ void main() {
         final r = [
           {'hazard': 'TURB', 'severity': s, 'coords': '0 0 1 1 2 2'},
         ];
-        expect(parseSigmetResponse(r).first.severity,
-            TurbulenceSeverity.moderate);
+        expect(
+          parseSigmetResponse(r).first.severity,
+          TurbulenceSeverity.moderate,
+        );
       }
     });
 
@@ -125,23 +122,32 @@ void main() {
         final r = [
           {'hazard': 'TURB', 'severity': s, 'coords': '0 0 1 1 2 2'},
         ];
-        expect(parseSigmetResponse(r).first.severity,
-            TurbulenceSeverity.light);
+        expect(parseSigmetResponse(r).first.severity, TurbulenceSeverity.light);
       }
     });
 
     test('unknown severity defaults to moderate', () {
       final r = [
-        {'hazard': 'TURB', 'severity': 'unknown weird text', 'coords': '0 0 1 1 2 2'},
+        {
+          'hazard': 'TURB',
+          'severity': 'unknown weird text',
+          'coords': '0 0 1 1 2 2',
+        },
       ];
-      expect(parseSigmetResponse(r).first.severity, TurbulenceSeverity.moderate);
+      expect(
+        parseSigmetResponse(r).first.severity,
+        TurbulenceSeverity.moderate,
+      );
     });
 
     test('missing severity but convective hazard → moderate fallback', () {
       final r = [
         {'hazard': 'CONVECTIVE', 'coords': '0 0 1 1 2 2'},
       ];
-      expect(parseSigmetResponse(r).first.severity, TurbulenceSeverity.moderate);
+      expect(
+        parseSigmetResponse(r).first.severity,
+        TurbulenceSeverity.moderate,
+      );
     });
 
     test('missing severity AND non-convective turb → entry skipped', () {

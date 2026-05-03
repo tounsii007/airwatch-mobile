@@ -64,8 +64,7 @@ class MapControls extends ConsumerWidget {
           // mapStyleProvider so the choice survives screen rebuilds.
           MapStylePicker(
             current: currentStyle,
-            onChanged: (next) =>
-                ref.read(mapStyleProvider.notifier).set(next),
+            onChanged: (next) => ref.read(mapStyleProvider.notifier).set(next),
           ),
           const SizedBox(height: 8),
           // Alert bell — opens the central alerts panel (squawk +
@@ -91,11 +90,7 @@ class _ControlButton extends StatelessWidget {
   final VoidCallback? onTap;
   final bool isDark;
 
-  const _ControlButton({
-    required this.icon,
-    this.onTap,
-    required this.isDark,
-  });
+  const _ControlButton({required this.icon, this.onTap, required this.isDark});
 
   @override
   Widget build(BuildContext context) {
@@ -105,14 +100,14 @@ class _ControlButton extends StatelessWidget {
       child: Opacity(
         opacity: enabled ? 1.0 : 0.3,
         child: GlassPanel(
-        padding: const EdgeInsets.all(10),
-        borderRadius: 12,
-        child: Icon(
-          icon,
-          size: 20,
-          color: isDark ? AppColors.primary : UiConstants.lightPrimary,
+          padding: const EdgeInsets.all(10),
+          borderRadius: 12,
+          child: Icon(
+            icon,
+            size: 20,
+            color: isDark ? AppColors.primary : UiConstants.lightPrimary,
+          ),
         ),
-      ),
       ),
     );
   }
@@ -134,15 +129,50 @@ class _AltitudeFilterChips extends ConsumerWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _buildChip(context, ref, 'ALL', AltitudeFilter.all, current, primaryColor),
+          _buildChip(
+            context,
+            ref,
+            'ALL',
+            AltitudeFilter.all,
+            current,
+            primaryColor,
+          ),
           const SizedBox(height: 3),
-          _buildChip(context, ref, 'LOW', AltitudeFilter.low, current, AppColors.altitudeLow),
+          _buildChip(
+            context,
+            ref,
+            'LOW',
+            AltitudeFilter.low,
+            current,
+            AppColors.altitudeLow,
+          ),
           const SizedBox(height: 3),
-          _buildChip(context, ref, 'MED', AltitudeFilter.medium, current, AppColors.altitudeMedium),
+          _buildChip(
+            context,
+            ref,
+            'MED',
+            AltitudeFilter.medium,
+            current,
+            AppColors.altitudeMedium,
+          ),
           const SizedBox(height: 3),
-          _buildChip(context, ref, 'HI', AltitudeFilter.high, current, AppColors.altitudeHigh),
+          _buildChip(
+            context,
+            ref,
+            'HI',
+            AltitudeFilter.high,
+            current,
+            AppColors.altitudeHigh,
+          ),
           const SizedBox(height: 3),
-          _buildChip(context, ref, 'GND', AltitudeFilter.ground, current, UiConstants.lightTextSecondary),
+          _buildChip(
+            context,
+            ref,
+            'GND',
+            AltitudeFilter.ground,
+            current,
+            UiConstants.lightTextSecondary,
+          ),
           const SizedBox(height: 6),
           // Category filters
           _CatFilter(isDark: isDark),
@@ -201,18 +231,24 @@ class _CatFilter extends ConsumerWidget {
     Widget chip(CategoryFilter filter, IconData icon) {
       final active = current == filter;
       return GestureDetector(
-        onTap: () => ref.read(categoryFilterProvider.notifier).set(
-            active ? CategoryFilter.all : filter),
+        onTap: () => ref
+            .read(categoryFilterProvider.notifier)
+            .set(active ? CategoryFilter.all : filter),
         child: Container(
           width: 36,
           padding: const EdgeInsets.symmetric(vertical: 3),
           decoration: BoxDecoration(
             color: active ? primary.withValues(alpha: 0.2) : Colors.transparent,
             borderRadius: BorderRadius.circular(6),
-            border: active ? Border.all(color: primary.withValues(alpha: 0.4)) : null,
+            border: active
+                ? Border.all(color: primary.withValues(alpha: 0.4))
+                : null,
           ),
-          child: Icon(icon, size: 14,
-              color: active ? primary : primary.withValues(alpha: 0.4)),
+          child: Icon(
+            icon,
+            size: 14,
+            color: active ? primary : primary.withValues(alpha: 0.4),
+          ),
         ),
       );
     }
@@ -247,16 +283,19 @@ class _CatFilter extends ConsumerWidget {
       );
     }
 
-    return Column(mainAxisSize: MainAxisSize.min, children: [
-      chip(CategoryFilter.jets, Icons.flight_rounded),
-      const SizedBox(height: 3),
-      chip(CategoryFilter.helicopters, Icons.air_rounded),
-      const SizedBox(height: 3),
-      chip(CategoryFilter.cargo, Icons.local_shipping_rounded),
-      const SizedBox(height: 3),
-      chip(CategoryFilter.light, Icons.paragliding_rounded),
-      const SizedBox(height: 3),
-      cargoOnlyChip(),
-    ]);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        chip(CategoryFilter.jets, Icons.flight_rounded),
+        const SizedBox(height: 3),
+        chip(CategoryFilter.helicopters, Icons.air_rounded),
+        const SizedBox(height: 3),
+        chip(CategoryFilter.cargo, Icons.local_shipping_rounded),
+        const SizedBox(height: 3),
+        chip(CategoryFilter.light, Icons.paragliding_rounded),
+        const SizedBox(height: 3),
+        cargoOnlyChip(),
+      ],
+    );
   }
 }

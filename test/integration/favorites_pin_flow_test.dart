@@ -26,21 +26,30 @@ void main() {
       // (rapid back-to-back calls land in the same millisecond and
       // make the sort tiebreaker unpredictable). ──
       final t0 = DateTime.utc(2025);
-      notifier.toggle(FavoriteItem(
+      notifier.toggle(
+        FavoriteItem(
           id: 'DLH400',
           type: FavoriteType.flight,
           label: 'DLH400',
-          addedAt: t0));
-      notifier.toggle(FavoriteItem(
+          addedAt: t0,
+        ),
+      );
+      notifier.toggle(
+        FavoriteItem(
           id: 'AFR123',
           type: FavoriteType.flight,
           label: 'AFR123',
-          addedAt: t0.add(const Duration(seconds: 1))));
-      notifier.toggle(FavoriteItem(
+          addedAt: t0.add(const Duration(seconds: 1)),
+        ),
+      );
+      notifier.toggle(
+        FavoriteItem(
           id: 'TU744',
           type: FavoriteType.flight,
           label: 'TU744',
-          addedAt: t0.add(const Duration(seconds: 2))));
+          addedAt: t0.add(const Duration(seconds: 2)),
+        ),
+      );
       expect(container.read(favoritesProvider), hasLength(3));
 
       // ── Pin AFR123 → byType returns it FIRST despite being added second ──
@@ -57,8 +66,10 @@ void main() {
 
       // ── Remove AFR123 entirely ──
       notifier.remove('AFR123');
-      expect(container.read(favoritesProvider).any((f) => f.id == 'AFR123'),
-          isFalse);
+      expect(
+        container.read(favoritesProvider).any((f) => f.id == 'AFR123'),
+        isFalse,
+      );
       expect(container.read(favoritesProvider), hasLength(2));
     });
 
@@ -72,8 +83,7 @@ void main() {
       expect(container.read(favoritesProvider), isEmpty);
     });
 
-    test('multiple pins coexist; sort is stable on equal pin state',
-        () async {
+    test('multiple pins coexist; sort is stable on equal pin state', () async {
       final container = ProviderContainer();
       addTearDown(container.dispose);
       final notifier = container.read(favoritesProvider.notifier);
@@ -81,24 +91,38 @@ void main() {
       // Add three with deterministic timestamps so the byType
       // tiebreaker is predictable (see note in the previous test).
       final t0 = DateTime.utc(2025);
-      notifier.toggle(FavoriteItem(
-          id: 'A', type: FavoriteType.flight, label: 'A', addedAt: t0));
-      notifier.toggle(FavoriteItem(
+      notifier.toggle(
+        FavoriteItem(
+          id: 'A',
+          type: FavoriteType.flight,
+          label: 'A',
+          addedAt: t0,
+        ),
+      );
+      notifier.toggle(
+        FavoriteItem(
           id: 'B',
           type: FavoriteType.flight,
           label: 'B',
-          addedAt: t0.add(const Duration(seconds: 1))));
-      notifier.toggle(FavoriteItem(
+          addedAt: t0.add(const Duration(seconds: 1)),
+        ),
+      );
+      notifier.toggle(
+        FavoriteItem(
           id: 'C',
           type: FavoriteType.flight,
           label: 'C',
-          addedAt: t0.add(const Duration(seconds: 2))));
+          addedAt: t0.add(const Duration(seconds: 2)),
+        ),
+      );
       notifier.togglePin('A');
       notifier.togglePin('C');
 
       final list = notifier.byType(FavoriteType.flight);
-      expect(list.where((f) => f.pinned).map((f) => f.id),
-          containsAll(['A', 'C']));
+      expect(
+        list.where((f) => f.pinned).map((f) => f.id),
+        containsAll(['A', 'C']),
+      );
       // Pinned-first; within pinned, sort by addedAt desc → C is the
       // most-recently-added pinned entry, so it leads. Then A
       // (older pinned). Unpinned B sorts last.

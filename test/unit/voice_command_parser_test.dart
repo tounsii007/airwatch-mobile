@@ -20,12 +20,18 @@ void main() {
 
     test('cargo / freight → filterCargo', () {
       expect(parseVoiceCommand('cargo', AppLanguage.en), isA<VFilterCargo>());
-      expect(parseVoiceCommand('show cargo', AppLanguage.en), isA<VFilterCargo>());
+      expect(
+        parseVoiceCommand('show cargo', AppLanguage.en),
+        isA<VFilterCargo>(),
+      );
       expect(parseVoiceCommand('freight', AppLanguage.en), isA<VFilterCargo>());
     });
 
     test('dark mode → setStyleDark', () {
-      expect(parseVoiceCommand('dark mode', AppLanguage.en), isA<VSetStyleDark>());
+      expect(
+        parseVoiceCommand('dark mode', AppLanguage.en),
+        isA<VSetStyleDark>(),
+      );
     });
 
     test('zoom in / zoom out / closer / further', () {
@@ -41,7 +47,10 @@ void main() {
     });
 
     test('turbulence → toggleTurbulence', () {
-      expect(parseVoiceCommand('turbulence', AppLanguage.en), isA<VToggleTurbulence>());
+      expect(
+        parseVoiceCommand('turbulence', AppLanguage.en),
+        isA<VToggleTurbulence>(),
+      );
     });
 
     test('go to airport CDG → goToAirport', () {
@@ -68,7 +77,10 @@ void main() {
     });
 
     test('"dunkler modus" → setStyleDark', () {
-      expect(parseVoiceCommand('dunkler modus', AppLanguage.de), isA<VSetStyleDark>());
+      expect(
+        parseVoiceCommand('dunkler modus', AppLanguage.de),
+        isA<VSetStyleDark>(),
+      );
     });
 
     test('"hell" → setStyleLight', () {
@@ -76,8 +88,10 @@ void main() {
     });
 
     test('"turbulenz" → toggleTurbulence', () {
-      expect(parseVoiceCommand('turbulenz', AppLanguage.de),
-          isA<VToggleTurbulence>());
+      expect(
+        parseVoiceCommand('turbulenz', AppLanguage.de),
+        isA<VToggleTurbulence>(),
+      );
     });
   });
 
@@ -92,7 +106,10 @@ void main() {
     });
 
     test('"mode sombre" → setStyleDark', () {
-      expect(parseVoiceCommand('mode sombre', AppLanguage.fr), isA<VSetStyleDark>());
+      expect(
+        parseVoiceCommand('mode sombre', AppLanguage.fr),
+        isA<VSetStyleDark>(),
+      );
     });
 
     test('"zoom avant" → zoomIn', () {

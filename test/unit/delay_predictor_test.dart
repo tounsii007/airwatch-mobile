@@ -22,11 +22,11 @@ AircraftState _ac({
 }
 
 FlightRouteInfo _route(String dep, String arr) => FlightRouteInfo(
-      callsign: 'DLH400',
-      departureAirport: dep,
-      arrivalAirport: arr,
-      source: 'test',
-    );
+  callsign: 'DLH400',
+  departureAirport: dep,
+  arrivalAirport: arr,
+  source: 'test',
+);
 
 void main() {
   group('predictDelay', () {

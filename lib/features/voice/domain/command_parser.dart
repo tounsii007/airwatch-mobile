@@ -52,8 +52,10 @@ typedef _Pattern = (RegExp regex, VoiceCommand Function(Match) build);
 // ── EN patterns ────────────────────────────────────────────────────────────
 final _patternsEn = <_Pattern>[
   (
-    RegExp(r'(?:show|track|find)\s+(?:flight\s+)?([A-Z]{2,3}\d{1,5})',
-        caseSensitive: false),
+    RegExp(
+      r'(?:show|track|find)\s+(?:flight\s+)?([A-Z]{2,3}\d{1,5})',
+      caseSensitive: false,
+    ),
     (m) => VShowFlight(m.group(1)!.toUpperCase()),
   ),
   (
@@ -68,10 +70,7 @@ final _patternsEn = <_Pattern>[
     RegExp(r'light\s+mode|switch.*light', caseSensitive: false),
     (_) => const VSetStyleLight(),
   ),
-  (
-    RegExp(r'zoom\s+in|closer', caseSensitive: false),
-    (_) => const VZoomIn(),
-  ),
+  (RegExp(r'zoom\s+in|closer', caseSensitive: false), (_) => const VZoomIn()),
   (
     RegExp(r'zoom\s+out|further', caseSensitive: false),
     (_) => const VZoomOut(),
@@ -86,8 +85,10 @@ final _patternsEn = <_Pattern>[
   ),
   // goToAirport must be LAST — it's the greedy catch-all.
   (
-    RegExp(r'(?:go\s+to|show|open)\s+(?:airport\s+)?(\w{3,})',
-        caseSensitive: false),
+    RegExp(
+      r'(?:go\s+to|show|open)\s+(?:airport\s+)?(\w{3,})',
+      caseSensitive: false,
+    ),
     (m) => VGoToAirport(m.group(1)!),
   ),
 ];
@@ -95,14 +96,13 @@ final _patternsEn = <_Pattern>[
 // ── DE patterns ────────────────────────────────────────────────────────────
 final _patternsDe = <_Pattern>[
   (
-    RegExp(r'(?:zeige?|suche?|finde?)\s+(?:flug\s+)?([A-Z]{2,3}\d{1,5})',
-        caseSensitive: false),
+    RegExp(
+      r'(?:zeige?|suche?|finde?)\s+(?:flug\s+)?([A-Z]{2,3}\d{1,5})',
+      caseSensitive: false,
+    ),
     (m) => VShowFlight(m.group(1)!.toUpperCase()),
   ),
-  (
-    RegExp(r'fracht|cargo', caseSensitive: false),
-    (_) => const VFilterCargo(),
-  ),
+  (RegExp(r'fracht|cargo', caseSensitive: false), (_) => const VFilterCargo()),
   (
     RegExp(r'dunkel|dunkler?\s+modus', caseSensitive: false),
     (_) => const VSetStyleDark(),
@@ -141,20 +141,19 @@ final _patternsDe = <_Pattern>[
 final _patternsFr = <_Pattern>[
   (
     RegExp(
-        r'(?:montre|affiche|cherche|trouve)\s+(?:(?:le\s+)?vol\s+)?([A-Z]{2,3}\d{1,5})',
-        caseSensitive: false),
+      r'(?:montre|affiche|cherche|trouve)\s+(?:(?:le\s+)?vol\s+)?([A-Z]{2,3}\d{1,5})',
+      caseSensitive: false,
+    ),
     (m) => VShowFlight(m.group(1)!.toUpperCase()),
   ),
   (
     RegExp(
-        r"(?:aller?\s+[àa]|montre|ouvre)\s+(?:(?:l')?a[ée]roport\s+)?(\w{3,})",
-        caseSensitive: false),
+      r"(?:aller?\s+[àa]|montre|ouvre)\s+(?:(?:l')?a[ée]roport\s+)?(\w{3,})",
+      caseSensitive: false,
+    ),
     (m) => VGoToAirport(m.group(1)!),
   ),
-  (
-    RegExp(r'fret|cargo', caseSensitive: false),
-    (_) => const VFilterCargo(),
-  ),
+  (RegExp(r'fret|cargo', caseSensitive: false), (_) => const VFilterCargo()),
   (
     RegExp(r'mode\s+sombre|sombre', caseSensitive: false),
     (_) => const VSetStyleDark(),

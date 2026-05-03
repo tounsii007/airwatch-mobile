@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Android 11- (API <31) backup-content scheme. Mirrors
+    data_extraction_rules.xml but uses the legacy element names. The
+    empty rule set tells the OS that nothing in the app sandbox should
+    ever be included in an Auto Backup or `adb backup` snapshot — which
+    matches the application-level allowBackup="false" we already set in
+    AndroidManifest.xml.
+
+    Both files are referenced because Android picks the right one based
+    on the OS version of the device the APK lands on; shipping just one
+    leaves the other API surface unprotected.
+-->
+<full-backup-content>
+    <!-- Empty: include nothing in any backup. -->
+</full-backup-content>

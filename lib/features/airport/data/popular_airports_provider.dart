@@ -8,34 +8,65 @@ import 'package:airwatch_mobile/core/l10n/app_strings.dart';
 /// Dynamic popular airports based on user location or language preference.
 final popularAirportsProvider =
     FutureProvider<List<({String iata, String city})>>((ref) async {
-  final language = ref.watch(languageProvider);
+      final language = ref.watch(languageProvider);
 
-  // Try geolocation (skip on web — unreliable)
-  if (!kIsWeb) {
-    final position = await _tryGetPosition();
-    if (position != null) {
-      return _nearestAirports(position.latitude, position.longitude);
-    }
-  }
+      // Try geolocation (skip on web — unreliable)
+      if (!kIsWeb) {
+        final position = await _tryGetPosition();
+        if (position != null) {
+          return _nearestAirports(position.latitude, position.longitude);
+        }
+      }
 
-  // Fallback: language-based selection
-  return _airportsForLanguage(language);
-});
+      // Fallback: language-based selection
+      return _airportsForLanguage(language);
+    });
 
 /// Country priorities per language.
 /// Primary countries shown first, then nearby countries fill the rest.
 const _languageCountries = <AppLanguage, List<List<String>>>{
   AppLanguage.de: [
     ['Germany', 'Austria', 'Switzerland'],
-    ['Netherlands', 'Belgium', 'France', 'Czechia', 'Poland', 'Denmark', 'Italy', 'Spain', 'UK'],
+    [
+      'Netherlands',
+      'Belgium',
+      'France',
+      'Czechia',
+      'Poland',
+      'Denmark',
+      'Italy',
+      'Spain',
+      'UK',
+    ],
   ],
   AppLanguage.fr: [
     ['France'],
-    ['Belgium', 'Switzerland', 'Spain', 'Italy', 'Morocco', 'Tunisia', 'Algeria', 'Germany', 'Netherlands', 'UK'],
+    [
+      'Belgium',
+      'Switzerland',
+      'Spain',
+      'Italy',
+      'Morocco',
+      'Tunisia',
+      'Algeria',
+      'Germany',
+      'Netherlands',
+      'UK',
+    ],
   ],
   AppLanguage.en: [
     ['USA', 'UK', 'Canada', 'Australia'],
-    ['UAE', 'Singapore', 'Germany', 'France', 'Netherlands', 'Japan', 'South Korea', 'Turkey', 'Qatar'],
+    [
+      'UAE',
+      'Singapore',
+      'Germany',
+      'France',
+      'Netherlands',
+      'Japan',
+      'South Korea',
+      'Turkey',
+      'Qatar',
+    ],
   ],
 };
 
@@ -79,17 +110,29 @@ List<({String iata, String city})> _nearestAirports(double lat, double lon) {
 
 /// Return airports based on selected language.
 List<({String iata, String city})> _airportsForLanguage(AppLanguage lang) {
-  final countryGroups = _languageCountries[lang] ?? _languageCountries[AppLanguage.en]!;
+  final countryGroups =
+      _languageCountries[lang] ?? _languageCountries[AppLanguage.en]!;
   final primaryCountries = countryGroups[0].toSet();
-  final nearbyCountries = countryGroups.length > 1 ? countryGroups[1].toSet() : <String>{};
+  final nearbyCountries = countryGroups.length > 1
+      ? countryGroups[1].toSet()
+      : <String>{};
 
   final allAirports = AirportDatabase.getMajorAirports();
 
   // Split into primary (home countries) and nearby
-  final primary = allAirports.where((a) => primaryCountries.contains(a.country)).toList();
-  final nearby = allAirports.where((a) => nearbyCountries.contains(a.country)).toList();
-  final rest = allAirports.where((a) =>
-      !primaryCountries.contains(a.country) && !nearbyCountries.contains(a.country)).toList();
+  final primary = allAirports
+      .where((a) => primaryCountries.contains(a.country))
+      .toList();
+  final nearby = allAirports
+      .where((a) => nearbyCountries.contains(a.country))
+      .toList();
+  final rest = allAirports
+      .where(
+        (a) =>
+            !primaryCountries.contains(a.country) &&
+            !nearbyCountries.contains(a.country),
+      )
+      .toList();
 
   // Combine: primary first, then nearby, then global fill
   final result = <({String iata, String city})>[];
@@ -109,9 +152,12 @@ double _haversine(double lat1, double lon1, double lat2, double lon2) {
   const r = 6371.0;
   final dLat = _toRad(lat2 - lat1);
   final dLon = _toRad(lon2 - lon1);
-  final a = math.sin(dLat / 2) * math.sin(dLat / 2) +
-      math.cos(_toRad(lat1)) * math.cos(_toRad(lat2)) *
-      math.sin(dLon / 2) * math.sin(dLon / 2);
+  final a =
+      math.sin(dLat / 2) * math.sin(dLat / 2) +
+      math.cos(_toRad(lat1)) *
+          math.cos(_toRad(lat2)) *
+          math.sin(dLon / 2) *
+          math.sin(dLon / 2);
   return r * 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
 }
 

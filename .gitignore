@@ -57,3 +57,11 @@ android/app/upload-keystore.jks
 android/app/keystore.jks
 *.jks
 *.keystore
+
+# Compose .env auto-loads in `docker compose up`. We never commit it —
+# it can hold the AIRLABS_KEY for the proxy sidecar, the Play Store
+# service-account JSON path, or any other operator secret. The
+# template lives at .env.example.
+.env
+.env.local
+.env.*.local

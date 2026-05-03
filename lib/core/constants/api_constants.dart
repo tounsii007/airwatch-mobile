@@ -43,27 +43,27 @@ class ApiConstants {
       '$_base/api/airports/$iata/departures';
 
   /// Arrivals for an airport.
-  static String arrivals(String iata) =>
-      '$_base/api/airports/$iata/arrivals';
+  static String arrivals(String iata) => '$_base/api/airports/$iata/arrivals';
 
   /// Airline details + flights.
   static String airlineByIcao(String icao) => '$_base/api/airlines/$icao';
 
   // ── Aircraft metadata, photos, weather (backend-proxied) ─────────────────
   static String aircraftByHex(String hex) => '$_base/api/hexdb/aircraft/$hex';
-  static String photoByHex(String hex)    => '$_base/api/photos/$hex';
+  static String photoByHex(String hex) => '$_base/api/photos/$hex';
   static String weather(double lat, double lon) =>
       '$_base/api/weather/${lat.toStringAsFixed(2)}/${lon.toStringAsFixed(2)}';
 
   // ── Aggregated stats / replay ────────────────────────────────────────────
-  static String get flightStats   => '$_base/api/stats';
-  static String get replayAvail   => '$_base/api/replay/available';
-  static String get replayStats   => '$_base/api/replay/stats';
+  static String get flightStats => '$_base/api/stats';
+  static String get replayAvail => '$_base/api/replay/available';
+  static String get replayStats => '$_base/api/replay/stats';
 
   // ── Static data assets served by the backend (mirrors /public/data) ──────
   /// 4,800-city i18n translation table (en/de/fr). Same artefact the web
   /// frontend consumes, fetched at app boot and merged into the curated map.
-  static String get cityI18n      => '$_base/data/city-i18n.json';
+  static String get cityI18n => '$_base/data/city-i18n.json';
+
   /// IATA → {country, city, lat, lon} dataset (~8 k airports).
   static String get airportsIndex => '$_base/data/airports.json';
 
@@ -71,7 +71,7 @@ class ApiConstants {
   /// Public live-flight push channel. Same feed every subscriber gets.
   static String get wsFlights {
     final scheme = AppConfig.apiBaseUrl.startsWith('https://') ? 'wss' : 'ws';
-    final host   = AppConfig.apiBaseUrl.replaceFirst(RegExp('^https?://'), '');
+    final host = AppConfig.apiBaseUrl.replaceFirst(RegExp('^https?://'), '');
     return '$scheme://$host/ws/flights';
   }
 
@@ -89,19 +89,19 @@ class ApiConstants {
       'https://tiles.stadiamaps.com/tiles/stamen_terrain/{z}/{x}/{y}@2x.png';
 
   // ── Update intervals / limits ────────────────────────────────────────────
-  static const int realtimeUpdateIntervalMs  = 5000;
-  static const int positionInterpolationMs   = 1000;
-  static const int trailRetentionSeconds     = 60;
-  static const int maxAircraftOnScreen       = 20000;
+  static const int realtimeUpdateIntervalMs = 5000;
+  static const int positionInterpolationMs = 1000;
+  static const int trailRetentionSeconds = 60;
+  static const int maxAircraftOnScreen = 20000;
 
   // ── Map defaults (unchanged) ─────────────────────────────────────────────
-  static const double defaultLatitude  = 48.8566;
+  static const double defaultLatitude = 48.8566;
   static const double defaultLongitude = 2.3522;
-  static const double defaultZoom      = 5.0;
-  static const double minZoom          = 2.0;
-  static const double maxZoom          = 18.0;
+  static const double defaultZoom = 5.0;
+  static const double minZoom = 2.0;
+  static const double maxZoom = 18.0;
 
   // ── Clustering ───────────────────────────────────────────────────────────
   static const int clusterMaxZoom = 10;
-  static const int clusterRadius  = 80;
+  static const int clusterRadius = 80;
 }

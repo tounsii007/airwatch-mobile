@@ -91,12 +91,28 @@ android {
     buildTypes {
         release {
             // Use the real release config when a keystore is configured (via
-            // key.properties OR env vars), otherwise fall back to debug so
-            // local `flutter run --release` keeps working without the upload
-            // key being checked out.
+            // key.properties OR env vars). When neither is configured the
+            // build falls back to debug-signing so `flutter run --release`
+            // keeps working on a clean dev machine.
+            //
+            // CI guard — the release pipeline (.github/workflows/release.yml)
+            // sets RELEASE_BUILD=true. With that env var present we REFUSE
+            // to fall back to debug-signing: shipping a debug-signed AAB
+            // breaks the upgrade path forever (Play won't accept a
+            // signature change), and an accidentally side-loaded debug-
+            // signed APK is worse than a build failure.
             signingConfig = if (resolveStoreFile() != null) {
                 signingConfigs.getByName("release")
             } else {
+                if (System.getenv("RELEASE_BUILD") == "true") {
+                    throw GradleException(
+                        "RELEASE_BUILD=true but no upload keystore is " +
+                        "configured. Set KEYSTORE_PATH + STORE_PASSWORD + " +
+                        "KEY_ALIAS + KEY_PASSWORD env vars (CI), or place " +
+                        "android/key.properties + android/app/upload-keystore.jks " +
+                        "(local). Refusing to debug-sign a release build."
+                    )
+                }
                 signingConfigs.getByName("debug")
             }
             isMinifyEnabled = true

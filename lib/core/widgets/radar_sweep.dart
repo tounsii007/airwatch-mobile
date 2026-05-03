@@ -25,10 +25,8 @@ class _RadarSweepState extends State<RadarSweep>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: widget.duration,
-    )..repeat();
+    _controller = AnimationController(vsync: this, duration: widget.duration)
+      ..repeat();
   }
 
   @override
@@ -83,9 +81,15 @@ class _RadarSweepPainter extends CustomPainter {
       ..color = color.withValues(alpha: 0.08)
       ..strokeWidth = 0.5;
     canvas.drawLine(
-        Offset(0, center.dy), Offset(size.width, center.dy), crossPaint);
+      Offset(0, center.dy),
+      Offset(size.width, center.dy),
+      crossPaint,
+    );
     canvas.drawLine(
-        Offset(center.dx, 0), Offset(center.dx, size.height), crossPaint);
+      Offset(center.dx, 0),
+      Offset(center.dx, size.height),
+      crossPaint,
+    );
 
     // Draw sweep
     final sweepAngle = progress * 2 * math.pi;
@@ -93,10 +97,7 @@ class _RadarSweepPainter extends CustomPainter {
       ..shader = SweepGradient(
         startAngle: sweepAngle - 0.8,
         endAngle: sweepAngle,
-        colors: [
-          color.withValues(alpha: 0.0),
-          color.withValues(alpha: 0.3),
-        ],
+        colors: [color.withValues(alpha: 0.0), color.withValues(alpha: 0.3)],
       ).createShader(Rect.fromCircle(center: center, radius: radius));
 
     canvas.drawCircle(center, radius, sweepPaint);
@@ -115,11 +116,7 @@ class _RadarSweepPainter extends CustomPainter {
     );
 
     // Center dot
-    canvas.drawCircle(
-      center,
-      3,
-      Paint()..color = color,
-    );
+    canvas.drawCircle(center, 3, Paint()..color = color);
   }
 
   @override
@@ -216,11 +213,7 @@ class _PulsingRingsPainter extends CustomPainter {
     }
 
     // Center dot
-    canvas.drawCircle(
-      center,
-      3,
-      Paint()..color = color,
-    );
+    canvas.drawCircle(center, 3, Paint()..color = color);
   }
 
   @override

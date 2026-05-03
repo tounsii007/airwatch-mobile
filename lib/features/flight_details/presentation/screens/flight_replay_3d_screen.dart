@@ -42,11 +42,7 @@ class FlightReplay3DScreen extends StatefulWidget {
   final String icao24;
   final String? callsign;
 
-  const FlightReplay3DScreen({
-    super.key,
-    required this.icao24,
-    this.callsign,
-  });
+  const FlightReplay3DScreen({super.key, required this.icao24, this.callsign});
 
   @override
   State<FlightReplay3DScreen> createState() => _FlightReplay3DScreenState();
@@ -136,29 +132,35 @@ class _FlightReplay3DScreenState extends State<FlightReplay3DScreen> {
       ];
 
       // Departure + arrival markers — fixed for the entire session.
-      _controller.addPoint(Point(
-        id: 'dep',
-        coordinates: coords.first,
-        label: 'DEP',
-        isLabelVisible: true,
-        style: const PointStyle(color: Colors.greenAccent, size: 7),
-      ));
-      _controller.addPoint(Point(
-        id: 'arr',
-        coordinates: coords.last,
-        label: 'ARR',
-        isLabelVisible: true,
-        style: const PointStyle(color: Colors.amberAccent, size: 7),
-      ));
+      _controller.addPoint(
+        Point(
+          id: 'dep',
+          coordinates: coords.first,
+          label: 'DEP',
+          isLabelVisible: true,
+          style: const PointStyle(color: Colors.greenAccent, size: 7),
+        ),
+      );
+      _controller.addPoint(
+        Point(
+          id: 'arr',
+          coordinates: coords.last,
+          label: 'ARR',
+          isLabelVisible: true,
+          style: const PointStyle(color: Colors.amberAccent, size: 7),
+        ),
+      );
 
       // Current-position marker — moves as the user scrubs / plays.
-      _controller.addPoint(Point(
-        id: 'cur',
-        coordinates: coords.first,
-        label: cs,
-        isLabelVisible: true,
-        style: const PointStyle(color: Colors.cyanAccent, size: 9),
-      ));
+      _controller.addPoint(
+        Point(
+          id: 'cur',
+          coordinates: coords.first,
+          label: cs,
+          isLabelVisible: true,
+          style: const PointStyle(color: Colors.cyanAccent, size: 9),
+        ),
+      );
 
       // Sub-sample to ~60 segments along the route — the user can't
       // tell the difference at globe scale, and the incremental
@@ -219,8 +221,7 @@ class _FlightReplay3DScreenState extends State<FlightReplay3DScreen> {
           ? _legStep
           : _renderedLegEnd + _legStep;
       for (var i = start; i <= upto; i += _legStep) {
-        final connId =
-            ((i ~/ _legStep) - 1).toString(); // 1-based → 0-based
+        final connId = ((i ~/ _legStep) - 1).toString(); // 1-based → 0-based
         _controller.addPointConnection(
           PointConnection(
             id: 'leg-$connId',
@@ -257,13 +258,15 @@ class _FlightReplay3DScreenState extends State<FlightReplay3DScreen> {
   /// so re-positioning requires a remove + add.
   void _moveCurrentTo(GlobeCoordinates pos) {
     _controller.removePoint('cur');
-    _controller.addPoint(Point(
-      id: 'cur',
-      coordinates: pos,
-      label: widget.callsign?.trim() ?? widget.icao24.toUpperCase(),
-      isLabelVisible: true,
-      style: const PointStyle(color: Colors.cyanAccent, size: 9),
-    ));
+    _controller.addPoint(
+      Point(
+        id: 'cur',
+        coordinates: pos,
+        label: widget.callsign?.trim() ?? widget.icao24.toUpperCase(),
+        isLabelVisible: true,
+        style: const PointStyle(color: Colors.cyanAccent, size: 9),
+      ),
+    );
   }
 
   void _maybeFollowCamera(GlobeCoordinates pos) {
@@ -329,10 +332,7 @@ class _FlightReplay3DScreenState extends State<FlightReplay3DScreen> {
       body: Stack(
         children: [
           Center(
-            child: FlutterEarthGlobe(
-              controller: _controller,
-              radius: 140,
-            ),
+            child: FlutterEarthGlobe(controller: _controller, radius: 140),
           ),
           if (_loading)
             const Positioned(
@@ -529,11 +529,7 @@ class _ControlsPanel extends StatelessWidget {
 }
 
 class _Chip extends StatelessWidget {
-  const _Chip({
-    required this.label,
-    required this.active,
-    required this.onTap,
-  });
+  const _Chip({required this.label, required this.active, required this.onTap});
   final String label;
   final bool active;
   final VoidCallback onTap;

@@ -9,15 +9,14 @@ AircraftState _ac({
   String? callsign,
   double? baroAltitudeMeters,
   bool onGround = false,
-}) =>
-    AircraftState(
-      icao24: 'AABBCC',
-      callsign: callsign,
-      latitude: lat,
-      longitude: lon,
-      baroAltitude: baroAltitudeMeters,
-      onGround: onGround,
-    );
+}) => AircraftState(
+  icao24: 'AABBCC',
+  callsign: callsign,
+  latitude: lat,
+  longitude: lon,
+  baroAltitude: baroAltitudeMeters,
+  onGround: onGround,
+);
 
 GeoFence _circle({
   double centerLat = 50,
@@ -27,19 +26,18 @@ GeoFence _circle({
   double? minAltitudeFt,
   double? maxAltitudeFt,
   String? airlineFilter,
-}) =>
-    GeoFence(
-      id: 'c',
-      name: 'C',
-      type: GeoFenceType.circle,
-      centerLat: centerLat,
-      centerLon: centerLon,
-      radiusKm: radiusKm,
-      active: active,
-      minAltitudeFt: minAltitudeFt,
-      maxAltitudeFt: maxAltitudeFt,
-      airlineFilter: airlineFilter,
-    );
+}) => GeoFence(
+  id: 'c',
+  name: 'C',
+  type: GeoFenceType.circle,
+  centerLat: centerLat,
+  centerLon: centerLon,
+  radiusKm: radiusKm,
+  active: active,
+  minAltitudeFt: minAltitudeFt,
+  maxAltitudeFt: maxAltitudeFt,
+  airlineFilter: airlineFilter,
+);
 
 GeoFence _rect({
   double n = 55,
@@ -47,17 +45,16 @@ GeoFence _rect({
   double e = 17,
   double w = 5,
   bool active = true,
-}) =>
-    GeoFence(
-      id: 'r',
-      name: 'R',
-      type: GeoFenceType.rectangle,
-      northLat: n,
-      southLat: s,
-      eastLon: e,
-      westLon: w,
-      active: active,
-    );
+}) => GeoFence(
+  id: 'r',
+  name: 'R',
+  type: GeoFenceType.rectangle,
+  northLat: n,
+  southLat: s,
+  eastLon: e,
+  westLon: w,
+  active: active,
+);
 
 void main() {
   // ───────────────────────────────────────────────────────────────────────────
@@ -69,8 +66,7 @@ void main() {
       final fence = _circle(centerLat: 0, centerLon: 0, radiusKm: 100);
       // 100 km north of (0,0) ≈ lat 0.899°
       const edgePoint = 0.8993; // a hair under the 100 km contour
-      expect(
-          aircraftIsInsideFence(_ac(lat: edgePoint, lon: 0), fence), isTrue);
+      expect(aircraftIsInsideFence(_ac(lat: edgePoint, lon: 0), fence), isTrue);
     });
 
     test('zero-radius fence rejects everything except the exact center', () {
@@ -95,8 +91,7 @@ void main() {
       // ~2° apart longitudinally, but they're really only ~220 km
       // apart on the great circle (the antimeridian). A correct
       // haversine handles this.
-      final fence =
-          _circle(centerLat: 0, centerLon: 179, radiusKm: 300);
+      final fence = _circle(centerLat: 0, centerLon: 179, radiusKm: 300);
       expect(aircraftIsInsideFence(_ac(lat: 0, lon: -179), fence), isTrue);
     });
   });
@@ -109,8 +104,7 @@ void main() {
       expect(aircraftIsInsideFence(_ac(lat: 89, lon: 180), fence), isTrue);
     });
 
-    test('south pole — fence centered at -89 still covers nearby longitudes',
-        () {
+    test('south pole — fence centered at -89 still covers nearby longitudes', () {
       final fence = _circle(centerLat: -89, centerLon: 0, radiusKm: 500);
       // (-89, -180) is ~220 km from (-89, 0) along the polar arc — well inside.
       expect(aircraftIsInsideFence(_ac(lat: -89, lon: -180), fence), isTrue);
@@ -153,21 +147,45 @@ void main() {
     final fence = _circle(minAltitudeFt: 30000, maxAltitudeFt: 40000);
 
     test('exact min altitude (30,000 ft = 9144 m) passes (≥, not >)', () {
-      expect(aircraftIsInsideFence(_ac(lat: 50, lon: 8, baroAltitudeMeters: 9144), fence), isTrue);
+      expect(
+        aircraftIsInsideFence(
+          _ac(lat: 50, lon: 8, baroAltitudeMeters: 9144),
+          fence,
+        ),
+        isTrue,
+      );
     });
 
     test('exact max altitude (40,000 ft = 12192 m) passes (≤, not <)', () {
-      expect(aircraftIsInsideFence(_ac(lat: 50, lon: 8, baroAltitudeMeters: 12192), fence), isTrue);
+      expect(
+        aircraftIsInsideFence(
+          _ac(lat: 50, lon: 8, baroAltitudeMeters: 12192),
+          fence,
+        ),
+        isTrue,
+      );
     });
 
     test('one foot below min is rejected', () {
       // 29,999 ft = 9143.7 m
-      expect(aircraftIsInsideFence(_ac(lat: 50, lon: 8, baroAltitudeMeters: 9143.7), fence), isFalse);
+      expect(
+        aircraftIsInsideFence(
+          _ac(lat: 50, lon: 8, baroAltitudeMeters: 9143.7),
+          fence,
+        ),
+        isFalse,
+      );
     });
 
     test('one foot above max is rejected', () {
       // 40,001 ft = 12192.3 m
-      expect(aircraftIsInsideFence(_ac(lat: 50, lon: 8, baroAltitudeMeters: 12192.5), fence), isFalse);
+      expect(
+        aircraftIsInsideFence(
+          _ac(lat: 50, lon: 8, baroAltitudeMeters: 12192.5),
+          fence,
+        ),
+        isFalse,
+      );
     });
 
     test('altitude null fails the band check (we never assume anything)', () {
@@ -179,29 +197,50 @@ void main() {
   group('Airline filter — case sensitivity', () {
     test('lowercase fence filter still matches uppercase callsign', () {
       final fence = _circle(airlineFilter: 'dlh');
-      expect(aircraftIsInsideFence(_ac(lat: 50, lon: 8, callsign: 'DLH400'), fence), isTrue);
+      expect(
+        aircraftIsInsideFence(_ac(lat: 50, lon: 8, callsign: 'DLH400'), fence),
+        isTrue,
+      );
     });
 
-    test('lowercase callsign — implementation uppercases, so still matches', () {
-      final fence = _circle(airlineFilter: 'DLH');
-      expect(aircraftIsInsideFence(_ac(lat: 50, lon: 8, callsign: 'dlh400'), fence), isTrue);
-    });
+    test(
+      'lowercase callsign — implementation uppercases, so still matches',
+      () {
+        final fence = _circle(airlineFilter: 'DLH');
+        expect(
+          aircraftIsInsideFence(
+            _ac(lat: 50, lon: 8, callsign: 'dlh400'),
+            fence,
+          ),
+          isTrue,
+        );
+      },
+    );
 
     test('whitespace in callsign breaks the prefix match if not trimmed', () {
       // The current impl does NOT trim. This documents the behaviour.
       final fence = _circle(airlineFilter: 'DLH');
       // Leading whitespace makes substring(0,3) be ' DL' — no match.
-      expect(aircraftIsInsideFence(_ac(lat: 50, lon: 8, callsign: ' DLH400'), fence), isFalse);
+      expect(
+        aircraftIsInsideFence(_ac(lat: 50, lon: 8, callsign: ' DLH400'), fence),
+        isFalse,
+      );
     });
 
     test('callsign exactly 3 chars long matches', () {
       final fence = _circle(airlineFilter: 'DLH');
-      expect(aircraftIsInsideFence(_ac(lat: 50, lon: 8, callsign: 'DLH'), fence), isTrue);
+      expect(
+        aircraftIsInsideFence(_ac(lat: 50, lon: 8, callsign: 'DLH'), fence),
+        isTrue,
+      );
     });
 
     test('callsign shorter than 3 chars rejects', () {
       final fence = _circle(airlineFilter: 'DLH');
-      expect(aircraftIsInsideFence(_ac(lat: 50, lon: 8, callsign: 'DL'), fence), isFalse);
+      expect(
+        aircraftIsInsideFence(_ac(lat: 50, lon: 8, callsign: 'DL'), fence),
+        isFalse,
+      );
     });
   });
 
@@ -316,8 +355,10 @@ void main() {
         'createdAt': 'not a date',
       };
       final f = GeoFence.fromJson(raw);
-      expect(f.createdAt.difference(DateTime.now()).inSeconds.abs(),
-          lessThan(2));
+      expect(
+        f.createdAt.difference(DateTime.now()).inSeconds.abs(),
+        lessThan(2),
+      );
     });
   });
 

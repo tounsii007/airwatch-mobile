@@ -17,13 +17,10 @@ AircraftState _ac(String icao24, String callsign, {double? altMeters}) =>
 Widget _harness({
   required Widget child,
   required Map<String, AircraftState> seed,
-}) =>
-    ProviderScope(
-      overrides: [
-        aircraftStreamProvider.overrideWith((_) => Stream.value(seed)),
-      ],
-      child: MaterialApp(home: child),
-    );
+}) => ProviderScope(
+  overrides: [aircraftStreamProvider.overrideWith((_) => Stream.value(seed))],
+  child: MaterialApp(home: child),
+);
 
 void main() {
   setUp(() {
@@ -39,30 +36,36 @@ void main() {
         'a': _ac('a', 'DLH400', altMeters: 11000),
         'b': _ac('b', 'AFR123', altMeters: 5000),
       };
-      await tester.pumpWidget(_harness(child: const DashboardScreen(), seed: seed));
+      await tester.pumpWidget(
+        _harness(child: const DashboardScreen(), seed: seed),
+      );
       await tester.pumpAndSettle();
 
       // Each tile renders its own label string (en-default).
-      expect(find.text('Live flights'),    findsOneWidget);
-      expect(find.text('Saved items'),     findsOneWidget);
-      expect(find.text('Top airlines'),    findsOneWidget);
-      expect(find.text('Altitude bands'),  findsOneWidget);
+      expect(find.text('Live flights'), findsOneWidget);
+      expect(find.text('Saved items'), findsOneWidget);
+      expect(find.text('Top airlines'), findsOneWidget);
+      expect(find.text('Altitude bands'), findsOneWidget);
     });
 
-    testWidgets('Top airlines tile picks the highest-count carrier as headline',
-        (tester) async {
-      final seed = {
-        'a': _ac('a', 'DLH400'),
-        'b': _ac('b', 'DLH401'),
-        'c': _ac('c', 'AFR123'),
-      };
-      await tester.pumpWidget(_harness(child: const DashboardScreen(), seed: seed));
-      await tester.pumpAndSettle();
+    testWidgets(
+      'Top airlines tile picks the highest-count carrier as headline',
+      (tester) async {
+        final seed = {
+          'a': _ac('a', 'DLH400'),
+          'b': _ac('b', 'DLH401'),
+          'c': _ac('c', 'AFR123'),
+        };
+        await tester.pumpWidget(
+          _harness(child: const DashboardScreen(), seed: seed),
+        );
+        await tester.pumpAndSettle();
 
-      // The headline value of the "Top airlines" tile is the leading ICAO.
-      // We can't easily target the value text by widget tree alone, but DLH
-      // must appear somewhere on the screen.
-      expect(find.text('DLH'), findsWidgets);
-    });
+        // The headline value of the "Top airlines" tile is the leading ICAO.
+        // We can't easily target the value text by widget tree alone, but DLH
+        // must appear somewhere on the screen.
+        expect(find.text('DLH'), findsWidgets);
+      },
+    );
   });
 }

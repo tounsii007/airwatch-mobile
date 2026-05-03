@@ -107,13 +107,15 @@ class _GlobeScreenState extends ConsumerState<GlobeScreen> {
       if (!fresh.contains(f.icao24)) continue;
       final pos = f.position;
       if (pos == null) continue;
-      _controller.addPoint(Point(
-        id: f.icao24,
-        coordinates: GlobeCoordinates(pos.latitude, pos.longitude),
-        label: f.callsign,
-        style: PointStyle(color: _altitudeColor(f), size: 5),
-        onTap: () => _onPointTap(f),
-      ));
+      _controller.addPoint(
+        Point(
+          id: f.icao24,
+          coordinates: GlobeCoordinates(pos.latitude, pos.longitude),
+          label: f.callsign,
+          style: PointStyle(color: _altitudeColor(f), size: 5),
+          onTap: () => _onPointTap(f),
+        ),
+      );
     }
 
     _currentIds
@@ -141,9 +143,15 @@ class _GlobeScreenState extends ConsumerState<GlobeScreen> {
   /// Pick a representative subset of flights ordered by absolute latitude
   /// (descending) — gives the globe a globally-distributed look rather than
   /// 300 markers all clumped on the heavily-trafficked north Atlantic.
-  Iterable<AircraftState> _topByLatitude(Iterable<AircraftState> flights, int n) {
+  Iterable<AircraftState> _topByLatitude(
+    Iterable<AircraftState> flights,
+    int n,
+  ) {
     final positioned = flights.where((f) => f.position != null).toList()
-      ..sort((a, b) => b.position!.latitude.abs().compareTo(a.position!.latitude.abs()));
+      ..sort(
+        (a, b) =>
+            b.position!.latitude.abs().compareTo(a.position!.latitude.abs()),
+      );
     return positioned.take(n);
   }
 
@@ -175,23 +183,22 @@ class _GlobeScreenState extends ConsumerState<GlobeScreen> {
       body: Stack(
         children: [
           Center(
-            child: FlutterEarthGlobe(
-              controller: _controller,
-              radius: 140,
-            ),
+            child: FlutterEarthGlobe(controller: _controller, radius: 140),
           ),
           // Stats overlay — airborne / ground / total / showing
           // Mirrors the web's overlay on the Cesium globe so the
           // user knows how representative the visible dot cloud is.
           Positioned(
-            top: 12, left: 12, right: 12,
-            child: _StatsOverlay(asyncFlights: asyncFlights, shown: _currentIds.length),
+            top: 12,
+            left: 12,
+            right: 12,
+            child: _StatsOverlay(
+              asyncFlights: asyncFlights,
+              shown: _currentIds.length,
+            ),
           ),
           // Altitude-band legend — explains what the dot colours mean.
-          const Positioned(
-            bottom: 12, left: 12,
-            child: _AltitudeLegend(),
-          ),
+          const Positioned(bottom: 12, left: 12, child: _AltitudeLegend()),
           // Flight detail panel surfaces over the globe when a point
           // is tapped. The panel is the same widget the map uses, so
           // the user gets identical functionality on both screens.
@@ -240,7 +247,11 @@ class _StatsOverlay extends StatelessWidget {
 }
 
 class _StatChip extends StatelessWidget {
-  const _StatChip({required this.label, required this.value, required this.color});
+  const _StatChip({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
   final String label;
   final int value;
   final Color color;
@@ -281,28 +292,29 @@ class _AltitudeLegend extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget swatch(Color c, String label) => Padding(
-          padding: const EdgeInsets.only(right: 8),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 6, height: 6,
-                decoration: BoxDecoration(shape: BoxShape.circle, color: c),
-              ),
-              const SizedBox(width: 4),
-              Text(
-                label,
-                style: const TextStyle(
-                  fontFamily: UiConstants.headingFont,
-                  fontSize: 8,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0.6,
-                  color: AppColors.textMuted,
-                ),
-              ),
-            ],
+      padding: const EdgeInsets.only(right: 8),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 6,
+            height: 6,
+            decoration: BoxDecoration(shape: BoxShape.circle, color: c),
           ),
-        );
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: const TextStyle(
+              fontFamily: UiConstants.headingFont,
+              fontSize: 8,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.6,
+              color: AppColors.textMuted,
+            ),
+          ),
+        ],
+      ),
+    );
 
     return GlassPanel(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),

@@ -16,11 +16,7 @@ class FlightReplayScreen extends StatefulWidget {
   final String icao24;
   final String? callsign;
 
-  const FlightReplayScreen({
-    super.key,
-    required this.icao24,
-    this.callsign,
-  });
+  const FlightReplayScreen({super.key, required this.icao24, this.callsign});
 
   @override
   State<FlightReplayScreen> createState() => _FlightReplayScreenState();
@@ -28,9 +24,7 @@ class FlightReplayScreen extends StatefulWidget {
 
 class _FlightReplayScreenState extends State<FlightReplayScreen>
     with SingleTickerProviderStateMixin {
-  final Dio _dio = AppHttpClient.create(
-    
-  );
+  final Dio _dio = AppHttpClient.create();
 
   List<_Waypoint> _waypoints = [];
   bool _isLoading = true;
@@ -58,7 +52,9 @@ class _FlightReplayScreenState extends State<FlightReplayScreen>
   Future<void> _fetchTrack() async {
     try {
       // Use Airlabs /flight to get current position data
-      final url = AppConfig.flightUrl(flightIcao: widget.callsign ?? widget.icao24);
+      final url = AppConfig.flightUrl(
+        flightIcao: widget.callsign ?? widget.icao24,
+      );
       final response = await _dio.get(url);
 
       if (response.statusCode == 200 && response.data is Map) {
@@ -112,16 +108,23 @@ class _FlightReplayScreenState extends State<FlightReplayScreen>
     final primary = isDark ? AppColors.primary : UiConstants.lightPrimary;
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.background : UiConstants.lightBackground,
+      backgroundColor: isDark
+          ? AppColors.background
+          : UiConstants.lightBackground,
       body: Stack(
         children: [
           // Map with track
           if (_waypoints.length >= 2)
             FlutterMap(
               options: MapOptions(
-                initialCenter: LatLng(_waypoints.first.lat, _waypoints.first.lng),
+                initialCenter: LatLng(
+                  _waypoints.first.lat,
+                  _waypoints.first.lng,
+                ),
                 initialZoom: 6,
-                backgroundColor: isDark ? AppColors.background : UiConstants.lightBackground,
+                backgroundColor: isDark
+                    ? AppColors.background
+                    : UiConstants.lightBackground,
               ),
               children: [
                 TileLayer(
@@ -130,58 +133,89 @@ class _FlightReplayScreenState extends State<FlightReplayScreen>
                       : 'https://basemaps.cartocdn.com/light_all/{z}/{x}/{y}@2x.png',
                 ),
                 // Full track line
-                PolylineLayer(polylines: [
-                  Polyline(
-                    points: _waypoints.map((w) => LatLng(w.lat, w.lng)).toList(),
-                    strokeWidth: 3,
-                    color: primary.withValues(alpha: 0.4),
-                    gradientColors: [primary.withValues(alpha: 0.1), primary],
-                  ),
-                ]),
+                PolylineLayer(
+                  polylines: [
+                    Polyline(
+                      points: _waypoints
+                          .map((w) => LatLng(w.lat, w.lng))
+                          .toList(),
+                      strokeWidth: 3,
+                      color: primary.withValues(alpha: 0.4),
+                      gradientColors: [primary.withValues(alpha: 0.1), primary],
+                    ),
+                  ],
+                ),
                 // Traveled portion (up to current playback)
                 if (_playController.value > 0)
-                  PolylineLayer(polylines: [
-                    Polyline(
-                      points: _traveledPoints(),
-                      strokeWidth: 4,
-                      color: AppColors.altitudeHigh,
-                    ),
-                  ]),
+                  PolylineLayer(
+                    polylines: [
+                      Polyline(
+                        points: _traveledPoints(),
+                        strokeWidth: 4,
+                        color: AppColors.altitudeHigh,
+                      ),
+                    ],
+                  ),
                 // Aircraft marker at current position
-                MarkerLayer(markers: [
-                  Marker(
-                    point: _currentPosition(),
-                    width: 40,
-                    height: 40,
-                    child: Transform.rotate(
-                      angle: (_currentHeading() ?? 0) * 3.14159 / 180,
-                      child: Icon(Icons.flight_rounded, size: 28, color: primary,
-                          shadows: [Shadow(color: primary.withValues(alpha: 0.6), blurRadius: 10)]),
-                    ),
-                  ),
-                  // Start marker
-                  Marker(
-                    point: LatLng(_waypoints.first.lat, _waypoints.first.lng),
-                    width: 14, height: 14,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle, color: AppColors.success,
-                        boxShadow: [BoxShadow(color: AppColors.success.withValues(alpha: 0.5), blurRadius: 6)],
+                MarkerLayer(
+                  markers: [
+                    Marker(
+                      point: _currentPosition(),
+                      width: 40,
+                      height: 40,
+                      child: Transform.rotate(
+                        angle: (_currentHeading() ?? 0) * 3.14159 / 180,
+                        child: Icon(
+                          Icons.flight_rounded,
+                          size: 28,
+                          color: primary,
+                          shadows: [
+                            Shadow(
+                              color: primary.withValues(alpha: 0.6),
+                              blurRadius: 10,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  // End marker
-                  Marker(
-                    point: LatLng(_waypoints.last.lat, _waypoints.last.lng),
-                    width: 14, height: 14,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle, color: AppColors.accent,
-                        boxShadow: [BoxShadow(color: AppColors.accent.withValues(alpha: 0.5), blurRadius: 6)],
+                    // Start marker
+                    Marker(
+                      point: LatLng(_waypoints.first.lat, _waypoints.first.lng),
+                      width: 14,
+                      height: 14,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.success,
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.success.withValues(alpha: 0.5),
+                              blurRadius: 6,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ]),
+                    // End marker
+                    Marker(
+                      point: LatLng(_waypoints.last.lat, _waypoints.last.lng),
+                      width: 14,
+                      height: 14,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.accent,
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.accent.withValues(alpha: 0.5),
+                              blurRadius: 6,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
 
@@ -196,23 +230,39 @@ class _FlightReplayScreenState extends State<FlightReplayScreen>
                     child: GlassPanel(
                       padding: const EdgeInsets.all(10),
                       borderRadius: 12,
-                      child: Icon(Icons.arrow_back_rounded, size: 20, color: primary),
+                      child: Icon(
+                        Icons.arrow_back_rounded,
+                        size: 20,
+                        color: primary,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
-                  NeonText(text: context.tr('flight_replay'), fontSize: 14, color: primary,
-                      glowRadius: isDark ? 8 : 0),
+                  NeonText(
+                    text: context.tr('flight_replay'),
+                    fontSize: 14,
+                    color: primary,
+                    glowRadius: isDark ? 8 : 0,
+                  ),
                   const Spacer(),
                   GlassPanel(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 6,
+                    ),
                     borderRadius: 10,
                     child: Text(
                       FlightCodeFormatter.displayFlightCode(
                         callsign: widget.callsign,
                         fallback: widget.icao24,
                       ),
-                      style: TextStyle(fontFamily: UiConstants.headingFont, fontSize: 11,
-                          fontWeight: FontWeight.w700, color: primary)),
+                      style: TextStyle(
+                        fontFamily: UiConstants.headingFont,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: primary,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -222,7 +272,9 @@ class _FlightReplayScreenState extends State<FlightReplayScreen>
           // Bottom playback controls
           if (_waypoints.length >= 2)
             Positioned(
-              bottom: 0, left: 0, right: 0,
+              bottom: 0,
+              left: 0,
+              right: 0,
               child: SafeArea(
                 child: Padding(
                   padding: const EdgeInsets.all(12),
@@ -237,7 +289,9 @@ class _FlightReplayScreenState extends State<FlightReplayScreen>
                             activeTrackColor: primary,
                             inactiveTrackColor: primary.withValues(alpha: 0.15),
                             thumbColor: primary,
-                            thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
+                            thumbShape: const RoundSliderThumbShape(
+                              enabledThumbRadius: 6,
+                            ),
                             trackHeight: 3,
                           ),
                           child: Slider(
@@ -255,22 +309,36 @@ class _FlightReplayScreenState extends State<FlightReplayScreen>
                             // Altitude
                             Text(
                               '${context.s.altitude}: ${_currentAltitude()?.toStringAsFixed(0) ?? "--"}m',
-                              style: const TextStyle(fontFamily: UiConstants.headingFont, fontSize: 9,
-                                  color: AppColors.altitudeHigh, fontWeight: FontWeight.w700),
+                              style: const TextStyle(
+                                fontFamily: UiConstants.headingFont,
+                                fontSize: 9,
+                                color: AppColors.altitudeHigh,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                             const SizedBox(width: 16),
                             // Play/Pause
                             GestureDetector(
                               onTap: _togglePlay,
                               child: Container(
-                                width: 44, height: 44,
+                                width: 44,
+                                height: 44,
                                 decoration: BoxDecoration(
-                                  shape: BoxShape.circle, color: primary,
-                                  boxShadow: [BoxShadow(color: primary.withValues(alpha: 0.4), blurRadius: 10)],
+                                  shape: BoxShape.circle,
+                                  color: primary,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: primary.withValues(alpha: 0.4),
+                                      blurRadius: 10,
+                                    ),
+                                  ],
                                 ),
                                 child: Icon(
-                                  _isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                                  color: Colors.white, size: 24,
+                                  _isPlaying
+                                      ? Icons.pause_rounded
+                                      : Icons.play_arrow_rounded,
+                                  color: Colors.white,
+                                  size: 24,
                                 ),
                               ),
                             ),
@@ -278,14 +346,21 @@ class _FlightReplayScreenState extends State<FlightReplayScreen>
                             // Speed
                             GestureDetector(
                               onTap: () => setState(() {
-                                _playbackSpeed = _playbackSpeed >= 4 ? 1 : _playbackSpeed * 2;
+                                _playbackSpeed = _playbackSpeed >= 4
+                                    ? 1
+                                    : _playbackSpeed * 2;
                                 _playController.duration = Duration(
-                                    seconds: (30 / _playbackSpeed).round());
+                                  seconds: (30 / _playbackSpeed).round(),
+                                );
                               }),
                               child: Text(
                                 '${_playbackSpeed.toStringAsFixed(0)}x',
-                                style: TextStyle(fontFamily: UiConstants.headingFont, fontSize: 11,
-                                    color: primary, fontWeight: FontWeight.w700),
+                                style: TextStyle(
+                                  fontFamily: UiConstants.headingFont,
+                                  fontSize: 11,
+                                  color: primary,
+                                  fontWeight: FontWeight.w700,
+                                ),
                               ),
                             ),
                           ],
@@ -324,24 +399,36 @@ class _FlightReplayScreenState extends State<FlightReplayScreen>
     if (_waypoints.isEmpty) return const LatLng(0, 0);
     final idx = (_playController.value * (_waypoints.length - 1)).floor();
     final frac = (_playController.value * (_waypoints.length - 1)) - idx;
-    if (idx >= _waypoints.length - 1) return LatLng(_waypoints.last.lat, _waypoints.last.lng);
+    if (idx >= _waypoints.length - 1)
+      return LatLng(_waypoints.last.lat, _waypoints.last.lng);
     final a = _waypoints[idx];
     final b = _waypoints[idx + 1];
-    return LatLng(a.lat + (b.lat - a.lat) * frac, a.lng + (b.lng - a.lng) * frac);
+    return LatLng(
+      a.lat + (b.lat - a.lat) * frac,
+      a.lng + (b.lng - a.lng) * frac,
+    );
   }
 
   double? _currentHeading() {
-    final idx = (_playController.value * (_waypoints.length - 1)).floor().clamp(0, _waypoints.length - 1);
+    final idx = (_playController.value * (_waypoints.length - 1)).floor().clamp(
+      0,
+      _waypoints.length - 1,
+    );
     return _waypoints[idx].heading;
   }
 
   double? _currentAltitude() {
-    final idx = (_playController.value * (_waypoints.length - 1)).floor().clamp(0, _waypoints.length - 1);
+    final idx = (_playController.value * (_waypoints.length - 1)).floor().clamp(
+      0,
+      _waypoints.length - 1,
+    );
     return _waypoints[idx].altitude;
   }
 
   List<LatLng> _traveledPoints() {
-    final endIdx = (_playController.value * (_waypoints.length - 1)).ceil().clamp(0, _waypoints.length);
+    final endIdx = (_playController.value * (_waypoints.length - 1))
+        .ceil()
+        .clamp(0, _waypoints.length);
     return _waypoints.take(endIdx).map((w) => LatLng(w.lat, w.lng)).toList()
       ..add(_currentPosition());
   }

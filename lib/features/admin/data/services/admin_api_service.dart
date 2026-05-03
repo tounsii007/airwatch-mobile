@@ -80,8 +80,11 @@ class AdminApiService {
       // Login filter returns 302 with a fresh session cookie on success,
       // 302 back to /admin/login?error=... on failure.
       final location = r.headers.value('location') ?? '';
-      final cookies  = r.headers.map['set-cookie'] ?? const <String>[];
-      final cookie = parseAdminSessionCookie(location: location, setCookieHeaders: cookies);
+      final cookies = r.headers.map['set-cookie'] ?? const <String>[];
+      final cookie = parseAdminSessionCookie(
+        location: location,
+        setCookieHeaders: cookies,
+      );
       if (cookie == null) return false;
       _sessionCookie = cookie;
       return true;

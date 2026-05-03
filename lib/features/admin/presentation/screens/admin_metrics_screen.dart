@@ -42,8 +42,8 @@ class AdminMetricsScreen extends ConsumerWidget {
       ),
       body: async.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error:   (e, _) => Center(child: Text('${s.errorPrefix}: $e')),
-        data:    (m) => m == null
+        error: (e, _) => Center(child: Text('${s.errorPrefix}: $e')),
+        data: (m) => m == null
             ? _OfflineState(title: s.adminOffline, hint: s.adminOfflineHint)
             : _buildBody(context, m, s),
       ),
@@ -51,13 +51,13 @@ class AdminMetricsScreen extends ConsumerWidget {
   }
 
   Widget _buildBody(BuildContext ctx, Map<String, dynamic> m, AppStrings s) {
-    final rps     = (m['rps'] as num?)?.toDouble() ?? 0;
-    final errPct  = (m['errorRate'] as num?)?.toDouble() ?? 0;
-    final httpS   = (m['httpSessions'] as num?)?.toInt() ?? 0;
-    final wsS     = (m['wsSessions'] as num?)?.toInt() ?? 0;
-    final heap    = (m['heapUsagePercent'] as num?)?.toDouble() ?? 0;
+    final rps = (m['rps'] as num?)?.toDouble() ?? 0;
+    final errPct = (m['errorRate'] as num?)?.toDouble() ?? 0;
+    final httpS = (m['httpSessions'] as num?)?.toInt() ?? 0;
+    final wsS = (m['wsSessions'] as num?)?.toInt() ?? 0;
+    final heap = (m['heapUsagePercent'] as num?)?.toDouble() ?? 0;
     final flights = (m['flights'] as num?)?.toInt() ?? 0;
-    final reqs    = (m['totalRequests'] as num?)?.toInt() ?? 0;
+    final reqs = (m['totalRequests'] as num?)?.toInt() ?? 0;
 
     return RefreshIndicator(
       onRefresh: () async => Future<void>.value(),
@@ -66,38 +66,65 @@ class AdminMetricsScreen extends ConsumerWidget {
         children: [
           Row(
             children: [
-              Expanded(child: _Kpi(label: s.adminRpsLabel,
-                                   value: rps.toStringAsFixed(1),
-                                   color: AppColors.primary)),
+              Expanded(
+                child: _Kpi(
+                  label: s.adminRpsLabel,
+                  value: rps.toStringAsFixed(1),
+                  color: AppColors.primary,
+                ),
+              ),
               const SizedBox(width: 8),
-              Expanded(child: _Kpi(label: s.adminErrorRate,
-                                   value: errPct.toStringAsFixed(2),
-                                   color: errPct > 5 ? AppColors.error : AppColors.success)),
+              Expanded(
+                child: _Kpi(
+                  label: s.adminErrorRate,
+                  value: errPct.toStringAsFixed(2),
+                  color: errPct > 5 ? AppColors.error : AppColors.success,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 8),
           Row(
             children: [
-              Expanded(child: _Kpi(label: '${s.adminActive} (HTTP)',
-                                   value: httpS.toString(),
-                                   color: AppColors.info)),
+              Expanded(
+                child: _Kpi(
+                  label: '${s.adminActive} (HTTP)',
+                  value: httpS.toString(),
+                  color: AppColors.info,
+                ),
+              ),
               const SizedBox(width: 8),
-              Expanded(child: _Kpi(label: '${s.adminActive} (WS)',
-                                   value: wsS.toString(),
-                                   color: AppColors.success)),
+              Expanded(
+                child: _Kpi(
+                  label: '${s.adminActive} (WS)',
+                  value: wsS.toString(),
+                  color: AppColors.success,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 8),
           Row(
             children: [
-              Expanded(child: _Kpi(label: s.adminHeap,
-                                   value: '${heap.toStringAsFixed(1)} %',
-                                   color: heap > 90 ? AppColors.error :
-                                          heap > 75 ? AppColors.warning : AppColors.success)),
+              Expanded(
+                child: _Kpi(
+                  label: s.adminHeap,
+                  value: '${heap.toStringAsFixed(1)} %',
+                  color: heap > 90
+                      ? AppColors.error
+                      : heap > 75
+                      ? AppColors.warning
+                      : AppColors.success,
+                ),
+              ),
               const SizedBox(width: 8),
-              Expanded(child: _Kpi(label: s.adminFlightsKpi,
-                                   value: flights.toString(),
-                                   color: AppColors.accent)),
+              Expanded(
+                child: _Kpi(
+                  label: s.adminFlightsKpi,
+                  value: flights.toString(),
+                  color: AppColors.accent,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 16),
@@ -106,9 +133,19 @@ class AdminMetricsScreen extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 18),
             child: Row(
               children: [
-                Expanded(child: Text(s.adminTotalReqs,
-                    style: const TextStyle(color: AppColors.textMuted, letterSpacing: 0.5))),
-                Text(reqs.toString(), style: const TextStyle(fontWeight: FontWeight.w800)),
+                Expanded(
+                  child: Text(
+                    s.adminTotalReqs,
+                    style: const TextStyle(
+                      color: AppColors.textMuted,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ),
+                Text(
+                  reqs.toString(),
+                  style: const TextStyle(fontWeight: FontWeight.w800),
+                ),
               ],
             ),
           ),
@@ -122,7 +159,7 @@ class _Kpi extends StatelessWidget {
   const _Kpi({required this.label, required this.value, required this.color});
   final String label;
   final String value;
-  final Color  color;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -132,12 +169,24 @@ class _Kpi extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label,
-              style: const TextStyle(
-                  fontSize: 11, letterSpacing: 0.8,
-                  color: AppColors.textMuted, fontWeight: FontWeight.w700)),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 11,
+              letterSpacing: 0.8,
+              color: AppColors.textMuted,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
           const SizedBox(height: 6),
-          Text(value, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: color)),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w800,
+              color: color,
+            ),
+          ),
         ],
       ),
     );
@@ -157,15 +206,23 @@ class _OfflineState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.cloud_off_rounded, size: 48, color: AppColors.textMuted),
+            const Icon(
+              Icons.cloud_off_rounded,
+              size: 48,
+              color: AppColors.textMuted,
+            ),
             const SizedBox(height: 12),
-            Text(title,
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontWeight: FontWeight.w700)),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontWeight: FontWeight.w700),
+            ),
             const SizedBox(height: 6),
-            Text(hint,
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: AppColors.textMuted, height: 1.4)),
+            Text(
+              hint,
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: AppColors.textMuted, height: 1.4),
+            ),
           ],
         ),
       ),

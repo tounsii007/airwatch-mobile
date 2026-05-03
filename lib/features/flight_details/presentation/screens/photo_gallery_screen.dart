@@ -77,20 +77,23 @@ class _PhotoGalleryScreenState extends State<PhotoGalleryScreen> {
           onTap: () => Navigator.of(context).maybePop(),
           child: _loading
               ? const Center(
-                  child: Icon(Icons.camera_alt_outlined,
-                      color: Colors.white24, size: 36),
+                  child: Icon(
+                    Icons.camera_alt_outlined,
+                    color: Colors.white24,
+                    size: 36,
+                  ),
                 )
               : _photos.isEmpty
-                  ? _Empty(onClose: () => Navigator.of(context).maybePop())
-                  : _Gallery(
-                      photos: _photos,
-                      pageCtl: _pageCtl,
-                      currentIndex: _index,
-                      onIndexChanged: (i) => setState(() => _index = i),
-                      onPrev: () => _go(_index - 1),
-                      onNext: () => _go(_index + 1),
-                      onClose: () => Navigator.of(context).maybePop(),
-                    ),
+              ? _Empty(onClose: () => Navigator.of(context).maybePop())
+              : _Gallery(
+                  photos: _photos,
+                  pageCtl: _pageCtl,
+                  currentIndex: _index,
+                  onIndexChanged: (i) => setState(() => _index = i),
+                  onPrev: () => _go(_index - 1),
+                  onNext: () => _go(_index + 1),
+                  onClose: () => Navigator.of(context).maybePop(),
+                ),
         ),
       ),
     );
@@ -146,8 +149,11 @@ class _Gallery extends StatelessWidget {
                     color: Colors.white.withValues(alpha: 0.08),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.close_rounded,
-                      color: Colors.white70, size: 18),
+                  child: const Icon(
+                    Icons.close_rounded,
+                    color: Colors.white70,
+                    size: 18,
+                  ),
                 ),
               ),
             ],
@@ -245,7 +251,9 @@ class _Gallery extends StatelessWidget {
                               borderRadius: BorderRadius.circular(4),
                               border: active
                                   ? Border.all(
-                                      color: AppColors.primary, width: 2)
+                                      color: AppColors.primary,
+                                      width: 2,
+                                    )
                                   : null,
                             ),
                             child: ClipRRect(
@@ -301,8 +309,11 @@ class _Empty extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.camera_alt_outlined,
-              size: 48, color: Colors.white.withValues(alpha: 0.3)),
+          Icon(
+            Icons.camera_alt_outlined,
+            size: 48,
+            color: Colors.white.withValues(alpha: 0.3),
+          ),
           const SizedBox(height: 12),
           Text(
             'No photos available',

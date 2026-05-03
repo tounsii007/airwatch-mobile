@@ -19,10 +19,12 @@ class PriceEstimator {
 
     // Distance-based pricing with diminishing returns
     final baseCost = distanceKm < 500
-        ? distanceKm * perKm * 1.5  // Short-haul premium
+        ? distanceKm *
+              perKm *
+              1.5 // Short-haul premium
         : distanceKm < 2000
-            ? 500 * perKm * 1.5 + (distanceKm - 500) * perKm
-            : 500 * perKm * 1.5 + 1500 * perKm + (distanceKm - 2000) * perKm * 0.7;
+        ? 500 * perKm * 1.5 + (distanceKm - 500) * perKm
+        : 500 * perKm * 1.5 + 1500 * perKm + (distanceKm - 2000) * perKm * 0.7;
 
     // Minimum price
     final economy = (baseCost + 30).clamp(35.0, 2000.0);
@@ -44,9 +46,12 @@ class PriceEstimator {
     const R = 6371.0;
     final dLat = _rad(lat2 - lat1);
     final dLon = _rad(lon2 - lon1);
-    final a = math.sin(dLat / 2) * math.sin(dLat / 2) +
-        math.cos(_rad(lat1)) * math.cos(_rad(lat2)) *
-            math.sin(dLon / 2) * math.sin(dLon / 2);
+    final a =
+        math.sin(dLat / 2) * math.sin(dLat / 2) +
+        math.cos(_rad(lat1)) *
+            math.cos(_rad(lat2)) *
+            math.sin(dLon / 2) *
+            math.sin(dLon / 2);
     return R * 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
   }
 

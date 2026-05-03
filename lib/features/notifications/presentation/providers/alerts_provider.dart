@@ -20,27 +20,31 @@ final alertsProvider = Provider<List<AppAlert>>((ref) {
   // Squawks first — they're safety-critical, so they belong at the
   // top of the panel.
   for (final ac in squawks) {
-    out.add(AppAlert(
-      id: 'sq-${ac.icao24}',
-      kind: AlertKind.squawk,
-      title: _squawkTitle(ac),
-      subtitle: 'Emergency squawk · ${ac.callsign?.trim() ?? ac.icao24}',
-      firedAt: DateTime.now(),
-      targetId: ac.icao24,
-    ));
+    out.add(
+      AppAlert(
+        id: 'sq-${ac.icao24}',
+        kind: AlertKind.squawk,
+        title: _squawkTitle(ac),
+        subtitle: 'Emergency squawk · ${ac.callsign?.trim() ?? ac.icao24}',
+        firedAt: DateTime.now(),
+        targetId: ac.icao24,
+      ),
+    );
   }
 
   // Geofence intrusions — one per (fence, aircraft) pair.
   for (final hit in geoHits) {
     final cs = hit.aircraft.callsign?.trim();
-    out.add(AppAlert(
-      id: 'gf-${hit.fence.id}-${hit.aircraft.icao24}',
-      kind: AlertKind.geofence,
-      title: '${cs ?? hit.aircraft.icao24} entered ${hit.fence.name}',
-      subtitle: hit.aircraft.originCountry,
-      firedAt: DateTime.now(),
-      targetId: hit.aircraft.icao24,
-    ));
+    out.add(
+      AppAlert(
+        id: 'gf-${hit.fence.id}-${hit.aircraft.icao24}',
+        kind: AlertKind.geofence,
+        title: '${cs ?? hit.aircraft.icao24} entered ${hit.fence.name}',
+        subtitle: hit.aircraft.originCountry,
+        firedAt: DateTime.now(),
+        targetId: hit.aircraft.icao24,
+      ),
+    );
   }
 
   return out;

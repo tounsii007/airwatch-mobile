@@ -43,8 +43,8 @@ class PanelPredictionCard extends StatelessWidget {
     final delayColor = pred.delayProbability > 60
         ? AppColors.error
         : pred.delayProbability > 30
-            ? AppColors.warning
-            : AppColors.success;
+        ? AppColors.warning
+        : AppColors.success;
     final confColor = switch (pred.confidence) {
       PredictionConfidence.high => AppColors.success,
       PredictionConfidence.medium => AppColors.warning,
@@ -72,7 +72,11 @@ class PanelPredictionCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.psychology_rounded, size: 14, color: AppColors.info),
+              const Icon(
+                Icons.psychology_rounded,
+                size: 14,
+                color: AppColors.info,
+              ),
               const SizedBox(width: 6),
               const Text(
                 'PREDICTION',
@@ -173,8 +177,10 @@ class PanelPredictionCard extends StatelessWidget {
               children: [
                 for (final f in pred.factors)
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.primary.withValues(alpha: 0.10),
                       borderRadius: BorderRadius.circular(3),

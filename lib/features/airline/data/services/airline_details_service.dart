@@ -10,11 +10,7 @@ import 'package:airwatch_mobile/features/airline/data/models/airline_flight_info
 class AirlineDetailsService {
   final Dio _dio;
 
-  AirlineDetailsService({Dio? dio})
-      : _dio = dio ??
-            AppHttpClient.create(
-              
-            );
+  AirlineDetailsService({Dio? dio}) : _dio = dio ?? AppHttpClient.create();
 
   /// Fetch all flights for an airline — combines live + schedule data.
   ///
@@ -70,7 +66,8 @@ class AirlineDetailsService {
         final response = await _dio.get(url);
 
         if (response.statusCode == 200 && response.data is Map) {
-          final schedules = (response.data as Map)[ApiJsonKeys.response] as List?;
+          final schedules =
+              (response.data as Map)[ApiJsonKeys.response] as List?;
           if (schedules != null) {
             for (final s in schedules) {
               if (s is! Map) continue;
@@ -96,7 +93,9 @@ class AirlineDetailsService {
       return a.displayCode.compareTo(b.displayCode);
     });
 
-    debugPrint('[AirlineDetails] Total: ${result.length} flights for $airlineIcao');
+    debugPrint(
+      '[AirlineDetails] Total: ${result.length} flights for $airlineIcao',
+    );
     return result;
   }
 

@@ -16,9 +16,9 @@ class ShowTurbulenceNotifier extends Notifier<bool> {
   void toggle() => state = !state;
 }
 
-final showTurbulenceProvider =
-    NotifierProvider<ShowTurbulenceNotifier, bool>(
-        ShowTurbulenceNotifier.new);
+final showTurbulenceProvider = NotifierProvider<ShowTurbulenceNotifier, bool>(
+  ShowTurbulenceNotifier.new,
+);
 
 /// Long-lived datasource (Dio client kept warm).
 final turbulenceDatasourceProvider = Provider<TurbulenceDatasource>((ref) {
@@ -30,15 +30,15 @@ final turbulenceDatasourceProvider = Provider<TurbulenceDatasource>((ref) {
 /// near-real-time data without overloading the backend cache.
 final turbulenceZonesProvider =
     StreamProvider.autoDispose<List<TurbulenceZone>>((ref) async* {
-  final enabled = ref.watch(showTurbulenceProvider);
-  if (!enabled) {
-    yield const [];
-    return;
-  }
-  final ds = ref.watch(turbulenceDatasourceProvider);
-  while (true) {
-    final zones = await ds.fetchZones();
-    yield zones;
-    await Future<void>.delayed(const Duration(minutes: 5));
-  }
-});
+      final enabled = ref.watch(showTurbulenceProvider);
+      if (!enabled) {
+        yield const [];
+        return;
+      }
+      final ds = ref.watch(turbulenceDatasourceProvider);
+      while (true) {
+        final zones = await ds.fetchZones();
+        yield zones;
+        await Future<void>.delayed(const Duration(minutes: 5));
+      }
+    });

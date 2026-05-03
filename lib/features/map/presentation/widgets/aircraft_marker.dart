@@ -115,8 +115,9 @@ class _AnimatedAircraftMarkerState extends State<AnimatedAircraftMarker>
       child: AnimatedBuilder(
         animation: _pulseController,
         builder: (context, child) {
-          final pulseScale =
-              widget.isSelected ? 1.0 + (_pulseController.value * AppConfig.markerPulseScale) : 1.0;
+          final pulseScale = widget.isSelected
+              ? 1.0 + (_pulseController.value * AppConfig.markerPulseScale)
+              : 1.0;
 
           return Transform.scale(
             scale: pulseScale,
@@ -124,59 +125,59 @@ class _AnimatedAircraftMarkerState extends State<AnimatedAircraftMarker>
               maxHeight: AppConfig.markerOverflowMaxHeight,
               maxWidth: AppConfig.markerOverflowMaxWidth,
               child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Callsign label
-                if (widget.isSelected &&
-                    widget.aircraft.callsign != null &&
-                    widget.aircraft.callsign!.isNotEmpty)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 6, vertical: 2),
-                    margin: const EdgeInsets.only(bottom: 4),
-                    decoration: BoxDecoration(
-                      color: isDark
-                          ? AppColors.surface.withValues(alpha: 0.9)
-                          : Colors.white.withValues(alpha: 0.95),
-                      borderRadius: BorderRadius.circular(4),
-                      border: Border.all(
-                        color: color.withValues(alpha: 0.5),
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Callsign label
+                  if (widget.isSelected &&
+                      widget.aircraft.callsign != null &&
+                      widget.aircraft.callsign!.isNotEmpty)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
                       ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: color.withValues(alpha: 0.3),
-                          blurRadius: 8,
+                      margin: const EdgeInsets.only(bottom: 4),
+                      decoration: BoxDecoration(
+                        color: isDark
+                            ? AppColors.surface.withValues(alpha: 0.9)
+                            : Colors.white.withValues(alpha: 0.95),
+                        borderRadius: BorderRadius.circular(4),
+                        border: Border.all(color: color.withValues(alpha: 0.5)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: color.withValues(alpha: 0.3),
+                            blurRadius: 8,
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        widget.aircraft.callsign!.trim(),
+                        style: TextStyle(
+                          fontFamily: UiConstants.headingFont,
+                          fontSize: 9,
+                          fontWeight: FontWeight.w700,
+                          color: color,
+                          letterSpacing: 0.5,
                         ),
-                      ],
+                      ),
                     ),
-                    child: Text(
-                      widget.aircraft.callsign!.trim(),
-                      style: TextStyle(
-                        fontFamily: UiConstants.headingFont,
-                        fontSize: 9,
-                        fontWeight: FontWeight.w700,
+                  // Aircraft icon
+                  SizedBox(
+                    width: widget.markerSize,
+                    height: widget.markerSize,
+                    child: CustomPaint(
+                      painter: AircraftIconPainter(
+                        type: type,
+                        heading: widget.aircraft.heading,
                         color: color,
-                        letterSpacing: 0.5,
+                        altitude: widget.aircraft.altitude ?? 0,
+                        isSelected: widget.isSelected,
+                        glowIntensity: isDark ? 0.6 : 0.3,
                       ),
                     ),
                   ),
-                // Aircraft icon
-                SizedBox(
-                  width: widget.markerSize,
-                  height: widget.markerSize,
-                  child: CustomPaint(
-                    painter: AircraftIconPainter(
-                      type: type,
-                      heading: widget.aircraft.heading,
-                      color: color,
-                      altitude: widget.aircraft.altitude ?? 0,
-                      isSelected: widget.isSelected,
-                      glowIntensity: isDark ? 0.6 : 0.3,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+                ],
+              ),
             ),
           );
         },

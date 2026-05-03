@@ -37,7 +37,8 @@ double bearingDeg(double lat1, double lon1, double lat2, double lon2) {
   final phi2 = _toRad(lat2);
   final lambda = _toRad(lon2 - lon1);
   final y = math.sin(lambda) * math.cos(phi2);
-  final x = math.cos(phi1) * math.sin(phi2) -
+  final x =
+      math.cos(phi1) * math.sin(phi2) -
       math.sin(phi1) * math.cos(phi2) * math.cos(lambda);
   return normalizeDeg(_toDeg(math.atan2(y, x)));
 }

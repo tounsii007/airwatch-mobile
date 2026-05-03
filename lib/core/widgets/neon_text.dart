@@ -52,9 +52,18 @@ class NeonText extends StatelessWidget {
             color: Colors.transparent,
             letterSpacing: 1.5,
             shadows: [
-              Shadow(color: color.withValues(alpha: 0.6), blurRadius: glowRadius * 2.5),
-              Shadow(color: color.withValues(alpha: 0.8), blurRadius: glowRadius),
-              Shadow(color: color.withValues(alpha: 0.4), blurRadius: glowRadius * 1.5),
+              Shadow(
+                color: color.withValues(alpha: 0.6),
+                blurRadius: glowRadius * 2.5,
+              ),
+              Shadow(
+                color: color.withValues(alpha: 0.8),
+                blurRadius: glowRadius,
+              ),
+              Shadow(
+                color: color.withValues(alpha: 0.4),
+                blurRadius: glowRadius * 1.5,
+              ),
             ],
           ),
         ),

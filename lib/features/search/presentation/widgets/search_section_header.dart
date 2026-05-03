@@ -37,7 +37,9 @@ class SearchSectionHeader extends StatelessWidget {
               fontFamily: UiConstants.headingFont,
               fontSize: UiConstants.microFontSize,
               fontWeight: FontWeight.w700,
-              color: isDark ? AppColors.textSecondary : UiConstants.lightTextSecondary,
+              color: isDark
+                  ? AppColors.textSecondary
+                  : UiConstants.lightTextSecondary,
               letterSpacing: 1.5,
             ),
           ),
