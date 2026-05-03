@@ -1,0 +1,53 @@
+# Trim the build context so `docker build` doesn't ship gigabytes of
+# generated artefacts to the daemon. Each entry below keeps a real
+# rebuild faster and prevents stale `.dart_tool/` state from polluting
+# the layer cache.
+
+# Build artefacts — regenerated inside the container.
+build/
+.dart_tool/
+.flutter-plugins-dependencies
+
+# Coverage / test reports — never wanted in an image.
+coverage/
+test-report.json
+
+# Local proxy cache — populated at runtime, not source.
+proxy/cache/
+proxy/certs/
+
+# Editor / OS scratch files.
+.vscode/
+.idea/
+*.iml
+.DS_Store
+.history
+
+# Git internals — nothing inside the image needs them.
+.git/
+.gitignore
+.github/
+
+# Local secrets — these would be a disaster to bake into a layer.
+android/key.properties
+android/app/upload-keystore.jks
+*.jks
+*.keystore
+.env
+.env.local
+
+# Native iOS/Android intermediate output.
+ios/Pods/
+ios/Flutter/.last_build_id
+ios/.symlinks/
+android/.gradle/
+android/app/debug/
+android/app/profile/
+android/app/release/
+android/app/build/
+
+# Other Dockerfiles in this repo — having them in the context causes
+# `dockerfile:` mismatches when one image inherits another.
+Dockerfile
+proxy.Dockerfile
+docker-compose.yml

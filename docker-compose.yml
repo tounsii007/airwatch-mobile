@@ -1,0 +1,100 @@
+# ─── AirWatch mobile container stack ──────────────────────────────────────
+#
+# Brings up the Flutter Web preview of the mobile app, optionally with the
+# Dart sidecar proxy. Both services join the same Docker network as the
+# airwatch-api stack, so they can reach `airwatch-api:18090` by name.
+#
+#   docker compose up --build           # web preview only (talks to API)
+#   docker compose --profile proxy up   # also start the Dart sidecar proxy
+#
+# Prerequisite — the airwatch-api stack must already be running:
+#
+#   cd ../airwatch-api && docker compose up -d
+#
+# That stack creates the `airwatch_airwatch-net` bridge network. We attach
+# to it as `external` below so Docker DNS can resolve `airwatch-api` from
+# this side. Use the same compose project name (`airwatch`) so artefacts
+# group together in `docker compose ls`.
+#
+# What you get:
+#   * http://localhost:18091/         → Flutter Web preview (nginx)
+#   * http://localhost:18091/api/...  → reverse-proxied to airwatch-api
+#   * http://localhost:18092/         → Dart proxy (only with --profile proxy)
+#
+# Override anything from a sibling `.env` file (auto-loaded by compose).
+
+name: airwatch
+
+services:
+  airwatch-mobile-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # Relative URL — nginx in this container reverse-proxies /api/*
+        # to the airwatch-api service. The browser always sees the same
+        # origin (`http://localhost:18091/...`), so no CORS, no cookie
+        # mismatch. To target a hosted backend instead, override here:
+        FLUTTER_API_BASE_URL: ${FLUTTER_API_BASE_URL:-/api}
+    image: airwatch-mobile-web:local
+    container_name: airwatch-mobile-web
+    restart: unless-stopped
+    environment:
+      # The nginx config template substitutes ${API_UPSTREAM} at startup.
+      # Default to the api container's mobile port; override to point at
+      # any other reachable backend (e.g. http://airwatch-proxy:8080 to
+      # route through the Dart sidecar instead).
+      API_UPSTREAM: ${API_UPSTREAM:-http://airwatch-api:18090}
+    ports:
+      - "${MOBILE_WEB_HOST_PORT:-18091}:80"
+    networks: [airwatch-net]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    # No `depends_on` for airwatch-api — it lives in a separate compose
+    # file so we can't gate startup on it. If the API isn't up yet, the
+    # bundle loads fine and just shows network errors until it is.
+
+  # Optional Dart sidecar proxy. Only started when you pass
+  # `--profile proxy`. Useful if airwatch-api isn't deployable in your
+  # environment and you only need the read-only Airlabs/Open-Meteo
+  # passthrough that the mobile app actually consumes.
+  airwatch-proxy:
+    profiles: ["proxy"]
+    build:
+      context: .
+      dockerfile: proxy.Dockerfile
+    image: airwatch-proxy:local
+    container_name: airwatch-proxy
+    restart: unless-stopped
+    environment:
+      # Use the lenient `:-` form so `docker compose config` (which is
+      # called by editor plugins and CI lint hooks even when the `proxy`
+      # profile isn't active) doesn't bail out. The proxy itself prints a
+      # clear error and exits 1 if AIRLABS_KEY is empty at startup.
+      AIRLABS_KEY: ${AIRLABS_KEY:-}
+      # Allow the mobile-web nginx (which proxies /api/) to call us.
+      ALLOWED_ORIGINS: http://airwatch-mobile-web,http://localhost:${MOBILE_WEB_HOST_PORT:-18091}
+      PROXY_HOST: 0.0.0.0
+      PORT: "8080"
+    ports:
+      - "${PROXY_HOST_PORT:-18092}:8080"
+    networks: [airwatch-net]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+# The network is created by `airwatch-api/docker-compose.yml`. We attach
+# to it as external so Docker doesn't try to make a duplicate. The full
+# Docker network name is `<project>_<network>` — both compose files use
+# `name: airwatch`, so the resolved name is `airwatch_airwatch-net`.
+networks:
+  airwatch-net:
+    external: true
+    name: airwatch_airwatch-net

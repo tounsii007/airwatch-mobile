@@ -86,6 +86,87 @@ dart run proxy/bin/proxy_server.dart   # default port 18090
 
 ---
 
+## Running as containers
+
+The **mobile binary** (APK / IPA) does not run in a container — it runs
+on a phone. But the **Flutter Web preview** of the same Dart codebase
+does, and it can talk to the rest of the AirWatch stack over a shared
+Docker network. The repo ships everything needed:
+
+```
+airwatch-mobile/
+├── Dockerfile          # Flutter Web build → nginx (with /api reverse-proxy)
+├── proxy.Dockerfile    # AOT-compiled Dart sidecar proxy (optional)
+├── docker-compose.yml  # joins the airwatch-api network as `external`
+└── .env.example        # host ports + upstream URL + Airlabs key
+```
+
+### Topology
+
+```
+                   ┌────────────────────────────────────────────┐
+                   │  Docker bridge: airwatch_airwatch-net      │
+                   │                                            │
+   browser  ──►   ┌┴────────────────┐    /api/*  ┌─────────────┴┐
+  (host:18091)    │ airwatch-mobile │ ────────►  │ airwatch-api │
+                  │ -web   nginx:80 │ ◄────────  │     :18090   │
+                  └─────────────────┘            └──────┬───────┘
+                                                        │ JDBC
+                                                ┌───────▼───────┐
+                                                │ airwatch-     │
+                                                │ postgres:55432│
+                                                └───────────────┘
+```
+
+Same-origin from the browser's perspective — every request goes to
+`http://localhost:18091/...`, and nginx forwards `/api/*` to the API
+container by Docker DNS name. No CORS, no cookie-domain juggling.
+
+### Bring it up
+
+```bash
+# 1. Start the API stack (creates the shared network)
+cd ../airwatch-api && docker compose up -d
+
+# 2. Start the mobile-web stack
+cd ../airwatch-mobile
+cp .env.example .env       # tweak host ports if 18091 / 18092 are taken
+docker compose up --build
+
+# 3. Open http://localhost:18091/
+```
+
+The `.env` file (gitignored) lets you change host port mappings, point
+at a hosted backend, or bake an absolute API URL into the bundle for
+deployment behind a CDN.
+
+### Optional Dart sidecar proxy
+
+If `airwatch-api` isn't deployable in your environment (e.g. an
+offline demo), the same compose file can spin up the standalone Dart
+proxy from `proxy/bin/proxy_server.dart`:
+
+```bash
+docker compose --profile proxy up
+# then in .env: API_UPSTREAM=http://airwatch-proxy:8080
+```
+
+The proxy only covers the read-side endpoints (Airlabs flights,
+Open-Meteo weather, hexdb metadata, Planespotters photos). It can't
+replace the full Spring Boot API — auth, geofence persistence, and the
+WebSocket fan-out aren't implemented.
+
+### What about the actual mobile binary?
+
+The Android APK / iOS IPA still has to be built on a developer machine
+or a CI runner with the platform SDKs installed. Containers come into
+that picture as **build environments**, not as the runtime. The
+`build-android` job in `.github/workflows/ci.yml` runs inside a
+GitHub-hosted Linux container with the Android SDK pre-installed; the
+end artefact is an APK installed on a phone, not a running container.
+
+---
+
 ## Project layout
 
 ```
