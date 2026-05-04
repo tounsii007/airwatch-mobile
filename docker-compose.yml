@@ -1,166 +1,24 @@
-# ─── AirWatch mobile container stack ──────────────────────────────────────
+# ─── DEPRECATED — services moved into ../airwatch/docker-compose.yml ──────
 #
-# Brings up the Flutter Web preview of the mobile app, optionally with the
-# Dart sidecar proxy. Both services join the same Docker network as the
-# airwatch-api stack, so they can reach `airwatch-api:18090` by name.
+# The two services that lived here (`airwatch-mobile-web` + the optional
+# `airwatch-proxy` Dart sidecar) are now defined in the central
+# `airwatch/docker-compose.yml` so a single `docker compose up -d` in
+# that directory brings the entire stack — api, web, mobile, observability
+# — up at once.
 #
-#   docker compose up --build           # web preview only (talks to API)
-#   docker compose --profile proxy up   # also start the Dart sidecar proxy
+# To start just the mobile-web preview from the central compose:
 #
-# Prerequisite — the airwatch-api stack must already be running:
+#   cd ../airwatch && docker compose up -d airwatch-mobile-web
 #
-#   cd ../airwatch-api && docker compose up -d
+# To start the optional Dart proxy (read-only Airlabs/Open-Meteo passthrough
+# for offline demos):
 #
-# That stack creates the `airwatch_airwatch-net` bridge network. We attach
-# to it as `external` below so Docker DNS can resolve `airwatch-api` from
-# this side. Use the same compose project name (`airwatch`) so artefacts
-# group together in `docker compose ls`.
+#   cd ../airwatch && docker compose --profile proxy up -d
 #
-# What you get:
-#   * http://127.0.0.1:18091/         → Flutter Web preview (nginx)
-#   * http://127.0.0.1:18091/api/...  → reverse-proxied to airwatch-api
-#   * http://127.0.0.1:18092/         → Dart proxy (only with --profile proxy)
-#
-# Both ports default-bind to 127.0.0.1, NOT 0.0.0.0. That keeps the dev
-# preview off the LAN by default — flip the binding by setting
-# PUBLISH_INTERFACE=0.0.0.0 in .env if you genuinely need network access
-# (and have a reverse proxy with TLS in front).
-#
-# Hardening applied to every service (see entries below for details):
-#   * runs as non-root user (USER nginx / USER proxy in the Dockerfiles)
-#   * read_only root FS, with explicit tmpfs for paths that must be writable
-#   * drops every Linux capability except NET_BIND_SERVICE if needed
-#   * security_opt: no-new-privileges blocks setuid/setcap escalation
-#
-# Override anything from a sibling `.env` file (auto-loaded by compose).
+# This file is left as a placeholder so existing scripts that
+# `cd airwatch-mobile && docker compose ps` don't surface a confusing
+# "no such file" error. It defines no services and no volumes, just
+# attaches to the same project name so `docker compose ls` continues to
+# show one project, not two.
 
 name: airwatch
-
-# Default to loopback-only publishing. Override with PUBLISH_INTERFACE=0.0.0.0
-# in .env if you really want this exposed on the LAN.
-x-publish: &publish "${PUBLISH_INTERFACE:-127.0.0.1}"
-
-services:
-  airwatch-mobile-web:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        # Relative URL — nginx in this container reverse-proxies /api/*
-        # to the airwatch-api service. The browser always sees the same
-        # origin (`http://127.0.0.1:18091/...`), so no CORS, no cookie
-        # mismatch. To target a hosted backend instead, override here:
-        FLUTTER_API_BASE_URL: ${FLUTTER_API_BASE_URL:-/api}
-        # Where nginx's /api/* location forwards to. Baked into the
-        # rendered nginx config at build time (see Dockerfile stage 2).
-        # Override via .env to retarget without a code change — `--build`
-        # is required because the substitution happens at image build:
-        #   API_UPSTREAM=http://airwatch-proxy:8080 docker compose up --build
-        API_UPSTREAM: ${API_UPSTREAM:-http://airwatch-api:18090}
-    image: airwatch-mobile-web:local
-    container_name: airwatch-mobile-web
-    restart: unless-stopped
-    ports:
-      # Bind to loopback by default — see the x-publish anchor above.
-      # The container listens on 8080 (unprivileged port; the image runs
-      # as `nginx` user, not root).
-      - "${PUBLISH_INTERFACE:-127.0.0.1}:${MOBILE_WEB_HOST_PORT:-18091}:8080"
-    networks: [airwatch-net]
-
-    # ─── Hardening ───────────────────────────────────────────────────────
-    # Non-root: enforced inside the image (`USER nginx`); kept here as
-    # belt-and-suspenders so a future image swap doesn't silently regress
-    # to root. The nginx alpine image creates the `nginx` user (uid 101).
-    #
-    # Read-only root filesystem with a single writable tmpfs at /tmp —
-    # our custom nginx.conf pins every writable path (pid file, all
-    # *_temp_path directives) to /tmp, so this single tmpfs covers
-    # everything nginx needs to write at runtime. The conf.d file is
-    # already in the image (envsubst at build time, see Dockerfile), so
-    # it doesn't need a writable mount.
-    #
-    # Why long-form `volumes:` with `type: tmpfs` instead of the short-
-    # form `tmpfs:` list? Because compose's short-form takes only the
-    # path (no options) — adding `,size=…,mode=…` after a colon was
-    # silently dropped on this engine version, and the resulting tmpfs
-    # inherited the underlying directory mode (root:0755), which made
-    # /tmp non-writable for the non-root nginx user.
-    user: "nginx"
-    read_only: true
-    volumes:
-      - type: tmpfs
-        target: /tmp
-        tmpfs:
-          size: 16777216    # 16 MB — covers pid + proxy/fastcgi temp files
-          mode: 0o1777      # sticky world-writable, like a real /tmp
-    cap_drop:
-      - ALL
-    # No cap_add — listening on 8080 doesn't need NET_BIND_SERVICE.
-    security_opt:
-      - "no-new-privileges:true"
-
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:8080/"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 15s
-    # No `depends_on` for airwatch-api — it lives in a separate compose
-    # file so we can't gate startup on it. If the API isn't up yet, the
-    # bundle loads fine and just shows network errors until it is.
-
-  # Optional Dart sidecar proxy. Only started when you pass
-  # `--profile proxy`. Useful if airwatch-api isn't deployable in your
-  # environment and you only need the read-only Airlabs/Open-Meteo
-  # passthrough that the mobile app actually consumes.
-  airwatch-proxy:
-    profiles: ["proxy"]
-    build:
-      context: .
-      dockerfile: proxy.Dockerfile
-    image: airwatch-proxy:local
-    container_name: airwatch-proxy
-    restart: unless-stopped
-    environment:
-      # Use the lenient `:-` form so `docker compose config` (which is
-      # called by editor plugins and CI lint hooks even when the `proxy`
-      # profile isn't active) doesn't bail out. The proxy itself prints a
-      # clear error and exits 1 if AIRLABS_KEY is empty at startup.
-      AIRLABS_KEY: ${AIRLABS_KEY:-}
-      # Allow the mobile-web nginx (which proxies /api/) to call us.
-      ALLOWED_ORIGINS: http://airwatch-mobile-web,http://127.0.0.1:${MOBILE_WEB_HOST_PORT:-18091}
-      PROXY_HOST: 0.0.0.0
-      PORT: "8080"
-    ports:
-      - "${PUBLISH_INTERFACE:-127.0.0.1}:${PROXY_HOST_PORT:-18092}:8080"
-    networks: [airwatch-net]
-
-    # ─── Hardening ───────────────────────────────────────────────────────
-    user: "proxy"
-    read_only: true
-    volumes:
-      - type: tmpfs
-        target: /tmp
-        tmpfs:
-          size: 4194304     # 4 MB — proxy_server.dart writes nothing to disk
-          mode: 0o1777
-    cap_drop:
-      - ALL
-    security_opt:
-      - "no-new-privileges:true"
-
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:8080/"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
-
-# The network is created by `airwatch-api/docker-compose.yml`. We attach
-# to it as external so Docker doesn't try to make a duplicate. The full
-# Docker network name is `<project>_<network>` — both compose files use
-# `name: airwatch`, so the resolved name is `airwatch_airwatch-net`.
-networks:
-  airwatch-net:
-    external: true
-    name: airwatch_airwatch-net

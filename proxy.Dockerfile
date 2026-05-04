@@ -61,7 +61,13 @@ COPY --from=proxy-build /server /usr/local/bin/airwatch-proxy
 # Create an unprivileged user — same defence-in-depth motivation as the
 # nginx Dockerfile. system/no-shell so a runtime exploit can't drop into
 # an interactive shell.
-RUN useradd --system --no-create-home --shell /usr/sbin/nologin proxy
+#
+# Idempotent: debian:stable-slim (trixie/13) now ships a `proxy` user by
+# default (uid 13, group `proxy`). Plain `useradd proxy` then exits 9
+# ("user already exists") and breaks the build. `getent passwd proxy`
+# returns 0 if the user exists; we only call useradd when it doesn't.
+RUN getent passwd proxy >/dev/null \
+    || useradd --system --no-create-home --shell /usr/sbin/nologin proxy
 
 # `proxy_server.dart` reads PROXY_HOST/PORT/AIRLABS_KEY from env. Default
 # to 0.0.0.0 so the container is reachable from the Docker network — the
