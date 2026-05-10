@@ -47,7 +47,7 @@ void main() {
         IcsEvent(
           id: 'flight-DLH400',
           start: DateTime.utc(2026, 5, 15, 10, 30),
-          end: DateTime.utc(2026, 5, 15, 12, 0),
+          end: DateTime.utc(2026, 5, 15, 12),
           title: 'DLH400 FRA → JFK',
           location: 'Frankfurt am Main',
           description: 'Lufthansa A340-600',
@@ -81,7 +81,7 @@ void main() {
       final ics = buildIcs([
         IcsEvent(
           id: 'a',
-          start: DateTime.utc(2026, 5, 15, 10, 0),
+          start: DateTime.utc(2026, 5, 15, 10),
           title: 'thing',
         ),
       ]);
@@ -118,15 +118,10 @@ void main() {
         ),
       ]);
       // Two BEGIN:VEVENT and END:VEVENT pairs.
-      expect('BEGIN:VEVENT'.allMatches(ics).length, 2);
-      expect('END:VEVENT'.allMatches(ics).length, 2);
+      expect(RegExp(r'BEGIN:VEVENT').allMatches(ics).length, 2);
+      expect(RegExp(r'END:VEVENT').allMatches(ics).length, 2);
       expect(ics, contains('UID:a@airwatch.app'));
       expect(ics, contains('UID:b@airwatch.app'));
     });
   });
-}
-
-extension on String {
-  Iterable<Match> allMatches(String input) =>
-      RegExp(RegExp.escape(this)).allMatches(input);
 }

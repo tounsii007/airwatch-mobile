@@ -48,6 +48,7 @@ class PanelRouteSection extends ConsumerWidget {
       AppLanguage.fr => 'fr',
       AppLanguage.es => 'es',
       AppLanguage.it => 'it',
+      AppLanguage.ar => 'ar',
       AppLanguage.en => 'en',
     };
 

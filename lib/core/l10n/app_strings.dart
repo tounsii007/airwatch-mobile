@@ -7,6 +7,7 @@ import 'strings_de.dart';
 import 'strings_fr.dart';
 import 'strings_es.dart';
 import 'strings_it.dart';
+import 'strings_ar.dart';
 
 // Re-export AppStrings so callers that already import this file for `S`
 // get the actual interface type without a second import. Code that types
@@ -18,7 +19,7 @@ export 'strings_base.dart' show AppStrings;
 /// Supported app locales. Order is stable — the integer index lands in
 /// SharedPreferences as `app_lang`, so adding a locale must always
 /// happen at the END of the list to keep existing prefs valid.
-enum AppLanguage { en, de, fr, es, it }
+enum AppLanguage { en, de, fr, es, it, ar }
 
 class LanguageNotifier extends Notifier<AppLanguage> {
   @override
@@ -53,6 +54,7 @@ class S {
     AppLanguage.fr: StringsFr(),
     AppLanguage.es: StringsEs(),
     AppLanguage.it: StringsIt(),
+    AppLanguage.ar: StringsAr(),
   };
 
   static AppStrings of(AppLanguage lang) => _instances[lang] ?? StringsEn();
@@ -62,6 +64,7 @@ class S {
     'fr' => StringsFr(),
     'es' => StringsEs(),
     'it' => StringsIt(),
+    'ar' => StringsAr(),
     _ => StringsEn(),
   };
 }
@@ -71,5 +74,6 @@ Locale localeFromLanguage(AppLanguage lang) => switch (lang) {
   AppLanguage.fr => const Locale('fr'),
   AppLanguage.es => const Locale('es'),
   AppLanguage.it => const Locale('it'),
+  AppLanguage.ar => const Locale('ar'),
   AppLanguage.en => const Locale('en'),
 };

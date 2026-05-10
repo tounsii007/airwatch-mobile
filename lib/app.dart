@@ -6,6 +6,7 @@ import 'core/constants/ui_constants.dart';
 import 'core/l10n/app_strings.dart';
 import 'core/theme/app_colors.dart';
 import 'core/theme/theme_provider.dart';
+import 'core/utils/rtl.dart';
 import 'features/airport/presentation/screens/airport_screen.dart';
 import 'features/favorites/data/favorites_repository.dart';
 import 'features/favorites/presentation/screens/favorites_screen.dart';
@@ -53,6 +54,7 @@ class AirwatchMobileApp extends ConsumerWidget {
         Locale('fr'),
         Locale('es'),
         Locale('it'),
+        Locale('ar'),
       ],
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
@@ -62,12 +64,25 @@ class AirwatchMobileApp extends ConsumerWidget {
       themeMode: themeMode == AppThemeMode.system
           ? ThemeMode.system
           : (themeMode == AppThemeMode.dark ? ThemeMode.dark : ThemeMode.light),
-      // Top-level wrappers:
-      //  - `installHomeWidgetPublisher` ticks every 30 s and pushes a
-      //    compact summary of the live feed to the OS home-screen
-      //    widget host (Android `AppWidgetProvider` / iOS WidgetKit).
+      // RTL flip — Arabic (and any future RTL locale via the
+      // `rtlLanguages` set in core/utils/rtl.dart) wraps the entire
+      // widget tree in a `Directionality(rtl)` so Flutter's layout
+      // system mirrors automatically. Components using start/end
+      // EdgeInsets + alignment work without further changes; the few
+      // that still hardcode left/right will visually drift (tracked
+      // as a follow-up like the web frontend's logical-property
+      // migration). Top-level wrappers still apply:
+      //  - `installHomeWidgetPublisher` ticks every 30 s + pushes a
+      //    compact summary of the live feed to the OS widget host.
       //  - `installAlertPushListener` watches alertsProvider and
       //    surfaces deltas as system tray notifications.
+      builder: (context, child) {
+        if (child == null) return const SizedBox.shrink();
+        return Directionality(
+          textDirection: textDirectionFor(appLanguage),
+          child: child,
+        );
+      },
       home: installHomeWidgetPublisher(
         child: installAlertPushListener(child: const AppEntry()),
       ),

@@ -98,6 +98,20 @@ const _languageCountries = <AppLanguage, List<List<String>>>{
       'Netherlands',
     ],
   ],
+  AppLanguage.ar: [
+    ['Tunisia', 'Saudi Arabia', 'UAE', 'Egypt', 'Morocco', 'Algeria'],
+    [
+      'Qatar',
+      'Kuwait',
+      'Oman',
+      'Jordan',
+      'Lebanon',
+      'France',
+      'Turkey',
+      'UK',
+      'Germany',
+    ],
+  ],
 };
 
 const _maxPopularAirports = 18;

@@ -293,6 +293,11 @@ VoiceCommand? parseVoiceCommand(String transcript, AppLanguage language) {
     AppLanguage.fr => _patternsFr,
     AppLanguage.es => _patternsEs,
     AppLanguage.it => _patternsIt,
+    // Arabic patterns aren't yet wired into the speech-to-text
+    // dispatch — fall through to English for now. UI text in ar
+    // works fine; voice commands in Arabic are a focused follow-up
+    // (Arabic STT is reliable on iOS; Android quality varies).
+    AppLanguage.ar => _patternsEn,
     AppLanguage.en => _patternsEn,
   };
 
