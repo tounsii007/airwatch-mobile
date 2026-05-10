@@ -33,14 +33,19 @@ class AtcAudioPanel extends StatefulWidget {
   /// 4-letter ICAO. Empty/wrong-length → no render, no fetch.
   final String? icao;
 
-  const AtcAudioPanel({super.key, required this.icao});
+  /// Optional service override — production callers don't pass this;
+  /// widget tests inject a fake to exercise the loading / fallback /
+  /// chips render paths without hitting LiveATC's real API.
+  final AtcFeedsService? service;
+
+  const AtcAudioPanel({super.key, required this.icao, this.service});
 
   @override
   State<AtcAudioPanel> createState() => _AtcAudioPanelState();
 }
 
 class _AtcAudioPanelState extends State<AtcAudioPanel> {
-  final AtcFeedsService _service = AtcFeedsService();
+  late final AtcFeedsService _service = widget.service ?? AtcFeedsService();
 
   bool _loading = true;
   AtcFeedsResult? _result;

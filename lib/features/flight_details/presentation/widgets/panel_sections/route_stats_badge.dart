@@ -33,12 +33,18 @@ class RouteStatsBadge extends StatefulWidget {
   /// Dark / light mode — controls muted-text contrast.
   final bool isDark;
 
+  /// Optional service override — production callers don't pass this;
+  /// widget tests inject a fake to drive the hide / show paths without
+  /// hitting the real api.
+  final RouteStatsService? service;
+
   const RouteStatsBadge({
     super.key,
     required this.dep,
     required this.arr,
     required this.primary,
     required this.isDark,
+    this.service,
   });
 
   @override
@@ -46,7 +52,8 @@ class RouteStatsBadge extends StatefulWidget {
 }
 
 class _RouteStatsBadgeState extends State<RouteStatsBadge> {
-  final RouteStatsService _service = RouteStatsService();
+  late final RouteStatsService _service =
+      widget.service ?? RouteStatsService();
 
   RouteStats? _stats;
   bool _loaded = false;

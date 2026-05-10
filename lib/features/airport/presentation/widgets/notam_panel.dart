@@ -22,14 +22,20 @@ class NotamPanel extends StatefulWidget {
   /// ICAO code (4 letters). When null/empty the panel doesn't render.
   final String? icao;
 
-  const NotamPanel({super.key, required this.icao});
+  /// Optional service override — production callers don't pass this;
+  /// widget tests inject a fake to drive the loading / unavailable /
+  /// empty / populated states without hitting the real api.
+  final AviationWeatherService? service;
+
+  const NotamPanel({super.key, required this.icao, this.service});
 
   @override
   State<NotamPanel> createState() => _NotamPanelState();
 }
 
 class _NotamPanelState extends State<NotamPanel> {
-  final AviationWeatherService _service = AviationWeatherService();
+  late final AviationWeatherService _service =
+      widget.service ?? AviationWeatherService();
 
   bool _loading = true;
   NotamResult? _result;

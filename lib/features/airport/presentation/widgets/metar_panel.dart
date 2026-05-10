@@ -26,7 +26,12 @@ class MetarPanel extends StatefulWidget {
   /// doesn't render — the airport entry didn't carry one.
   final String? icao;
 
-  const MetarPanel({super.key, required this.icao});
+  /// Optional service override — production callers don't pass this;
+  /// widget tests inject a fake to drive the loading / unavailable /
+  /// decoded states without hitting the real api.
+  final AviationWeatherService? service;
+
+  const MetarPanel({super.key, required this.icao, this.service});
 
   @override
   State<MetarPanel> createState() => _MetarPanelState();
@@ -37,7 +42,8 @@ enum _Tab { metar, taf }
 class _MetarPanelState extends State<MetarPanel> {
   static const _prefsKey = 'airwatch.metar.mode';
 
-  final AviationWeatherService _service = AviationWeatherService();
+  late final AviationWeatherService _service =
+      widget.service ?? AviationWeatherService();
 
   bool _loading = true;
   MetarTafResult? _result;

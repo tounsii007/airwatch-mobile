@@ -28,11 +28,17 @@ class FleetInfoSection extends StatefulWidget {
   final bool isDark;
   final Color primary;
 
+  /// Optional service override — production callers don't pass this;
+  /// widget tests inject a fake to drive the no-render / partial /
+  /// full subsections without hitting the real api.
+  final FleetInfoService? service;
+
   const FleetInfoSection({
     super.key,
     required this.icao24,
     required this.isDark,
     required this.primary,
+    this.service,
   });
 
   @override
@@ -40,7 +46,7 @@ class FleetInfoSection extends StatefulWidget {
 }
 
 class _FleetInfoSectionState extends State<FleetInfoSection> {
-  final FleetInfoService _service = FleetInfoService();
+  late final FleetInfoService _service = widget.service ?? FleetInfoService();
 
   bool _loading = true;
   FleetInfo? _info;
