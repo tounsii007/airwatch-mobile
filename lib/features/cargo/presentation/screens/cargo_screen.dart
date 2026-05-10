@@ -367,6 +367,8 @@ class _CargoCard extends ConsumerWidget {
         : localizeCountry(originCountry, switch (language) {
             AppLanguage.de => 'de',
             AppLanguage.fr => 'fr',
+            AppLanguage.es => 'es',
+            AppLanguage.it => 'it',
             AppLanguage.en => 'en',
           });
     final cityFromAirport = _maybeCityFromCallsign(cs, language);

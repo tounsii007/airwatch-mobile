@@ -198,6 +198,12 @@ VoiceCommand? parseVoiceCommand(String transcript, AppLanguage language) {
   final patterns = switch (language) {
     AppLanguage.de => _patternsDe,
     AppLanguage.fr => _patternsFr,
+    // Spanish and Italian aren't yet wired into the speech-to-text
+    // pattern dictionary — fall through to English. Adding the two
+    // pattern maps is a focused follow-up; for now the user can still
+    // use voice commands in English while the UI text shows in es/it.
+    AppLanguage.es => _patternsEn,
+    AppLanguage.it => _patternsEn,
     AppLanguage.en => _patternsEn,
   };
 

@@ -97,6 +97,8 @@ class _VoiceButtonState extends ConsumerState<VoiceButton> {
     final localeId = switch (lang) {
       AppLanguage.de => 'de_DE',
       AppLanguage.fr => 'fr_FR',
+      AppLanguage.es => 'es_ES',
+      AppLanguage.it => 'it_IT',
       AppLanguage.en => 'en_US',
     };
     await _speech.listen(

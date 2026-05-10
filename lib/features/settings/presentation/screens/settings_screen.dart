@@ -466,6 +466,30 @@ class SettingsScreen extends ConsumerWidget {
                     onTap: () =>
                         ref.read(languageProvider.notifier).set(AppLanguage.fr),
                   ),
+                  _Div(isDark),
+                  _LangTile(
+                    flagCode: 'es',
+                    flagFallbackEmoji: '🇪🇸',
+                    label: 'Español',
+                    subtitle: 'Spanish',
+                    isSelected: currentLang == AppLanguage.es,
+                    color: primary,
+                    isDark: isDark,
+                    onTap: () =>
+                        ref.read(languageProvider.notifier).set(AppLanguage.es),
+                  ),
+                  _Div(isDark),
+                  _LangTile(
+                    flagCode: 'it',
+                    flagFallbackEmoji: '🇮🇹',
+                    label: 'Italiano',
+                    subtitle: 'Italian',
+                    isSelected: currentLang == AppLanguage.it,
+                    color: primary,
+                    isDark: isDark,
+                    onTap: () =>
+                        ref.read(languageProvider.notifier).set(AppLanguage.it),
+                  ),
                 ],
               ),
             ),

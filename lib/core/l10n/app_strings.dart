@@ -5,6 +5,8 @@ import 'strings_base.dart';
 import 'strings_en.dart';
 import 'strings_de.dart';
 import 'strings_fr.dart';
+import 'strings_es.dart';
+import 'strings_it.dart';
 
 // Re-export AppStrings so callers that already import this file for `S`
 // get the actual interface type without a second import. Code that types
@@ -13,7 +15,10 @@ import 'strings_fr.dart';
 // pattern across stats / airlines / cargo screens depends on this export.
 export 'strings_base.dart' show AppStrings;
 
-enum AppLanguage { en, de, fr }
+/// Supported app locales. Order is stable — the integer index lands in
+/// SharedPreferences as `app_lang`, so adding a locale must always
+/// happen at the END of the list to keep existing prefs valid.
+enum AppLanguage { en, de, fr, es, it }
 
 class LanguageNotifier extends Notifier<AppLanguage> {
   @override
@@ -25,7 +30,7 @@ class LanguageNotifier extends Notifier<AppLanguage> {
   Future<void> _load() async {
     final p = await SharedPreferences.getInstance();
     final idx = p.getInt('app_lang') ?? 0;
-    state = AppLanguage.values[idx.clamp(0, 2)];
+    state = AppLanguage.values[idx.clamp(0, AppLanguage.values.length - 1)];
   }
 
   Future<void> set(AppLanguage lang) async {
@@ -46,6 +51,8 @@ class S {
     AppLanguage.en: StringsEn(),
     AppLanguage.de: StringsDe(),
     AppLanguage.fr: StringsFr(),
+    AppLanguage.es: StringsEs(),
+    AppLanguage.it: StringsIt(),
   };
 
   static AppStrings of(AppLanguage lang) => _instances[lang] ?? StringsEn();
@@ -53,6 +60,8 @@ class S {
   static AppStrings ofLocale(Locale locale) => switch (locale.languageCode) {
     'de' => StringsDe(),
     'fr' => StringsFr(),
+    'es' => StringsEs(),
+    'it' => StringsIt(),
     _ => StringsEn(),
   };
 }
@@ -60,5 +69,7 @@ class S {
 Locale localeFromLanguage(AppLanguage lang) => switch (lang) {
   AppLanguage.de => const Locale('de'),
   AppLanguage.fr => const Locale('fr'),
+  AppLanguage.es => const Locale('es'),
+  AppLanguage.it => const Locale('it'),
   AppLanguage.en => const Locale('en'),
 };

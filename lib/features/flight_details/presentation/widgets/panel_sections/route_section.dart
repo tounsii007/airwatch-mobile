@@ -46,6 +46,8 @@ class PanelRouteSection extends ConsumerWidget {
     final locale = switch (ref.watch(languageProvider)) {
       AppLanguage.de => 'de',
       AppLanguage.fr => 'fr',
+      AppLanguage.es => 'es',
+      AppLanguage.it => 'it',
       AppLanguage.en => 'en',
     };
 
