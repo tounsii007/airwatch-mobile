@@ -110,12 +110,23 @@ class _AnimatedAircraftMarkerState extends State<AnimatedAircraftMarker>
     final type = AircraftIconPainter.getType(widget.aircraft.category);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    // OS "reduce motion" — selected marker stays at neutral scale
+    // instead of pulsing. The colour + selection ring still mark
+    // the active aircraft visibly.
+    final reduce = MediaQuery.disableAnimationsOf(context);
+    if (reduce && _pulseController.isAnimating) {
+      _pulseController.stop();
+      _pulseController.reset();
+    } else if (!reduce && widget.isSelected && !_pulseController.isAnimating) {
+      _pulseController.repeat(reverse: true);
+    }
+
     return GestureDetector(
       onTap: widget.onTap,
       child: AnimatedBuilder(
         animation: _pulseController,
         builder: (context, child) {
-          final pulseScale = widget.isSelected
+          final pulseScale = widget.isSelected && !reduce
               ? 1.0 + (_pulseController.value * AppConfig.markerPulseScale)
               : 1.0;
 

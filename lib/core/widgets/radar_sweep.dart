@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
+import '../utils/reduced_motion.dart';
 
 class RadarSweep extends StatefulWidget {
   final double size;
@@ -25,8 +26,7 @@ class _RadarSweepState extends State<RadarSweep>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: widget.duration)
-      ..repeat();
+    _controller = AnimationController(vsync: this, duration: widget.duration);
   }
 
   @override
@@ -37,6 +37,19 @@ class _RadarSweepState extends State<RadarSweep>
 
   @override
   Widget build(BuildContext context) {
+    // OS "reduce motion" toggle — freeze the sweep at a fixed angle.
+    // We deliberately render the static frame at progress=0 so the
+    // sweep line is at 12 o'clock (north) — operators recognise that
+    // as the "idle radar" pose and won't read it as a stuck animation.
+    final reduce = prefersReducedMotion(context);
+    if (reduce) {
+      _controller.stop();
+      return CustomPaint(
+        size: Size(widget.size, widget.size),
+        painter: _RadarSweepPainter(progress: 0, color: widget.color),
+      );
+    }
+    if (!_controller.isAnimating) _controller.repeat();
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
@@ -152,7 +165,7 @@ class _PulsingRingsState extends State<PulsingRings>
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 3),
-    )..repeat();
+    );
   }
 
   @override
@@ -163,6 +176,22 @@ class _PulsingRingsState extends State<PulsingRings>
 
   @override
   Widget build(BuildContext context) {
+    final reduce = prefersReducedMotion(context);
+    if (reduce) {
+      _controller.stop();
+      // Render a single mid-pulse frame so the airport is still
+      // visually marked rather than a bare center dot.
+      return CustomPaint(
+        size: Size(widget.maxRadius * 2, widget.maxRadius * 2),
+        painter: _PulsingRingsPainter(
+          progress: 0.5,
+          color: widget.color,
+          maxRadius: widget.maxRadius,
+          ringCount: widget.ringCount,
+        ),
+      );
+    }
+    if (!_controller.isAnimating) _controller.repeat();
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {

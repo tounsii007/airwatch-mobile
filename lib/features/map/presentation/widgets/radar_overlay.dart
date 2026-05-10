@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/utils/reduced_motion.dart';
 
 /// Animated radar overlay with concentric glowing rings and a sweep line.
 /// Draws on top of the map to create the futuristic radar effect from the mockups.
@@ -45,6 +46,22 @@ class _RadarOverlayState extends State<RadarOverlay>
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
     if (!isDark) return const SizedBox.shrink(); // Only in dark mode
+
+    // Honour OS "reduce motion" — render the static frame at progress=0
+    // so the rings + crosshairs are visible but the sweep doesn't move.
+    final reduce = prefersReducedMotion(context);
+    if (reduce) {
+      _controller.stop();
+      return IgnorePointer(
+        child: CustomPaint(
+          size: Size.infinite,
+          painter: _RadarOverlayPainter(
+            progress: 0,
+            color: AppColors.primary,
+          ),
+        ),
+      );
+    }
 
     return IgnorePointer(
       child: AnimatedBuilder(
