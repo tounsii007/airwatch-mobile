@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls C:/projects/)",
+      "Bash(ls \"C:/Users/Ridha Abderrahmen/.claude/projects/C--projects-airwatch-mobile/memory/\" 2>/dev/null || echo \"No memory yet\")"
+    ]
+  }
+}

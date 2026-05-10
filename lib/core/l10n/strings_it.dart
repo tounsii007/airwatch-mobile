@@ -363,4 +363,31 @@ class StringsIt extends AppStrings {
   String get atcAttribution => 'Audio per gentile concessione di LiveATC.net';
   @override
   String get atcOpenInBrowser => 'Apri nel browser';
+
+  // Airport detail tab labels
+  @override
+  String get infoTab => 'INFO';
+  @override
+  String get sortLabel => 'ORD.';
+  @override
+  String get sortByTime => 'ORA';
+  @override
+  String get sortByDelay => 'RITARDO';
+
+  @override
+  String get sectionUnavailable => 'SEZIONE NON DISPONIBILE';
+
+  // Relative-time
+  @override
+  String get relTimeNow => 'proprio ora';
+  @override
+  String get relTimeMinutes => '{0} min fa';
+  @override
+  String get relTimeHours => '{0} h fa';
+  @override
+  String get relTimeDays => '{0} g fa';
+  @override
+  String get relTimeMonths => '{0} mesi fa';
+  @override
+  String get relTimeYears => '{0} anni fa';
 }

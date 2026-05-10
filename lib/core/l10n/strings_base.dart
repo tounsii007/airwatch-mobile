@@ -254,4 +254,29 @@ abstract class AppStrings {
   /// Attribution line — required by LiveATC.net's terms.
   String get atcAttribution => 'Audio courtesy of LiveATC.net';
   String get atcOpenInBrowser => 'Open in browser';
+
+  // ── Airport detail tab labels + sort pills (i18n leak audit) ──────────
+  /// "INFO" tab on the airport detail screen alongside DEP / ARR.
+  String get infoTab => 'INFO';
+  /// "SORT" prefix on the schedules sort pill row.
+  String get sortLabel => 'SORT';
+  /// "TIME" sort pill — sort by scheduled time.
+  String get sortByTime => 'TIME';
+  /// "DELAY" sort pill — sort by delay magnitude.
+  String get sortByDelay => 'DELAY';
+
+  // ── ErrorBoundary fallback (i18n leak audit) ──────────────────────────
+  /// Shown when a screen segment crashes — see core/widgets/error_boundary.
+  String get sectionUnavailable => 'SECTION UNAVAILABLE';
+
+  // ── Relative-time formatter (used by FleetInfoCard sightings rows) ────
+  /// "just now" — no quantity.
+  String get relTimeNow => 'just now';
+  /// "{0}m ago" — quantity + unit suffix is the parser; keep this string
+  /// in template form so locales can reorder.
+  String get relTimeMinutes => '{0}m ago';
+  String get relTimeHours => '{0}h ago';
+  String get relTimeDays => '{0}d ago';
+  String get relTimeMonths => '{0}mo ago';
+  String get relTimeYears => '{0}y ago';
 }

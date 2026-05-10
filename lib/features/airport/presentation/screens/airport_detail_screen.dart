@@ -210,7 +210,7 @@ class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
               tabs: [
                 Tab(text: '${context.s.departures} (${_departures.length})'),
                 Tab(text: '${context.s.arrivals} (${_arrivals.length})'),
-                const Tab(text: 'INFO'),
+                Tab(text: context.s.infoTab),
               ],
             ),
             // Sort toggle — mirrors the web frontend's "By time / By
@@ -220,9 +220,9 @@ class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               child: Row(
                 children: [
-                  const Text(
-                    'SORT',
-                    style: TextStyle(
+                  Text(
+                    context.s.sortLabel,
+                    style: const TextStyle(
                       fontFamily: UiConstants.headingFont,
                       fontSize: 9,
                       fontWeight: FontWeight.w800,
@@ -232,14 +232,14 @@ class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
                   ),
                   const SizedBox(width: 8),
                   _SortChip(
-                    label: 'TIME',
+                    label: context.s.sortByTime,
                     active: _sortMode == _ScheduleSort.time,
                     primary: primary,
                     onTap: () => setState(() => _sortMode = _ScheduleSort.time),
                   ),
                   const SizedBox(width: 6),
                   _SortChip(
-                    label: 'DELAY',
+                    label: context.s.sortByDelay,
                     active: _sortMode == _ScheduleSort.delay,
                     primary: primary,
                     onTap: () =>

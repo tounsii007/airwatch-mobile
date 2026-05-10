@@ -172,9 +172,11 @@ class _FleetInfoSectionState extends State<FleetInfoSection> {
     if (s.count > 0) {
       parts.add(strings.fleetSightings.replaceFirst('{0}', fmt.format(s.count)));
     }
-    final firstSeen = _formatRelative(s.firstSeenAt, strings.fleetFirstSeen);
+    final firstSeen =
+        _formatRelative(s.firstSeenAt, strings.fleetFirstSeen, strings);
     if (firstSeen != null) parts.add(firstSeen);
-    final lastSeen = _formatRelative(s.lastSeenAt, strings.fleetLastSeen);
+    final lastSeen =
+        _formatRelative(s.lastSeenAt, strings.fleetLastSeen, strings);
     if (lastSeen != null) parts.add(lastSeen);
     if (parts.isEmpty) return const SizedBox.shrink();
     return Text(
@@ -187,24 +189,29 @@ class _FleetInfoSectionState extends State<FleetInfoSection> {
     );
   }
 
-  /// Cheap "X days ago" / "today" / "yesterday" formatter — picks a
-  /// granularity based on age. Returns null when the timestamp is
-  /// missing or malformed.
-  String? _formatRelative(DateTime? ts, String template) {
+  /// Cheap relative-time formatter — picks a granularity based on age,
+  /// returns a localized "X minutes ago" / "X days ago" / "just now"
+  /// string and substitutes it into the caller's template (e.g.
+  /// "first seen {0}"). Returns null when the timestamp is missing.
+  String? _formatRelative(DateTime? ts, String template, AppStrings strings) {
     if (ts == null) return null;
     final now = DateTime.now();
     final diff = now.difference(ts);
     String label;
     if (diff.inMinutes.abs() < 60) {
-      label = diff.inMinutes <= 1 ? 'just now' : '${diff.inMinutes}m ago';
+      label = diff.inMinutes <= 1
+          ? strings.relTimeNow
+          : strings.relTimeMinutes.replaceFirst('{0}', '${diff.inMinutes}');
     } else if (diff.inHours.abs() < 24) {
-      label = '${diff.inHours}h ago';
+      label = strings.relTimeHours.replaceFirst('{0}', '${diff.inHours}');
     } else if (diff.inDays.abs() < 30) {
-      label = '${diff.inDays}d ago';
+      label = strings.relTimeDays.replaceFirst('{0}', '${diff.inDays}');
     } else if (diff.inDays.abs() < 365) {
-      label = '${(diff.inDays / 30).round()}mo ago';
+      label = strings.relTimeMonths
+          .replaceFirst('{0}', '${(diff.inDays / 30).round()}');
     } else {
-      label = '${(diff.inDays / 365).round()}y ago';
+      label = strings.relTimeYears
+          .replaceFirst('{0}', '${(diff.inDays / 365).round()}');
     }
     return template.replaceFirst('{0}', label);
   }

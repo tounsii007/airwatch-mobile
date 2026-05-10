@@ -167,13 +167,17 @@ class _DefaultErrorView extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Row(
+                Row(
                   children: [
-                    Icon(Icons.error_outline, size: 18, color: AppColors.error),
-                    SizedBox(width: 8),
+                    const Icon(
+                      Icons.error_outline,
+                      size: 18,
+                      color: AppColors.error,
+                    ),
+                    const SizedBox(width: 8),
                     Text(
-                      'SECTION UNAVAILABLE',
-                      style: TextStyle(
+                      s.sectionUnavailable,
+                      style: const TextStyle(
                         fontFamily: UiConstants.headingFont,
                         fontSize: 11,
                         fontWeight: FontWeight.w800,
