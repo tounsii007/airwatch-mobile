@@ -15,6 +15,8 @@ import 'package:airwatch_mobile/features/airport/data/models/airport_detail_mode
 import 'package:airwatch_mobile/features/airport/data/recent_airports_repository.dart';
 import 'package:airwatch_mobile/features/airport/presentation/widgets/airport_schedule_tile.dart';
 import 'package:airwatch_mobile/features/airport/data/services/airport_details_service.dart';
+import 'package:airwatch_mobile/features/airport/presentation/widgets/metar_panel.dart';
+import 'package:airwatch_mobile/features/airport/presentation/widgets/notam_panel.dart';
 
 /// Sort modes for the schedule tabs. Mirrors the web's `SortBy` union.
 enum _ScheduleSort { time, delay }
@@ -51,7 +53,12 @@ class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    // Three tabs: DEP / ARR / INFO. The INFO tab carries the MetarPanel
+    // + NotamPanel — mirrors the airwatch-web airport detail page where
+    // those panels live above the schedule grid. On mobile we pack them
+    // into a tab so the schedules don't get pushed off the bottom of
+    // the viewport on smaller phones.
+    _tabController = TabController(length: 3, vsync: this);
     _loadAll();
     // Update clock every second for real-time display
     _clockTimer = Timer.periodic(const Duration(seconds: 1), (_) {
@@ -202,6 +209,7 @@ class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
               tabs: [
                 Tab(text: '${context.s.departures} (${_departures.length})'),
                 Tab(text: '${context.s.arrivals} (${_arrivals.length})'),
+                const Tab(text: 'INFO'),
               ],
             ),
             // Sort toggle — mirrors the web frontend's "By time / By
@@ -245,6 +253,7 @@ class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
                 children: [
                   _buildScheduleList(_departures, true, isDark, primary),
                   _buildScheduleList(_arrivals, false, isDark, primary),
+                  _buildInfoTab(),
                 ],
               ),
             ),
@@ -608,6 +617,25 @@ class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
           ),
         );
       },
+    );
+  }
+
+  /// INFO tab: METAR/TAF + NOTAM panels. Resolves ICAO from the upstream
+  /// airport payload first; falls back to the bundled `airportFullDatabase`
+  /// (IATA → ICAO) so the panels still load when the upstream entry
+  /// didn't carry an ICAO field.
+  Widget _buildInfoTab() {
+    final upstreamIcao = _airportInfo?.icao ?? '';
+    final fallbackIcao = lookupAirportByIata(widget.iataCode)?.icao ?? '';
+    final icao = upstreamIcao.isNotEmpty ? upstreamIcao : fallbackIcao;
+
+    return ListView(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      children: [
+        MetarPanel(icao: icao),
+        NotamPanel(icao: icao),
+        const SizedBox(height: 24),
+      ],
     );
   }
 

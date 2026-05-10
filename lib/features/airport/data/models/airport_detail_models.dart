@@ -6,11 +6,18 @@ class AirportInfo {
   final double? lat;
   final double? lng;
 
+  /// 4-letter ICAO code. Required for the METAR / TAF / NOTAM panels —
+  /// the aviation-weather upstreams key on ICAO, not IATA. May be empty
+  /// if the upstream payload didn't carry one (rare); the panels then
+  /// hide rather than render an unfetchable request.
+  final String icao;
+
   const AirportInfo({
     required this.name,
     required this.timezone,
     this.lat,
     this.lng,
+    this.icao = '',
   });
 
   factory AirportInfo.fromMap(Map<dynamic, dynamic> map) {
@@ -19,6 +26,7 @@ class AirportInfo {
       timezone: map['timezone']?.toString() ?? '',
       lat: (map['lat'] as num?)?.toDouble(),
       lng: (map['lng'] as num?)?.toDouble(),
+      icao: map['icao_code']?.toString() ?? map['icao']?.toString() ?? '',
     );
   }
 }
