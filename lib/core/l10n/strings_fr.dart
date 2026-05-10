@@ -301,4 +301,40 @@ class StringsFr extends AppStrings {
   String get errorPrefix => 'Erreur';
   @override
   String get retryButton => 'Réessayer';
+
+  // METAR / TAF / NOTAM (parité avec airwatch-web).
+  @override
+  String get metarTafTitle => 'METAR / TAF';
+  @override
+  String get metarTab => 'METAR';
+  @override
+  String get tafTab => 'TAF';
+  @override
+  String get metarUnavailable => 'METAR / TAF indisponible';
+  @override
+  String get metarLabelWind => 'VENT';
+  @override
+  String get metarLabelVisibility => 'VIS';
+  @override
+  String get metarLabelTemp => 'TEMP';
+  @override
+  String get metarLabelAltimeter => 'QNH';
+  @override
+  String get metarLabelClouds => 'NUAGES';
+  @override
+  String get metarLabelWeather => 'TEMPS';
+  @override
+  String get metarShowRaw => 'Voir le brut';
+  @override
+  String get metarHideRaw => 'Masquer le brut';
+  @override
+  String get notamsTitle => 'NOTAMs';
+  @override
+  String get notamsUnavailable => 'NOTAMs indisponibles';
+  @override
+  String get notamsNone => 'Aucun NOTAM signalé';
+  @override
+  String get notamsMore => '+{0} non affichés';
+  @override
+  String get loadingShort => 'Chargement';
 }

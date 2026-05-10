@@ -204,4 +204,28 @@ abstract class AppStrings {
   // AR
   String get arMode;
   String get pointSkyUp;
+
+  // ── Aviation weather + NOTAMs (mirrors airwatch-web's MetarPanel +
+  // NotamPanel commits d29081e + 8fef4f3). The METAR/TAF panel sits
+  // on the airport detail screen between the weather strip and the
+  // schedule tabs; the NOTAM panel hugs the bottom of the same view.
+  // Three states across both: loading / unavailable / empty — none
+  // can be silent, the operator must always know the panel loaded.
+  String get metarTafTitle => 'METAR / TAF';
+  String get metarTab => 'METAR';
+  String get tafTab => 'TAF';
+  String get metarUnavailable => 'METAR / TAF unavailable';
+  String get metarLabelWind => 'WIND';
+  String get metarLabelVisibility => 'VIS';
+  String get metarLabelTemp => 'TEMP';
+  String get metarLabelAltimeter => 'QNH';
+  String get metarLabelClouds => 'CLOUDS';
+  String get metarLabelWeather => 'WX';
+  String get metarShowRaw => 'Show raw';
+  String get metarHideRaw => 'Hide raw';
+  String get notamsTitle => 'NOTAMs';
+  String get notamsUnavailable => 'NOTAMs unavailable';
+  String get notamsNone => 'No NOTAMs reported';
+  String get notamsMore => '+{0} more not shown';
+  String get loadingShort => 'Loading';
 }
