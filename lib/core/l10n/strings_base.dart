@@ -228,4 +228,20 @@ abstract class AppStrings {
   String get notamsNone => 'No NOTAMs reported';
   String get notamsMore => '+{0} more not shown';
   String get loadingShort => 'Loading';
+
+  // ── FleetInfoCard (mirrors web f8fff87) ───────────────────────────────
+  String get fleetInfoTitle => 'FLEET INFO';
+  /// "{0} years old (built {1})"
+  String get fleetAge => '{0} y old (built {1})';
+  /// "{0} sightings" (number is locale-formatted by the caller).
+  String get fleetSightings => '{0} sightings';
+  /// "first seen {0}" with {0} a relative time like "3mo ago".
+  String get fleetFirstSeen => 'first seen {0}';
+  String get fleetLastSeen => 'last seen {0}';
+
+  // ── RouteStatsBadge (mirrors web 22e4cc0) ─────────────────────────────
+  /// "{0} today", "{0} this week", "{0} in 30 d".
+  String get routeTodayFlights => '{0} today';
+  String get routeWeekFlights => '{0} this week';
+  String get routeMonthFlights => '{0} in 30 d';
 }

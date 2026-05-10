@@ -337,4 +337,24 @@ class StringsFr extends AppStrings {
   String get notamsMore => '+{0} non affichés';
   @override
   String get loadingShort => 'Chargement';
+
+  // FleetInfoCard
+  @override
+  String get fleetInfoTitle => 'FLOTTE';
+  @override
+  String get fleetAge => '{0} ans (construit {1})';
+  @override
+  String get fleetSightings => '{0} observations';
+  @override
+  String get fleetFirstSeen => 'première vue {0}';
+  @override
+  String get fleetLastSeen => 'dernière vue {0}';
+
+  // RouteStatsBadge
+  @override
+  String get routeTodayFlights => '{0} aujourd\'hui';
+  @override
+  String get routeWeekFlights => '{0} cette semaine';
+  @override
+  String get routeMonthFlights => '{0} en 30 j';
 }

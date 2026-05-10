@@ -22,6 +22,7 @@ import 'panel_sections/action_buttons_section.dart';
 import 'panel_sections/aircraft_section.dart';
 import 'panel_sections/co2_footer_section.dart';
 import 'panel_sections/data_grid_section.dart';
+import 'panel_sections/fleet_info_section.dart';
 import 'panel_sections/gate_section.dart';
 import 'panel_sections/prediction_card_section.dart';
 import 'panel_sections/route_section.dart';
@@ -276,6 +277,16 @@ class _PanelContent extends ConsumerWidget {
               route: route,
               metadata: metadata,
               isLoading: isLoading,
+              isDark: isDark,
+              primary: primary,
+            ),
+
+            // ---- FLEET INFO (registry + sighting history) ----
+            //
+            // Mirrors airwatch-web's FleetInfoCard (commit f8fff87).
+            // Self-hides on a total miss — no "Unknown" placeholders.
+            FleetInfoSection(
+              icao24: aircraft.icao24,
               isDark: isDark,
               primary: primary,
             ),

@@ -337,4 +337,24 @@ class StringsDe extends AppStrings {
   String get notamsMore => '+{0} weitere nicht angezeigt';
   @override
   String get loadingShort => 'Lädt';
+
+  // FleetInfoCard
+  @override
+  String get fleetInfoTitle => 'FLOTTENINFO';
+  @override
+  String get fleetAge => '{0} J alt (gebaut {1})';
+  @override
+  String get fleetSightings => '{0} Sichtungen';
+  @override
+  String get fleetFirstSeen => 'erstmals gesehen {0}';
+  @override
+  String get fleetLastSeen => 'zuletzt gesehen {0}';
+
+  // RouteStatsBadge
+  @override
+  String get routeTodayFlights => '{0} heute';
+  @override
+  String get routeWeekFlights => '{0} diese Woche';
+  @override
+  String get routeMonthFlights => '{0} in 30 T';
 }
