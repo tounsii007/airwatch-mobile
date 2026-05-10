@@ -67,6 +67,38 @@ class ApiConstants {
   static String taf(String icao) => '$_base/api/proxy/taf/$icao';
   static String notam(String icao) => '$_base/api/proxy/notam/$icao';
 
+  // ── Live ATC audio catalog (api commit 0241937) ──────────────────────────
+  //
+  // <p>Curated map of LiveATC.net feeds per ICAO. Returns
+  // `{icao, count, feeds:[{label, streamUrl, externalUrl, ...}], attribution}`.
+  // Empty feeds array means we don't catalogue this airport — UI falls
+  // back to a deeplink to LiveATC's web search.
+  static String atcFeeds(String icao) => '$_base/api/proxy/atc/$icao';
+
+  // ── Combined fleet info — registry + sighting history (api 015853c) ──────
+  //
+  // <p>Single round-trip merge of hexdb registry data + AirWatch's own
+  // first/last-seen sighting history. Returns
+  // `{icao24, registry?: {...hexdb...}, sighting?: {firstSeenAt, lastSeenAt, sightingCount}}`.
+  // Either subsection may be missing — the FleetInfoCard hides on a
+  // total miss.
+  static String aircraftFleet(String hex) => '$_base/api/proxy/aircraft/$hex';
+
+  // ── Route frequency counters (api commit 3007502) ────────────────────────
+  //
+  // <p>Per-route bucket counters for the RouteStatsBadge. Response shape:
+  // `{depIata, arrIata, observed, todayCount, weekCount, monthCount, ...}`.
+  // observed=false means we've never seen the pair — the badge hides
+  // itself entirely.
+  static String routeStats(String dep, String arr) =>
+      '$_base/api/routes/$dep/$arr';
+
+  /// Top routes by sighting count over the last [days] days. Used by a
+  /// future "popular routes" home-page panel. Response is a list of
+  /// `{depIata, arrIata, count}` rows.
+  static String popularRoutes({int days = 7, int limit = 20}) =>
+      '$_base/api/routes/popular?days=$days&limit=$limit';
+
   // ── Aggregated stats / replay ────────────────────────────────────────────
   static String get flightStats => '$_base/api/stats';
   static String get replayAvail => '$_base/api/replay/available';
