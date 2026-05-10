@@ -390,4 +390,12 @@ class StringsEs extends AppStrings {
   String get relTimeMonths => 'hace {0} m';
   @override
   String get relTimeYears => 'hace {0} a';
+
+  // ICS export
+  @override
+  String get exportIcs => 'Exportar .ics';
+  @override
+  String get exportIcsCalName => 'AirWatch — Guardados';
+  @override
+  String get exportNoItems => 'Nada que exportar';
 }

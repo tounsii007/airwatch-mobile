@@ -279,4 +279,9 @@ abstract class AppStrings {
   String get relTimeDays => '{0}d ago';
   String get relTimeMonths => '{0}mo ago';
   String get relTimeYears => '{0}y ago';
+
+  // ── ICS export — Saved screen → calendar ──────────────────────────────
+  String get exportIcs => 'Export .ics';
+  String get exportIcsCalName => 'AirWatch — Saved items';
+  String get exportNoItems => 'Nothing to export';
 }

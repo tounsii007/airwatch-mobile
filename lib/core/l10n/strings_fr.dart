@@ -396,4 +396,12 @@ class StringsFr extends AppStrings {
   String get relTimeMonths => 'il y a {0} mois';
   @override
   String get relTimeYears => 'il y a {0} ans';
+
+  // ICS export
+  @override
+  String get exportIcs => 'Exporter .ics';
+  @override
+  String get exportIcsCalName => 'AirWatch — Enregistrés';
+  @override
+  String get exportNoItems => 'Rien à exporter';
 }

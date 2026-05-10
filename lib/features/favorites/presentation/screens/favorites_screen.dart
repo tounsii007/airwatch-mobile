@@ -1,8 +1,13 @@
+import 'dart:convert' show utf8;
+import 'dart:typed_data' show Uint8List;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:airwatch_mobile/core/constants/ui_constants.dart';
 import 'package:airwatch_mobile/core/l10n/ui_text.dart';
 import 'package:airwatch_mobile/core/theme/app_colors.dart';
+import 'package:airwatch_mobile/core/utils/ics_export.dart';
 import 'package:airwatch_mobile/core/widgets/glass_panel.dart';
 import 'package:airwatch_mobile/core/widgets/neon_text.dart';
 import 'package:airwatch_mobile/features/favorites/data/favorites_repository.dart';
@@ -67,11 +72,27 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
             : ListView(
                 padding: const EdgeInsets.all(16),
                 children: [
-                  NeonText(
-                    text: context.tr('favorites'),
-                    fontSize: UiConstants.searchHeaderFontSize,
-                    color: primary,
-                    glowRadius: isDark ? 10 : 0,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: NeonText(
+                          text: context.tr('favorites'),
+                          fontSize: UiConstants.searchHeaderFontSize,
+                          color: primary,
+                          glowRadius: isDark ? 10 : 0,
+                        ),
+                      ),
+                      // Export-to-calendar action — bundles every saved
+                      // flight / airline / airport into a single .ics
+                      // file and routes it through the system share
+                      // sheet (Files / Mail / Google Calendar handle
+                      // import). Mirrors airwatch-web's commit cd26298.
+                      _ExportIcsButton(
+                        items: liveFavorites,
+                        primary: primary,
+                        isDark: isDark,
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 16),
 
@@ -415,3 +436,107 @@ class _FavoriteTile extends ConsumerWidget {
     );
   }
 }
+
+/// Compact "Export .ics" button rendered next to the Favorites header.
+/// Builds a VCALENDAR file from every live favourite and routes it
+/// through the system share-sheet via XFile + share_plus. The
+/// receiving app (Files / Mail / Google Calendar / Apple Calendar)
+/// handles import — we don't need to plug into a per-platform
+/// calendar API on either end.
+class _ExportIcsButton extends StatelessWidget {
+  final List<FavoriteItem> items;
+  final Color primary;
+  final bool isDark;
+
+  const _ExportIcsButton({
+    required this.items,
+    required this.primary,
+    required this.isDark,
+  });
+
+  Future<void> _share(BuildContext context) async {
+    final s = context.s;
+    if (items.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(s.exportNoItems),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+
+    final now = DateTime.now().toUtc();
+    final events = items.map((item) {
+      // We don't carry per-item arrival times — the calendar entry
+      // anchors at "now" so the import succeeds, and the SUMMARY +
+      // DESCRIPTION carry the human-readable detail.
+      final kindLabel = switch (item.type) {
+        FavoriteType.flight => 'Flight',
+        FavoriteType.airline => 'Airline',
+        FavoriteType.airport => 'Airport',
+      };
+      return IcsEvent(
+        id: '${item.type.name}-${item.id}',
+        start: now,
+        end: now.add(const Duration(hours: 1)),
+        title: '$kindLabel: ${item.label}',
+        description: item.subtitle,
+      );
+    }).toList(growable: false);
+
+    final ics = buildIcs(events, calName: s.exportIcsCalName);
+    // Route through share_plus's XFile.fromData so the file lands as
+    // an attachment with the correct MIME type — this triggers the
+    // calendar / mail apps to offer "Add to calendar" rather than
+    // showing the raw text.
+    await SharePlus.instance.share(
+      ShareParams(
+        files: [
+          XFile.fromData(
+            Uint8List.fromList(utf8.encode(ics)),
+            name: 'airwatch-saved.ics',
+            mimeType: 'text/calendar',
+          ),
+        ],
+        subject: s.exportIcsCalName,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final s = context.s;
+    return GestureDetector(
+      onTap: () => _share(context),
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: primary.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(6),
+          border: Border.all(color: primary.withValues(alpha: 0.45)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.calendar_today_rounded, size: 12, color: primary),
+            const SizedBox(width: 4),
+            Text(
+              s.exportIcs,
+              style: TextStyle(
+                fontFamily: UiConstants.headingFont,
+                fontSize: 9,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.8,
+                color: primary,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+

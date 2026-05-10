@@ -390,4 +390,12 @@ class StringsIt extends AppStrings {
   String get relTimeMonths => '{0} mesi fa';
   @override
   String get relTimeYears => '{0} anni fa';
+
+  // ICS export
+  @override
+  String get exportIcs => 'Esporta .ics';
+  @override
+  String get exportIcsCalName => 'AirWatch — Salvati';
+  @override
+  String get exportNoItems => 'Nulla da esportare';
 }
