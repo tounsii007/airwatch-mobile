@@ -180,6 +180,99 @@ final _patternsFr = <_Pattern>[
   ),
 ];
 
+// ── ES patterns ────────────────────────────────────────────────────────────
+final _patternsEs = <_Pattern>[
+  (
+    RegExp(
+      r'(?:muestra|busca|encuentra)\s+(?:(?:el\s+)?vuelo\s+)?([A-Z]{2,3}\d{1,5})',
+      caseSensitive: false,
+    ),
+    (m) => VShowFlight(m.group(1)!.toUpperCase()),
+  ),
+  (
+    RegExp(r'carga|cargo', caseSensitive: false),
+    (_) => const VFilterCargo(),
+  ),
+  (
+    RegExp(r'modo\s+oscuro|oscuro', caseSensitive: false),
+    (_) => const VSetStyleDark(),
+  ),
+  (
+    RegExp(r'modo\s+claro|claro', caseSensitive: false),
+    (_) => const VSetStyleLight(),
+  ),
+  (
+    RegExp(r'(?:acerca|m[áa]s\s+cerca|amplia)', caseSensitive: false),
+    (_) => const VZoomIn(),
+  ),
+  (
+    RegExp(r'(?:aleja|m[áa]s\s+lejos|reduce)', caseSensitive: false),
+    (_) => const VZoomOut(),
+  ),
+  (
+    RegExp(r'radar|tiempo|clima', caseSensitive: false),
+    (_) => const VToggleRadar(),
+  ),
+  (
+    RegExp(r'turbulencia', caseSensitive: false),
+    (_) => const VToggleTurbulence(),
+  ),
+  // Greedy catch-all last.
+  (
+    RegExp(
+      r'(?:ve\s+a|abre|muestra)\s+(?:aeropuerto\s+)?(\w{3,})',
+      caseSensitive: false,
+    ),
+    (m) => VGoToAirport(m.group(1)!),
+  ),
+];
+
+// ── IT patterns ────────────────────────────────────────────────────────────
+final _patternsIt = <_Pattern>[
+  (
+    RegExp(
+      r'(?:mostra|cerca|trova)\s+(?:(?:il\s+)?volo\s+)?([A-Z]{2,3}\d{1,5})',
+      caseSensitive: false,
+    ),
+    (m) => VShowFlight(m.group(1)!.toUpperCase()),
+  ),
+  (
+    RegExp(r'merci|cargo', caseSensitive: false),
+    (_) => const VFilterCargo(),
+  ),
+  (
+    RegExp(r'modalit[àa]\s+scura|scuro', caseSensitive: false),
+    (_) => const VSetStyleDark(),
+  ),
+  (
+    RegExp(r'modalit[àa]\s+chiara|chiaro', caseSensitive: false),
+    (_) => const VSetStyleLight(),
+  ),
+  (
+    RegExp(r'ingrandisci|pi[uù]\s+vicino', caseSensitive: false),
+    (_) => const VZoomIn(),
+  ),
+  (
+    RegExp(r'rimpicciolisci|pi[uù]\s+lontano', caseSensitive: false),
+    (_) => const VZoomOut(),
+  ),
+  (
+    RegExp(r'radar|tempo|meteo', caseSensitive: false),
+    (_) => const VToggleRadar(),
+  ),
+  (
+    RegExp(r'turbolenza', caseSensitive: false),
+    (_) => const VToggleTurbulence(),
+  ),
+  (
+    RegExp(
+      r'(?:vai\s+a|apri|mostra)\s+(?:aeroporto\s+)?(\w{3,})',
+      caseSensitive: false,
+    ),
+    (m) => VGoToAirport(m.group(1)!),
+  ),
+];
+
 /// Parse a free-form transcript into a typed command. Returns `null`
 /// when no pattern matches.
 ///
@@ -198,12 +291,8 @@ VoiceCommand? parseVoiceCommand(String transcript, AppLanguage language) {
   final patterns = switch (language) {
     AppLanguage.de => _patternsDe,
     AppLanguage.fr => _patternsFr,
-    // Spanish and Italian aren't yet wired into the speech-to-text
-    // pattern dictionary — fall through to English. Adding the two
-    // pattern maps is a focused follow-up; for now the user can still
-    // use voice commands in English while the UI text shows in es/it.
-    AppLanguage.es => _patternsEn,
-    AppLanguage.it => _patternsEn,
+    AppLanguage.es => _patternsEs,
+    AppLanguage.it => _patternsIt,
     AppLanguage.en => _patternsEn,
   };
 
