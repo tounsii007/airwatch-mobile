@@ -189,34 +189,50 @@ class FlightWebSocketService {
     }
   }
 
-  /// Decode a single aircraft from the api's WS payload. Field names
-  /// match the api's [com.airwatch.model.Aircraft] DTO. We map the
-  /// subset the mobile client uses; missing fields fall through to
-  /// the model's defaults.
+  /// Decode a single aircraft from the api's WS payload. The api ships
+  /// the [com.airwatch.model.Aircraft] DTO with `@JsonProperty` names
+  /// matching Airlabs ('hex', 'lat', 'lng', 'alt', 'dir', 'speed',
+  /// 'v_speed'). We map onto [AircraftState] and convert units (km/h
+  /// → m/s; alt in meters stays meters).
   AircraftState _decodeAircraft(Map<String, dynamic> m) {
-    final lat = (m['latitude'] ?? m['lat']) as num?;
-    final lon = (m['longitude'] ?? m['lng']) as num?;
+    double? num2d(Object? v) => v is num ? v.toDouble() : null;
+
+    // Speed comes in km/h from Airlabs; the AircraftState contract
+    // expects m/s like the rest of the polling pipeline.
+    final speedKmh = num2d(m['speed']);
+    final vSpeedKmh = num2d(m['v_speed']);
+    double? kmhToMs(double? kmh) => kmh == null ? null : kmh / 3.6;
+
+    final alt = num2d(m['alt']);
+    final status = m['status']?.toString();
+    final hex = (m['hex'] ?? m['icao24'] ?? '').toString().toLowerCase();
+    final callsign = (m['flight_icao'] ?? m['flight_iata'] ?? m['callsign'])
+        ?.toString();
+
     return AircraftState(
-      icao24: (m['icao24'] ?? m['hex'] ?? '').toString().toLowerCase(),
-      callsign: m['callsign']?.toString(),
-      originCountry: m['originCountry']?.toString(),
-      latitude: lat?.toDouble(),
-      longitude: lon?.toDouble(),
-      baroAltitude: (m['baroAltitude'] ?? m['altitude']) is num
-          ? (m['baroAltitude'] ?? m['altitude'] as num).toDouble()
-          : null,
-      onGround: m['onGround'] == true,
-      velocity: (m['velocity'] ?? m['speed']) is num
-          ? (m['velocity'] ?? m['speed'] as num).toDouble()
-          : null,
-      trueTrack: (m['trueTrack'] ?? m['heading']) is num
-          ? (m['trueTrack'] ?? m['heading'] as num).toDouble()
-          : null,
-      verticalRate: (m['verticalRate']) is num
-          ? (m['verticalRate'] as num).toDouble()
-          : null,
+      icao24: hex,
+      callsign: callsign,
+      originCountry: m['flag']?.toString(),
+      latitude: num2d(m['lat']),
+      longitude: num2d(m['lng']),
+      baroAltitude: alt,
+      // Airlabs reports alt = 0 for ground vehicles + parked aircraft.
+      // The 'landed' status discriminator catches recent arrivals
+      // whose last position was already grounded.
+      onGround: alt == 0 || status == 'landed',
+      velocity: kmhToMs(speedKmh),
+      trueTrack: num2d(m['dir']),
+      verticalRate: kmhToMs(vSpeedKmh),
       squawk: m['squawk']?.toString(),
-      category: m['category'] is num ? (m['category'] as num).toInt() : 0,
+      // Category isn't on the api payload (Airlabs doesn't expose it
+      // either). The marker layer falls back to a neutral icon when
+      // category isn't set. Client-side guess via aircraft_icao would
+      // need the existing _guessCategory in AirlabsFlightsDatasource;
+      // not duplicated here to keep this service narrow. The default
+      // (0) on the AircraftState constructor handles this implicitly,
+      // so we omit the explicit param to satisfy the redundant-arg
+      // lint.
+      flightStatus: status,
     );
   }
 

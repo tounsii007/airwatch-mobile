@@ -5,9 +5,13 @@ import 'package:airwatch_mobile/core/constants/config.dart';
 import 'package:airwatch_mobile/core/constants/conversion_constants.dart';
 import 'package:airwatch_mobile/features/search/data/services/search_service.dart';
 import '../../data/datasources/airlabs_flights_datasource.dart';
+import '../../data/datasources/live_flights_repository.dart';
 import '../../data/models/aircraft_state.dart';
 import '../widgets/map_styles.dart';
 
+/// Legacy direct-poll provider — kept for unit tests + screens that
+/// don't want the WS state machine. New code should depend on
+/// [liveFlightsRepositoryProvider] (re-exported below) instead.
 final airlabsFlightsDatasourceProvider = Provider<AirlabsFlightsDatasource>((
   ref,
 ) {
@@ -101,23 +105,25 @@ final mapBoundsProvider = NotifierProvider<MapBoundsNotifier, MapBounds?>(
   MapBoundsNotifier.new,
 );
 
-// --- Real-time aircraft stream (Airlabs — 5 min interval) ---
+// ── Real-time aircraft stream — WebSocket-first, polling fallback ─
+//
+// Routes through [LiveFlightsRepository], which:
+//   * connects the airwatch-api WS (60s push frequency)
+//   * polls Airlabs as a cold-start primer + WS-down fallback
+//   * de-duplicates so WS frames mask any concurrent poll arrivals
+//
+// The wire-level details (reconnect backoff, switch logic, last-frame
+// snapshot) are encapsulated in the repo; this provider just adapts
+// the broadcast stream into the existing `Map<icao24, AircraftState>`
+// contract every screen consumes.
 final aircraftStreamProvider = StreamProvider<Map<String, AircraftState>>((
   ref,
 ) {
-  final ds = ref.watch(airlabsFlightsDatasourceProvider);
-  ds.startPolling();
-  ref.onDispose(() => ds.stopPolling());
-
-  // Convert List stream to Map<icao24, AircraftState>
-  // Also update session cache for offline search
-  return ds.stateStream.map((list) {
-    final map = <String, AircraftState>{};
-    for (final ac in list) {
-      if (ac.icao24.isNotEmpty) {
-        map[ac.icao24] = ac;
-      }
-    }
+  final repo = ref.watch(liveFlightsRepositoryProvider);
+  // Update the in-session search cache on every emission so offline
+  // search keeps working — same behaviour the old direct-poll path
+  // had via `ds.stateStream.map`.
+  return repo.stream.map((map) {
     SearchService.updateSeenAircraft(map);
     return map;
   });
