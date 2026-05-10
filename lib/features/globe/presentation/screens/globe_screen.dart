@@ -10,6 +10,7 @@ import 'package:airwatch_mobile/core/constants/conversion_constants.dart';
 import 'package:airwatch_mobile/core/constants/ui_constants.dart';
 import 'package:airwatch_mobile/core/l10n/app_strings.dart';
 import 'package:airwatch_mobile/core/theme/app_colors.dart';
+import 'package:airwatch_mobile/core/widgets/error_boundary.dart';
 import 'package:airwatch_mobile/core/widgets/glass_panel.dart';
 import 'package:airwatch_mobile/features/flight_details/presentation/widgets/flight_details_panel.dart';
 import 'package:airwatch_mobile/features/map/data/models/aircraft_state.dart';
@@ -180,11 +181,17 @@ class _GlobeScreenState extends ConsumerState<GlobeScreen> {
           ),
         ],
       ),
-      body: Stack(
-        children: [
-          Center(
-            child: FlutterEarthGlobe(controller: _controller, radius: 140),
-          ),
+      // The 3D globe widget (flutter_earth_globe) and its OpenGL surface
+      // are the most likely thing in this app to throw at runtime —
+      // wrap the Stack in an ErrorBoundary so a graphics-driver failure
+      // surfaces as a "section unavailable" panel instead of a red
+      // screen and the user can navigate away.
+      body: ErrorBoundary(
+        child: Stack(
+          children: [
+            Center(
+              child: FlutterEarthGlobe(controller: _controller, radius: 140),
+            ),
           // Stats overlay — airborne / ground / total / showing
           // Mirrors the web's overlay on the Cesium globe so the
           // user knows how representative the visible dot cloud is.
@@ -203,7 +210,8 @@ class _GlobeScreenState extends ConsumerState<GlobeScreen> {
           // is tapped. The panel is the same widget the map uses, so
           // the user gets identical functionality on both screens.
           const FlightDetailsPanel(),
-        ],
+          ],
+        ),
       ),
     );
   }

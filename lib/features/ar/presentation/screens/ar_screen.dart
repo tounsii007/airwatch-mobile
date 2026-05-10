@@ -10,6 +10,7 @@ import 'package:sensors_plus/sensors_plus.dart';
 import 'package:airwatch_mobile/core/constants/ui_constants.dart';
 import 'package:airwatch_mobile/core/l10n/ui_text.dart';
 import 'package:airwatch_mobile/core/theme/app_colors.dart';
+import 'package:airwatch_mobile/core/widgets/error_boundary.dart';
 import 'package:airwatch_mobile/core/widgets/glass_panel.dart';
 import 'package:airwatch_mobile/core/widgets/neon_text.dart';
 import 'package:airwatch_mobile/features/ar/data/ar_aircraft_detector.dart';
@@ -153,20 +154,25 @@ class _ARScreenState extends ConsumerState<ARScreen> {
 
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          // Camera placeholder — gradient sky. Replaced by the live
-          // CameraPreview when the platform-specific feed is wired in.
-          const DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Color(0xFF1a2a3a), Color(0xFF0a1520)],
+      // AR mixes camera + sensor + math in real time; the closest thing
+      // in this app to "many ways to crash on bad data". Wrap in an
+      // ErrorBoundary so a sensor / camera / detector blowup surfaces
+      // as a recoverable section instead of taking the whole screen.
+      body: ErrorBoundary(
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            // Camera placeholder — gradient sky. Replaced by the live
+            // CameraPreview when the platform-specific feed is wired in.
+            const DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Color(0xFF1a2a3a), Color(0xFF0a1520)],
+                ),
               ),
             ),
-          ),
 
           // Horizon line — translates with pitch + roll.
           HorizonLine(pitchDeg: _pitch, rollDeg: _roll),
@@ -287,7 +293,8 @@ class _ARScreenState extends ConsumerState<ARScreen> {
               ),
             ),
           ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -14,6 +14,7 @@ import 'package:airwatch_mobile/core/constants/api_constants.dart';
 import 'package:airwatch_mobile/core/constants/ui_constants.dart';
 import 'package:airwatch_mobile/core/network/app_http_client.dart';
 import 'package:airwatch_mobile/core/theme/app_colors.dart';
+import 'package:airwatch_mobile/core/widgets/error_boundary.dart';
 import 'package:airwatch_mobile/core/widgets/glass_panel.dart';
 
 /// Camera follow modes the 3-D replay supports.
@@ -329,11 +330,16 @@ class _FlightReplay3DScreenState extends State<FlightReplay3DScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: Stack(
-        children: [
-          Center(
-            child: FlutterEarthGlobe(controller: _controller, radius: 140),
-          ),
+      // 3D globe + history-replay scrubber — same crash surface as the
+      // standalone globe screen plus the timeline math. Boundary scopes
+      // any blowup to "section unavailable" so the user can back out
+      // and pick a different replay.
+      body: ErrorBoundary(
+        child: Stack(
+          children: [
+            Center(
+              child: FlutterEarthGlobe(controller: _controller, radius: 140),
+            ),
           if (_loading)
             const Positioned(
               top: 16,
@@ -380,7 +386,8 @@ class _FlightReplay3DScreenState extends State<FlightReplay3DScreen> {
                 onCameraMode: _setCameraMode,
               ),
             ),
-        ],
+          ],
+        ),
       ),
     );
   }
