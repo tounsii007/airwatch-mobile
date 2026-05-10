@@ -40,7 +40,7 @@ void main() {
   testWidgets('retry button resets the boundary and rebuilds the child',
       (tester) async {
     var crashCount = 0;
-    Widget child = Builder(builder: (ctx) {
+    final child = Builder(builder: (ctx) {
       crashCount++;
       if (crashCount == 1) throw StateError('boom');
       return const Text('OK');
