@@ -12,6 +12,7 @@ import 'package:airwatch_mobile/core/theme/app_colors.dart';
 import 'package:airwatch_mobile/features/map/data/datasources/flight_info_datasource.dart';
 
 import 'panel_widgets.dart';
+import 'route_stats_badge.dart';
 
 /// Route section: DEP ----plane---- ARR with city names and country flags.
 ///
@@ -82,8 +83,11 @@ class PanelRouteSection extends ConsumerWidget {
                 ),
               ],
             )
-          : Row(
+          : Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
+                Row(
+                  children: [
                 // Departure
                 Expanded(
                   child: Column(
@@ -255,6 +259,21 @@ class PanelRouteSection extends ConsumerWidget {
                       ],
                     ],
                   ),
+                ),
+                  ],
+                ),
+                // Popularity badge under the dep→arr arrow — silent
+                // when the route was never observed or every bucket
+                // is 0. Mirrors airwatch-web's commit 22e4cc0.
+                RouteStatsBadge(
+                  dep: hasDep
+                      ? AirportDatabase.displayCode(route!.departureAirport)
+                      : null,
+                  arr: hasArr
+                      ? AirportDatabase.displayCode(route!.arrivalAirport)
+                      : null,
+                  primary: primary,
+                  isDark: isDark,
                 ),
               ],
             ),
