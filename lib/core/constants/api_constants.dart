@@ -54,6 +54,19 @@ class ApiConstants {
   static String weather(double lat, double lon) =>
       '$_base/api/weather/${lat.toStringAsFixed(2)}/${lon.toStringAsFixed(2)}';
 
+  // ── Aviation weather + NOTAMs (backend-proxied, ICAO 4-letter codes) ─────
+  //
+  // <p>The backend (`ExternalProxyController`) wraps aviationweather.gov
+  // with a 5-minute cache, circuit breaker and per-route fallback. METAR
+  // is "right now", TAF is the next 24 h forecast, and NOTAMs are the
+  // notice-to-airmen feed for runway closures, navaid outages, etc.
+  //
+  // <p>Returns 503 when the upstream is down (cleanly — fall back to
+  // "unavailable" state in the UI, not an error toast).
+  static String metar(String icao) => '$_base/api/proxy/metar/$icao';
+  static String taf(String icao) => '$_base/api/proxy/taf/$icao';
+  static String notam(String icao) => '$_base/api/proxy/notam/$icao';
+
   // ── Aggregated stats / replay ────────────────────────────────────────────
   static String get flightStats => '$_base/api/stats';
   static String get replayAvail => '$_base/api/replay/available';
