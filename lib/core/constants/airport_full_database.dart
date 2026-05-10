@@ -16,24 +16,50 @@ class AirportEntry {
   );
 }
 
-/// Lookup by ICAO code
+/// Lookup by ICAO code — O(1).
 AirportEntry? lookupAirport(String icao) =>
     airportFullDatabase[icao.toUpperCase()];
 
-/// Lookup by IATA code
-AirportEntry? lookupAirportByIata(String iata) {
-  final code = iata.toUpperCase();
-  return airportFullDatabase.values.where((a) => a.iata == code).firstOrNull;
+/// Lazy IATA → entry index. Built on first access, then cached. The
+/// raw map is keyed by ICAO; the IATA index lets us avoid a 21 k
+/// linear scan on every flight tile that wants the city / country
+/// for a dep / arr code (called dozens of times per render).
+///
+/// Entries with an empty IATA (heliports, helipads, military strips)
+/// don't go in the index — they only have ICAO codes.
+Map<String, AirportEntry>? _iataIndex;
+
+Map<String, AirportEntry> _ensureIataIndex() {
+  final cached = _iataIndex;
+  if (cached != null) return cached;
+  final fresh = <String, AirportEntry>{};
+  for (final entry in airportFullDatabase.values) {
+    if (entry.iata.isNotEmpty) fresh[entry.iata] = entry;
+  }
+  _iataIndex = fresh;
+  return fresh;
 }
 
-/// Get city name for an IATA code
+/// Lookup by IATA code — O(1) after first access.
+///
+/// <p>Was an O(n) linear scan over 21 k entries on every call. The
+/// schedule list view + cargo tiles render dozens of these per
+/// frame; on a slower device that's measurable jank. The index
+/// builds in ~5 ms on first hit, then every subsequent lookup is
+/// a hash probe.
+AirportEntry? lookupAirportByIata(String iata) {
+  if (iata.isEmpty) return null;
+  return _ensureIataIndex()[iata.toUpperCase()];
+}
+
+/// Get city name for an IATA code.
 String airportCity(String? iata) {
   if (iata == null || iata.isEmpty) return '';
   final apt = lookupAirportByIata(iata);
   return apt?.city ?? '';
 }
 
-/// Get country code for an IATA code
+/// Get country code for an IATA code.
 String airportCountry(String? iata) {
   if (iata == null || iata.isEmpty) return '';
   final apt = lookupAirportByIata(iata);
