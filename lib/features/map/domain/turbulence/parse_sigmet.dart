@@ -90,8 +90,9 @@ List<TurbulenceZone> parseSigmetResponse(dynamic raw) {
 TurbulenceSeverity? _severity(dynamic raw) {
   if (raw == null) return null;
   final s = raw.toString().toLowerCase();
-  if (s.contains('sev') || s.contains('extreme'))
+  if (s.contains('sev') || s.contains('extreme')) {
     return TurbulenceSeverity.severe;
+  }
   if (s.contains('mod')) return TurbulenceSeverity.moderate;
   if (s.contains('light') || s.contains('lgt')) return TurbulenceSeverity.light;
   return TurbulenceSeverity.moderate;

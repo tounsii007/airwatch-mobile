@@ -399,8 +399,9 @@ class _FlightReplayScreenState extends State<FlightReplayScreen>
     if (_waypoints.isEmpty) return const LatLng(0, 0);
     final idx = (_playController.value * (_waypoints.length - 1)).floor();
     final frac = (_playController.value * (_waypoints.length - 1)) - idx;
-    if (idx >= _waypoints.length - 1)
+    if (idx >= _waypoints.length - 1) {
       return LatLng(_waypoints.last.lat, _waypoints.last.lng);
+    }
     final a = _waypoints[idx];
     final b = _waypoints[idx + 1];
     return LatLng(

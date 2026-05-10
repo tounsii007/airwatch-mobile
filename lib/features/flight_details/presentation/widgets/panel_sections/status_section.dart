@@ -119,13 +119,17 @@ class PanelStatusSection extends StatelessWidget {
     // ISO format: "2026-04-07T14:30:00"
     if (timeStr.contains(' ')) {
       final parts = timeStr.split(' ');
-      if (parts.length > 1)
-        return parts.last.length >= 5 ? parts.last.substring(0, 5) : parts.last;
+      if (parts.length > 1) {
+        return parts.last.length >= 5
+            ? parts.last.substring(0, 5)
+            : parts.last;
+      }
     }
     if (timeStr.contains('T')) {
       final parts = timeStr.split('T');
-      if (parts.length > 1)
+      if (parts.length > 1) {
         return parts[1].length >= 5 ? parts[1].substring(0, 5) : parts[1];
+      }
     }
     // Already HH:mm format
     if (timeStr.length == 5 && timeStr.contains(':')) return timeStr;

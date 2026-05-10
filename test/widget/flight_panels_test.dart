@@ -161,9 +161,7 @@ void main() {
             depIata: 'FRA',
             arrIata: 'JFK',
             observed: true,
-            todayCount: 0,
             weekCount: 32,
-            monthCount: 0,
           ),
         ),
       )));

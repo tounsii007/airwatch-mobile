@@ -41,8 +41,9 @@ class PanelAircraftSection extends StatelessWidget {
         ? '$age y ($built)'
         : '$age y';
 
-    if (model == null && metadata == null && !isLoading)
+    if (model == null && metadata == null && !isLoading) {
       return const SizedBox.shrink();
+    }
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),

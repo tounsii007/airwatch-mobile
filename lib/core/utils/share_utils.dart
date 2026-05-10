@@ -22,18 +22,21 @@ class ShareUtils {
 
     sb.writeln('Flight $displayCode');
     if (airline != null) sb.writeln('Airline: $airline');
-    if (depIata != null && arrIata != null)
+    if (depIata != null && arrIata != null) {
       sb.writeln('Route: $depIata -> $arrIata');
+    }
     if (aircraftType != null) sb.writeln('Aircraft: $aircraftType');
     if (status != null) sb.writeln('Status: $status');
-    if (altitude != null)
+    if (altitude != null) {
       sb.writeln(
         'Altitude: ${(altitude * ConversionConstants.metersToFeet).round()} ft',
       );
-    if (speed != null)
+    }
+    if (speed != null) {
       sb.writeln(
         'Speed: ${(speed * ConversionConstants.msToKnots).round()} kts',
       );
+    }
     sb.writeln('\nTracked with AirWatch');
     return sb.toString();
   }

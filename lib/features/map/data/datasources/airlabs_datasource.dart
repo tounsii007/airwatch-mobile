@@ -212,15 +212,17 @@ class AirlabsFlight {
   /// Full aircraft description
   String get aircraftDescription {
     if (model != null) return model!;
-    if (manufacturer != null && aircraftIcao != null)
+    if (manufacturer != null && aircraftIcao != null) {
       return '$manufacturer $aircraftIcao';
+    }
     return aircraftIcao ?? 'Unknown';
   }
 
   /// Gate info display
   String? get depGateDisplay {
-    if (depTerminal != null && depGate != null)
+    if (depTerminal != null && depGate != null) {
       return 'T$depTerminal / Gate $depGate';
+    }
     if (depGate != null) return 'Gate $depGate';
     if (depTerminal != null) return 'Terminal $depTerminal';
     return null;

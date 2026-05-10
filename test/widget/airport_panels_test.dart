@@ -159,7 +159,7 @@ void main() {
       await tester.pumpWidget(_wrap(AtcAudioPanel(
         icao: 'EDDF',
         service: _StubAtc(
-          result: const AtcFeedsResult(icao: 'EDDF', feeds: []),
+          result: const AtcFeedsResult(icao: 'EDDF'),
         ),
       )));
       await tester.pump();

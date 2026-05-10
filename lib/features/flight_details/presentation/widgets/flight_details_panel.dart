@@ -87,11 +87,12 @@ class _FlightDetailsPanelState extends ConsumerState<FlightDetailsPanel> {
       }
     }
 
-    if (mounted)
+    if (mounted) {
       setState(() {
         _isRefreshing = false;
         _refreshError = false;
       });
+    }
   }
 
   void _fetchDetails(AircraftState aircraft) {

@@ -361,8 +361,9 @@ class AircraftIconPainter extends CustomPainter {
     }
     if (altitudeMeters == null) return AppColors.textMuted;
     final feet = altitudeMeters * ConversionConstants.metersToFeet;
-    if (feet < AppConfig.altitudeGroundMax)
+    if (feet < AppConfig.altitudeGroundMax) {
       return const Color(AppConfig.groundColor);
+    }
     if (feet < AppConfig.altitudeLowMax) return AppColors.altitudeLow;
     if (feet < AppConfig.altitudeMedMax) return AppColors.altitudeMedium;
     return AppColors.altitudeHigh;
