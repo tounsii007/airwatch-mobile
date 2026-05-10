@@ -58,8 +58,13 @@ jobs:
       - run: flutter pub get
       - name: dart format --set-exit-if-changed
         run: dart format --set-exit-if-changed lib/ test/ tool/
-      - name: flutter analyze (warnings = error)
-        run: flutter analyze --fatal-warnings
+      - name: flutter analyze (warnings + infos = error)
+        # The codebase is at 0 issues as of commit f18fb4a.
+        # `--fatal-infos` locks in the clean state; any future drift
+        # (a stray `if (x) doThing()` without braces, an unawaited
+        # Future) becomes a hard CI failure rather than slowly
+        # accumulating in a green-but-noisy build log.
+        run: flutter analyze --fatal-warnings --fatal-infos
 
   # ──────────────────────────────────────────────────────────────────────
   # Full test matrix — unit, widget, integration. We run them in one job
@@ -77,6 +82,14 @@ jobs:
           channel: ${{ env.FLUTTER_CHANNEL }}
           cache: true
       - run: flutter pub get
+      - name: Verify airport asset structure
+        # Reads `assets/airports.json` and checks every row has 7
+        # well-typed fields, ICAO is unique + 4-char, lat/lon are in
+        # range, and the dataset isn't accidentally truncated. The
+        # asset is the source of truth for the 21 k airport DB after
+        # commit 4dde088 — a corrupt/hand-edited copy would silently
+        # break airport lookups across the app.
+        run: dart run tool/verify_airport_asset.dart
       - name: flutter test --machine
         run: flutter test --machine --reporter expanded > test-report.json || (cat test-report.json; exit 1)
       - name: Upload test report
