@@ -551,7 +551,7 @@ class SettingsScreen extends ConsumerWidget {
                           final isActive = settings.updateIntervalSec == sec;
                           final label = sec < 60 ? '${sec}s' : '${sec ~/ 60}m';
                           return Padding(
-                            padding: const EdgeInsets.only(left: 4),
+                            padding: const EdgeInsetsDirectional.only(start: 4),
                             child: GestureDetector(
                               onTap: () => ref
                                   .read(settingsProvider.notifier)
@@ -865,7 +865,7 @@ class _Seg extends StatelessWidget {
         ...List.generate(
           opts.length,
           (j) => Padding(
-            padding: EdgeInsets.only(left: j > 0 ? 4 : 0),
+            padding: EdgeInsetsDirectional.only(start: j > 0 ? 4 : 0),
             child: GestureDetector(
               onTap: () => on(j),
               child: Container(
@@ -1067,7 +1067,7 @@ void _showPrivacyDialog(BuildContext context, bool isDark, Color primary) {
         ),
       );
       Widget bullet(String t) => Padding(
-        padding: const EdgeInsets.only(left: 4, top: 4),
+        padding: const EdgeInsetsDirectional.only(start: 4, top: 4),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

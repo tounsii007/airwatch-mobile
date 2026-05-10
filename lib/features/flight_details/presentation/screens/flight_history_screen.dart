@@ -217,7 +217,7 @@ class _FlightHistoryScreenState extends State<FlightHistoryScreen> {
             // Airline logo
             if (logoUrl != null)
               Padding(
-                padding: const EdgeInsets.only(right: 10),
+                padding: const EdgeInsetsDirectional.only(end: 10),
                 child: Image.network(
                   logoUrl,
                   width: 50,

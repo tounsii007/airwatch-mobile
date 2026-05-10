@@ -15,9 +15,11 @@ import 'package:airwatch_mobile/core/l10n/app_strings.dart';
 /// <h3>What we deliberately do NOT do</h3>
 /// We don't manually reverse the order of children in every Row — Flutter
 /// already does that automatically when a [Directionality] ancestor
-/// reports `TextDirection.rtl`. Components that hard-code
-/// [Alignment.centerLeft] / [EdgeInsets.only(left:)] (rather than
-/// `start` / `end` variants) won't flip; tracked as a follow-up.
+/// reports `TextDirection.rtl`. We did sweep the whole codebase for
+/// hardcoded [Alignment.centerLeft] / [EdgeInsets.only(left:)] callsites
+/// and migrated each to the directional variant
+/// ([AlignmentDirectional.centerStart] / [EdgeInsetsDirectional.only])
+/// in commit cb89aa9 — so a fresh-paint Arabic locale lays out cleanly.
 const Set<AppLanguage> rtlLanguages = {AppLanguage.ar};
 
 bool isRtl(AppLanguage lang) => rtlLanguages.contains(lang);

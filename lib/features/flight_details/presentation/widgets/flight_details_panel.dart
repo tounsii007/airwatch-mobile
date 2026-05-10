@@ -369,7 +369,7 @@ class _PanelContent extends ConsumerWidget {
             Container(
               width: 60,
               height: 32,
-              margin: const EdgeInsets.only(right: 10),
+              margin: const EdgeInsetsDirectional.only(end: 10),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(6),
@@ -385,7 +385,7 @@ class _PanelContent extends ConsumerWidget {
             )
           else
             Padding(
-              padding: const EdgeInsets.only(right: 10),
+              padding: const EdgeInsetsDirectional.only(end: 10),
               child: Icon(Icons.flight_rounded, color: primary, size: 22),
             ),
           Expanded(

@@ -210,7 +210,7 @@ class _AirlineDetailScreenState extends State<AirlineDetailScreen> {
             Container(
               width: 60,
               height: 36,
-              margin: const EdgeInsets.only(right: 10),
+              margin: const EdgeInsetsDirectional.only(end: 10),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(8),
@@ -482,7 +482,7 @@ class _FlightTile extends StatelessWidget {
             ),
             if (flight.aircraftIcao != null && flight.aircraftIcao!.isNotEmpty)
               Container(
-                margin: const EdgeInsets.only(right: 8),
+                margin: const EdgeInsetsDirectional.only(end: 8),
                 padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                 decoration: BoxDecoration(
                   color: primary.withValues(alpha: 0.1),

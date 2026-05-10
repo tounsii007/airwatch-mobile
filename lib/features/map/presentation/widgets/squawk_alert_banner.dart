@@ -94,7 +94,7 @@ class _SquawkAlertBannerState extends ConsumerState<SquawkAlertBanner>
                   children: [
                     for (final ac in alerts)
                       Padding(
-                        padding: const EdgeInsets.only(right: 6),
+                        padding: const EdgeInsetsDirectional.only(end: 6),
                         child: _SquawkPill(
                           callsign: ac.callsign?.trim().isNotEmpty == true
                               ? ac.callsign!

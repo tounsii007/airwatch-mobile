@@ -202,7 +202,7 @@ class _DefaultErrorView extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 Align(
-                  alignment: Alignment.centerRight,
+                  alignment: AlignmentDirectional.centerEnd,
                   child: TextButton.icon(
                     onPressed: onRetry,
                     icon: const Icon(Icons.refresh_rounded, size: 16),

@@ -102,7 +102,7 @@ class PanelAircraftSection extends StatelessWidget {
           ),
           if (operator != null)
             Padding(
-              padding: const EdgeInsets.only(left: 24, top: 2),
+              padding: const EdgeInsetsDirectional.only(start: 24, top: 2),
               child: Text(
                 '${context.s.operatedBy} $operator',
                 style: TextStyle(
@@ -117,7 +117,7 @@ class PanelAircraftSection extends StatelessWidget {
           // Detail chips: Manufacturer, Engine, Age, Built
           if (manufacturer != null || engine != null || age != null)
             Padding(
-              padding: const EdgeInsets.only(left: 24, top: 6),
+              padding: const EdgeInsetsDirectional.only(start: 24, top: 6),
               child: Wrap(
                 spacing: 6,
                 runSpacing: 4,

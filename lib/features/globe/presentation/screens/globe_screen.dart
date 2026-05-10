@@ -300,7 +300,7 @@ class _AltitudeLegend extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget swatch(Color c, String label) => Padding(
-      padding: const EdgeInsets.only(right: 8),
+      padding: const EdgeInsetsDirectional.only(end: 8),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

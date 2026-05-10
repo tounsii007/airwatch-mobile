@@ -60,7 +60,7 @@ class AirportScheduleTile extends StatelessWidget {
               ),
             ),
             Container(
-              margin: const EdgeInsets.only(right: 6),
+              margin: const EdgeInsetsDirectional.only(end: 6),
               padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
               constraints: const BoxConstraints(minWidth: 40),
               decoration: BoxDecoration(

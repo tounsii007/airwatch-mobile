@@ -263,10 +263,12 @@ class _NotamRow extends StatelessWidget {
         onTap: canExpand ? onToggle : null,
         behavior: HitTestBehavior.opaque,
         child: Container(
-          padding: const EdgeInsets.only(left: 8),
+          padding: const EdgeInsetsDirectional.only(start: 8),
+          // Vertical accent bar on the leading edge — flips with the
+          // panel for RTL via BorderDirectional.
           decoration: BoxDecoration(
-            border: Border(
-              left: BorderSide(
+            border: BorderDirectional(
+              start: BorderSide(
                 color: AppColors.warning.withValues(alpha: 0.45),
                 width: 2,
               ),

@@ -436,8 +436,11 @@ class _LoadingBar extends StatelessWidget {
             borderRadius: BorderRadius.circular(1),
             color: const Color(0xFF2A3F5A).withValues(alpha: 0.3),
           ),
+          // Progress-bar fill grows from the leading edge — flips
+          // automatically in RTL so the bar still "fills toward
+          // the future" (which is the right side for an Arabic reader).
           child: Align(
-            alignment: Alignment.centerLeft,
+            alignment: AlignmentDirectional.centerStart,
             child: FractionallySizedBox(
               widthFactor: progress,
               child: Container(

@@ -59,7 +59,7 @@ class ChartTheme {
             showTitles: showAxes,
             reservedSize: 32,
             getTitlesWidget: (v, _) => Padding(
-              padding: const EdgeInsets.only(right: 4),
+              padding: const EdgeInsetsDirectional.only(end: 4),
               child: Text(
                 _compact(v),
                 style: TextStyle(fontSize: 9, color: axisColor),

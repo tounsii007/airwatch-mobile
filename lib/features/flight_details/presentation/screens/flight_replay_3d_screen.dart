@@ -485,7 +485,7 @@ class _ControlsPanel extends StatelessWidget {
               const SizedBox(width: 6),
               for (final s in const [1.0, 2.0, 4.0, 8.0])
                 Padding(
-                  padding: const EdgeInsets.only(right: 4),
+                  padding: const EdgeInsetsDirectional.only(end: 4),
                   child: _Chip(
                     label: '${s.toStringAsFixed(0)}x',
                     active: speed == s,

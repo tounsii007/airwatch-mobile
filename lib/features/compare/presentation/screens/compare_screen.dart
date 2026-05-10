@@ -444,20 +444,26 @@ class _Row extends StatelessWidget {
               ),
               const SizedBox(width: 6),
               Expanded(
+                // Two-bar comparison row — flight A's bar grows from
+                // the centre toward the start (left in LTR / right
+                // in RTL); flight B's bar grows toward the end. Using
+                // Directional alignment + Directional border-radius
+                // makes both sides mirror cleanly under Arabic.
                 child: Row(
                   children: [
                     Expanded(
                       child: Align(
-                        alignment: Alignment.centerRight,
+                        alignment: AlignmentDirectional.centerEnd,
                         child: FractionallySizedBox(
                           widthFactor: pctA,
                           child: Container(
                             height: 8,
                             decoration: BoxDecoration(
                               color: colorA.withValues(alpha: 0.55),
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(4),
-                                bottomLeft: Radius.circular(4),
+                              borderRadius:
+                                  const BorderRadiusDirectional.only(
+                                topStart: Radius.circular(4),
+                                bottomStart: Radius.circular(4),
                               ),
                             ),
                           ),
@@ -466,16 +472,17 @@ class _Row extends StatelessWidget {
                     ),
                     Expanded(
                       child: Align(
-                        alignment: Alignment.centerLeft,
+                        alignment: AlignmentDirectional.centerStart,
                         child: FractionallySizedBox(
                           widthFactor: pctB,
                           child: Container(
                             height: 8,
                             decoration: BoxDecoration(
                               color: colorB.withValues(alpha: 0.55),
-                              borderRadius: const BorderRadius.only(
-                                topRight: Radius.circular(4),
-                                bottomRight: Radius.circular(4),
+                              borderRadius:
+                                  const BorderRadiusDirectional.only(
+                                topEnd: Radius.circular(4),
+                                bottomEnd: Radius.circular(4),
                               ),
                             ),
                           ),
