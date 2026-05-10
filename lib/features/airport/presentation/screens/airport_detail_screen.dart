@@ -15,6 +15,7 @@ import 'package:airwatch_mobile/features/airport/data/models/airport_detail_mode
 import 'package:airwatch_mobile/features/airport/data/recent_airports_repository.dart';
 import 'package:airwatch_mobile/features/airport/presentation/widgets/airport_schedule_tile.dart';
 import 'package:airwatch_mobile/features/airport/data/services/airport_details_service.dart';
+import 'package:airwatch_mobile/features/airport/presentation/widgets/atc_audio_panel.dart';
 import 'package:airwatch_mobile/features/airport/presentation/widgets/metar_panel.dart';
 import 'package:airwatch_mobile/features/airport/presentation/widgets/notam_panel.dart';
 
@@ -634,6 +635,7 @@ class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
       children: [
         MetarPanel(icao: icao),
         NotamPanel(icao: icao),
+        AtcAudioPanel(icao: icao),
         const SizedBox(height: 24),
       ],
     );

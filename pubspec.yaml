@@ -59,6 +59,12 @@ dependencies:
   # Share
   share_plus: ^12.0.2
 
+  # External URL launching — used by the AtcAudioPanel to open LiveATC.net
+  # for in-browser audio playback. We deliberately don't ship an in-app
+  # audio player (would pull in just_audio + per-platform background-audio
+  # entitlements); LiveATC's web player works on every mobile browser.
+  url_launcher: ^6.3.0
+
   # Speech-to-text — drives the voice-command button. The 7.x line is
   # the current stable release on pub.dev and supports both Android
   # (RecognizerIntent) and iOS (SFSpeechRecognizer).

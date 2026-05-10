@@ -357,4 +357,16 @@ class StringsFr extends AppStrings {
   String get routeWeekFlights => '{0} cette semaine';
   @override
   String get routeMonthFlights => '{0} en 30 j';
+
+  // AtcAudioPanel
+  @override
+  String get atcLiveTitle => 'ATC EN DIRECT';
+  @override
+  String get atcUnavailable => 'Aucun flux catalogué pour cet aéroport';
+  @override
+  String get atcSearchFallback => 'Rechercher sur LiveATC.net';
+  @override
+  String get atcAttribution => 'Audio fourni par LiveATC.net';
+  @override
+  String get atcOpenInBrowser => 'Ouvrir dans le navigateur';
 }

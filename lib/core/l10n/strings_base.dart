@@ -244,4 +244,14 @@ abstract class AppStrings {
   String get routeTodayFlights => '{0} today';
   String get routeWeekFlights => '{0} this week';
   String get routeMonthFlights => '{0} in 30 d';
+
+  // ── AtcAudioPanel (mirrors web c8c53b5) ───────────────────────────────
+  String get atcLiveTitle => 'LIVE ATC';
+  String get atcUnavailable => 'No catalogued feeds for this airport';
+  /// Search-on-LiveATC fallback when the airport isn't in the catalog
+  /// or the api errored. The button opens `liveatc.net/search?icao=…`.
+  String get atcSearchFallback => 'Search on LiveATC.net';
+  /// Attribution line — required by LiveATC.net's terms.
+  String get atcAttribution => 'Audio courtesy of LiveATC.net';
+  String get atcOpenInBrowser => 'Open in browser';
 }
