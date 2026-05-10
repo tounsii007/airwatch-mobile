@@ -111,5 +111,9 @@ flutter:
     - assets/icons/
     - assets/images/
     - assets/flags/4x3/
+    # 21 k airport dataset — generated from
+    # `tool/build_airport_asset.dart`. Loaded lazily on app boot
+    # by `loadAirportFullDatabase()`.
+    - assets/airports.json
 
   # Fonts loaded via google_fonts package at runtime

@@ -4,13 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'app.dart';
+import 'core/constants/airport_full_database.dart';
 import 'features/notifications/data/notification_service.dart';
 
 void main() {
   // Global error handler — prevents crashes from unhandled exceptions
   runZonedGuarded(
-    () {
+    () async {
       WidgetsFlutterBinding.ensureInitialized();
+
+      // Prime the 21 k airport cache from `assets/airports.json` BEFORE
+      // any UI builds. The lookup helpers (`airportCity`,
+      // `airportCountry`, `lookupAirportByIata`) are synchronous and
+      // any screen that builds before this completes would see an
+      // empty dataset. Load takes ~50–100 ms on a mid-range phone —
+      // happens during the splash screen, so the user never notices.
+      await loadAirportFullDatabase();
 
       // Catch Flutter framework errors (rendering, layout, etc.)
       FlutterError.onError = (details) {
@@ -24,14 +33,15 @@ void main() {
         return true; // Prevent crash
       };
 
-      SystemChrome.setPreferredOrientations([
+      unawaited(SystemChrome.setPreferredOrientations([
         DeviceOrientation.portraitUp,
         DeviceOrientation.portraitDown,
         DeviceOrientation.landscapeLeft,
         DeviceOrientation.landscapeRight,
-      ]);
+      ]));
 
-      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+      unawaited(
+          SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge));
 
       // Local-notifications init — registers Android channels (squawk +
       // geofence) up-front so the channel UI exists in the system
