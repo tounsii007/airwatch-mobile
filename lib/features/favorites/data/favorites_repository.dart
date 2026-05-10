@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -63,6 +64,18 @@ class FavoriteItem {
 class FavoritesNotifier extends Notifier<List<FavoriteItem>> {
   static const _key = 'favorites_v1';
 
+  /// Hard cap on the favourites list. Mirrors airwatch-web's commit
+  /// b6876b7 — a star-happy user used to grow the list unbounded,
+  /// which was cheap per-entry but expensive to JSON-serialise on
+  /// every persist once the list crossed a few thousand items, and
+  /// it ate SharedPreferences quota that other stores share.
+  ///
+  /// <p>Pinned entries are NEVER evicted — that's the user's "this
+  /// matters" signal. If every entry is pinned (extreme edge case)
+  /// we refuse the new item rather than silently overwriting one.
+  @visibleForTesting
+  static const int maxItems = 500;
+
   @override
   List<FavoriteItem> build() {
     _load();
@@ -88,6 +101,42 @@ class FavoritesNotifier extends Notifier<List<FavoriteItem>> {
     );
   }
 
+  /// Append `item` to `items`, evicting the oldest non-pinned entry
+  /// if doing so would push the list past [maxItems]. Returns the
+  /// list unchanged when every existing entry is pinned (the new
+  /// item is refused — pinned items are protected and we don't
+  /// silently overwrite one).
+  ///
+  /// <p>Pure helper so the cap behaviour can be unit-tested without
+  /// spinning up a Riverpod container.
+  @visibleForTesting
+  static List<FavoriteItem> appendWithCap(
+    List<FavoriteItem> items,
+    FavoriteItem next,
+  ) {
+    final appended = [...items, next];
+    if (appended.length <= maxItems) return appended;
+    // Walk every entry except the just-appended one and find the
+    // oldest non-pinned. addedAt is set at construction time and
+    // never mutated, so it's a stable order signal.
+    int? oldestIdx;
+    DateTime? oldestTs;
+    for (var i = 0; i < appended.length - 1; i++) {
+      final f = appended[i];
+      if (f.pinned) continue;
+      if (oldestTs == null || f.addedAt.isBefore(oldestTs)) {
+        oldestIdx = i;
+        oldestTs = f.addedAt;
+      }
+    }
+    if (oldestIdx == null) {
+      // Every existing entry is pinned — refuse the new item.
+      return items;
+    }
+    appended.removeAt(oldestIdx);
+    return appended;
+  }
+
   bool isFavorite(String id) => state.any((f) => f.id == id);
 
   /// Whether the given id is currently pinned. Returns false for items
@@ -105,7 +154,7 @@ class FavoritesNotifier extends Notifier<List<FavoriteItem>> {
     if (isFavorite(item.id)) {
       state = state.where((f) => f.id != item.id).toList();
     } else {
-      state = [...state, item];
+      state = appendWithCap(state, item);
     }
     _save();
   }
