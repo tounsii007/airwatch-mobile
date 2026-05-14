@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:airwatch_mobile/core/constants/ui_constants.dart';
+import 'package:airwatch_mobile/core/l10n/app_strings.dart';
+import 'package:airwatch_mobile/core/l10n/ui_text.dart';
 import 'package:airwatch_mobile/core/theme/app_colors.dart';
 import 'package:airwatch_mobile/core/widgets/glass_panel.dart';
 import 'package:airwatch_mobile/features/geofences/data/geofences_repository.dart';
@@ -16,8 +18,11 @@ import 'package:airwatch_mobile/features/geofences/domain/geofence.dart';
 ///   <li>Lat in [-90, 90], lon in [-180, 180].</li>
 ///   <li>Radius > 0 km for circles.</li>
 ///   <li>For rectangles: north > south, east > west.</li>
-///   <li>Optional altitude band + airline filter.</li>
+///   <li>Optional altitude band + airline filter (min AND max).</li>
 /// </ul>
+///
+/// <p>All labels + error messages come from {@link AppStrings} so the
+/// form fully respects the active locale — same as web commit 4a6ea68.
 class FenceFormScreen extends ConsumerStatefulWidget {
   const FenceFormScreen({super.key});
 
@@ -56,15 +61,15 @@ class _FenceFormScreenState extends ConsumerState<FenceFormScreen> {
     super.dispose();
   }
 
-  void _save() {
+  void _save(AppStrings s) {
     final name = _name.text.trim();
     if (name.isEmpty) {
-      setState(() => _error = 'Name required');
+      setState(() => _error = s.fenceErrNameRequired);
       return;
     }
     final result = _type == GeoFenceType.circle
-        ? _buildCircle(name)
-        : _buildRect(name);
+        ? _buildCircle(name, s)
+        : _buildRect(name, s);
     if (result is _Err) {
       setState(() => _error = result.message);
       return;
@@ -74,18 +79,18 @@ class _FenceFormScreenState extends ConsumerState<FenceFormScreen> {
     if (mounted) Navigator.of(context).pop();
   }
 
-  _BuildResult _buildCircle(String name) {
+  _BuildResult _buildCircle(String name, AppStrings s) {
     final lat = double.tryParse(_centerLat.text);
     final lon = double.tryParse(_centerLon.text);
     final r = double.tryParse(_radius.text);
     if (lat == null || lat < -90 || lat > 90) {
-      return const _Err('Latitude must be in [-90, 90]');
+      return _Err(s.fenceErrLatRange);
     }
     if (lon == null || lon < -180 || lon > 180) {
-      return const _Err('Longitude must be in [-180, 180]');
+      return _Err(s.fenceErrLonRange);
     }
     if (r == null || r <= 0) {
-      return const _Err('Radius must be > 0 km');
+      return _Err(s.fenceErrRadius);
     }
     return _Ok(
       GeoFence(
@@ -104,23 +109,23 @@ class _FenceFormScreenState extends ConsumerState<FenceFormScreen> {
     );
   }
 
-  _BuildResult _buildRect(String name) {
+  _BuildResult _buildRect(String name, AppStrings s) {
     final n = double.tryParse(_north.text);
-    final s = double.tryParse(_south.text);
+    final south = double.tryParse(_south.text);
     final e = double.tryParse(_east.text);
     final w = double.tryParse(_west.text);
-    if (n == null || s == null || e == null || w == null) {
-      return const _Err('All four bounds required');
+    if (n == null || south == null || e == null || w == null) {
+      return _Err(s.fenceErrBoundsRequired);
     }
-    if (n <= s) return const _Err('North must be greater than south');
-    if (e <= w) return const _Err('East must be greater than west');
+    if (n <= south) return _Err(s.fenceErrNorthSouth);
+    if (e <= w) return _Err(s.fenceErrEastWest);
     return _Ok(
       GeoFence(
         id: 'fence-${DateTime.now().millisecondsSinceEpoch}',
         name: name,
         type: GeoFenceType.rectangle,
         northLat: n,
-        southLat: s,
+        southLat: south,
         eastLon: e,
         westLon: w,
         minAltitudeFt: double.tryParse(_minAlt.text),
@@ -134,17 +139,22 @@ class _FenceFormScreenState extends ConsumerState<FenceFormScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final s = context.s;
+    final typeLabel = _type == GeoFenceType.circle
+        ? s.fenceTypeCircle
+        : s.fenceTypeRectangle;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('New geofence'),
+        title: Text(s.fenceFormTitle),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
           TextButton(
-            onPressed: _save,
-            child: const Text(
-              'SAVE',
-              style: TextStyle(
+            onPressed: () => _save(s),
+            child: Text(
+              s.fenceSaveButton,
+              style: const TextStyle(
                 fontFamily: UiConstants.headingFont,
                 fontSize: 11,
                 fontWeight: FontWeight.w800,
@@ -159,6 +169,20 @@ class _FenceFormScreenState extends ConsumerState<FenceFormScreen> {
         child: ListView(
           padding: const EdgeInsets.all(12),
           children: [
+            // Heading mirrors the web form's "NEW {0} GEOFENCE".
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(
+                s.fenceNewHeading.replaceAll('{0}', typeLabel),
+                style: const TextStyle(
+                  fontFamily: UiConstants.headingFont,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 1.4,
+                  color: AppColors.primary,
+                ),
+              ),
+            ),
             // Type chooser.
             GlassPanel(
               padding: const EdgeInsets.all(8),
@@ -167,7 +191,7 @@ class _FenceFormScreenState extends ConsumerState<FenceFormScreen> {
                 children: [
                   Expanded(
                     child: _TypeButton(
-                      label: 'CIRCLE',
+                      label: s.fenceTypeCircle,
                       icon: Icons.circle_outlined,
                       active: _type == GeoFenceType.circle,
                       onTap: () => setState(() => _type = GeoFenceType.circle),
@@ -176,7 +200,7 @@ class _FenceFormScreenState extends ConsumerState<FenceFormScreen> {
                   const SizedBox(width: 6),
                   Expanded(
                     child: _TypeButton(
-                      label: 'RECTANGLE',
+                      label: s.fenceTypeRectangle,
                       icon: Icons.crop_square_rounded,
                       active: _type == GeoFenceType.rectangle,
                       onTap: () =>
@@ -188,51 +212,75 @@ class _FenceFormScreenState extends ConsumerState<FenceFormScreen> {
             ),
             const SizedBox(height: 12),
 
-            _Field(label: 'Name', controller: _name),
+            _Field(
+              label: s.fenceNameLabel,
+              hint: s.fenceNamePlaceholder,
+              controller: _name,
+            ),
 
             if (_type == GeoFenceType.circle) ...[
               _Field(
-                label: 'Center latitude (-90..90)',
+                label: s.fenceCenterLatLabel,
                 controller: _centerLat,
-                keyboardType: TextInputType.number,
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                  signed: true,
+                ),
               ),
               _Field(
-                label: 'Center longitude (-180..180)',
+                label: s.fenceCenterLonLabel,
                 controller: _centerLon,
-                keyboardType: TextInputType.number,
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                  signed: true,
+                ),
               ),
               _Field(
-                label: 'Radius (km)',
+                label: s.fenceRadiusLabel,
                 controller: _radius,
-                keyboardType: TextInputType.number,
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
               ),
             ] else ...[
               _Field(
-                label: 'North latitude',
+                label: s.fenceNorthLabel,
                 controller: _north,
-                keyboardType: TextInputType.number,
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                  signed: true,
+                ),
               ),
               _Field(
-                label: 'South latitude',
+                label: s.fenceSouthLabel,
                 controller: _south,
-                keyboardType: TextInputType.number,
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                  signed: true,
+                ),
               ),
               _Field(
-                label: 'East longitude',
+                label: s.fenceEastLabel,
                 controller: _east,
-                keyboardType: TextInputType.number,
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                  signed: true,
+                ),
               ),
               _Field(
-                label: 'West longitude',
+                label: s.fenceWestLabel,
                 controller: _west,
-                keyboardType: TextInputType.number,
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                  signed: true,
+                ),
               ),
             ],
 
             const SizedBox(height: 8),
-            const Text(
-              'Optional filters',
-              style: TextStyle(
+            Text(
+              s.fenceOptionalFilters,
+              style: const TextStyle(
                 fontFamily: UiConstants.headingFont,
                 fontSize: 9,
                 fontWeight: FontWeight.w800,
@@ -242,16 +290,20 @@ class _FenceFormScreenState extends ConsumerState<FenceFormScreen> {
             ),
             const SizedBox(height: 6),
             _Field(
-              label: 'Min altitude (ft)',
+              label: s.fenceMinAltLabel,
               controller: _minAlt,
-              keyboardType: TextInputType.number,
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
             ),
             _Field(
-              label: 'Max altitude (ft)',
+              label: s.fenceMaxAltLabel,
               controller: _maxAlt,
-              keyboardType: TextInputType.number,
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
             ),
-            _Field(label: 'Airline ICAO (e.g. DLH)', controller: _airline),
+            _Field(label: s.fenceAirlineLabel, controller: _airline),
 
             if (_error != null)
               Padding(
@@ -273,10 +325,12 @@ class _Field extends StatelessWidget {
     required this.label,
     required this.controller,
     this.keyboardType,
+    this.hint,
   });
   final String label;
   final TextEditingController controller;
   final TextInputType? keyboardType;
+  final String? hint;
 
   @override
   Widget build(BuildContext context) {
@@ -287,6 +341,7 @@ class _Field extends StatelessWidget {
         keyboardType: keyboardType,
         decoration: InputDecoration(
           labelText: label,
+          hintText: hint,
           border: const OutlineInputBorder(),
           isDense: true,
         ),

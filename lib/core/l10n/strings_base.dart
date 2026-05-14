@@ -284,4 +284,117 @@ abstract class AppStrings {
   String get exportIcs => 'Export .ics';
   String get exportIcsCalName => 'AirWatch — Saved items';
   String get exportNoItems => 'Nothing to export';
+
+  // ── Geofence form (mirrors web 4a6ea68 + e22ca75) ─────────────────────
+  /// AppBar title on the form screen.
+  String get fenceFormTitle => 'New geofence';
+  /// "NEW {0} GEOFENCE" — {0} resolves to "CIRCLE" or "RECTANGLE".
+  String get fenceNewHeading => 'NEW {0} GEOFENCE';
+  String get fenceTypeCircle => 'CIRCLE';
+  String get fenceTypeRectangle => 'RECTANGLE';
+  String get fenceNameLabel => 'NAME';
+  String get fenceNamePlaceholder => 'e.g. Frankfurt approach';
+  String get fenceRadiusLabel => 'RADIUS (KM)';
+  String get fenceCenterLatLabel => 'CENTER LATITUDE';
+  String get fenceCenterLonLabel => 'CENTER LONGITUDE';
+  String get fenceNorthLabel => 'NORTH LATITUDE';
+  String get fenceSouthLabel => 'SOUTH LATITUDE';
+  String get fenceEastLabel => 'EAST LONGITUDE';
+  String get fenceWestLabel => 'WEST LONGITUDE';
+  String get fenceMinAltLabel => 'MIN ALT (FT)';
+  String get fenceMaxAltLabel => 'MAX ALT (FT)';
+  String get fenceAirlineLabel => 'AIRLINE ICAO';
+  String get fenceOptionalFilters => 'OPTIONAL FILTERS';
+  String get fenceSaveButton => 'SAVE';
+  String get fenceCancelButton => 'CANCEL';
+  // Validation errors
+  String get fenceErrNameRequired => 'Name required';
+  String get fenceErrLatRange => 'Latitude must be between -90 and 90';
+  String get fenceErrLonRange => 'Longitude must be between -180 and 180';
+  String get fenceErrRadius => 'Radius must be greater than 0 km';
+  String get fenceErrBoundsRequired => 'All four bounds are required';
+  String get fenceErrNorthSouth => 'North must be greater than south';
+  String get fenceErrEastWest => 'East must be greater than west';
+
+  // ── Geofence list (mirrors web FencesList.tsx) ────────────────────────
+  String get fenceActiveHeading => 'ACTIVE FENCES';
+  /// "{0} total" — count of fences shown next to ACTIVE FENCES heading.
+  String get fenceTotalCount => '{0} total';
+  String get fencesListEmpty =>
+      'No fences yet. Tap DRAW or the edit button to add one — alerts will appear here when an aircraft enters the zone.';
+  String get fenceDelete => 'Delete';
+  /// Shape one-liner — "50.04° N, 8.56° E · r 50.5 km".
+  /// {0} = lat, {1} = lon, {2} = radius km.
+  String get fenceShapeCircle => '{0}° N, {1}° E · r {2} km';
+  /// "S 47.0° → N 51.0° · W 5.0° → E 12.0°".
+  /// {0} = south, {1} = north, {2} = west, {3} = east.
+  String get fenceShapeRect => 'S {0}° → N {1}° · W {2}° → E {3}°';
+  /// "Only Lufthansa (DLH) flights trigger this fence".
+  String get fenceAirlineTooltip => 'Only {0} ({1}) flights trigger this fence';
+  String get fenceAirlineTooltipNoName => 'Airline filter: {0}';
+  String get fenceMinAltTooltip =>
+      'Only flights at or above this altitude trigger this fence';
+  String get fenceMaxAltTooltip =>
+      'Only flights at or below this altitude trigger this fence';
+
+  // ── Draw screen (mirrors web GeoFenceDrawMap) ────────────────────────
+  String get fenceDrawTitle => 'Draw geofence';
+  String get fenceDrawHintCircleFirst => 'Tap to place the center';
+  String get fenceDrawHintCircleSecond => 'Tap to set the radius';
+  String get fenceDrawHintRectFirst => 'Tap to set the first corner';
+  String get fenceDrawHintRectSecond => 'Tap to set the opposite corner';
+  String get fenceDrawHintReady => 'Save when ready, or tap Reset to redraw';
+  String get fenceDrawResetButton => 'RESET';
+  String get fenceDrawNameTitle => 'Name this fence';
+
+  // ── Alerts panel (mirrors web AlertsPanel.tsx 01d0841) ───────────────
+  /// Header word — singular "ALERT" vs plural "ALERTS".
+  String get alertsCountOne => 'ALERT';
+  String get alertsCountMany => 'ALERTS';
+  String get alertsClearAll => 'CLEAR ALL';
+  String get alertsClearAllTooltip => 'Clear all alerts (keeps fences)';
+  String get alertsDismiss => 'Dismiss';
+  String get alertsDismissTooltip =>
+      'Dismiss this alert (does not affect history)';
+  String get alertsAllFilter => 'ALL';
+  /// "Toggle alerts from \"{0}\"" — {0} is the fence name.
+  String get alertsFilterTooltip => 'Toggle alerts from "{0}"';
+  String get alertsEmptyFilter =>
+      'No alerts match the active filter. Tap ALL to clear.';
+  String get alertsShowOnMap => 'Show this flight on the live map';
+
+  // ── Fence stats badge (mirrors web FenceStatsBadge.tsx 982c6d2) ──────
+  String get fenceStatsHitsOne => '{0} hit';
+  String get fenceStatsHitsMany => '{0} hits';
+  String get fenceStatsAircraft => '{0} aircraft';
+  String get fenceStatsTopAirlineWithName =>
+      'Top airline: {0} ({1}× this fence)';
+  String get fenceStatsTopAirline => 'Top airline: {0}';
+  /// "top:" prefix before the airline ICAO badge in the stats row.
+  String get fenceStatsTopLabel => 'top:';
+  /// "last 3m" — relative time prefix.
+  String get fenceStatsLast => 'last {0}';
+
+  // ── Fence import/export toolbar (mirrors web FenceIOToolbar.tsx) ─────
+  String get fenceExport => 'EXPORT';
+  String get fenceImport => 'IMPORT';
+  String get fenceImporting => 'IMPORTING…';
+  String get fenceExportTooltip => 'Download your fences as a JSON file';
+  String get fenceImportTooltip => 'Restore fences from a JSON file';
+  String get fenceExportEmpty => 'Nothing to export';
+  String get fenceExportedOne => 'Exported 1 fence';
+  String get fenceExportedMany => 'Exported {0} fences';
+  String get fenceReadingFile => 'Reading file…';
+  String get fenceImportedOne => 'Imported 1 fence';
+  String get fenceImportedMany => 'Imported {0} fences';
+  /// "Imported {0}, failed {1} ({2})" — partial-success status message.
+  String get fenceImportedPartial => 'Imported {0}, failed {1} ({2})';
+  String get fenceReadFailed => 'Read failed: {0}';
+  String get fenceImportInvalidJson => 'Invalid JSON: {0}';
+  String get fenceImportSchemaMismatch => 'Schema mismatch at {0}: {1}';
+
+  // ── Dashboard empty / honest states (mirrors web 83ab6b2) ────────────
+  /// Used when a tile would otherwise render a misleading "0" KPI.
+  String get dashNoDataYet => 'No data yet';
+  String get dashEmptyHint => 'Open the map to start tracking flights';
 }

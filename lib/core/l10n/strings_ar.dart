@@ -401,4 +401,187 @@ class StringsAr extends AppStrings {
   String get exportIcsCalName => 'AirWatch — المحفوظات';
   @override
   String get exportNoItems => 'لا شيء للتصدير';
+
+  // ── Geofence form ──────────────────────────────────────────────────────
+  @override
+  String get fenceFormTitle => 'سور جغرافي جديد';
+  @override
+  String get fenceNewHeading => 'سور جغرافي جديد {0}';
+  @override
+  String get fenceTypeCircle => 'دائرة';
+  @override
+  String get fenceTypeRectangle => 'مستطيل';
+  @override
+  String get fenceNameLabel => 'الاسم';
+  @override
+  String get fenceNamePlaceholder => 'مثال: اقتراب فرانكفورت';
+  @override
+  String get fenceRadiusLabel => 'نصف القطر (كم)';
+  @override
+  String get fenceCenterLatLabel => 'خط عرض المركز';
+  @override
+  String get fenceCenterLonLabel => 'خط طول المركز';
+  @override
+  String get fenceNorthLabel => 'خط العرض الشمالي';
+  @override
+  String get fenceSouthLabel => 'خط العرض الجنوبي';
+  @override
+  String get fenceEastLabel => 'خط الطول الشرقي';
+  @override
+  String get fenceWestLabel => 'خط الطول الغربي';
+  @override
+  String get fenceMinAltLabel => 'الارتفاع الأدنى (ft)';
+  @override
+  String get fenceMaxAltLabel => 'الارتفاع الأقصى (ft)';
+  @override
+  String get fenceAirlineLabel => 'رمز ICAO للشركة';
+  @override
+  String get fenceOptionalFilters => 'مرشحات اختيارية';
+  @override
+  String get fenceSaveButton => 'حفظ';
+  @override
+  String get fenceCancelButton => 'إلغاء';
+  @override
+  String get fenceErrNameRequired => 'الاسم مطلوب';
+  @override
+  String get fenceErrLatRange => 'خط العرض يجب أن يكون بين -90 و 90';
+  @override
+  String get fenceErrLonRange => 'خط الطول يجب أن يكون بين -180 و 180';
+  @override
+  String get fenceErrRadius => 'نصف القطر يجب أن يكون أكبر من 0 كم';
+  @override
+  String get fenceErrBoundsRequired => 'الحدود الأربعة مطلوبة';
+  @override
+  String get fenceErrNorthSouth => 'الشمال يجب أن يكون أكبر من الجنوب';
+  @override
+  String get fenceErrEastWest => 'الشرق يجب أن يكون أكبر من الغرب';
+
+  // ── Geofence list ──────────────────────────────────────────────────────
+  @override
+  String get fenceActiveHeading => 'الأسوار الجغرافية النشطة';
+  @override
+  String get fenceTotalCount => '{0} الإجمالي';
+  @override
+  String get fencesListEmpty =>
+      'لا توجد أسوار. اضغط رسم أو استخدم النموذج — ستظهر التنبيهات هنا عند دخول طائرة المنطقة.';
+  @override
+  String get fenceDelete => 'حذف';
+  @override
+  String get fenceShapeCircle => '{0}° شمال، {1}° شرق · ق {2} كم';
+  @override
+  String get fenceShapeRect =>
+      'ج {0}° → ش {1}° · غ {2}° → ش {3}°';
+  @override
+  String get fenceAirlineTooltip =>
+      'فقط رحلات {0} ({1}) تُفعّل هذا السور';
+  @override
+  String get fenceAirlineTooltipNoName => 'مرشح الشركة: {0}';
+  @override
+  String get fenceMinAltTooltip =>
+      'فقط الرحلات على هذا الارتفاع أو أعلى تُفعّل السور';
+  @override
+  String get fenceMaxAltTooltip =>
+      'فقط الرحلات على هذا الارتفاع أو أدنى تُفعّل السور';
+
+  // ── Draw screen ────────────────────────────────────────────────────────
+  @override
+  String get fenceDrawTitle => 'رسم سور جغرافي';
+  @override
+  String get fenceDrawHintCircleFirst => 'اضغط لتحديد المركز';
+  @override
+  String get fenceDrawHintCircleSecond => 'اضغط لتحديد نصف القطر';
+  @override
+  String get fenceDrawHintRectFirst =>
+      'اضغط لتحديد الزاوية الأولى';
+  @override
+  String get fenceDrawHintRectSecond =>
+      'اضغط لتحديد الزاوية المقابلة';
+  @override
+  String get fenceDrawHintReady =>
+      'احفظ عند الانتهاء أو اضغط إعادة';
+  @override
+  String get fenceDrawResetButton => 'إعادة';
+  @override
+  String get fenceDrawNameTitle => 'سمّ هذا السور';
+
+  // ── Alerts panel ───────────────────────────────────────────────────────
+  @override
+  String get alertsCountOne => 'تنبيه';
+  @override
+  String get alertsCountMany => 'تنبيهات';
+  @override
+  String get alertsClearAll => 'مسح الكل';
+  @override
+  String get alertsClearAllTooltip => 'امسح كل التنبيهات (تبقى الأسوار)';
+  @override
+  String get alertsDismiss => 'تجاهل';
+  @override
+  String get alertsDismissTooltip =>
+      'تجاهل هذا التنبيه (لا يؤثر على السجل)';
+  @override
+  String get alertsAllFilter => 'الكل';
+  @override
+  String get alertsFilterTooltip => 'تبديل تنبيهات «{0}»';
+  @override
+  String get alertsEmptyFilter =>
+      'لا تنبيهات تطابق المرشح. اضغط الكل.';
+  @override
+  String get alertsShowOnMap => 'عرض هذه الرحلة على الخريطة';
+
+  // ── Fence stats badge ──────────────────────────────────────────────────
+  @override
+  String get fenceStatsHitsOne => '{0} اختراق';
+  @override
+  String get fenceStatsHitsMany => '{0} اختراقات';
+  @override
+  String get fenceStatsAircraft => '{0} طائرات';
+  @override
+  String get fenceStatsTopAirlineWithName =>
+      'أعلى شركة: {0} ({1}× هذا السور)';
+  @override
+  String get fenceStatsTopAirline => 'أعلى شركة: {0}';
+  @override
+  String get fenceStatsTopLabel => 'أعلى:';
+  @override
+  String get fenceStatsLast => 'آخر {0}';
+
+  // ── Fence import/export ────────────────────────────────────────────────
+  @override
+  String get fenceExport => 'تصدير';
+  @override
+  String get fenceImport => 'استيراد';
+  @override
+  String get fenceImporting => 'جاري الاستيراد…';
+  @override
+  String get fenceExportTooltip => 'تحميل الأسوار كملف JSON';
+  @override
+  String get fenceImportTooltip => 'استعادة الأسوار من ملف JSON';
+  @override
+  String get fenceExportEmpty => 'لا شيء للتصدير';
+  @override
+  String get fenceExportedOne => 'تم تصدير سور واحد';
+  @override
+  String get fenceExportedMany => 'تم تصدير {0} أسوار';
+  @override
+  String get fenceReadingFile => 'قراءة الملف…';
+  @override
+  String get fenceImportedOne => 'تم استيراد سور واحد';
+  @override
+  String get fenceImportedMany => 'تم استيراد {0} أسوار';
+  @override
+  String get fenceImportedPartial =>
+      'تم استيراد {0}، فشل {1} ({2})';
+  @override
+  String get fenceReadFailed => 'فشلت القراءة: {0}';
+  @override
+  String get fenceImportInvalidJson => 'JSON غير صالح: {0}';
+  @override
+  String get fenceImportSchemaMismatch =>
+      'عدم تطابق المخطط عند {0}: {1}';
+
+  // ── Dashboard empty / honest states ────────────────────────────────────
+  @override
+  String get dashNoDataYet => 'لا بيانات بعد';
+  @override
+  String get dashEmptyHint => 'افتح الخريطة لبدء تتبع الرحلات';
 }

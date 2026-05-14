@@ -5,6 +5,7 @@ import 'package:latlong2/latlong.dart';
 
 import 'package:airwatch_mobile/core/constants/config.dart';
 import 'package:airwatch_mobile/core/constants/ui_constants.dart';
+import 'package:airwatch_mobile/core/l10n/ui_text.dart';
 import 'package:airwatch_mobile/core/theme/app_colors.dart';
 import 'package:airwatch_mobile/core/utils/geo_utils.dart';
 import 'package:airwatch_mobile/core/widgets/glass_panel.dart';
@@ -109,25 +110,26 @@ class _GeoFenceDrawScreenState extends ConsumerState<GeoFenceDrawScreen> {
 
   Future<String?> _askName() {
     final ctl = TextEditingController();
+    final s = context.s;
     return showDialog<String>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Name this fence'),
+        title: Text(s.fenceDrawNameTitle),
         content: TextField(
           controller: ctl,
           autofocus: true,
-          decoration: const InputDecoration(
-            hintText: 'e.g. Frankfurt approach',
+          decoration: InputDecoration(
+            hintText: s.fenceNamePlaceholder,
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('CANCEL'),
+            child: Text(s.fenceCancelButton),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, ctl.text),
-            child: const Text('SAVE'),
+            child: Text(s.fenceSaveButton),
           ),
         ],
       ),
@@ -139,25 +141,30 @@ class _GeoFenceDrawScreenState extends ConsumerState<GeoFenceDrawScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final styleId = ref.watch(mapStyleProvider);
     final tileUrl = styleDef(styleId).url;
+    final s = context.s;
 
     final hint = _firstTap == null
-        ? 'Tap to place ${_shape == GeoFenceType.circle ? "the center" : "the first corner"}'
+        ? (_shape == GeoFenceType.circle
+              ? s.fenceDrawHintCircleFirst
+              : s.fenceDrawHintRectFirst)
         : (_secondTap == null
-              ? 'Tap to set ${_shape == GeoFenceType.circle ? "the radius" : "the opposite corner"}'
-              : 'Save when ready, or tap Reset to redraw');
+              ? (_shape == GeoFenceType.circle
+                    ? s.fenceDrawHintCircleSecond
+                    : s.fenceDrawHintRectSecond)
+              : s.fenceDrawHintReady);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Draw geofence'),
+        title: Text(s.fenceDrawTitle),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
           if (_ready)
             TextButton(
               onPressed: _save,
-              child: const Text(
-                'SAVE',
-                style: TextStyle(
+              child: Text(
+                s.fenceSaveButton,
+                style: const TextStyle(
                   fontFamily: UiConstants.headingFont,
                   fontSize: 11,
                   fontWeight: FontWeight.w800,
@@ -169,9 +176,9 @@ class _GeoFenceDrawScreenState extends ConsumerState<GeoFenceDrawScreen> {
           if (_firstTap != null)
             TextButton(
               onPressed: _reset,
-              child: const Text(
-                'RESET',
-                style: TextStyle(
+              child: Text(
+                s.fenceDrawResetButton,
+                style: const TextStyle(
                   fontFamily: UiConstants.headingFont,
                   fontSize: 11,
                   fontWeight: FontWeight.w800,
@@ -244,7 +251,7 @@ class _GeoFenceDrawScreenState extends ConsumerState<GeoFenceDrawScreen> {
                     children: [
                       Expanded(
                         child: _ShapeButton(
-                          label: 'CIRCLE',
+                          label: s.fenceTypeCircle,
                           icon: Icons.circle_outlined,
                           active: _shape == GeoFenceType.circle,
                           onTap: () {
@@ -258,7 +265,7 @@ class _GeoFenceDrawScreenState extends ConsumerState<GeoFenceDrawScreen> {
                       const SizedBox(width: 6),
                       Expanded(
                         child: _ShapeButton(
-                          label: 'RECTANGLE',
+                          label: s.fenceTypeRectangle,
                           icon: Icons.crop_square_rounded,
                           active: _shape == GeoFenceType.rectangle,
                           onTap: () {

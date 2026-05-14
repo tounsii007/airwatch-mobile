@@ -398,4 +398,191 @@ class StringsIt extends AppStrings {
   String get exportIcsCalName => 'AirWatch — Salvati';
   @override
   String get exportNoItems => 'Nulla da esportare';
+
+  // ── Geofence form ──────────────────────────────────────────────────────
+  @override
+  String get fenceFormTitle => 'Nuova geofence';
+  @override
+  String get fenceNewHeading => 'NUOVA GEOFENCE {0}';
+  @override
+  String get fenceTypeCircle => 'CERCHIO';
+  @override
+  String get fenceTypeRectangle => 'RETTANGOLO';
+  @override
+  String get fenceNameLabel => 'NOME';
+  @override
+  String get fenceNamePlaceholder => 'es. Avvicinamento Francoforte';
+  @override
+  String get fenceRadiusLabel => 'RAGGIO (KM)';
+  @override
+  String get fenceCenterLatLabel => 'LATITUDINE CENTRO';
+  @override
+  String get fenceCenterLonLabel => 'LONGITUDINE CENTRO';
+  @override
+  String get fenceNorthLabel => 'LATITUDINE NORD';
+  @override
+  String get fenceSouthLabel => 'LATITUDINE SUD';
+  @override
+  String get fenceEastLabel => 'LONGITUDINE EST';
+  @override
+  String get fenceWestLabel => 'LONGITUDINE OVEST';
+  @override
+  String get fenceMinAltLabel => 'ALT. MIN (FT)';
+  @override
+  String get fenceMaxAltLabel => 'ALT. MAX (FT)';
+  @override
+  String get fenceAirlineLabel => 'ICAO COMPAGNIA';
+  @override
+  String get fenceOptionalFilters => 'FILTRI OPZIONALI';
+  @override
+  String get fenceSaveButton => 'SALVA';
+  @override
+  String get fenceCancelButton => 'ANNULLA';
+  @override
+  String get fenceErrNameRequired => 'Nome richiesto';
+  @override
+  String get fenceErrLatRange => 'La latitudine deve essere tra -90 e 90';
+  @override
+  String get fenceErrLonRange =>
+      'La longitudine deve essere tra -180 e 180';
+  @override
+  String get fenceErrRadius => 'Il raggio deve essere maggiore di 0 km';
+  @override
+  String get fenceErrBoundsRequired => 'Tutti e quattro i bordi richiesti';
+  @override
+  String get fenceErrNorthSouth => 'Nord deve essere maggiore di Sud';
+  @override
+  String get fenceErrEastWest => 'Est deve essere maggiore di Ovest';
+
+  // ── Geofence list ──────────────────────────────────────────────────────
+  @override
+  String get fenceActiveHeading => 'GEOFENCE ATTIVE';
+  @override
+  String get fenceTotalCount => '{0} totali';
+  @override
+  String get fencesListEmpty =>
+      'Nessuna geofence. Tocca DISEGNA o usa il modulo — gli avvisi appariranno qui quando un aereo entra nella zona.';
+  @override
+  String get fenceDelete => 'Elimina';
+  @override
+  String get fenceShapeCircle => '{0}° N, {1}° E · r {2} km';
+  @override
+  String get fenceShapeRect => 'S {0}° → N {1}° · O {2}° → E {3}°';
+  @override
+  String get fenceAirlineTooltip =>
+      'Solo i voli di {0} ({1}) attivano questa geofence';
+  @override
+  String get fenceAirlineTooltipNoName => 'Filtro compagnia: {0}';
+  @override
+  String get fenceMinAltTooltip =>
+      'Solo i voli a questa quota o superiore attivano la geofence';
+  @override
+  String get fenceMaxAltTooltip =>
+      'Solo i voli a questa quota o inferiore attivano la geofence';
+
+  // ── Draw screen ────────────────────────────────────────────────────────
+  @override
+  String get fenceDrawTitle => 'Disegna geofence';
+  @override
+  String get fenceDrawHintCircleFirst => 'Tocca per posizionare il centro';
+  @override
+  String get fenceDrawHintCircleSecond => 'Tocca per impostare il raggio';
+  @override
+  String get fenceDrawHintRectFirst =>
+      'Tocca per impostare il primo angolo';
+  @override
+  String get fenceDrawHintRectSecond =>
+      'Tocca per impostare l\'angolo opposto';
+  @override
+  String get fenceDrawHintReady =>
+      'Salva quando pronto o tocca RESET';
+  @override
+  String get fenceDrawResetButton => 'RESET';
+  @override
+  String get fenceDrawNameTitle => 'Dai un nome a questa geofence';
+
+  // ── Alerts panel ───────────────────────────────────────────────────────
+  @override
+  String get alertsCountOne => 'AVVISO';
+  @override
+  String get alertsCountMany => 'AVVISI';
+  @override
+  String get alertsClearAll => 'CANCELLA TUTTO';
+  @override
+  String get alertsClearAllTooltip =>
+      'Cancella tutti gli avvisi (le geofence restano)';
+  @override
+  String get alertsDismiss => 'Ignora';
+  @override
+  String get alertsDismissTooltip =>
+      'Ignora questo avviso (non influisce sullo storico)';
+  @override
+  String get alertsAllFilter => 'TUTTI';
+  @override
+  String get alertsFilterTooltip => 'Attiva/disattiva avvisi di "{0}"';
+  @override
+  String get alertsEmptyFilter =>
+      'Nessun avviso corrisponde al filtro. Tocca TUTTI.';
+  @override
+  String get alertsShowOnMap => 'Mostra questo volo sulla mappa';
+
+  // ── Fence stats badge ──────────────────────────────────────────────────
+  @override
+  String get fenceStatsHitsOne => '{0} ingresso';
+  @override
+  String get fenceStatsHitsMany => '{0} ingressi';
+  @override
+  String get fenceStatsAircraft => '{0} aerei';
+  @override
+  String get fenceStatsTopAirlineWithName =>
+      'Top compagnia: {0} ({1}× questa geofence)';
+  @override
+  String get fenceStatsTopAirline => 'Top compagnia: {0}';
+  @override
+  String get fenceStatsTopLabel => 'top:';
+  @override
+  String get fenceStatsLast => 'ultimo {0}';
+
+  // ── Fence import/export ────────────────────────────────────────────────
+  @override
+  String get fenceExport => 'ESPORTA';
+  @override
+  String get fenceImport => 'IMPORTA';
+  @override
+  String get fenceImporting => 'IMPORT…';
+  @override
+  String get fenceExportTooltip =>
+      'Scarica le geofence come file JSON';
+  @override
+  String get fenceImportTooltip =>
+      'Ripristina geofence da un file JSON';
+  @override
+  String get fenceExportEmpty => 'Nulla da esportare';
+  @override
+  String get fenceExportedOne => '1 geofence esportata';
+  @override
+  String get fenceExportedMany => '{0} geofence esportate';
+  @override
+  String get fenceReadingFile => 'Lettura del file…';
+  @override
+  String get fenceImportedOne => '1 geofence importata';
+  @override
+  String get fenceImportedMany => '{0} geofence importate';
+  @override
+  String get fenceImportedPartial =>
+      '{0} importate, {1} fallite ({2})';
+  @override
+  String get fenceReadFailed => 'Lettura fallita: {0}';
+  @override
+  String get fenceImportInvalidJson => 'JSON non valido: {0}';
+  @override
+  String get fenceImportSchemaMismatch =>
+      'Schema non corrispondente a {0}: {1}';
+
+  // ── Dashboard empty / honest states ────────────────────────────────────
+  @override
+  String get dashNoDataYet => 'Nessun dato';
+  @override
+  String get dashEmptyHint =>
+      'Apri la mappa per iniziare a seguire i voli';
 }
