@@ -147,23 +147,25 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 // argument, so reordering and scrolling never causes a tile to refetch.
 // ─────────────────────────────────────────────────────────────────────────────
 
-class _LiveSparklineTile extends StatelessWidget {
+class _LiveSparklineTile extends ConsumerWidget {
   const _LiveSparklineTile({required this.label, required this.samples});
   final String label;
   final List<int> samples;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final spots = <FlSpot>[
       for (var i = 0; i < samples.length; i++)
         FlSpot(i.toDouble(), samples[i].toDouble()),
     ];
     final current = samples.isEmpty ? '—' : samples.last.toString();
+    final s = S.of(ref.watch(languageProvider));
 
     return _Tile(
       label: label,
       value: current,
       color: AppColors.primary,
+      emptyHint: s.dashEmptyHint,
       child: spots.length < 2
           ? const SizedBox.shrink()
           : LineChart(
@@ -178,17 +180,19 @@ class _LiveSparklineTile extends StatelessWidget {
   }
 }
 
-class _SavedTile extends StatelessWidget {
+class _SavedTile extends ConsumerWidget {
   const _SavedTile({required this.label, required this.count});
   final String label;
   final int count;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final s = S.of(ref.watch(languageProvider));
     return _Tile(
       label: label,
-      value: count.toString(),
+      value: count == 0 ? '—' : count.toString(),
       color: AppColors.accent,
+      emptyHint: s.dashNoDataYet,
       child: Padding(
         padding: const EdgeInsets.only(top: 4),
         child: Row(
@@ -212,13 +216,13 @@ class _SavedTile extends StatelessWidget {
   }
 }
 
-class _TopAirlinesTile extends StatelessWidget {
+class _TopAirlinesTile extends ConsumerWidget {
   const _TopAirlinesTile({required this.label, required this.flights});
   final String label;
   final Iterable<AircraftState> flights;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final counts = <String, int>{};
     for (final f in flights) {
       final cs = f.callsign?.trim() ?? '';
@@ -231,11 +235,13 @@ class _TopAirlinesTile extends StatelessWidget {
     final top = counts.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
     final top5 = top.take(5).toList();
+    final s = S.of(ref.watch(languageProvider));
 
     return _Tile(
       label: label,
       value: top5.isEmpty ? '—' : top5.first.key,
       color: AppColors.success,
+      emptyHint: s.dashNoDataYet,
       child: top5.length < 2
           ? const SizedBox.shrink()
           : BarChart(
@@ -250,13 +256,13 @@ class _TopAirlinesTile extends StatelessWidget {
   }
 }
 
-class _AltitudeHistogramTile extends StatelessWidget {
+class _AltitudeHistogramTile extends ConsumerWidget {
   const _AltitudeHistogramTile({required this.label, required this.flights});
   final String label;
   final Iterable<AircraftState> flights;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     // Three altitude bands matching the web app's flight-coloring rule:
     // <10k ft (low), 10-30k ft (mid), >30k ft (high).
     int low = 0, mid = 0, high = 0;
@@ -273,11 +279,13 @@ class _AltitudeHistogramTile extends StatelessWidget {
       }
     }
     final total = low + mid + high;
+    final s = S.of(ref.watch(languageProvider));
 
     return _Tile(
       label: label,
-      value: total.toString(),
+      value: total == 0 ? '—' : total.toString(),
       color: AppColors.info,
+      emptyHint: s.dashNoDataYet,
       child: total == 0
           ? const SizedBox.shrink()
           : BarChart(
@@ -297,12 +305,20 @@ class _AltitudeHistogramTile extends StatelessWidget {
 }
 
 /// Common tile chrome — header (label + KPI) and a flexible chart body.
+///
+/// Honest-empty-state behaviour (mirrors airwatch-web's dashboard polish
+/// commit 83ab6b2): when [value] is the literal sentinel `—`, every part
+/// of the tile renders in the muted-grey colour family instead of the
+/// supplied accent colour. A "0" in success-green would read as a real
+/// measurement; a muted "—" reads as "unknown" — which is the truth
+/// when the feed hasn't produced enough samples yet.
 class _Tile extends StatelessWidget {
   const _Tile({
     required this.label,
     required this.value,
     required this.color,
     required this.child,
+    this.emptyHint,
   });
 
   final String label;
@@ -310,8 +326,18 @@ class _Tile extends StatelessWidget {
   final Color color;
   final Widget child;
 
+  /// Optional one-line caption shown in the chart slot when [value] is
+  /// the empty sentinel `—`. Keeps the tile from looking blank without
+  /// faking structure.
+  final String? emptyHint;
+
+  bool get _isEmpty => value == '—' || value == '0';
+
   @override
   Widget build(BuildContext context) {
+    // Empty/zero tiles render every cell in muted-grey so a tile with
+    // no underlying data doesn't read as a successful measurement.
+    final effectiveColor = _isEmpty ? AppColors.textMuted : color;
     return GlassPanel(
       padding: const EdgeInsets.all(12),
       child: Column(
@@ -328,17 +354,30 @@ class _Tile extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            value,
+            _isEmpty ? '—' : value,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w800,
-              color: color,
+              color: effectiveColor,
             ),
           ),
           const SizedBox(height: 6),
-          Expanded(child: child),
+          Expanded(
+            child: _isEmpty && emptyHint != null
+                ? Center(
+                    child: Text(
+                      emptyHint!,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: AppColors.textMuted.withValues(alpha: 0.7),
+                      ),
+                    ),
+                  )
+                : child,
+          ),
         ],
       ),
     );
