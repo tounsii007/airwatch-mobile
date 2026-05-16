@@ -41,6 +41,16 @@ class SettingsState {
   final bool showHeatmap;
   final bool showAirportLabels;
   final bool showAircraftLabels;
+  /// Show a small weather emoji (☀️ / ☁️ / 🌧️ / …) next to the IATA code
+  /// in the airport-marker label. Mirrors airwatch-web's
+  /// `showAirportWeather` setting (commit 6eeb5b8) — when off, no
+  /// Open-Meteo fetches go out and labels stay text-only.
+  final bool showAirportWeather;
+  /// Render the planespotters.net aircraft photo on the flight details
+  /// panel. Mirrors airwatch-web's `showAircraftPhotos` setting
+  /// (commit 6eeb5b8) — defaults on, can be turned off by privacy-
+  /// or bandwidth-conscious users.
+  final bool showAircraftPhotos;
   final int updateIntervalSec;
 
   const SettingsState({
@@ -52,6 +62,8 @@ class SettingsState {
     this.showHeatmap = false,
     this.showAirportLabels = true,
     this.showAircraftLabels = true,
+    this.showAirportWeather = true,
+    this.showAircraftPhotos = true,
     this.updateIntervalSec = 60,
   });
 
@@ -64,6 +76,8 @@ class SettingsState {
     bool? showHeatmap,
     bool? showAirportLabels,
     bool? showAircraftLabels,
+    bool? showAirportWeather,
+    bool? showAircraftPhotos,
     int? updateIntervalSec,
   }) {
     return SettingsState(
@@ -75,6 +89,8 @@ class SettingsState {
       showHeatmap: showHeatmap ?? this.showHeatmap,
       showAirportLabels: showAirportLabels ?? this.showAirportLabels,
       showAircraftLabels: showAircraftLabels ?? this.showAircraftLabels,
+      showAirportWeather: showAirportWeather ?? this.showAirportWeather,
+      showAircraftPhotos: showAircraftPhotos ?? this.showAircraftPhotos,
       updateIntervalSec: updateIntervalSec ?? this.updateIntervalSec,
     );
   }
@@ -160,6 +176,8 @@ class SettingsNotifier extends Notifier<SettingsState> {
       showHeatmap: prefs.getBool('show_heatmap') ?? false,
       showAirportLabels: prefs.getBool('show_apt_labels') ?? true,
       showAircraftLabels: prefs.getBool('show_ac_labels') ?? true,
+      showAirportWeather: prefs.getBool('show_apt_weather') ?? true,
+      showAircraftPhotos: prefs.getBool('show_ac_photos') ?? true,
       updateIntervalSec: prefs.getInt('update_interval') ?? 60,
     );
   }
@@ -174,6 +192,8 @@ class SettingsNotifier extends Notifier<SettingsState> {
     await prefs.setBool('show_heatmap', state.showHeatmap);
     await prefs.setBool('show_apt_labels', state.showAirportLabels);
     await prefs.setBool('show_ac_labels', state.showAircraftLabels);
+    await prefs.setBool('show_apt_weather', state.showAirportWeather);
+    await prefs.setBool('show_ac_photos', state.showAircraftPhotos);
     await prefs.setInt('update_interval', state.updateIntervalSec);
   }
 

@@ -139,12 +139,22 @@ class _FlightDetailsPanelState extends ConsumerState<FlightDetailsPanel> {
     final panelWidth = Responsive.detailsPanelWidth(context);
     final primary = isDark ? AppColors.primary : UiConstants.lightPrimary;
 
+    // Photo render is opt-out via Settings → Map → Show aircraft photos.
+    // Mask the URL to null when disabled so every downstream code path
+    // (PanelAircraftPhoto, the photo-gallery launcher, header thumbnail)
+    // sees "no photo" without us needing to thread a flag through every
+    // section. Mirrors airwatch-web's `showAircraftPhotos` plumbing in
+    // MobileDetailsPanel.tsx (commit 6eeb5b8).
+    final showPhotos =
+        ref.watch(settingsProvider.select((s) => s.showAircraftPhotos));
+    final effectivePhotoUrl = showPhotos ? _aircraftPhotoUrl : null;
+
     final content = _PanelContent(
       aircraft: aircraft,
       airline: _airline,
       route: _route,
       metadata: _metadata,
-      aircraftPhotoUrl: _aircraftPhotoUrl,
+      aircraftPhotoUrl: effectivePhotoUrl,
       isLoading: _isLoading,
       isDark: isDark,
       primary: primary,

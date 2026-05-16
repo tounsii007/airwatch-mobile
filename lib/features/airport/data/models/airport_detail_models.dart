@@ -77,6 +77,16 @@ class AirportScheduleFlight {
   final String? arrTerminal;
   final String? depGate;
   final String? arrGate;
+  /// Codeshare partner airline IATA (e.g. "AF" when a Lufthansa-operated
+  /// flight is sold by Air France). Null when the row isn't a codeshare.
+  /// Mirrors airwatch-web's `csAirlineIata` (commit 76fdfa0).
+  final String? csAirlineIata;
+  /// Codeshare partner's flight number (e.g. "AF1241"). Null when not
+  /// applicable. The tile only shows this when it differs from the
+  /// operating [flightIata] — Airlabs occasionally echoes the same
+  /// number on both sides which is upstream noise, not a real
+  /// codeshare.
+  final String? csFlightIata;
 
   const AirportScheduleFlight({
     required this.flightIcao,
@@ -93,9 +103,13 @@ class AirportScheduleFlight {
     this.arrTerminal,
     this.depGate,
     this.arrGate,
+    this.csAirlineIata,
+    this.csFlightIata,
   });
 
   factory AirportScheduleFlight.fromMap(Map<dynamic, dynamic> map) {
+    final csAirline = map['cs_airline_iata']?.toString();
+    final csFlight = map['cs_flight_iata']?.toString();
     return AirportScheduleFlight(
       flightIcao: map['flight_icao']?.toString() ?? '',
       flightIata: map['flight_iata']?.toString() ?? '',
@@ -111,9 +125,23 @@ class AirportScheduleFlight {
       arrTerminal: map['arr_terminal']?.toString(),
       depGate: map['dep_gate']?.toString(),
       arrGate: map['arr_gate']?.toString(),
+      csAirlineIata:
+          (csAirline != null && csAirline.isNotEmpty) ? csAirline : null,
+      csFlightIata:
+          (csFlight != null && csFlight.isNotEmpty) ? csFlight : null,
     );
   }
 
   String get displayCode => flightIata.isNotEmpty ? flightIata : flightIcao;
   String get searchCode => displayCode.toUpperCase();
+
+  /// True when a codeshare partner flight number actually differs from
+  /// the operating flight number. Airlabs sometimes returns the same
+  /// number on both sides — that's an upstream artefact, not real
+  /// codeshare info, so we suppress the badge in that case.
+  bool get hasMeaningfulCodeshare {
+    final cs = csFlightIata;
+    if (cs == null || cs.isEmpty) return false;
+    return cs.toUpperCase() != flightIata.toUpperCase();
+  }
 }

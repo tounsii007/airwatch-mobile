@@ -406,6 +406,36 @@ class SettingsScreen extends ConsumerWidget {
                         .update((s) => s.copyWith(showAirportLabels: v)),
                   ),
                   _Div(isDark),
+                  // Airport weather emoji on labels — mirrors airwatch-
+                  // web's "Show airport weather" toggle (commit 1e1bfb7).
+                  // When off, no Open-Meteo calls go out.
+                  _Tog(
+                    context.tr('airport_weather'),
+                    context.tr('weather_emoji'),
+                    Icons.wb_sunny_outlined,
+                    settings.showAirportWeather,
+                    primary,
+                    isDark,
+                    (v) => ref
+                        .read(settingsProvider.notifier)
+                        .update((s) => s.copyWith(showAirportWeather: v)),
+                  ),
+                  _Div(isDark),
+                  // Aircraft photos on flight details — mirrors airwatch-
+                  // web's "Show aircraft photos" toggle (commit 6eeb5b8).
+                  // Privacy- / bandwidth-conscious users can opt out.
+                  _Tog(
+                    context.tr('aircraft_photos'),
+                    context.tr('show_photo_hint'),
+                    Icons.photo_camera_outlined,
+                    settings.showAircraftPhotos,
+                    primary,
+                    isDark,
+                    (v) => ref
+                        .read(settingsProvider.notifier)
+                        .update((s) => s.copyWith(showAircraftPhotos: v)),
+                  ),
+                  _Div(isDark),
                   _Tog(
                     context.tr('density_heatmap'),
                     context.tr('overlay'),

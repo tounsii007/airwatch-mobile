@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:airwatch_mobile/core/constants/airport_full_database.dart';
+import 'package:airwatch_mobile/core/constants/settings_provider.dart';
 import 'package:airwatch_mobile/core/constants/ui_constants.dart';
 import 'package:airwatch_mobile/core/theme/app_colors.dart';
 import 'package:airwatch_mobile/features/airport/presentation/screens/airport_detail_screen.dart';
+import 'package:airwatch_mobile/features/map/data/airport_weather_cache.dart';
 
 /// Tiered airport coverage. Each tier governs the minimum zoom at which
 /// the airport's IATA-coded label appears on the map.
@@ -340,14 +343,20 @@ List<_AptEntry> _curated() {
 /// World-airport markers. Tier 1 hubs at zoom 4+, tier 2 regionals at 6+,
 /// the full 21k-airport database at 8+. Every render path goes through
 /// the same per-zoom cap so dense regions don't choke the layout.
-class AirportMarkersLayer extends StatelessWidget {
+class AirportMarkersLayer extends ConsumerWidget {
   final double zoom;
   const AirportMarkersLayer({super.key, required this.zoom});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     if (zoom < 4) return const SizedBox.shrink();
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final weatherEnabled =
+        ref.watch(settingsProvider.select((s) => s.showAirportWeather));
+    // Watch the weather-cache tick so the label layer repaints when a
+    // freshly-fetched emoji lands. The provider's value is irrelevant —
+    // we just care about the change signal.
+    ref.watch(airportWeatherTickProvider);
 
     final camera = MapCamera.maybeOf(context);
     if (camera == null) return const SizedBox.shrink();
@@ -420,15 +429,44 @@ class AirportMarkersLayer extends StatelessWidget {
       if (entry.lat < south || entry.lat > north) continue;
       if (entry.lon < west || entry.lon > east) continue;
 
+      // Kick off weather fetch (no-op if cached / in-flight / disabled).
+      // Done OUTSIDE the marker's child widget so the Riverpod ref isn't
+      // captured per-marker and we don't accidentally rebuild on every
+      // pan.
+      if (showLabel && weatherEnabled) {
+        prefetchAirportWeather(
+          entry.iata,
+          entry.lat,
+          entry.lon,
+          onLanded: () =>
+              ref.read(airportWeatherTickProvider.notifier).bump(),
+        );
+      }
+
+      // Read the cache synchronously — null until the first fetch
+      // lands, which triggers a tick-bump and a rebuild.
+      final weather = showLabel && weatherEnabled
+          ? getCachedAirportWeather(entry.iata)
+          : null;
+
       markers.add(
         Marker(
           point: LatLng(entry.lat, entry.lon),
-          width: showLabel ? 80 : dotSize * 2 + 4,
+          // Add a little extra width when an emoji shows so the IATA
+          // text doesn't get clipped by the 80-px ceiling. Two glyphs
+          // is plenty — emojis render double-wide on most platforms.
+          width: showLabel ? (weather == null ? 80 : 96) : dotSize * 2 + 4,
           height: showLabel ? 22 : dotSize * 2 + 4,
           child: GestureDetector(
             onTap: () => openAirport(context, entry.iata),
             child: showLabel
-                ? _Lbl(iata: entry.iata, isDark: isDark)
+                ? _Lbl(
+                    iata: entry.iata,
+                    isDark: isDark,
+                    weatherEmoji: weather == null
+                        ? null
+                        : getWeatherEmoji(weather.code, weather.isDay),
+                  )
                 : _Dot(size: dotSize, isDark: isDark),
           ),
         ),
@@ -480,7 +518,16 @@ class _Dot extends StatelessWidget {
 class _Lbl extends StatelessWidget {
   final String iata;
   final bool isDark;
-  const _Lbl({required this.iata, required this.isDark});
+  /// Optional weather glyph rendered right of the IATA code. `null` when
+  /// the user disabled `showAirportWeather` or the cache hasn't landed
+  /// yet — in that case we fall back to text-only (no layout shift on
+  /// late arrival because the marker width is fixed up-front).
+  final String? weatherEmoji;
+  const _Lbl({
+    required this.iata,
+    required this.isDark,
+    this.weatherEmoji,
+  });
   @override
   Widget build(BuildContext context) {
     const c = UiConstants.lightPrimary;
@@ -497,15 +544,29 @@ class _Lbl extends StatelessWidget {
               ? [BoxShadow(color: c.withValues(alpha: 0.2), blurRadius: 4)]
               : [],
         ),
-        child: Text(
-          iata,
-          style: const TextStyle(
-            fontFamily: UiConstants.headingFont,
-            fontSize: 7,
-            fontWeight: FontWeight.w700,
-            color: c,
-            letterSpacing: 0.5,
-          ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              iata,
+              style: const TextStyle(
+                fontFamily: UiConstants.headingFont,
+                fontSize: 7,
+                fontWeight: FontWeight.w700,
+                color: c,
+                letterSpacing: 0.5,
+              ),
+            ),
+            if (weatherEmoji != null) ...[
+              const SizedBox(width: 2),
+              // Render the emoji slightly larger than the IATA code so
+              // glyphs like ☀️ and 🌧️ stay legible at zoom-4 scale.
+              Text(
+                weatherEmoji!,
+                style: const TextStyle(fontSize: 8, height: 1.0),
+              ),
+            ],
+          ],
         ),
       ),
     );

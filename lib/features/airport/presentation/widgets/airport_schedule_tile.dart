@@ -99,6 +99,41 @@ class AirportScheduleTile extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
+            // Codeshare badge — small violet pill rendered right of the
+            // operating flight code when the row is sold under a partner
+            // brand (e.g. KL2002 operated as AF1241). Mirrors airwatch-
+            // web's `ScheduleRow.tsx` (commit 76fdfa0). Suppressed when
+            // the partner number is the same as the operating number —
+            // that's upstream noise, not a real codeshare.
+            if (flight.hasMeaningfulCodeshare) ...[
+              const SizedBox(width: 4),
+              Tooltip(
+                message: context.tr('codeshare_with')
+                    .replaceAll('{0}', flight.csFlightIata!),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF9D72D9).withValues(alpha: 0.18),
+                    borderRadius: BorderRadius.circular(3),
+                    border: Border.all(
+                      color: const Color(0xFF9D72D9).withValues(alpha: 0.45),
+                      width: 0.5,
+                    ),
+                  ),
+                  child: Text(
+                    '${context.tr('codeshare_short')} ${flight.csFlightIata}',
+                    style: const TextStyle(
+                      fontFamily: UiConstants.headingFont,
+                      fontSize: 7,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.4,
+                      color: Color(0xFFB89AE8),
+                    ),
+                  ),
+                ),
+              ),
+            ],
             const SizedBox(width: 6),
             Expanded(
               child: Text(
