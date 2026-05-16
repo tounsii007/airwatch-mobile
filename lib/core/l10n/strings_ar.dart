@@ -235,6 +235,65 @@ class StringsAr extends AppStrings {
   @override
   String get statsUniqueAirports => 'المطارات';
 
+  // Personal-stats overhaul (التوافق مع airwatch-web 1e24147).
+  @override
+  String get statsTrackingSince => 'التتبع منذ';
+  @override
+  String get statsDaysActive => 'الأيام النشطة';
+  @override
+  String get statsPeakHour => 'ساعة الذروة';
+  @override
+  String get statsActivityChart => 'النشاط · 24 ساعة';
+  @override
+  String get statsTopRoutes => 'أهم المسارات';
+  @override
+  String get statsTopAirports => 'أهم المطارات';
+  @override
+  String get statsRecentFlights => 'الرحلات الأخيرة';
+  @override
+  String get statsExport => 'تصدير';
+  @override
+  String get statsExportJson => 'تصدير كـ JSON';
+  @override
+  String get statsExportCsv => 'تصدير كـ CSV';
+  @override
+  String get statsExportJsonCopied => 'تم نسخ JSON إلى الحافظة';
+  @override
+  String get statsExportCsvCopied => 'تم نسخ CSV إلى الحافظة';
+  @override
+  String get statsClear => 'مسح السجل';
+  @override
+  String get statsClearConfirm =>
+      'سيؤدي هذا إلى إزالة سجل التتبع المحلي نهائيًا. هل تريد المتابعة؟';
+  @override
+  String get statsEmptyTitle => 'لم يتم تتبع أي رحلات بعد';
+  @override
+  String get statsEmptyHint =>
+      'انقر على رحلة على الخريطة لبدء تسجيل سجل التتبع الشخصي.';
+  @override
+  String get overview => 'نظرة عامة';
+  @override
+  String get replayTitle => 'إعادة التشغيل';
+  @override
+  String get replayHeading => 'إعادة تشغيل 7 أيام';
+  @override
+  String get replayBody =>
+      'أدخل علامة نداء أو رقم رحلة لمشاهدة آخر 7 أيام — التأخيرات والأوقات المجدولة مقابل الفعلية وتتبع المسار.';
+  @override
+  String get replayHint => 'رقم الرحلة (مثل TU744)';
+  @override
+  String get replaySearchAction => 'بحث';
+  @override
+  String get replayExamples => 'أمثلة: TU744, DLH441, RYR1234';
+  @override
+  String get statsSearchHint => 'البحث عن علامة نداء / مسار / شركة…';
+  @override
+  String get statsSearchNoMatch => 'لا توجد رحلات تطابق هذا الفلتر.';
+  @override
+  String get statsSortByRecency => 'الترتيب حسب الأحدث';
+  @override
+  String get statsSortByViews => 'الترتيب حسب المشاهدات';
+
   @override
   String get squawkEmergencyTitle => 'صفير الطوارئ';
   @override

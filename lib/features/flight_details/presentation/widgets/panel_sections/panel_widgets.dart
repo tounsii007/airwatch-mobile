@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:airwatch_mobile/core/constants/ui_constants.dart';
+import 'package:airwatch_mobile/core/widgets/ticking_value.dart';
 import '../../../../../core/theme/app_colors.dart';
 
 /// Colored data card with 1 or 2 values
@@ -53,8 +54,13 @@ class FlightDataCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 2),
-          Text(
-            value1,
+          // Wrapped in TickingValue so a WS push that actually changes
+          // the number (alt / speed / heading / V/S / lat / lon) gives
+          // a visible cue instead of looking identical to "the panel
+          // is idle". Mirrors airwatch-web's TickingValue primitive
+          // (commit 6eeb5b8).
+          TickingValue(
+            value: value1,
             style: TextStyle(
               fontFamily: UiConstants.headingFont,
               fontSize: 14,
@@ -77,8 +83,8 @@ class FlightDataCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 2),
-            Text(
-              value2!,
+            TickingValue(
+              value: value2!,
               style: TextStyle(
                 fontFamily: UiConstants.headingFont,
                 fontSize: 14,

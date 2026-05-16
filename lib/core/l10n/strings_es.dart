@@ -231,6 +231,65 @@ class StringsEs extends AppStrings {
   @override
   String get statsUniqueAirports => 'AEROPUERTOS';
 
+  // Personal-stats overhaul (paridad con airwatch-web 1e24147).
+  @override
+  String get statsTrackingSince => 'RASTREO DESDE';
+  @override
+  String get statsDaysActive => 'DÍAS ACTIVOS';
+  @override
+  String get statsPeakHour => 'HORA PUNTA';
+  @override
+  String get statsActivityChart => 'ACTIVIDAD · 24 H';
+  @override
+  String get statsTopRoutes => 'RUTAS TOP';
+  @override
+  String get statsTopAirports => 'AEROPUERTOS TOP';
+  @override
+  String get statsRecentFlights => 'VUELOS RECIENTES';
+  @override
+  String get statsExport => 'Exportar';
+  @override
+  String get statsExportJson => 'Exportar como JSON';
+  @override
+  String get statsExportCsv => 'Exportar como CSV';
+  @override
+  String get statsExportJsonCopied => 'JSON copiado al portapapeles';
+  @override
+  String get statsExportCsvCopied => 'CSV copiado al portapapeles';
+  @override
+  String get statsClear => 'Borrar historial';
+  @override
+  String get statsClearConfirm =>
+      'Esto eliminará permanentemente tu historial local. ¿Continuar?';
+  @override
+  String get statsEmptyTitle => 'Aún no hay vuelos rastreados';
+  @override
+  String get statsEmptyHint =>
+      'Toca un vuelo en el mapa para empezar a registrar tu historial personal.';
+  @override
+  String get overview => 'Resumen';
+  @override
+  String get replayTitle => 'Reproducción';
+  @override
+  String get replayHeading => 'Reproducción de 7 días';
+  @override
+  String get replayBody =>
+      'Introduce un indicativo o número de vuelo para ver los últimos 7 días — retrasos, horarios programados vs reales y trazado de la ruta.';
+  @override
+  String get replayHint => 'Número de vuelo (ej. TU744)';
+  @override
+  String get replaySearchAction => 'Buscar';
+  @override
+  String get replayExamples => 'Ejemplos: TU744, DLH441, RYR1234';
+  @override
+  String get statsSearchHint => 'Buscar indicativo / ruta / aerolínea…';
+  @override
+  String get statsSearchNoMatch => 'Ningún vuelo coincide con este filtro.';
+  @override
+  String get statsSortByRecency => 'Ordenar por reciente';
+  @override
+  String get statsSortByViews => 'Ordenar por vistas';
+
   @override
   String get squawkEmergencyTitle => 'Squawk de emergencia';
   @override

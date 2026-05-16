@@ -9,6 +9,7 @@ import 'package:airwatch_mobile/core/l10n/app_strings.dart';
 import 'package:airwatch_mobile/core/theme/app_colors.dart';
 import 'package:airwatch_mobile/core/widgets/glass_panel.dart';
 import 'package:airwatch_mobile/core/widgets/stat_card.dart';
+import 'package:airwatch_mobile/features/flight_details/presentation/screens/flight_history_screen.dart';
 import 'package:airwatch_mobile/features/stats/data/personal_stats_provider.dart';
 import 'package:airwatch_mobile/features/stats/domain/stats_metrics.dart';
 
@@ -563,79 +564,260 @@ class _TopList extends StatelessWidget {
   }
 }
 
-// ─── Recent flights list (last 10) ──────────────────────────────────────
-class _RecentFlightsList extends StatelessWidget {
+// ─── Recent flights list (search + sort + last N) ───────────────────────
+//
+// Mirrors airwatch-web's `RecentFlightsList.tsx` from commit 1e24147 —
+// live filter input + recency-vs-views sort toggle. Tap on a row pushes
+// the FlightHistoryScreen for that callsign (the closest mobile
+// equivalent of web's /flight/[icao24] route).
+enum _RecentSort { recency, views }
+
+class _RecentFlightsList extends StatefulWidget {
   const _RecentFlightsList({required this.flights, required this.s});
   final List<ViewedFlight> flights;
   final AppStrings s;
 
   @override
+  State<_RecentFlightsList> createState() => _RecentFlightsListState();
+}
+
+class _RecentFlightsListState extends State<_RecentFlightsList> {
+  final _searchController = TextEditingController();
+  String _q = '';
+  _RecentSort _sort = _RecentSort.recency;
+  static const _displayCap = 25;
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final rows = flights.take(10).toList();
-    if (rows.isEmpty) return const SizedBox.shrink();
+    if (widget.flights.isEmpty) return const SizedBox.shrink();
+    final filtered = _filterAndSort(widget.flights);
+    final rows = filtered.take(_displayCap).toList(growable: false);
+
     return GlassPanel(
       padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
       borderRadius: 12,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            s.statsRecentFlights,
-            style: const TextStyle(
-              fontFamily: UiConstants.headingFont,
-              fontSize: 10,
-              letterSpacing: 1.2,
-              fontWeight: FontWeight.w800,
-              color: AppColors.textSecondary,
-            ),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  widget.s.statsRecentFlights,
+                  style: const TextStyle(
+                    fontFamily: UiConstants.headingFont,
+                    fontSize: 10,
+                    letterSpacing: 1.2,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ),
+              // Sort toggle — recency by default; tap to flip to view-
+              // count rank. Tooltip explains the inverse of the current
+              // selection so the user knows what the tap will do.
+              IconButton(
+                tooltip: _sort == _RecentSort.recency
+                    ? widget.s.statsSortByViews
+                    : widget.s.statsSortByRecency,
+                visualDensity: VisualDensity.compact,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                icon: Icon(
+                  _sort == _RecentSort.recency
+                      ? Icons.access_time_rounded
+                      : Icons.bar_chart_rounded,
+                  size: 16,
+                  color: AppColors.primary,
+                ),
+                onPressed: () => setState(() {
+                  _sort = _sort == _RecentSort.recency
+                      ? _RecentSort.views
+                      : _RecentSort.recency;
+                }),
+              ),
+            ],
           ),
           const SizedBox(height: 6),
-          for (final f in rows)
+          // Search input — live filter (no submit needed). Hidden when
+          // the dataset is small enough that scanning is faster than
+          // typing.
+          if (widget.flights.length >= 5)
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 3),
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 60,
-                    child: Text(
-                      f.callsign?.isNotEmpty == true
-                          ? f.callsign!
-                          : f.icao24.toUpperCase(),
-                      style: const TextStyle(
-                        fontFamily: UiConstants.headingFont,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.primary,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
+              padding: const EdgeInsets.only(bottom: 6),
+              child: SizedBox(
+                height: 32,
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (v) => setState(() => _q = v.trim().toLowerCase()),
+                  style: const TextStyle(
+                    fontFamily: UiConstants.headingFont,
+                    fontSize: 12,
+                    color: AppColors.primary,
                   ),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: Text(
-                      f.originIata != null && f.destIata != null
-                          ? '${f.originIata} → ${f.destIata}'
-                          : '—',
-                      style: const TextStyle(
-                        fontFamily: UiConstants.bodyFont,
-                        fontSize: 11,
-                        color: AppColors.textSecondary,
-                      ),
-                      overflow: TextOverflow.ellipsis,
+                  decoration: InputDecoration(
+                    isDense: true,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 6,
                     ),
-                  ),
-                  Text(
-                    _formatRelative(f.lastSeenAt),
-                    style: const TextStyle(
-                      fontFamily: UiConstants.bodyFont,
-                      fontSize: 10,
+                    prefixIcon: const Icon(
+                      Icons.search_rounded,
+                      size: 16,
                       color: AppColors.textMuted,
                     ),
+                    hintText: widget.s.statsSearchHint,
+                    hintStyle: const TextStyle(
+                      fontFamily: UiConstants.bodyFont,
+                      fontSize: 11,
+                      color: AppColors.textMuted,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(6),
+                      borderSide: BorderSide(
+                        color: AppColors.glassBorder.withValues(alpha: 0.5),
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(6),
+                      borderSide: BorderSide(
+                        color: AppColors.glassBorder.withValues(alpha: 0.5),
+                      ),
+                    ),
                   ),
-                ],
+                ),
               ),
             ),
+          if (rows.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              child: Text(
+                widget.s.statsSearchNoMatch,
+                style: TextStyle(
+                  fontFamily: UiConstants.bodyFont,
+                  fontSize: 11,
+                  color: AppColors.textMuted.withValues(alpha: 0.8),
+                ),
+              ),
+            )
+          else
+            for (final f in rows) _Row(flight: f, s: widget.s),
         ],
+      ),
+    );
+  }
+
+  List<ViewedFlight> _filterAndSort(List<ViewedFlight> flights) {
+    Iterable<ViewedFlight> out = flights;
+    if (_q.isNotEmpty) {
+      out = out.where((f) {
+        final cs = (f.callsign ?? '').toLowerCase();
+        final icao = f.icao24.toLowerCase();
+        final airline = (f.airlineIcao ?? '').toLowerCase();
+        final orig = (f.originIata ?? '').toLowerCase();
+        final dest = (f.destIata ?? '').toLowerCase();
+        return cs.contains(_q) ||
+            icao.contains(_q) ||
+            airline.contains(_q) ||
+            orig.contains(_q) ||
+            dest.contains(_q);
+      });
+    }
+    final list = out.toList();
+    switch (_sort) {
+      case _RecentSort.recency:
+        list.sort((a, b) => b.lastSeenAt.compareTo(a.lastSeenAt));
+        break;
+      case _RecentSort.views:
+        list.sort((a, b) => b.views.compareTo(a.views));
+        break;
+    }
+    return list;
+  }
+}
+
+class _Row extends StatelessWidget {
+  const _Row({required this.flight, required this.s});
+  final ViewedFlight flight;
+  final AppStrings s;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = flight.callsign?.isNotEmpty == true
+        ? flight.callsign!
+        : flight.icao24.toUpperCase();
+    return InkWell(
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => FlightHistoryScreen(initialCallsign: cs),
+        ),
+      ),
+      borderRadius: BorderRadius.circular(4),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 2),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 60,
+              child: Text(
+                cs,
+                style: const TextStyle(
+                  fontFamily: UiConstants.headingFont,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.primary,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(
+                flight.originIata != null && flight.destIata != null
+                    ? '${flight.originIata} → ${flight.destIata}'
+                    : '—',
+                style: const TextStyle(
+                  fontFamily: UiConstants.bodyFont,
+                  fontSize: 11,
+                  color: AppColors.textSecondary,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            if (flight.views > 1) ...[
+              Icon(
+                Icons.visibility_outlined,
+                size: 10,
+                color: AppColors.textMuted.withValues(alpha: 0.8),
+              ),
+              const SizedBox(width: 2),
+              Text(
+                '${flight.views}',
+                style: const TextStyle(
+                  fontFamily: UiConstants.headingFont,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textMuted,
+                ),
+              ),
+              const SizedBox(width: 6),
+            ],
+            Text(
+              _formatRelative(flight.lastSeenAt),
+              style: const TextStyle(
+                fontFamily: UiConstants.bodyFont,
+                fontSize: 10,
+                color: AppColors.textMuted,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

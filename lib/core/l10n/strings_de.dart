@@ -231,6 +231,70 @@ class StringsDe extends AppStrings {
   @override
   String get statsUniqueAirports => 'FLUGHÄFEN';
 
+  // Personal-Stats Vollausbau (parität mit airwatch-web 1e24147).
+  @override
+  String get statsTrackingSince => 'TRACKING SEIT';
+  @override
+  String get statsDaysActive => 'AKTIVE TAGE';
+  @override
+  String get statsPeakHour => 'SPITZENSTUNDE';
+  @override
+  String get statsActivityChart => 'AKTIVITÄT · 24 STD';
+  @override
+  String get statsTopRoutes => 'TOP-ROUTEN';
+  @override
+  String get statsTopAirports => 'TOP-FLUGHÄFEN';
+  @override
+  String get statsRecentFlights => 'LETZTE FLÜGE';
+  @override
+  String get statsExport => 'Exportieren';
+  @override
+  String get statsExportJson => 'Als JSON exportieren';
+  @override
+  String get statsExportCsv => 'Als CSV exportieren';
+  @override
+  String get statsExportJsonCopied => 'JSON in die Zwischenablage kopiert';
+  @override
+  String get statsExportCsvCopied => 'CSV in die Zwischenablage kopiert';
+  @override
+  String get statsClear => 'Verlauf löschen';
+  @override
+  String get statsClearConfirm =>
+      'Damit wird dein lokaler Tracking-Verlauf endgültig entfernt. Fortfahren?';
+  @override
+  String get statsEmptyTitle => 'Noch keine Flüge erfasst';
+  @override
+  String get statsEmptyHint =>
+      'Tippe einen Flug auf der Karte an, um deinen Tracking-Verlauf zu starten.';
+
+  // Overview (umbenannt von Dashboard, siehe DashboardScreen).
+  @override
+  String get overview => 'Übersicht';
+
+  // Replay (Entry-Screen — die 7-Tage-Historie-Suche selbst lebt in
+  // FlightHistoryScreen).
+  @override
+  String get replayTitle => 'Wiedergabe';
+  @override
+  String get replayHeading => '7-Tage-Flugwiedergabe';
+  @override
+  String get replayBody =>
+      'Gib ein Rufzeichen oder eine Flugnummer ein, um die letzten 7 Tage zu sehen — inklusive Verspätungen, geplanter vs. tatsächlicher Zeiten und Routen-Track.';
+  @override
+  String get replayHint => 'Flugnummer (z. B. TU744)';
+  @override
+  String get replaySearchAction => 'Suchen';
+  @override
+  String get replayExamples => 'Beispiele: TU744, DLH441, RYR1234';
+  @override
+  String get statsSearchHint => 'Rufzeichen / Route / Airline suchen…';
+  @override
+  String get statsSearchNoMatch => 'Keine Flüge passen zu diesem Filter.';
+  @override
+  String get statsSortByRecency => 'Nach Aktualität sortieren';
+  @override
+  String get statsSortByViews => 'Nach Aufrufen sortieren';
+
   // Squawk emergency
   @override
   String get squawkEmergencyTitle => 'Notfall-Squawk';

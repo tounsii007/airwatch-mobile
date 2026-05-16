@@ -144,6 +144,12 @@ abstract class AppStrings {
   String get replaySearchAction => 'Search';
   String get replayExamples => 'Examples: TU744, DLH441, RYR1234';
 
+  // RecentFlightsList search / sort (mirrors web 1e24147).
+  String get statsSearchHint => 'Search callsign / route / airline…';
+  String get statsSearchNoMatch => 'No flights match this filter.';
+  String get statsSortByRecency => 'Sort by recency';
+  String get statsSortByViews => 'Sort by view count';
+
   // Squawk emergency-alert banner (mirrors airwatch-web's
   // useSquawkAlerts hook). 7500 → hijack, 7600 → radio failure,
   // 7700 → general emergency. Always show the squawk code itself —
