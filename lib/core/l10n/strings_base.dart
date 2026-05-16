@@ -18,6 +18,32 @@ abstract class AppStrings {
   String get dashboard => 'Dashboard';
   String get globe => 'Globe';
   String get stats => 'Stats';
+  /// Bottom-nav overflow trigger — opens the secondary-routes sheet.
+  /// Mirrors the web app's "More" button in BottomNav.tsx.
+  String get more => 'More';
+  /// Short label for the /compare route. The longer "Compare flights"
+  /// (compareFlights) stays in place for the page title; this is the
+  /// nav-bar label only.
+  String get compare => 'Compare';
+  /// Sheet header shown above the secondary-routes grid.
+  String get moreFeatures => 'More features';
+  /// Default short subtitle for the dashboard tile in the More sheet
+  /// (the personal-overview tile grid — NOT the web's airport-monitoring
+  /// dashboard).
+  String get dashboardSubtitle => 'Personal overview';
+  /// Default short subtitle for the stats tile in the More sheet.
+  String get statsSubtitle => 'Tracking history';
+  /// Default short subtitle for the airlines tile.
+  String get airlinesSubtitle => 'Live carrier list';
+  /// Default short subtitle for the spotting tile.
+  String get spottingShortSubtitle => 'Nearby flights';
+
+  // NOTE: a comprehensive geofence i18n set (fence form + list + alerts
+  // panel + stats badge + I/O toolbar + dashboard empty states) already
+  // lives near the END of this class — kept there so the locale-override
+  // files don't have to walk past every fence key when editing nav
+  // strings. Don't re-add them above; the resolver picks them up the
+  // same way regardless of source-line position.
 
   // Map-style extras
   String get streetsStyle => 'Streets';

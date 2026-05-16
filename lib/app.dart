@@ -15,6 +15,7 @@ import 'features/map/data/models/aircraft_state.dart';
 import 'features/map/presentation/providers/flight_providers.dart';
 import 'features/map/presentation/screens/map_screen.dart';
 import 'features/map/presentation/screens/splash_screen.dart';
+import 'features/navigation/presentation/more_menu_sheet.dart';
 import 'features/notifications/presentation/providers/alert_push_listener.dart';
 import 'features/search/presentation/screens/search_screen.dart';
 import 'features/settings/presentation/screens/settings_screen.dart';
@@ -176,7 +177,7 @@ class _AppShellState extends ConsumerState<AppShell> {
         ),
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
+            padding: const EdgeInsets.symmetric(vertical: 6),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -221,6 +222,20 @@ class _AppShellState extends ConsumerState<AppShell> {
                   isDark: isDark,
                   onTap: () => setState(() => _currentIndex = 4),
                 ),
+                // ── "More" overflow slot ───────────────────────────────
+                // Doesn't own an IndexedStack index — opens the
+                // secondary-routes sheet and pushes the chosen screen
+                // on top of the current primary tab. Never "active"
+                // (we never know in this widget whether the user is
+                // currently on a pushed secondary route).
+                _NavItem(
+                  icon: Icons.more_horiz_rounded,
+                  label: strings.more,
+                  isActive: false,
+                  color: primaryColor,
+                  isDark: isDark,
+                  onTap: () => MoreMenuSheet.show(context),
+                ),
               ],
             ),
           ),
@@ -251,141 +266,131 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      behavior: HitTestBehavior.opaque,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-        decoration: BoxDecoration(
-          color: isActive
-              ? color.withValues(alpha: isDark ? 0.12 : 0.08)
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Icon with glow effect + optional badge
-            Stack(
-              clipBehavior: Clip.none,
+    // Active-state palette — kept centralised so changes ripple through
+    // every visual element (icon, label, bottom-bar) in one place.
+    final activeColor = color;
+    final restColor =
+        isDark ? AppColors.textMuted : UiConstants.lightHintText;
+    final foreground = isActive ? activeColor : restColor;
+
+    // Semantics wrapper so TalkBack / VoiceOver announce the role +
+    // selected state correctly. Previously the GestureDetector was
+    // unlabeled and the label text was a separate node — screen-reader
+    // users heard "MAP" without context.
+    return Semantics(
+      button: true,
+      selected: isActive,
+      label: label,
+      child: GestureDetector(
+        onTap: onTap,
+        behavior: HitTestBehavior.opaque,
+        child: ExcludeSemantics(
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 220),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            decoration: BoxDecoration(
+              color: isActive
+                  ? activeColor.withValues(alpha: isDark ? 0.12 : 0.08)
+                  : Colors.transparent,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Container(
-                  decoration: isActive && isDark
-                      ? BoxDecoration(
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: color.withValues(alpha: 0.5),
-                              blurRadius: 14,
-                              spreadRadius: -2,
+                // Icon — size is constant (was 22→26 on active, made the
+                // active item visually "jump" and stole hierarchy from
+                // page content). Glow is a single soft layer in dark
+                // mode; was two stacked shadows that read as noise.
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Container(
+                      decoration: isActive && isDark
+                          ? BoxDecoration(
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: activeColor.withValues(alpha: 0.4),
+                                  blurRadius: 12,
+                                  spreadRadius: -2,
+                                ),
+                              ],
+                            )
+                          : null,
+                      child: Icon(icon, size: 22, color: foreground),
+                    ),
+                    // Badge — same as before; one shadow for parity
+                    // with the rest of the design tokens.
+                    if (badge > 0)
+                      Positioned(
+                        top: -4,
+                        right: -8,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 5,
+                            vertical: 1,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.error,
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.error.withValues(alpha: 0.4),
+                                blurRadius: 4,
+                              ),
+                            ],
+                          ),
+                          child: Text(
+                            '$badge',
+                            style: const TextStyle(
+                              fontFamily: UiConstants.headingFont,
+                              fontSize: 9,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
                             ),
-                            BoxShadow(
-                              color: color.withValues(alpha: 0.25),
-                              blurRadius: 24,
-                              spreadRadius: -4,
-                            ),
-                          ],
-                        )
-                      : null,
-                  child: Icon(
-                    icon,
-                    size: isActive ? 26 : 22,
-                    color: isActive
-                        ? color
-                        : (isDark
-                              ? AppColors.textMuted
-                              : UiConstants.lightHintText),
-                    shadows: isActive && isDark
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 3),
+                // Label — 11 px (was 8 px, below Material's 10 sp guideline
+                // and consistently flagged as a readability issue in the
+                // UX review). No text-shadow — the icon + bottom-bar
+                // already carry the active emphasis.
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontFamily: UiConstants.headingFont,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    color: foreground,
+                    letterSpacing: 0.6,
+                  ),
+                ),
+                // Bottom indicator — the only "loud" cue we keep. Single
+                // glow layer instead of the previous two stacked blurs.
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 220),
+                  margin: const EdgeInsets.only(top: 3),
+                  width: isActive ? 20 : 0,
+                  height: 2,
+                  decoration: BoxDecoration(
+                    color: isActive ? activeColor : Colors.transparent,
+                    borderRadius: BorderRadius.circular(1),
+                    boxShadow: isActive && isDark
                         ? [
-                            Shadow(
-                              color: color.withValues(alpha: 0.6),
-                              blurRadius: 10,
+                            BoxShadow(
+                              color: activeColor.withValues(alpha: 0.55),
+                              blurRadius: 6,
                             ),
                           ]
                         : null,
                   ),
                 ),
-                // Badge
-                if (badge > 0)
-                  Positioned(
-                    top: -4,
-                    right: -8,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 5,
-                        vertical: 1,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.error,
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.error.withValues(alpha: 0.4),
-                            blurRadius: 4,
-                          ),
-                        ],
-                      ),
-                      child: Text(
-                        '$badge',
-                        style: const TextStyle(
-                          fontFamily: UiConstants.headingFont,
-                          fontSize: 8,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
               ],
             ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: TextStyle(
-                fontFamily: UiConstants.headingFont,
-                fontSize: 8,
-                fontWeight: FontWeight.w700,
-                color: isActive
-                    ? color
-                    : (isDark
-                          ? AppColors.textMuted
-                          : UiConstants.lightHintText),
-                letterSpacing: 1,
-                shadows: isActive && isDark
-                    ? [
-                        Shadow(
-                          color: color.withValues(alpha: 0.4),
-                          blurRadius: 6,
-                        ),
-                      ]
-                    : null,
-              ),
-            ),
-            // Glowing bottom indicator
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 250),
-              margin: const EdgeInsets.only(top: 4),
-              width: isActive ? 20 : 0,
-              height: 2.5,
-              decoration: BoxDecoration(
-                color: isActive ? color : Colors.transparent,
-                borderRadius: BorderRadius.circular(1.5),
-                boxShadow: isActive && isDark
-                    ? [
-                        BoxShadow(
-                          color: color.withValues(alpha: 0.7),
-                          blurRadius: 6,
-                        ),
-                        BoxShadow(
-                          color: color.withValues(alpha: 0.3),
-                          blurRadius: 12,
-                        ),
-                      ]
-                    : null,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

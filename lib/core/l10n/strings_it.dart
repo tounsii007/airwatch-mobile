@@ -117,6 +117,20 @@ class StringsIt extends AppStrings {
   String get globe => 'GLOBO';
   @override
   String get stats => 'STATISTICHE';
+  @override
+  String get more => 'ALTRO';
+  @override
+  String get compare => 'CONFRONTA';
+  @override
+  String get moreFeatures => 'Altre funzioni';
+  @override
+  String get dashboardSubtitle => 'Riepilogo personale';
+  @override
+  String get statsSubtitle => 'Cronologia';
+  @override
+  String get airlinesSubtitle => 'Compagnie aeree live';
+  @override
+  String get spottingShortSubtitle => 'Voli vicini';
 
   @override
   String get streetsStyle => 'Strade';

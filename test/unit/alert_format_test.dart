@@ -7,7 +7,7 @@ import 'package:airwatch_mobile/features/geofences/domain/alert_format.dart';
 /// render the same alert with different labels.
 void main() {
   group('timeAgo', () {
-    final ref = DateTime.utc(2026, 5, 14, 12, 0, 0);
+    final ref = DateTime.utc(2026, 5, 14, 12);
     final refMs = ref.millisecondsSinceEpoch;
 
     test('returns "just now" for a future timestamp (clock skew)', () {

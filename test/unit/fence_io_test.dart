@@ -35,7 +35,7 @@ void main() {
     test('produces an envelope with version + ISO timestamp + fences', () {
       final fence = buildCircle();
       final json = buildExportJson([fence],
-          now: DateTime.utc(2026, 5, 14, 12, 0));
+          now: DateTime.utc(2026, 5, 14, 12));
       final decoded = jsonDecode(json) as Map<String, dynamic>;
       expect(decoded['version'], kExportFileVersion);
       expect(decoded['exportedAt'], '2026-05-14T12:00:00.000Z');

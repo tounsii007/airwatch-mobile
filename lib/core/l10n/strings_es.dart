@@ -117,6 +117,20 @@ class StringsEs extends AppStrings {
   String get globe => 'GLOBO';
   @override
   String get stats => 'ESTADÍSTICAS';
+  @override
+  String get more => 'MÁS';
+  @override
+  String get compare => 'COMPARAR';
+  @override
+  String get moreFeatures => 'Más funciones';
+  @override
+  String get dashboardSubtitle => 'Resumen personal';
+  @override
+  String get statsSubtitle => 'Historial';
+  @override
+  String get airlinesSubtitle => 'Aerolíneas en vivo';
+  @override
+  String get spottingShortSubtitle => 'Vuelos cercanos';
 
   @override
   String get streetsStyle => 'Calles';

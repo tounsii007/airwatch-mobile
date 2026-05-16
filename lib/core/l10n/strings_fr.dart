@@ -114,6 +114,20 @@ class StringsFr extends AppStrings {
   String get globe => 'GLOBE';
   @override
   String get stats => 'STATS';
+  @override
+  String get more => 'PLUS';
+  @override
+  String get compare => 'COMPARER';
+  @override
+  String get moreFeatures => 'Plus de fonctionnalités';
+  @override
+  String get dashboardSubtitle => 'Vue personnelle';
+  @override
+  String get statsSubtitle => 'Historique';
+  @override
+  String get airlinesSubtitle => 'Compagnies en direct';
+  @override
+  String get spottingShortSubtitle => 'Vols à proximité';
 
   @override
   String get streetsStyle => 'Rues';

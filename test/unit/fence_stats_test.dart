@@ -93,7 +93,7 @@ void main() {
     test('averages altitudes across the matching hits', () {
       final f = _fence('a');
       final hits = [
-        GeoFenceHit(_ac(icao24: '1', callsign: 'DLH1', altMeters: 10000), f),
+        GeoFenceHit(_ac(icao24: '1', callsign: 'DLH1'), f),
         GeoFenceHit(_ac(icao24: '2', callsign: 'DLH2', altMeters: 20000), f),
       ];
       final s = computeFenceStats(hits, 'a');
@@ -126,9 +126,9 @@ void main() {
       final s = computeFenceStats(
         hits,
         'a',
-        now: DateTime.utc(2026, 5, 14, 12, 0),
+        now: DateTime.utc(2026, 5, 14, 12),
       );
-      expect(s.latestAt, DateTime.utc(2026, 5, 14, 12, 0));
+      expect(s.latestAt, DateTime.utc(2026, 5, 14, 12));
     });
   });
 

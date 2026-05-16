@@ -122,6 +122,20 @@ class StringsAr extends AppStrings {
   String get globe => 'الكرة الأرضية';
   @override
   String get stats => 'الإحصائيات';
+  @override
+  String get more => 'المزيد';
+  @override
+  String get compare => 'مقارنة';
+  @override
+  String get moreFeatures => 'المزيد من الميزات';
+  @override
+  String get dashboardSubtitle => 'ملخص شخصي';
+  @override
+  String get statsSubtitle => 'سجل التتبع';
+  @override
+  String get airlinesSubtitle => 'شركات الطيران المباشرة';
+  @override
+  String get spottingShortSubtitle => 'رحلات قريبة';
 
   @override
   String get streetsStyle => 'الشوارع';

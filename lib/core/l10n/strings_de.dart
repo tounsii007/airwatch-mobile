@@ -114,6 +114,20 @@ class StringsDe extends AppStrings {
   String get globe => 'GLOBUS';
   @override
   String get stats => 'STATISTIK';
+  @override
+  String get more => 'MEHR';
+  @override
+  String get compare => 'VERGLEICH';
+  @override
+  String get moreFeatures => 'Weitere Funktionen';
+  @override
+  String get dashboardSubtitle => 'Persönliche Übersicht';
+  @override
+  String get statsSubtitle => 'Tracking-Verlauf';
+  @override
+  String get airlinesSubtitle => 'Live-Fluggesellschaften';
+  @override
+  String get spottingShortSubtitle => 'Flüge in der Nähe';
 
   @override
   String get streetsStyle => 'Straßen';
