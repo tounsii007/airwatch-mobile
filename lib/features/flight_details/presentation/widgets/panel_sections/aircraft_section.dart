@@ -34,6 +34,8 @@ class PanelAircraftSection extends StatelessWidget {
     final age = route?.aircraftAge;
     final built = route?.aircraftBuilt;
     final engine = route?.engineType;
+    final engineCount = route?.engineCount;
+    final msn = route?.msn;
     final typecode = metadata?.typecode;
     final ageLabel = age == null
         ? null
@@ -133,7 +135,13 @@ class PanelAircraftSection extends StatelessWidget {
                   if (engine != null)
                     DetailChip(
                       icon: Icons.local_fire_department_rounded,
-                      label: '${engine[0].toUpperCase()}${engine.substring(1)}',
+                      // Compose "engines × type" when both are known
+                      // (e.g. "4× turbofan"), matching web's MetadataSection
+                      // composition. Falls back to just the type when the
+                      // count is missing.
+                      label: engineCount != null
+                          ? '$engineCount× ${engine[0].toUpperCase()}${engine.substring(1)}'
+                          : '${engine[0].toUpperCase()}${engine.substring(1)}',
                       color: AppColors.warning,
                       isDark: isDark,
                     ),
@@ -142,6 +150,18 @@ class PanelAircraftSection extends StatelessWidget {
                       icon: Icons.calendar_today_rounded,
                       label: ageLabel,
                       color: AppColors.altitudeMedium,
+                      isDark: isDark,
+                    ),
+                  // MSN (manufacturer serial number) — useful for
+                  // spotters tracking a specific airframe across
+                  // registrations. Renders as a plain tag rather than
+                  // taking a coloured slot since it's a string ID,
+                  // not a categorical attribute.
+                  if (msn != null && msn.isNotEmpty)
+                    DetailChip(
+                      icon: Icons.tag_rounded,
+                      label: 'MSN $msn',
+                      color: AppColors.textSecondary,
                       isDark: isDark,
                     ),
                 ],

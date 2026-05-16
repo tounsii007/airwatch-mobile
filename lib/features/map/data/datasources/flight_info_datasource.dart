@@ -112,6 +112,11 @@ class FlightInfoDatasource {
           aircraftAge: flight.age,
           aircraftBuilt: flight.built,
           engineType: flight.engine,
+          // Airlabs `engines_count` arrives as a string; parse it so
+          // FlightRouteInfo can carry a typed int. Null when missing
+          // or unparseable — the UI hides the tag in either case.
+          engineCount: int.tryParse(flight.engineCount ?? ''),
+          msn: flight.msn,
         );
       }
       return null;
@@ -554,6 +559,15 @@ class FlightRouteInfo {
   final String? aircraftModel, aircraftManufacturer;
   final String? engineType;
   final int? aircraftAge, aircraftBuilt;
+  /// Number of engines on the airframe (e.g. 2 for an A320, 4 for an
+  /// A380). Mirrors airwatch-web's `metadata.engineCount` (commit
+  /// d99d3c2 pt.4). Populated from the Airlabs `/aircraft.engines_count`
+  /// field. May be null when the upstream entry is incomplete.
+  final int? engineCount;
+  /// Construction / serial number — the manufacturer's MSN (e.g.
+  /// Airbus s/n 12345). Useful for spotters tracking a specific
+  /// airframe across registrations.
+  final String? msn;
 
   FlightRouteInfo({
     required this.callsign,
@@ -584,6 +598,8 @@ class FlightRouteInfo {
     this.engineType,
     this.aircraftAge,
     this.aircraftBuilt,
+    this.engineCount,
+    this.msn,
   });
 
   bool get hasDepDelay => depDelay != null && depDelay! > 0;
