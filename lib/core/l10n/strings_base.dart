@@ -107,6 +107,27 @@ abstract class AppStrings {
   String get statsUniqueAirlines => 'UNIQUE AIRLINES';
   String get statsUniqueAirports => 'UNIQUE AIRPORTS';
 
+  // Personal-stats screen overhaul (mirrors airwatch-web 1e24147).
+  // Activity meta strip + 24h chart + top lists + export.
+  String get statsTrackingSince => 'TRACKING SINCE';
+  String get statsDaysActive => 'DAYS ACTIVE';
+  String get statsPeakHour => 'PEAK HOUR';
+  String get statsActivityChart => 'ACTIVITY · 24H';
+  String get statsTopRoutes => 'TOP ROUTES';
+  String get statsTopAirports => 'TOP AIRPORTS';
+  String get statsRecentFlights => 'RECENT FLIGHTS';
+  String get statsExport => 'Export';
+  String get statsExportJson => 'Export as JSON';
+  String get statsExportCsv => 'Export as CSV';
+  String get statsExportJsonCopied => 'JSON copied to clipboard';
+  String get statsExportCsvCopied => 'CSV copied to clipboard';
+  String get statsClear => 'Clear history';
+  String get statsClearConfirm =>
+      'This permanently removes your local viewing history. Continue?';
+  String get statsEmptyTitle => 'No flights tracked yet';
+  String get statsEmptyHint =>
+      'Tap a flight on the map to start recording your personal tracking history.';
+
   // Squawk emergency-alert banner (mirrors airwatch-web's
   // useSquawkAlerts hook). 7500 → hijack, 7600 → radio failure,
   // 7700 → general emergency. Always show the squawk code itself —

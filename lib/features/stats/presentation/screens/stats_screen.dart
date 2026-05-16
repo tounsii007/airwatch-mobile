@@ -1,244 +1,695 @@
-import 'package:dio/dio.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:airwatch_mobile/core/constants/api_constants.dart';
+import 'package:airwatch_mobile/core/constants/ui_constants.dart';
 import 'package:airwatch_mobile/core/l10n/app_strings.dart';
-import 'package:airwatch_mobile/core/network/app_http_client.dart';
 import 'package:airwatch_mobile/core/theme/app_colors.dart';
+import 'package:airwatch_mobile/core/widgets/glass_panel.dart';
 import 'package:airwatch_mobile/core/widgets/stat_card.dart';
+import 'package:airwatch_mobile/features/stats/data/personal_stats_provider.dart';
+import 'package:airwatch_mobile/features/stats/domain/stats_metrics.dart';
 
-/// Global flight statistics sourced from `GET /api/stats` on the
-/// airwatch-api backend — same shape the web app consumes.
+/// Personal tracking history — mirrors airwatch-web's `/stats` page
+/// (commit 1e24147).
 ///
-/// <p>Response contract (from `FlightController#stats`):
-/// ```json
-/// {
-///   "total":           1245,
-///   "airborne":         980,
-///   "onGround":         265,
-///   "requestCount":   15000,
-///   "lastPollTime":   1710000000000,
-///   "topAirlines": [ { "icao": "DLH", "count": 42 } ]
-/// }
-/// ```
-///
-/// <p>Refreshes every 30 seconds while visible (the backend already caches
-/// the aggregation server-side, so polling is cheap).
-final _statsStreamProvider = StreamProvider.autoDispose<Map<String, dynamic>>((
-  ref,
-) async* {
-  final dio = AppHttpClient.create();
-  while (true) {
-    try {
-      final r = await dio.get<dynamic>(ApiConstants.flightStats);
-      if (r.statusCode == 200 && r.data is Map) {
-        yield Map<String, dynamic>.from(r.data as Map);
-      }
-    } on DioException {
-      // Swallow — next tick retries. Don't tear the stream down.
-    }
-    await Future<void>.delayed(const Duration(seconds: 30));
-  }
-});
-
+/// <p>Sections (top → bottom):
+/// <ol>
+///   <li>Summary KPI tiles — total / unique-airlines / unique-airports /
+///       avg-views (the last only when there's any data, mirroring the
+///       web's "no fake 0" empty-state).</li>
+///   <li>Activity meta strip — tracking-since, days-active, peak hour.</li>
+///   <li>24-hour activity histogram — pure-CSS bars, locale-stamped
+///       axis ticks at 00 / 06 / 12 / 18.</li>
+///   <li>Top airlines / top routes / top airports / recent flights —
+///       four list cards, with the recent-list rendering a clear CTA on
+///       each row to jump back to the live map.</li>
+///   <li>Export + clear-history footer.</li>
+/// </ol>
 class StatsScreen extends ConsumerWidget {
   const StatsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final s = S.of(ref.watch(languageProvider));
-    final async = ref.watch(_statsStreamProvider);
+    final stats = ref.watch(personalStatsProvider);
+    final flights = stats.viewedFlights;
+    final isEmpty = flights.isEmpty;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(s.stats),
         backgroundColor: Colors.transparent,
         elevation: 0,
+        actions: [
+          if (!isEmpty)
+            IconButton(
+              tooltip: s.statsExport,
+              icon: const Icon(Icons.download_rounded, size: 20),
+              onPressed: () => _showExportSheet(context, ref, s),
+            ),
+        ],
       ),
-      body: async.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('${s.errorPrefix}: $e')),
-        data: (data) => _buildBody(s, data),
-      ),
+      body: isEmpty
+          ? _EmptyState(s: s)
+          : SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
+              child: _buildBody(context, ref, s, stats),
+            ),
     );
   }
 
-  Widget _buildBody(AppStrings s, Map<String, dynamic> data) {
-    final total = (data['total'] as num?)?.toInt() ?? 0;
-    final airborne = (data['airborne'] as num?)?.toInt() ?? 0;
-    final onGround = (data['onGround'] as num?)?.toInt() ?? 0;
-    final reqCount = (data['requestCount'] as num?)?.toInt() ?? 0;
-    final topList = (data['topAirlines'] as List?) ?? const [];
+  Widget _buildBody(
+    BuildContext context,
+    WidgetRef ref,
+    AppStrings s,
+    PersonalStatsState stats,
+  ) {
+    final flights = stats.viewedFlights;
+    final uniqueAirlines = countUniqueAirlines(flights);
+    final uniqueAirports = countUniqueAirports(flights);
+    final airlines = topAirlines(flights);
+    final routes = topRoutes(flights);
+    final airports = topAirports(flights);
+    final hourBuckets = viewsByHour(flights);
+    final summary = activitySummary(flights);
 
-    // Per the airwatch-web stats overhaul: only show the "AVG VIEWS /
-    // FLIGHT" tile when there's actually data. With zero flights every
-    // ratio is `0 / 0 = NaN`, and a fourth screaming-zero tile would just
-    // make the empty state noisier.
-    final hasAnyData = total > 0;
-    final avgPerFlight = total == 0 ? 0.0 : reqCount / total;
+    // Avg views per flight — strip the trailing zero so "9" not "9.0",
+    // matching web's render. NaN-safe via the empty-check above.
+    final avgViews = flights.isEmpty
+        ? 0.0
+        : (stats.totalViews / flights.length * 10).round() / 10;
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(12),
-      child: Column(
-        children: [
-          // ── Top KPI row — uses the rich StatCard with halo + accent bar.
-          //    Mirrors the web's SummaryRow + StatCard combo so a stat-conscious
-          //    user sees the same visual language across both clients.
-          Row(
-            children: [
-              Expanded(
-                child: StatCard(
-                  label: s.statsFlightsTracked,
-                  value: total,
-                  icon: Icons.flight_rounded,
-                ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // KPI tiles
+        Row(
+          children: [
+            Expanded(
+              child: StatCard(
+                label: s.statsFlightsTracked,
+                value: flights.length,
+                icon: Icons.flight_rounded,
               ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: StatCard(
-                  label: s.statsAirborne,
-                  value: airborne,
-                  status: StatCardStatus.success,
-                  icon: Icons.flight_takeoff_rounded,
-                ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: StatCard(
+                label: s.statsUniqueAirlines,
+                value: uniqueAirlines,
+                status: StatCardStatus.info,
+                icon: Icons.business_center_outlined,
               ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              Expanded(
-                child: StatCard(
-                  label: s.statsOnGround,
-                  value: onGround,
-                  status: StatCardStatus.warning,
-                  icon: Icons.flight_land_rounded,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: StatCard(
-                  label: s.statsAirlabsCalls,
-                  value: reqCount,
-                  status: StatCardStatus.info,
-                  icon: Icons.cloud_sync_rounded,
-                ),
-              ),
-            ],
-          ),
-          // Fourth tile — only shown when there's data, matching the
-          // web's hide-zero-state behaviour.
-          if (hasAnyData) ...[
-            const SizedBox(height: 8),
-            StatCard(
-              label: s.statsAvgViewsPerFlight,
-              value: avgPerFlight,
-              decimals: 1,
-              icon: Icons.bar_chart_rounded,
             ),
           ],
-
-          const SizedBox(height: 16),
-          _SectionTitle(s.statsTopAirlines),
-          const SizedBox(height: 8),
-          if (topList.isEmpty)
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Text(s.statsNoData),
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Expanded(
+              child: StatCard(
+                label: s.statsUniqueAirports,
+                value: uniqueAirports,
+                status: StatCardStatus.success,
+                icon: Icons.location_city_rounded,
               ),
-            )
-          else
-            ...topList.take(20).map((row) {
-              final m = row as Map;
-              return _AirlineRow(
-                icao: (m['icao'] as String?) ?? '—',
-                count: (m['count'] as num?)?.toInt() ?? 0,
-                flightsLabel: s.statsFlightsLabel,
-              );
-            }),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: StatCard(
+                label: s.statsAvgViewsPerFlight,
+                value: avgViews,
+                decimals: avgViews % 1 == 0 ? 0 : 1,
+                status: StatCardStatus.warning,
+                icon: Icons.visibility_outlined,
+              ),
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 16),
+        _ActivityMetaStrip(summary: summary, s: s),
+
+        const SizedBox(height: 12),
+        _ActivityChart(buckets: hourBuckets, s: s),
+
+        const SizedBox(height: 16),
+        _TopList(
+          title: s.statsTopAirlines,
+          entries: airlines,
+          tone: AppColors.primary,
+          iconBuilder: (_) => const Icon(
+            Icons.flight_rounded,
+            size: 14,
+            color: AppColors.primary,
+          ),
+        ),
+        const SizedBox(height: 12),
+        _TopList(
+          title: s.statsTopRoutes,
+          entries: routes,
+          tone: AppColors.accent,
+          iconBuilder: (_) => const Icon(
+            Icons.alt_route_rounded,
+            size: 14,
+            color: AppColors.accent,
+          ),
+        ),
+        const SizedBox(height: 12),
+        _TopList(
+          title: s.statsTopAirports,
+          entries: airports,
+          tone: AppColors.success,
+          iconBuilder: (_) => const Icon(
+            Icons.location_city_rounded,
+            size: 14,
+            color: AppColors.success,
+          ),
+        ),
+        const SizedBox(height: 12),
+        _RecentFlightsList(flights: flights, s: s),
+
+        const SizedBox(height: 20),
+        Center(
+          child: TextButton.icon(
+            onPressed: () => _confirmClear(context, ref, s),
+            style: TextButton.styleFrom(
+              foregroundColor: AppColors.error.withValues(alpha: 0.85),
+            ),
+            icon: const Icon(Icons.delete_outline_rounded, size: 16),
+            label: Text(s.statsClear),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _confirmClear(
+    BuildContext context,
+    WidgetRef ref,
+    AppStrings s,
+  ) async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(s.statsClear),
+        content: Text(s.statsClearConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(MaterialLocalizations.of(ctx).cancelButtonLabel),
+          ),
+          TextButton(
+            style: TextButton.styleFrom(foregroundColor: AppColors.error),
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text(s.statsClear),
+          ),
         ],
       ),
     );
+    if (ok == true) {
+      ref.read(personalStatsProvider.notifier).clear();
+    }
   }
-}
 
-class _SectionTitle extends StatelessWidget {
-  const _SectionTitle(this.text);
-  // ignore: unused_element_parameter
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: AlignmentDirectional.centerStart,
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 11,
-          letterSpacing: 1.2,
-          color: AppColors.textMuted,
-          fontWeight: FontWeight.w700,
+  Future<void> _showExportSheet(
+    BuildContext context,
+    WidgetRef ref,
+    AppStrings s,
+  ) async {
+    final stats = ref.read(personalStatsProvider);
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: AppColors.surface,
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.code_rounded),
+              title: Text(s.statsExportJson),
+              onTap: () {
+                Navigator.of(ctx).pop();
+                _copyToClipboard(
+                  ctx,
+                  s,
+                  _buildJson(stats),
+                  s.statsExportJsonCopied,
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.grid_on_rounded),
+              title: Text(s.statsExportCsv),
+              onTap: () {
+                Navigator.of(ctx).pop();
+                _copyToClipboard(
+                  ctx,
+                  s,
+                  _buildCsv(stats.viewedFlights),
+                  s.statsExportCsvCopied,
+                );
+              },
+            ),
+          ],
         ),
       ),
     );
   }
+
+  String _buildJson(PersonalStatsState stats) {
+    final payload = {
+      'version': 1,
+      'exportedAt': DateTime.now().toUtc().toIso8601String(),
+      'totalViews': stats.totalViews,
+      'flights': stats.viewedFlights.map((vf) => vf.toJson()).toList(),
+    };
+    return const JsonEncoder.withIndent('  ').convert(payload);
+  }
+
+  String _buildCsv(List<ViewedFlight> flights) {
+    final buf = StringBuffer();
+    buf.writeln('icao24,callsign,origin,destination,airline,views,firstSeenAt,lastSeenAt');
+    for (final f in flights) {
+      buf.writeln(
+        [
+          f.icao24,
+          f.callsign ?? '',
+          f.originIata ?? '',
+          f.destIata ?? '',
+          f.airlineIcao ?? '',
+          f.views,
+          f.firstSeenAt.toUtc().toIso8601String(),
+          f.lastSeenAt.toUtc().toIso8601String(),
+        ].join(','),
+      );
+    }
+    return buf.toString();
+  }
+
+  void _copyToClipboard(
+    BuildContext context,
+    AppStrings s,
+    String payload,
+    String message,
+  ) {
+    Clipboard.setData(ClipboardData(text: payload));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
 }
 
-class _AirlineRow extends StatelessWidget {
-  const _AirlineRow({
-    required this.icao,
-    required this.count,
-    required this.flightsLabel,
-  });
-  final String icao;
-  final int count;
-  final String flightsLabel;
+// ─── Activity meta strip ────────────────────────────────────────────────
+class _ActivityMetaStrip extends StatelessWidget {
+  const _ActivityMetaStrip({required this.summary, required this.s});
+  final ActivitySummary summary;
+  final AppStrings s;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 3),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      decoration: BoxDecoration(
-        color: AppColors.surface.withValues(alpha: 0.4),
-        borderRadius: BorderRadius.circular(10),
-      ),
+    final since = summary.trackingSince;
+    final sinceLabel =
+        since == null ? '—' : _formatDate(since.toLocal());
+    final daysLabel = summary.daysActive.toString();
+    final peak = summary.peakHour;
+    final peakLabel =
+        peak == null ? '—' : '${peak.toString().padLeft(2, '0')}:00';
+
+    return GlassPanel(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      borderRadius: 12,
       child: Row(
         children: [
-          Container(
-            width: 34,
-            height: 34,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(6),
+          Expanded(child: _MetaCell(label: s.statsTrackingSince, value: sinceLabel)),
+          _MetaDivider(),
+          Expanded(child: _MetaCell(label: s.statsDaysActive, value: daysLabel)),
+          _MetaDivider(),
+          Expanded(child: _MetaCell(label: s.statsPeakHour, value: peakLabel)),
+        ],
+      ),
+    );
+  }
+
+  static String _formatDate(DateTime d) {
+    final y = d.year.toString();
+    final m = d.month.toString().padLeft(2, '0');
+    final day = d.day.toString().padLeft(2, '0');
+    return '$y-$m-$day';
+  }
+}
+
+class _MetaCell extends StatelessWidget {
+  const _MetaCell({required this.label, required this.value});
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontFamily: UiConstants.headingFont,
+            fontSize: 8,
+            letterSpacing: 1.0,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textMuted,
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          value,
+          style: const TextStyle(
+            fontFamily: UiConstants.headingFont,
+            fontSize: 14,
+            fontWeight: FontWeight.w800,
+            color: AppColors.primary,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _MetaDivider extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => Container(
+        width: 1,
+        height: 24,
+        margin: const EdgeInsets.symmetric(horizontal: 8),
+        color: AppColors.glassBorder.withValues(alpha: 0.4),
+      );
+}
+
+// ─── 24-hour activity histogram ─────────────────────────────────────────
+class _ActivityChart extends StatelessWidget {
+  const _ActivityChart({required this.buckets, required this.s});
+  final List<int> buckets;
+  final AppStrings s;
+
+  @override
+  Widget build(BuildContext context) {
+    final maxBucket = buckets.reduce((a, b) => a > b ? a : b);
+    return GlassPanel(
+      padding: const EdgeInsets.fromLTRB(12, 12, 12, 10),
+      borderRadius: 12,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            s.statsActivityChart,
+            style: const TextStyle(
+              fontFamily: UiConstants.headingFont,
+              fontSize: 10,
+              letterSpacing: 1.2,
+              fontWeight: FontWeight.w800,
+              color: AppColors.textSecondary,
             ),
-            child: Text(
-              icao,
+          ),
+          const SizedBox(height: 10),
+          SizedBox(
+            height: 60,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: List<Widget>.generate(24, (i) {
+                final v = buckets[i];
+                final ratio = maxBucket == 0 ? 0.0 : v / maxBucket;
+                final height = (ratio * 56).clamp(2.0, 56.0);
+                return Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 0.5),
+                    child: Tooltip(
+                      message: '${i.toString().padLeft(2, '0')}:00 · $v',
+                      child: Container(
+                        height: height,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withValues(
+                            alpha: v == 0 ? 0.12 : 0.55,
+                          ),
+                          borderRadius: BorderRadius.circular(1),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+          const SizedBox(height: 4),
+          // 00 / 06 / 12 / 18 ticks below the bars — tells the user that
+          // peak hour is time-of-day, not "third bar from the right".
+          Row(
+            children: [
+              for (final tick in const [0, 6, 12, 18])
+                Expanded(
+                  flex: 6,
+                  child: Text(
+                    tick.toString().padLeft(2, '0'),
+                    style: const TextStyle(
+                      fontFamily: UiConstants.bodyFont,
+                      fontSize: 8,
+                      color: AppColors.textMuted,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Top entries list (airlines / routes / airports) ────────────────────
+class _TopList extends StatelessWidget {
+  const _TopList({
+    required this.title,
+    required this.entries,
+    required this.tone,
+    required this.iconBuilder,
+  });
+  final String title;
+  final List<CountEntry> entries;
+  final Color tone;
+  final Widget Function(int index) iconBuilder;
+
+  @override
+  Widget build(BuildContext context) {
+    if (entries.isEmpty) return const SizedBox.shrink();
+    final maxCount = entries.first.count;
+    return GlassPanel(
+      padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+      borderRadius: 12,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontFamily: UiConstants.headingFont,
+              fontSize: 10,
+              letterSpacing: 1.2,
+              fontWeight: FontWeight.w800,
+              color: AppColors.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 8),
+          ...List.generate(entries.length, (i) {
+            final e = entries[i];
+            final ratio = maxCount == 0 ? 0.0 : e.count / maxCount;
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Row(
+                children: [
+                  iconBuilder(i),
+                  const SizedBox(width: 6),
+                  SizedBox(
+                    width: 80,
+                    child: Text(
+                      e.key,
+                      style: const TextStyle(
+                        fontFamily: UiConstants.headingFont,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  // Share bar — width is scaled against the topmost entry
+                  // so the visual ratio between rows is comparable.
+                  Expanded(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(2),
+                      child: LinearProgressIndicator(
+                        value: ratio,
+                        minHeight: 6,
+                        backgroundColor: tone.withValues(alpha: 0.08),
+                        valueColor: AlwaysStoppedAnimation(
+                          tone.withValues(alpha: 0.6),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  SizedBox(
+                    width: 34,
+                    child: Text(
+                      e.count.toString(),
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        fontFamily: UiConstants.headingFont,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                        color: tone,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Recent flights list (last 10) ──────────────────────────────────────
+class _RecentFlightsList extends StatelessWidget {
+  const _RecentFlightsList({required this.flights, required this.s});
+  final List<ViewedFlight> flights;
+  final AppStrings s;
+
+  @override
+  Widget build(BuildContext context) {
+    final rows = flights.take(10).toList();
+    if (rows.isEmpty) return const SizedBox.shrink();
+    return GlassPanel(
+      padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+      borderRadius: 12,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            s.statsRecentFlights,
+            style: const TextStyle(
+              fontFamily: UiConstants.headingFont,
+              fontSize: 10,
+              letterSpacing: 1.2,
+              fontWeight: FontWeight.w800,
+              color: AppColors.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 6),
+          for (final f in rows)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 3),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 60,
+                    child: Text(
+                      f.callsign?.isNotEmpty == true
+                          ? f.callsign!
+                          : f.icao24.toUpperCase(),
+                      style: const TextStyle(
+                        fontFamily: UiConstants.headingFont,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.primary,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      f.originIata != null && f.destIata != null
+                          ? '${f.originIata} → ${f.destIata}'
+                          : '—',
+                      style: const TextStyle(
+                        fontFamily: UiConstants.bodyFont,
+                        fontSize: 11,
+                        color: AppColors.textSecondary,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Text(
+                    _formatRelative(f.lastSeenAt),
+                    style: const TextStyle(
+                      fontFamily: UiConstants.bodyFont,
+                      fontSize: 10,
+                      color: AppColors.textMuted,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  static String _formatRelative(DateTime when) {
+    final diff = DateTime.now().difference(when);
+    if (diff.inMinutes < 1) return 'now';
+    if (diff.inMinutes < 60) return '${diff.inMinutes}m';
+    if (diff.inHours < 24) return '${diff.inHours}h';
+    return '${diff.inDays}d';
+  }
+}
+
+// ─── Empty state ────────────────────────────────────────────────────────
+class _EmptyState extends StatelessWidget {
+  const _EmptyState({required this.s});
+  final AppStrings s;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.timeline_rounded,
+              size: 56,
+              color: AppColors.textMuted.withValues(alpha: 0.4),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              s.statsEmptyTitle,
               style: const TextStyle(
-                fontSize: 11,
+                fontFamily: UiConstants.headingFont,
+                fontSize: 14,
                 fontWeight: FontWeight.w800,
+                color: AppColors.textMuted,
                 letterSpacing: 0.5,
               ),
             ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              icao,
-              style: const TextStyle(fontWeight: FontWeight.w600),
+            const SizedBox(height: 6),
+            Text(
+              s.statsEmptyHint,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: UiConstants.bodyFont,
+                fontSize: 12,
+                color: AppColors.textMuted.withValues(alpha: 0.8),
+              ),
             ),
-          ),
-          Text(
-            '$count $flightsLabel',
-            style: const TextStyle(
-              color: AppColors.success,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

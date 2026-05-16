@@ -17,6 +17,7 @@ import 'package:airwatch_mobile/features/flight_details/data/services/flight_det
 import 'package:airwatch_mobile/features/map/data/datasources/flight_info_datasource.dart';
 import 'package:airwatch_mobile/features/map/data/models/aircraft_state.dart';
 import 'package:airwatch_mobile/features/map/presentation/providers/flight_providers.dart';
+import 'package:airwatch_mobile/features/stats/data/personal_stats_provider.dart';
 
 import 'panel_sections/action_buttons_section.dart';
 import 'panel_sections/aircraft_section.dart';
@@ -103,6 +104,13 @@ class _FlightDetailsPanelState extends ConsumerState<FlightDetailsPanel> {
     _metadata = null;
     _aircraftPhotoUrl = null;
     _isLoading = true;
+    // Personal-stats capture — mirrors airwatch-web's
+    // useStatsStore.recordView() called from MapPage on every selection.
+    // We do it ONCE per unique icao24 here (dedup by _lastIcao guard
+    // above) rather than on every tap-rebind on the same flight, so the
+    // views count reflects distinct viewing sessions, not WS-trigger
+    // refreshes of an already-selected aircraft.
+    ref.read(personalStatsProvider.notifier).recordView(aircraft);
     _loadDetails(aircraft);
   }
 
@@ -117,6 +125,21 @@ class _FlightDetailsPanelState extends ConsumerState<FlightDetailsPanel> {
         _aircraftPhotoUrl = data.aircraftPhotoUrl;
         _isLoading = false;
       });
+      // Once the route resolves, back-fill the stats row so future
+      // top-routes / top-airports queries can count this aircraft.
+      // No-op when route is still null (Airlabs didn't match).
+      // FlightRouteInfo uses *Airport strings (IATA codes after upstream
+      // resolution); guard against empty strings so we don't poison
+      // the per-route aggregator with "" → "FRA" rows.
+      if (data.route != null) {
+        final dep = data.route!.departureAirport;
+        final arr = data.route!.arrivalAirport;
+        ref.read(personalStatsProvider.notifier).enrichRoute(
+              icao24: aircraft.icao24,
+              originIata: dep.isEmpty ? null : dep,
+              destIata: arr.isEmpty ? null : arr,
+            );
+      }
     } catch (_) {
       if (mounted && _lastIcao == aircraft.icao24) {
         setState(() => _isLoading = false);
