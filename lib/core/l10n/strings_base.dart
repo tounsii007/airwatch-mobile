@@ -31,6 +31,12 @@ abstract class AppStrings {
   /// (the personal-overview tile grid — NOT the web's airport-monitoring
   /// dashboard).
   String get dashboardSubtitle => 'Personal overview';
+  /// Page title for the mobile "Dashboard" — renamed to "Overview" to
+  /// disambiguate from airwatch-web's `/dashboard` (which monitors
+  /// tracked airports). Mobile's screen is a personal tile grid with
+  /// live flights / saved items / top airlines / altitude bands.
+  /// Falls back to "Overview" in English; locales can override.
+  String get overview => 'Overview';
   /// Default short subtitle for the stats tile in the More sheet.
   String get statsSubtitle => 'Tracking history';
   /// Default short subtitle for the airlines tile.
@@ -127,6 +133,16 @@ abstract class AppStrings {
   String get statsEmptyTitle => 'No flights tracked yet';
   String get statsEmptyHint =>
       'Tap a flight on the map to start recording your personal tracking history.';
+
+  // Replay screen — entry point for the 7-day flight history search.
+  // Mirrors airwatch-web's /replay landing page.
+  String get replayTitle => 'Replay';
+  String get replayHeading => '7-day flight replay';
+  String get replayBody =>
+      'Enter a callsign or flight number to see the last 7 days of flights, including delays, scheduled vs actual times, and the route track.';
+  String get replayHint => 'Flight number (e.g. TU744)';
+  String get replaySearchAction => 'Search';
+  String get replayExamples => 'Examples: TU744, DLH441, RYR1234';
 
   // Squawk emergency-alert banner (mirrors airwatch-web's
   // useSquawkAlerts hook). 7500 → hijack, 7600 → radio failure,

@@ -103,7 +103,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(s.dashboard),
+        // Title is "Overview" (not "Dashboard") to disambiguate from
+        // airwatch-web's `/dashboard` which is a different concept —
+        // there the page monitors tracked airports; here it's a
+        // personal tile grid of live flights / saved items / top
+        // airlines / altitude bands.
+        title: Text(s.overview),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),

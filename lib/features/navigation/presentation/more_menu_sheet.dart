@@ -11,6 +11,7 @@ import 'package:airwatch_mobile/features/compare/presentation/screens/compare_sc
 import 'package:airwatch_mobile/features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'package:airwatch_mobile/features/geofences/presentation/screens/geofences_screen.dart';
 import 'package:airwatch_mobile/features/globe/presentation/screens/globe_screen.dart';
+import 'package:airwatch_mobile/features/replay/presentation/screens/replay_screen.dart';
 import 'package:airwatch_mobile/features/spotting/presentation/screens/spotting_screen.dart';
 import 'package:airwatch_mobile/features/stats/presentation/screens/stats_screen.dart';
 
@@ -58,7 +59,10 @@ class MoreMenuSheet extends ConsumerWidget {
     final entries = <_MoreEntry>[
       _MoreEntry(
         icon: Icons.dashboard_rounded,
-        label: s.dashboard,
+        // Renamed to "Overview" — see DashboardScreen's AppBar for the
+        // rationale (parity-clear naming vs web's airport-monitoring
+        // dashboard).
+        label: s.overview,
         subtitle: s.dashboardSubtitle,
         builder: (_) => const DashboardScreen(),
       ),
@@ -91,6 +95,12 @@ class MoreMenuSheet extends ConsumerWidget {
         label: s.spotting,
         subtitle: s.spottingShortSubtitle,
         builder: (_) => const SpottingScreen(),
+      ),
+      _MoreEntry(
+        icon: Icons.history_rounded,
+        label: s.replay,
+        subtitle: s.replayBody,
+        builder: (_) => const ReplayScreen(),
       ),
       _MoreEntry(
         icon: Icons.hexagon_outlined,
