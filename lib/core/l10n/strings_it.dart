@@ -293,6 +293,21 @@ class StringsIt extends AppStrings {
   String get wikiAbout => 'Informazioni';
   @override
   String get wikiReadMore => 'Leggi su Wikipedia';
+  @override
+  String get nearbyAirportsTitle => 'Aeroporti vicini';
+  @override
+  String get nearbyAirportsCta =>
+      'Usa la tua posizione per trovare aeroporti nelle vicinanze.';
+  @override
+  String get useMyLocation => 'USA LA MIA POSIZIONE';
+  @override
+  String get locating => 'Localizzazione…';
+  @override
+  String get geoDenied => 'Permesso di posizione negato.';
+  @override
+  String get geoUnavailable => 'Servizio di posizione non disponibile.';
+  @override
+  String get noNearbyAirports => 'Nessun aeroporto a portata.';
 
   @override
   String get squawkEmergencyTitle => 'Squawk emergenza';

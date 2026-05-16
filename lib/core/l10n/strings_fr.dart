@@ -293,6 +293,21 @@ class StringsFr extends AppStrings {
   String get wikiAbout => 'À propos';
   @override
   String get wikiReadMore => 'Lire sur Wikipédia';
+  @override
+  String get nearbyAirportsTitle => 'Aéroports près de vous';
+  @override
+  String get nearbyAirportsCta =>
+      'Utilisez votre position pour trouver les aéroports à proximité.';
+  @override
+  String get useMyLocation => 'UTILISER MA POSITION';
+  @override
+  String get locating => 'Localisation…';
+  @override
+  String get geoDenied => 'Autorisation de localisation refusée.';
+  @override
+  String get geoUnavailable => 'Service de localisation indisponible.';
+  @override
+  String get noNearbyAirports => 'Aucun aéroport à portée.';
 
   // Squawk emergency
   @override

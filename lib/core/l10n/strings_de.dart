@@ -298,6 +298,21 @@ class StringsDe extends AppStrings {
   String get wikiAbout => 'Über';
   @override
   String get wikiReadMore => 'Auf Wikipedia weiterlesen';
+  @override
+  String get nearbyAirportsTitle => 'Flughäfen in deiner Nähe';
+  @override
+  String get nearbyAirportsCta =>
+      'Nutze deinen Standort, um Flughäfen in der Nähe zu finden.';
+  @override
+  String get useMyLocation => 'MEINEN STANDORT VERWENDEN';
+  @override
+  String get locating => 'Standort wird ermittelt…';
+  @override
+  String get geoDenied => 'Standortberechtigung verweigert.';
+  @override
+  String get geoUnavailable => 'Standortdienst nicht verfügbar.';
+  @override
+  String get noNearbyAirports => 'Keine Flughäfen in Reichweite.';
 
   // Squawk emergency
   @override

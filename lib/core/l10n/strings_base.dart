@@ -140,6 +140,17 @@ abstract class AppStrings {
   /// CTA link to the canonical Wikipedia page.
   String get wikiReadMore => 'Read on Wikipedia';
 
+  // Nearby Airports panel (mirrors airwatch-web NearbyAirportsPanel
+  // commit d99d3c2).
+  String get nearbyAirportsTitle => 'Airports near you';
+  String get nearbyAirportsCta =>
+      'Use your location to find airports nearby.';
+  String get useMyLocation => 'USE MY LOCATION';
+  String get locating => 'Locating…';
+  String get geoDenied => 'Location permission denied.';
+  String get geoUnavailable => 'Location service unavailable.';
+  String get noNearbyAirports => 'No airports within range.';
+
   // Replay screen — entry point for the 7-day flight history search.
   // Mirrors airwatch-web's /replay landing page.
   String get replayTitle => 'Replay';

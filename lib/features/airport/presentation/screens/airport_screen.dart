@@ -15,6 +15,7 @@ import 'package:airwatch_mobile/core/utils/flight_code_formatter.dart';
 import 'package:airwatch_mobile/core/widgets/glass_panel.dart';
 import 'package:airwatch_mobile/core/widgets/neon_text.dart';
 import 'package:airwatch_mobile/features/airport/data/popular_airports_provider.dart';
+import 'package:airwatch_mobile/features/airport/presentation/widgets/nearby_airports_panel.dart';
 import 'package:airwatch_mobile/features/map/data/models/aircraft_state.dart';
 import 'package:airwatch_mobile/features/map/presentation/providers/flight_providers.dart';
 import 'airport_detail_screen.dart';
@@ -350,6 +351,13 @@ class _AirportScreenState extends ConsumerState<AirportScreen> {
               ],
             ),
             const SizedBox(height: 16),
+
+            // "Airports near you" — client-side geolocation + bundled
+            // 21 k airport DB. Mirrors airwatch-web's NearbyAirportsPanel
+            // (commit d99d3c2). Renders nothing until the user taps
+            // "Use my location" so we never silently prompt for GPS on
+            // a casual airport-list visit.
+            const NearbyAirportsPanel(),
 
             // Popular airports quick links
             Text(

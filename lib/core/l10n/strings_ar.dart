@@ -297,6 +297,21 @@ class StringsAr extends AppStrings {
   String get wikiAbout => 'حول';
   @override
   String get wikiReadMore => 'القراءة على ويكيبيديا';
+  @override
+  String get nearbyAirportsTitle => 'مطارات قريبة منك';
+  @override
+  String get nearbyAirportsCta =>
+      'استخدم موقعك للعثور على المطارات القريبة.';
+  @override
+  String get useMyLocation => 'استخدام موقعي';
+  @override
+  String get locating => 'جاري تحديد الموقع…';
+  @override
+  String get geoDenied => 'تم رفض إذن الموقع.';
+  @override
+  String get geoUnavailable => 'خدمة الموقع غير متوفرة.';
+  @override
+  String get noNearbyAirports => 'لا توجد مطارات في النطاق.';
 
   @override
   String get squawkEmergencyTitle => 'صفير الطوارئ';
