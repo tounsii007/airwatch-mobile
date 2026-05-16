@@ -3,6 +3,15 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:airwatch_mobile/core/utils/weather_emoji.dart';
+
+// Re-export so existing consumers (`getWeatherEmoji` callers that
+// import this file) don't have to switch their imports. New code
+// should import the canonical helper directly from
+// `core/utils/weather_emoji.dart`.
+export 'package:airwatch_mobile/core/utils/weather_emoji.dart'
+    show getWeatherEmoji;
+
 /// Module-scope airport-weather cache that the imperative airport-label
 /// layer can read synchronously while still firing real network calls
 /// on demand.
@@ -17,22 +26,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// every map gesture (terrible) or force every render to walk through
 /// async machinery (also terrible). A pair of plain top-level maps lets
 /// the per-frame label build stay synchronous and side-effect-free.
-
-/// Open-Meteo weather code → emoji. Same breakpoints as the web's
-/// `getWeatherEmoji` so identical codes land on identical glyphs across
-/// the two clients. Day-only flag swaps ☀️ ↔ 🌙 for code 0 (clear).
-String getWeatherEmoji(int code, bool isDay) {
-  if (code == 0) return isDay ? '☀️' : '🌙';
-  if (code <= 3) return '⛅';
-  if (code <= 49) return '🌫️'; // fog / mist
-  if (code <= 59) return '🌦️'; // drizzle
-  if (code <= 69) return '🌧️'; // rain
-  if (code <= 79) return '🌨️'; // snow
-  if (code <= 82) return '🌧️'; // rain showers
-  if (code <= 86) return '🌨️'; // snow showers
-  if (code >= 95) return '⛈️'; // thunderstorm
-  return '☁️';
-}
 
 class _CacheEntry {
   final int weatherCode;

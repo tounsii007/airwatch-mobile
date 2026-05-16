@@ -9,6 +9,7 @@ import 'package:airwatch_mobile/core/constants/country_database.dart';
 import 'package:airwatch_mobile/core/constants/ui_constants.dart';
 import 'package:airwatch_mobile/core/l10n/ui_text.dart';
 import 'package:airwatch_mobile/core/theme/app_colors.dart';
+import 'package:airwatch_mobile/core/utils/weather_emoji.dart';
 import 'package:airwatch_mobile/core/widgets/glass_panel.dart';
 import 'package:airwatch_mobile/core/widgets/neon_text.dart';
 import 'package:airwatch_mobile/features/airport/data/models/airport_detail_models.dart';
@@ -712,19 +713,11 @@ class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
     };
   }
 
-  String _weatherIcon(int? code, bool isDay) {
-    if (code == null) return '🌡️';
-    if (code == 0) return isDay ? '☀️' : '🌙';
-    if (code <= 3) return isDay ? '⛅' : '☁️';
-    if (code <= 49) return '🌫️';
-    if (code <= 59) return '🌦️';
-    if (code <= 69) return '🌧️';
-    if (code <= 79) return '🌨️';
-    if (code <= 82) return '🌧️';
-    if (code <= 86) return '🌨️';
-    if (code >= 95) return '⛈️';
-    return '☁️';
-  }
+  // Weather glyph delegates to the shared utility — same breakpoints
+  // as the map's airport-label layer + the web frontend's
+  // `getWeatherEmoji`. Kept here as a thin alias so existing call sites
+  // in this file don't need to switch import paths.
+  String _weatherIcon(int? code, bool isDay) => getWeatherEmoji(code, isDay);
 }
 
 /// Pill button used by the schedule-sort toggle. Stays small + dense
