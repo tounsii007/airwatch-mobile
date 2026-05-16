@@ -106,8 +106,16 @@ class _MapScreenState extends ConsumerState<MapScreen>
     return Scaffold(
       body: Stack(
         children: [
-          // Map
-          FlutterMap(
+          // Map — pinned to LTR even when the surrounding app is in an
+          // RTL locale (Arabic). The map is cartesian and lat/lon-
+          // indexed; flipping the text-direction at the container
+          // level can mis-measure the marker layer's bbox on locale
+          // switch and silently drop every flight. Pinning here is
+          // the mobile equivalent of airwatch-web's `dir="ltr"` on
+          // the Leaflet container (commit efedf83).
+          Directionality(
+            textDirection: TextDirection.ltr,
+            child: FlutterMap(
             mapController: _mapController,
             options: MapOptions(
               initialCenter: const LatLng(48.8566, 2.3522),
@@ -191,6 +199,7 @@ class _MapScreenState extends ConsumerState<MapScreen>
                     ref.read(selectedAircraftProvider.notifier).set(ac),
               ),
             ],
+            ),
           ),
 
           // Radar overlay (concentric circles + sweep)
