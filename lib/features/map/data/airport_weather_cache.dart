@@ -3,12 +3,10 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:airwatch_mobile/core/utils/weather_emoji.dart';
-
-// Re-export so existing consumers (`getWeatherEmoji` callers that
-// import this file) don't have to switch their imports. New code
-// should import the canonical helper directly from
-// `core/utils/weather_emoji.dart`.
+// Re-export the shared weather-emoji helper so existing consumers
+// (`getWeatherEmoji` callers that import this file) don't have to
+// switch their imports. New code should import the canonical helper
+// directly from `core/utils/weather_emoji.dart`.
 export 'package:airwatch_mobile/core/utils/weather_emoji.dart'
     show getWeatherEmoji;
 

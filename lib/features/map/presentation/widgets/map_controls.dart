@@ -77,6 +77,12 @@ class MapControls extends ConsumerWidget {
           // `speech_to_text`; the parser is the same regex set used
           // on the web.
           const VoiceButton(),
+          const SizedBox(height: 8),
+          // Cargo-only filter toggle — mirrors airwatch-web's package
+          // icon next to the radar toggle (commit d99d3c2). On = drop
+          // every non-cargo flight from the visible markers via
+          // `isCargoCallsign` check.
+          _CargoOnlyToggle(isDark: isDark),
           const SizedBox(height: 12),
           _AltitudeFilterChips(isDark: isDark),
         ],
@@ -106,6 +112,45 @@ class _ControlButton extends StatelessWidget {
             icon,
             size: 20,
             color: isDark ? AppColors.primary : UiConstants.lightPrimary,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Toggle button — on = filter markers to cargo flights only.
+///
+/// <p>Uses the existing [showCargoOnlyProvider] (already wired into
+/// [filteredAircraftProvider]) so the toggle just flips that state.
+/// Mirrors airwatch-web's package-icon toggle next to the radar
+/// control (commit d99d3c2). The voice-command parser also writes to
+/// the same provider, so saying "cargo only" toggles the same UI
+/// without a separate code path.
+class _CargoOnlyToggle extends ConsumerWidget {
+  final bool isDark;
+  const _CargoOnlyToggle({required this.isDark});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final on = ref.watch(showCargoOnlyProvider);
+    final accent = isDark ? AppColors.primary : UiConstants.lightPrimary;
+    return Semantics(
+      button: true,
+      toggled: on,
+      label: 'Cargo only',
+      child: GestureDetector(
+        onTap: () => ref.read(showCargoOnlyProvider.notifier).toggle(),
+        child: GlassPanel(
+          padding: const EdgeInsets.all(10),
+          borderRadius: 12,
+          borderColor: on ? accent : null,
+          child: Icon(
+            Icons.local_shipping_rounded,
+            size: 20,
+            // Muted when off so the icon doesn't compete with the
+            // primary-tinted always-on controls (zoom / location).
+            color: on ? accent : AppColors.textMuted,
           ),
         ),
       ),
