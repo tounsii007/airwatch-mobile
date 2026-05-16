@@ -134,6 +134,12 @@ abstract class AppStrings {
   String get statsEmptyHint =>
       'Tap a flight on the map to start recording your personal tracking history.';
 
+  // Wiki panel (mirrors airwatch-web WikiPanel commit d99d3c2).
+  /// Section title — "About" / "Über" / "À propos" etc.
+  String get wikiAbout => 'About';
+  /// CTA link to the canonical Wikipedia page.
+  String get wikiReadMore => 'Read on Wikipedia';
+
   // Replay screen — entry point for the 7-day flight history search.
   // Mirrors airwatch-web's /replay landing page.
   String get replayTitle => 'Replay';

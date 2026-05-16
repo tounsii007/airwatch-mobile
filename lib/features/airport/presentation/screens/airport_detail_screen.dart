@@ -19,6 +19,7 @@ import 'package:airwatch_mobile/features/airport/data/services/airport_details_s
 import 'package:airwatch_mobile/features/airport/presentation/widgets/atc_audio_panel.dart';
 import 'package:airwatch_mobile/features/airport/presentation/widgets/metar_panel.dart';
 import 'package:airwatch_mobile/features/airport/presentation/widgets/notam_panel.dart';
+import 'package:airwatch_mobile/features/airport/presentation/widgets/wiki_panel.dart';
 
 /// Sort modes for the schedule tabs. Mirrors the web's `SortBy` union.
 enum _ScheduleSort { time, delay }
@@ -634,6 +635,11 @@ class _AirportDetailScreenState extends ConsumerState<AirportDetailScreen>
     return ListView(
       padding: const EdgeInsets.symmetric(vertical: 8),
       children: [
+        // Wikipedia summary — keyed on the IATA code (not ICAO) because
+        // Airlabs's /wiki upstream indexes airports by IATA. Hides
+        // itself fully on empty / failed fetch so the rest of the
+        // INFO tab keeps its compact layout.
+        WikiPanel(airportIata: widget.iataCode),
         MetarPanel(icao: icao),
         NotamPanel(icao: icao),
         AtcAudioPanel(icao: icao),

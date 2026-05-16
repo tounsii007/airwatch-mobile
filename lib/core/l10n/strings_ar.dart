@@ -293,6 +293,10 @@ class StringsAr extends AppStrings {
   String get statsSortByRecency => 'الترتيب حسب الأحدث';
   @override
   String get statsSortByViews => 'الترتيب حسب المشاهدات';
+  @override
+  String get wikiAbout => 'حول';
+  @override
+  String get wikiReadMore => 'القراءة على ويكيبيديا';
 
   @override
   String get squawkEmergencyTitle => 'صفير الطوارئ';

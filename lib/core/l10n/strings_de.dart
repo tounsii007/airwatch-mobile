@@ -294,6 +294,10 @@ class StringsDe extends AppStrings {
   String get statsSortByRecency => 'Nach Aktualität sortieren';
   @override
   String get statsSortByViews => 'Nach Aufrufen sortieren';
+  @override
+  String get wikiAbout => 'Über';
+  @override
+  String get wikiReadMore => 'Auf Wikipedia weiterlesen';
 
   // Squawk emergency
   @override

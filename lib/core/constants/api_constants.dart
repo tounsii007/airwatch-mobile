@@ -99,6 +99,28 @@ class ApiConstants {
   static String popularRoutes({int days = 7, int limit = 20}) =>
       '$_base/api/routes/popular?days=$days&limit=$limit';
 
+  // ── Airlabs supplementary endpoints (mirrors web 505fd1b + d99d3c2) ──────
+  //
+  // <p>Backend wraps Airlabs's /wiki endpoint with a 7-day cache and
+  // returns `{summary, image_url, wiki_url, ...}`. Both `airport_iata`
+  // (3-letter) and `airline_iata` (2-letter) are valid query params;
+  // pass exactly one. Empty / missing fields are fine — the UI hides
+  // soft when the payload has no usable content.
+  static String airlabsWiki({String? airportIata, String? airlineIata}) {
+    final params = <String, String>{};
+    if (airportIata != null && airportIata.isNotEmpty) {
+      params['airport_iata'] = airportIata.toUpperCase();
+    }
+    if (airlineIata != null && airlineIata.isNotEmpty) {
+      params['airline_iata'] = airlineIata.toUpperCase();
+    }
+    final qs = params.entries
+        .map((e) => '${Uri.encodeQueryComponent(e.key)}='
+            '${Uri.encodeQueryComponent(e.value)}')
+        .join('&');
+    return '$_base/api/proxy/airlabs/wiki${qs.isEmpty ? '' : '?$qs'}';
+  }
+
   // ── Aggregated stats / replay ────────────────────────────────────────────
   static String get flightStats => '$_base/api/stats';
   static String get replayAvail => '$_base/api/replay/available';

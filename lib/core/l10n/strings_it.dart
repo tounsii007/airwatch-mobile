@@ -289,6 +289,10 @@ class StringsIt extends AppStrings {
   String get statsSortByRecency => 'Ordina per recente';
   @override
   String get statsSortByViews => 'Ordina per visualizzazioni';
+  @override
+  String get wikiAbout => 'Informazioni';
+  @override
+  String get wikiReadMore => 'Leggi su Wikipedia';
 
   @override
   String get squawkEmergencyTitle => 'Squawk emergenza';
