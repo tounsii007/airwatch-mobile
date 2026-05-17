@@ -62,6 +62,13 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        // flutter_local_notifications requires core library desugaring
+        // on Android API < 26 (uses java.time on the JVM-21 side). Without
+        // this, `flutter build apk --release` aborts at the AAR metadata
+        // check with:
+        //   "Dependency ':flutter_local_notifications' requires core
+        //    library desugaring to be enabled for :app."
+        isCoreLibraryDesugaringEnabled = true
     }
 
     kotlinOptions {
@@ -74,6 +81,10 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        // Lift the dex method limit; both flutter_local_notifications
+        // and the Google Play Services pulled in by maps push the
+        // shared-code count over 64 K.
+        multiDexEnabled = true
     }
 
     signingConfigs {
@@ -127,4 +138,10 @@ android {
 
 flutter {
     source = "../.."
+}
+
+// Pulls in the desugar_jdk_libs core library — required by the
+// isCoreLibraryDesugaringEnabled flag above.
+dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 }
