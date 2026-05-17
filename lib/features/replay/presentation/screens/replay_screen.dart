@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:airwatch_mobile/core/constants/ui_constants.dart';
 import 'package:airwatch_mobile/core/l10n/app_strings.dart';
 import 'package:airwatch_mobile/core/theme/app_colors.dart';
+import 'package:airwatch_mobile/core/widgets/aw_page_scaffold.dart';
 import 'package:airwatch_mobile/core/widgets/glass_panel.dart';
 import 'package:airwatch_mobile/features/flight_details/presentation/screens/flight_history_screen.dart';
 
@@ -48,14 +49,9 @@ class _ReplayScreenState extends ConsumerState<ReplayScreen> {
   @override
   Widget build(BuildContext context) {
     final s = S.of(ref.watch(languageProvider));
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(s.replayTitle),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
-      body: SafeArea(
-        child: Padding(
+    return AwPageScaffold(
+      title: s.replayTitle,
+      child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -135,7 +131,6 @@ class _ReplayScreenState extends ConsumerState<ReplayScreen> {
               ),
             ],
           ),
-        ),
       ),
     );
   }

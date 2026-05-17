@@ -5,6 +5,7 @@ import 'package:airwatch_mobile/core/constants/airline_database.dart';
 import 'package:airwatch_mobile/core/constants/ui_constants.dart';
 import 'package:airwatch_mobile/core/l10n/ui_text.dart';
 import 'package:airwatch_mobile/core/theme/app_colors.dart';
+import 'package:airwatch_mobile/core/widgets/aw_page_scaffold.dart';
 import 'package:airwatch_mobile/core/widgets/glass_panel.dart';
 import 'package:airwatch_mobile/features/geofences/data/geofences_repository.dart';
 import 'package:airwatch_mobile/features/geofences/domain/geofence.dart';
@@ -40,12 +41,16 @@ class GeofencesScreen extends ConsumerWidget {
     final s = context.s;
     final fences = ref.watch(geofencesProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(s.geofences),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
+    return AwPageScaffold(
+      title: s.geofences,
+      // Show the active-fence count as a small badge under the title —
+      // mirrors web's `<Subtitle>{n} active</Subtitle>` on /geofences.
+      subtitle: fences.isNotEmpty
+          ? AwPageBadge(
+              label: '${fences.length} ACTIVE',
+              color: AppColors.success,
+            )
+          : null,
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -77,8 +82,7 @@ class GeofencesScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: SafeArea(
-        child: CustomScrollView(
+      child: CustomScrollView(
           slivers: [
             // Live alerts — auto-hidden when no aircraft is inside an
             // active fence right now. Sits above the list so a new
@@ -150,7 +154,6 @@ class GeofencesScreen extends ConsumerWidget {
                 ),
               ),
           ],
-        ),
       ),
     );
   }

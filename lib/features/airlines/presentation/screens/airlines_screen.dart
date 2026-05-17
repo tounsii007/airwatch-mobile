@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:airwatch_mobile/core/l10n/app_strings.dart';
 import 'package:airwatch_mobile/core/theme/app_colors.dart';
+import 'package:airwatch_mobile/core/widgets/aw_page_scaffold.dart';
 import 'package:airwatch_mobile/core/widgets/glass_panel.dart';
 import 'package:airwatch_mobile/features/map/data/models/aircraft_state.dart';
 import 'package:airwatch_mobile/features/map/presentation/providers/flight_providers.dart';
@@ -48,13 +49,23 @@ class AirlinesScreen extends ConsumerWidget {
     final s = S.of(language);
     final asyncFlights = ref.watch(aircraftStreamProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(s.airlines),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
-      body: asyncFlights.when(
+    // Compute a live-count subtitle BEFORE the asyncFlights.when chain so
+    // the scaffold's badge stays in sync with the body's data — same
+    // pattern airwatch-web uses on /airlines (count is part of the page
+    // header, not the list itself).
+    final liveCount = asyncFlights.maybeWhen(
+      data: (flights) => aggregateByAirlineIcao(flights.values).length,
+      orElse: () => 0,
+    );
+
+    return AwPageScaffold(
+      title: s.airlines,
+      subtitle: liveCount > 0
+          ? AwPageBadge(
+              label: '$liveCount ${s.airlinesCarriers.toUpperCase()}',
+            )
+          : null,
+      child: asyncFlights.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('${s.errorPrefix}: $e')),
         data: (flights) => _buildList(s, flights.values),
