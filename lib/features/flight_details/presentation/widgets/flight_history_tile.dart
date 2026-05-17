@@ -6,6 +6,7 @@ import 'package:airwatch_mobile/core/theme/app_colors.dart';
 import 'package:airwatch_mobile/core/utils/flight_code_formatter.dart';
 import 'package:airwatch_mobile/core/widgets/glass_panel.dart';
 import 'package:airwatch_mobile/features/flight_details/data/models/flight_history_models.dart';
+import 'package:airwatch_mobile/features/flight_details/presentation/screens/flight_replay_screen.dart';
 import 'package:airwatch_mobile/features/map/data/datasources/flight_info_datasource.dart';
 
 class FlightHistoryTile extends StatelessWidget {
@@ -24,6 +25,20 @@ class FlightHistoryTile extends StatelessWidget {
     this.aircraftMeta,
   });
 
+  /// Open the animated track replay for this past flight. The
+  /// [FlightReplayScreen] needs the ICAO24 hex (carried on every
+  /// history row) plus the callsign for the title bar.
+  void _openReplay(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => FlightReplayScreen(
+          icao24: flight.icao24,
+          callsign: flight.callsign,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final dateFmt = UiText.dateFormat(context, 'EEE, dd MMM yyyy');
@@ -35,7 +50,17 @@ class FlightHistoryTile extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
-      child: GlassPanel(
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          // Tap a history row to launch its animated track replay —
+          // mirrors airwatch-web's /replay tile click. Without this
+          // the row was static; users could SEE that the flight was
+          // delayed by 12 min but had no path to actually watch it
+          // unfold on the map.
+          onTap: () => _openReplay(context),
+          borderRadius: BorderRadius.circular(14),
+          child: GlassPanel(
         padding: const EdgeInsets.all(12),
         borderRadius: 14,
         child: Column(
@@ -506,6 +531,8 @@ class FlightHistoryTile extends StatelessWidget {
               ],
             ),
           ],
+        ),
+      ),
         ),
       ),
     );
