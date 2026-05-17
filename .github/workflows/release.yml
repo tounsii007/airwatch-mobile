@@ -113,7 +113,7 @@ jobs:
           status: completed
 
       - name: Attach Android artifacts to GitHub release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: |
             build/app/outputs/bundle/release/app-release.aab
@@ -145,7 +145,7 @@ jobs:
       - run: flutter build ipa --release --no-codesign
 
       - name: Attach iOS artifacts to GitHub release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: |
             build/ios/archive/Runner.xcarchive/**
