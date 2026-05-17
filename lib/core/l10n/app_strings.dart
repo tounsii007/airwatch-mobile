@@ -8,6 +8,9 @@ import 'strings_fr.dart';
 import 'strings_es.dart';
 import 'strings_it.dart';
 import 'strings_ar.dart';
+import 'strings_pl.dart';
+import 'strings_nl.dart';
+import 'strings_tr.dart';
 
 // Re-export AppStrings so callers that already import this file for `S`
 // get the actual interface type without a second import. Code that types
@@ -19,7 +22,13 @@ export 'strings_base.dart' show AppStrings;
 /// Supported app locales. Order is stable — the integer index lands in
 /// SharedPreferences as `app_lang`, so adding a locale must always
 /// happen at the END of the list to keep existing prefs valid.
-enum AppLanguage { en, de, fr, es, it, ar }
+///
+/// <p>en/de/fr/es/it/ar are "core" locales with full coverage of every
+/// AppStrings getter. pl/nl/tr are "soft" locales with Stage-1
+/// translations of the highest-visibility keys (~80) and English
+/// fallback for the rest via the [AppStrings] abstract base. The
+/// i18n parity test reflects this split.
+enum AppLanguage { en, de, fr, es, it, ar, pl, nl, tr }
 
 class LanguageNotifier extends Notifier<AppLanguage> {
   @override
@@ -55,6 +64,9 @@ class S {
     AppLanguage.es: StringsEs(),
     AppLanguage.it: StringsIt(),
     AppLanguage.ar: StringsAr(),
+    AppLanguage.pl: StringsPl(),
+    AppLanguage.nl: StringsNl(),
+    AppLanguage.tr: StringsTr(),
   };
 
   static AppStrings of(AppLanguage lang) => _instances[lang] ?? StringsEn();
@@ -65,6 +77,9 @@ class S {
     'es' => StringsEs(),
     'it' => StringsIt(),
     'ar' => StringsAr(),
+    'pl' => StringsPl(),
+    'nl' => StringsNl(),
+    'tr' => StringsTr(),
     _ => StringsEn(),
   };
 }
@@ -75,5 +90,8 @@ Locale localeFromLanguage(AppLanguage lang) => switch (lang) {
   AppLanguage.es => const Locale('es'),
   AppLanguage.it => const Locale('it'),
   AppLanguage.ar => const Locale('ar'),
+  AppLanguage.pl => const Locale('pl'),
+  AppLanguage.nl => const Locale('nl'),
+  AppLanguage.tr => const Locale('tr'),
   AppLanguage.en => const Locale('en'),
 };

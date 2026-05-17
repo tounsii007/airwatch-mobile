@@ -100,6 +100,9 @@ class _VoiceButtonState extends ConsumerState<VoiceButton> {
       AppLanguage.es => 'es_ES',
       AppLanguage.it => 'it_IT',
       AppLanguage.ar => 'ar_SA',
+      AppLanguage.pl => 'pl_PL',
+      AppLanguage.nl => 'nl_NL',
+      AppLanguage.tr => 'tr_TR',
       AppLanguage.en => 'en_US',
     };
     await _speech.listen(

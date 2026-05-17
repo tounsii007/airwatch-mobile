@@ -298,6 +298,14 @@ VoiceCommand? parseVoiceCommand(String transcript, AppLanguage language) {
     // works fine; voice commands in Arabic are a focused follow-up
     // (Arabic STT is reliable on iOS; Android quality varies).
     AppLanguage.ar => _patternsEn,
+    // Stage-1 locales — Polish / Dutch / Turkish voice pattern dicts
+    // are tracked separately; fall through to English until those
+    // ship so users can still issue map / search commands in their
+    // language's STT engine (Android picks up locale, parser falls
+    // back to English keywords for the actual intent).
+    AppLanguage.pl => _patternsEn,
+    AppLanguage.nl => _patternsEn,
+    AppLanguage.tr => _patternsEn,
     AppLanguage.en => _patternsEn,
   };
 

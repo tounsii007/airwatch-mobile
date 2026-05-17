@@ -532,6 +532,47 @@ class SettingsScreen extends ConsumerWidget {
                     onTap: () =>
                         ref.read(languageProvider.notifier).set(AppLanguage.ar),
                   ),
+                  _Div(isDark),
+                  // Stage-1 locales — Polish / Dutch / Turkish. Translation
+                  // coverage is currently ~80 high-visibility keys per
+                  // language with English fallback for technical / admin
+                  // strings (see strings_pl.dart / strings_nl.dart /
+                  // strings_tr.dart headers for the policy).
+                  _LangTile(
+                    flagCode: 'pl',
+                    flagFallbackEmoji: '🇵🇱',
+                    label: 'Polski',
+                    subtitle: 'Polish',
+                    isSelected: currentLang == AppLanguage.pl,
+                    color: primary,
+                    isDark: isDark,
+                    onTap: () =>
+                        ref.read(languageProvider.notifier).set(AppLanguage.pl),
+                  ),
+                  _Div(isDark),
+                  _LangTile(
+                    flagCode: 'nl',
+                    flagFallbackEmoji: '🇳🇱',
+                    label: 'Nederlands',
+                    subtitle: 'Dutch',
+                    isSelected: currentLang == AppLanguage.nl,
+                    color: primary,
+                    isDark: isDark,
+                    onTap: () =>
+                        ref.read(languageProvider.notifier).set(AppLanguage.nl),
+                  ),
+                  _Div(isDark),
+                  _LangTile(
+                    flagCode: 'tr',
+                    flagFallbackEmoji: '🇹🇷',
+                    label: 'Türkçe',
+                    subtitle: 'Turkish',
+                    isSelected: currentLang == AppLanguage.tr,
+                    color: primary,
+                    isDark: isDark,
+                    onTap: () =>
+                        ref.read(languageProvider.notifier).set(AppLanguage.tr),
+                  ),
                 ],
               ),
             ),

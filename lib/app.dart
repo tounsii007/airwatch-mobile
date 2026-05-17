@@ -56,6 +56,9 @@ class AirwatchMobileApp extends ConsumerWidget {
         Locale('es'),
         Locale('it'),
         Locale('ar'),
+        Locale('pl'),
+        Locale('nl'),
+        Locale('tr'),
       ],
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
