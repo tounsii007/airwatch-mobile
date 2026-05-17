@@ -79,7 +79,7 @@ dependencies:
   # Charts. fl_chart 1.x is a major rewrite of the tooltip + axis API; the
   # `chart_theme.dart` helper was written against the 0.69 surface, so we
   # pin to ^0.69 and migrate to 1.x in a separate, focused PR.
-  fl_chart: ^0.69.2
+  fl_chart: ^1.2.0
 
   # Drag-and-drop reorderable grid for Dashboard widgets
   reorderable_grid_view: ^2.2.8
