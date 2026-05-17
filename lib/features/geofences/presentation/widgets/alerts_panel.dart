@@ -83,7 +83,9 @@ class _AlertsPanelState extends ConsumerState<AlertsPanel> {
     final total = hits.length;
     final shown = filtered.length;
     final word = total == 1 ? s.alertsCountOne : s.alertsCountMany;
-    final headerText = shown == total ? '$total $word' : '$shown / $total $word';
+    final headerText = shown == total
+        ? '$total $word'
+        : '$shown / $total $word';
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -145,10 +147,7 @@ class _AlertsPanelState extends ConsumerState<AlertsPanel> {
                 tooltipFmt: s.alertsFilterTooltip,
                 onChange: (next) => setState(() => _selectedFences = next),
               ),
-              const Divider(
-                height: 12,
-                color: AppColors.glassBorder,
-              ),
+              const Divider(height: 12, color: AppColors.glassBorder),
             ] else
               const SizedBox(height: 6),
 

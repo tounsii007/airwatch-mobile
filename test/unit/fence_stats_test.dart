@@ -25,13 +25,13 @@ AircraftState _ac({
 }
 
 GeoFence _fence(String id) => GeoFence(
-      id: id,
-      name: 'Test fence $id',
-      type: GeoFenceType.circle,
-      centerLat: 50,
-      centerLon: 8,
-      radiusKm: 100,
-    );
+  id: id,
+  name: 'Test fence $id',
+  type: GeoFenceType.circle,
+  centerLat: 50,
+  centerLon: 8,
+  radiusKm: 100,
+);
 
 void main() {
   group('computeFenceStats', () {
@@ -83,9 +83,7 @@ void main() {
 
     test('returns null topAirline when no callsign has 3+ chars', () {
       final f = _fence('a');
-      final hits = [
-        GeoFenceHit(_ac(icao24: '1', callsign: 'AB'), f),
-      ];
+      final hits = [GeoFenceHit(_ac(icao24: '1', callsign: 'AB'), f)];
       final s = computeFenceStats(hits, 'a');
       expect(s.topAirline, isNull);
     });
@@ -120,9 +118,7 @@ void main() {
 
     test('latestAt is non-null whenever total > 0', () {
       final f = _fence('a');
-      final hits = [
-        GeoFenceHit(_ac(icao24: '1', callsign: 'DLH1'), f),
-      ];
+      final hits = [GeoFenceHit(_ac(icao24: '1', callsign: 'DLH1'), f)];
       final s = computeFenceStats(
         hits,
         'a',

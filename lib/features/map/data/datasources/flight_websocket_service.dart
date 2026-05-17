@@ -59,10 +59,8 @@ class FlightWebSocketService {
   /// state matches the client's intent automatically.
   final Set<String> _subscriptions = <String>{};
 
-  final _stateController =
-      StreamController<List<AircraftState>>.broadcast();
-  final _connState =
-      StreamController<WsConnectionState>.broadcast();
+  final _stateController = StreamController<List<AircraftState>>.broadcast();
+  final _connState = StreamController<WsConnectionState>.broadcast();
 
   WsConnectionState _currentState = WsConnectionState.idle;
   WsConnectionState get currentState => _currentState;
@@ -134,9 +132,11 @@ class FlightWebSocketService {
   void replaceSubscriptions(Iterable<String> icao24Codes) {
     _subscriptions
       ..clear()
-      ..addAll(icao24Codes
-          .map((c) => c.trim().toLowerCase())
-          .where((c) => c.length == 6));
+      ..addAll(
+        icao24Codes
+            .map((c) => c.trim().toLowerCase())
+            .where((c) => c.length == 6),
+      );
     _sendSubscribe(replace: true);
   }
 
@@ -159,10 +159,9 @@ class FlightWebSocketService {
     final ch = _channel;
     if (ch == null) return;
     try {
-      ch.sink.add(jsonEncode({
-        'type': 'unsubscribe',
-        'icao24': codes.toList(),
-      }));
+      ch.sink.add(
+        jsonEncode({'type': 'unsubscribe', 'icao24': codes.toList()}),
+      );
     } catch (e) {
       debugPrint('[FlightWS] send unsubscribe failed: $e');
     }

@@ -59,8 +59,8 @@ class RouteStatsService {
   final Dio _dio;
 
   RouteStatsService({Dio? dio})
-      : _dio = dio ??
-            AppHttpClient.create(receiveTimeout: AppConfig.shortTimeout);
+    : _dio =
+          dio ?? AppHttpClient.create(receiveTimeout: AppConfig.shortTimeout);
 
   /// Fetch counters for a `dep → arr` pair. Returns null on missing /
   /// malformed inputs and on any network failure — the badge silently

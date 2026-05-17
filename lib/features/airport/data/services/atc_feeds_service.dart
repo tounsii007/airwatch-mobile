@@ -28,11 +28,11 @@ class AtcFeed {
   });
 
   factory AtcFeed.fromMap(Map<String, dynamic> map) => AtcFeed(
-        label: map['label']?.toString() ?? '',
-        mount: map['mount']?.toString() ?? '',
-        streamUrl: map['streamUrl']?.toString() ?? '',
-        externalUrl: map['externalUrl']?.toString() ?? '',
-      );
+    label: map['label']?.toString() ?? '',
+    mount: map['mount']?.toString() ?? '',
+    streamUrl: map['streamUrl']?.toString() ?? '',
+    externalUrl: map['externalUrl']?.toString() ?? '',
+  );
 
   /// True only when the row carries enough to be playable.
   bool get isPlayable => streamUrl.isNotEmpty || externalUrl.isNotEmpty;
@@ -59,8 +59,8 @@ class AtcFeedsService {
   final Dio _dio;
 
   AtcFeedsService({Dio? dio})
-      : _dio = dio ??
-            AppHttpClient.create(receiveTimeout: AppConfig.shortTimeout);
+    : _dio =
+          dio ?? AppHttpClient.create(receiveTimeout: AppConfig.shortTimeout);
 
   Future<AtcFeedsResult?> load(String icao) async {
     final code = icao.trim().toUpperCase();
@@ -73,10 +73,10 @@ class AtcFeedsService {
       final raw = body['feeds'];
       final feeds = raw is List
           ? raw
-              .whereType<Map<String, dynamic>>()
-              .map(AtcFeed.fromMap)
-              .where((f) => f.isPlayable)
-              .toList(growable: false)
+                .whereType<Map<String, dynamic>>()
+                .map(AtcFeed.fromMap)
+                .where((f) => f.isPlayable)
+                .toList(growable: false)
           : <AtcFeed>[];
       return AtcFeedsResult(
         icao: code,

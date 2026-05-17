@@ -340,52 +340,52 @@ class _FlightReplay3DScreenState extends State<FlightReplay3DScreen> {
             Center(
               child: FlutterEarthGlobe(controller: _controller, radius: 140),
             ),
-          if (_loading)
-            const Positioned(
-              top: 16,
-              right: 16,
-              child: SizedBox(
-                width: 18,
-                height: 18,
-                child: CircularProgressIndicator(strokeWidth: 1.5),
+            if (_loading)
+              const Positioned(
+                top: 16,
+                right: 16,
+                child: SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(strokeWidth: 1.5),
+                ),
               ),
-            ),
-          if (_error != null)
-            Positioned(
-              left: 12,
-              right: 12,
-              top: 16,
-              child: GlassPanel(
-                padding: const EdgeInsets.all(12),
-                borderRadius: 12,
-                borderColor: AppColors.error.withValues(alpha: 0.45),
-                child: Text(
-                  _error!,
-                  style: const TextStyle(
-                    fontFamily: UiConstants.bodyFont,
-                    color: AppColors.error,
-                    fontSize: 12,
+            if (_error != null)
+              Positioned(
+                left: 12,
+                right: 12,
+                top: 16,
+                child: GlassPanel(
+                  padding: const EdgeInsets.all(12),
+                  borderRadius: 12,
+                  borderColor: AppColors.error.withValues(alpha: 0.45),
+                  child: Text(
+                    _error!,
+                    style: const TextStyle(
+                      fontFamily: UiConstants.bodyFont,
+                      color: AppColors.error,
+                      fontSize: 12,
+                    ),
                   ),
                 ),
               ),
-            ),
-          if (!_loading && _error == null && _coords.isNotEmpty)
-            Positioned(
-              left: 12,
-              right: 12,
-              bottom: 16,
-              child: _ControlsPanel(
-                idx: _idx,
-                count: _coords.length,
-                playing: _playing,
-                speed: _speed,
-                cameraMode: _cameraMode,
-                onPlayToggle: _togglePlay,
-                onScrub: _onScrub,
-                onSpeedChange: (v) => setState(() => _speed = v),
-                onCameraMode: _setCameraMode,
+            if (!_loading && _error == null && _coords.isNotEmpty)
+              Positioned(
+                left: 12,
+                right: 12,
+                bottom: 16,
+                child: _ControlsPanel(
+                  idx: _idx,
+                  count: _coords.length,
+                  playing: _playing,
+                  speed: _speed,
+                  cameraMode: _cameraMode,
+                  onPlayToggle: _togglePlay,
+                  onScrub: _onScrub,
+                  onSpeedChange: (v) => setState(() => _speed = v),
+                  onCameraMode: _setCameraMode,
+                ),
               ),
-            ),
           ],
         ),
       ),

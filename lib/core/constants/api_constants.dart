@@ -115,8 +115,11 @@ class ApiConstants {
       params['airline_iata'] = airlineIata.toUpperCase();
     }
     final qs = params.entries
-        .map((e) => '${Uri.encodeQueryComponent(e.key)}='
-            '${Uri.encodeQueryComponent(e.value)}')
+        .map(
+          (e) =>
+              '${Uri.encodeQueryComponent(e.key)}='
+              '${Uri.encodeQueryComponent(e.value)}',
+        )
         .join('&');
     return '$_base/api/proxy/airlabs/wiki${qs.isEmpty ? '' : '?$qs'}';
   }

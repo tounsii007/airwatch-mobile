@@ -120,7 +120,11 @@ class AwPageScaffold extends StatelessWidget {
 class AwPageBadge extends StatelessWidget {
   final String label;
   final Color color;
-  const AwPageBadge({super.key, required this.label, this.color = AppColors.primary});
+  const AwPageBadge({
+    super.key,
+    required this.label,
+    this.color = AppColors.primary,
+  });
 
   @override
   Widget build(BuildContext context) {

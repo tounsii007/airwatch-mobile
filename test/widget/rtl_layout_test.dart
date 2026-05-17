@@ -45,57 +45,64 @@ void main() {
 
   group('Directionality flips a Row layout under RTL', () {
     Widget buildRowUnder(TextDirection dir) => Directionality(
-          textDirection: dir,
-          child: const SizedBox(
-            width: 200,
-            height: 40,
-            child: Row(
-              children: [
-                Icon(Icons.arrow_back, key: ValueKey('leading')),
-                Expanded(child: SizedBox()),
-                Icon(Icons.close, key: ValueKey('trailing')),
-              ],
-            ),
-          ),
-        );
+      textDirection: dir,
+      child: const SizedBox(
+        width: 200,
+        height: 40,
+        child: Row(
+          children: [
+            Icon(Icons.arrow_back, key: ValueKey('leading')),
+            Expanded(child: SizedBox()),
+            Icon(Icons.close, key: ValueKey('trailing')),
+          ],
+        ),
+      ),
+    );
 
     testWidgets('LTR: leading icon sits on the left half', (tester) async {
       await tester.pumpWidget(buildRowUnder(TextDirection.ltr));
       final leading = tester.getCenter(find.byKey(const ValueKey('leading')));
       final trailing = tester.getCenter(find.byKey(const ValueKey('trailing')));
-      expect(leading.dx < trailing.dx, isTrue,
-          reason: 'leading should sit to the left of trailing in LTR');
+      expect(
+        leading.dx < trailing.dx,
+        isTrue,
+        reason: 'leading should sit to the left of trailing in LTR',
+      );
     });
 
     testWidgets('RTL: leading icon flips to the right half', (tester) async {
       await tester.pumpWidget(buildRowUnder(TextDirection.rtl));
       final leading = tester.getCenter(find.byKey(const ValueKey('leading')));
       final trailing = tester.getCenter(find.byKey(const ValueKey('trailing')));
-      expect(leading.dx > trailing.dx, isTrue,
-          reason: 'leading should sit to the right of trailing in RTL');
+      expect(
+        leading.dx > trailing.dx,
+        isTrue,
+        reason: 'leading should sit to the right of trailing in RTL',
+      );
     });
   });
 
   group('EdgeInsetsDirectional resolves relative to TextDirection', () {
     Widget buildPaddedRow(TextDirection dir) => Directionality(
-          textDirection: dir,
-          child: Center(
-            child: SizedBox(
-              width: 100,
-              height: 40,
-              child: Padding(
-                padding: const EdgeInsetsDirectional.only(start: 20),
-                child: Container(
-                  key: const ValueKey('child'),
-                  color: const Color(0xFF000000),
-                ),
-              ),
+      textDirection: dir,
+      child: Center(
+        child: SizedBox(
+          width: 100,
+          height: 40,
+          child: Padding(
+            padding: const EdgeInsetsDirectional.only(start: 20),
+            child: Container(
+              key: const ValueKey('child'),
+              color: const Color(0xFF000000),
             ),
           ),
-        );
+        ),
+      ),
+    );
 
-    testWidgets('start padding sits on the parent\'s start edge in LTR',
-        (tester) async {
+    testWidgets('start padding sits on the parent\'s start edge in LTR', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildPaddedRow(TextDirection.ltr));
       final child = tester.getRect(find.byKey(const ValueKey('child')));
       // Find the SizedBox(100x40) parent rect by looking at its
@@ -106,8 +113,9 @@ void main() {
       expect(child.left - parent.left, 20);
     });
 
-    testWidgets('start padding flips to the parent\'s right in RTL',
-        (tester) async {
+    testWidgets('start padding flips to the parent\'s right in RTL', (
+      tester,
+    ) async {
       await tester.pumpWidget(buildPaddedRow(TextDirection.rtl));
       final child = tester.getRect(find.byKey(const ValueKey('child')));
       final parent = tester.getRect(find.byType(SizedBox).last);

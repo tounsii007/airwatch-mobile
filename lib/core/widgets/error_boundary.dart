@@ -36,7 +36,7 @@ class ErrorBoundary extends StatefulWidget {
   /// Optional override for the fallback UI. When null we render the
   /// default "section unavailable" panel.
   final Widget Function(FlutterErrorDetails details, VoidCallback retry)?
-      fallbackBuilder;
+  fallbackBuilder;
 
   const ErrorBoundary({
     super.key,
@@ -91,10 +91,7 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
   }
 
   Widget _defaultFallback(FlutterErrorDetails details, VoidCallback retry) {
-    return _DefaultErrorView(
-      details: details,
-      onRetry: retry,
-    );
+    return _DefaultErrorView(details: details, onRetry: retry);
   }
 }
 

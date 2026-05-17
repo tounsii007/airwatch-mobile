@@ -447,8 +447,7 @@ class StringsIt extends AppStrings {
   @override
   String get atcLiveTitle => 'ATC LIVE';
   @override
-  String get atcUnavailable =>
-      'Nessun feed catalogato per questo aeroporto';
+  String get atcUnavailable => 'Nessun feed catalogato per questo aeroporto';
   @override
   String get atcSearchFallback => 'Cerca su LiveATC.net';
   @override
@@ -535,8 +534,7 @@ class StringsIt extends AppStrings {
   @override
   String get fenceErrLatRange => 'La latitudine deve essere tra -90 e 90';
   @override
-  String get fenceErrLonRange =>
-      'La longitudine deve essere tra -180 e 180';
+  String get fenceErrLonRange => 'La longitudine deve essere tra -180 e 180';
   @override
   String get fenceErrRadius => 'Il raggio deve essere maggiore di 0 km';
   @override
@@ -580,14 +578,11 @@ class StringsIt extends AppStrings {
   @override
   String get fenceDrawHintCircleSecond => 'Tocca per impostare il raggio';
   @override
-  String get fenceDrawHintRectFirst =>
-      'Tocca per impostare il primo angolo';
+  String get fenceDrawHintRectFirst => 'Tocca per impostare il primo angolo';
   @override
-  String get fenceDrawHintRectSecond =>
-      'Tocca per impostare l\'angolo opposto';
+  String get fenceDrawHintRectSecond => 'Tocca per impostare l\'angolo opposto';
   @override
-  String get fenceDrawHintReady =>
-      'Salva quando pronto o tocca RESET';
+  String get fenceDrawHintReady => 'Salva quando pronto o tocca RESET';
   @override
   String get fenceDrawResetButton => 'RESET';
   @override
@@ -643,11 +638,9 @@ class StringsIt extends AppStrings {
   @override
   String get fenceImporting => 'IMPORT…';
   @override
-  String get fenceExportTooltip =>
-      'Scarica le geofence come file JSON';
+  String get fenceExportTooltip => 'Scarica le geofence come file JSON';
   @override
-  String get fenceImportTooltip =>
-      'Ripristina geofence da un file JSON';
+  String get fenceImportTooltip => 'Ripristina geofence da un file JSON';
   @override
   String get fenceExportEmpty => 'Nulla da esportare';
   @override
@@ -661,8 +654,7 @@ class StringsIt extends AppStrings {
   @override
   String get fenceImportedMany => '{0} geofence importate';
   @override
-  String get fenceImportedPartial =>
-      '{0} importate, {1} fallite ({2})';
+  String get fenceImportedPartial => '{0} importate, {1} fallite ({2})';
   @override
   String get fenceReadFailed => 'Lettura fallita: {0}';
   @override
@@ -675,6 +667,5 @@ class StringsIt extends AppStrings {
   @override
   String get dashNoDataYet => 'Nessun dato';
   @override
-  String get dashEmptyHint =>
-      'Apri la mappa per iniziare a seguire i voli';
+  String get dashEmptyHint => 'Apri la mappa per iniziare a seguire i voli';
 }

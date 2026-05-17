@@ -94,178 +94,190 @@ class PanelRouteSection extends ConsumerWidget {
               children: [
                 Row(
                   children: [
-                // Departure
-                Expanded(
-                  child: Column(
-                    children: [
-                      Text(
-                        hasDep
-                            ? AirportDatabase.displayCode(
-                                route!.departureAirport,
-                              )
-                            : UiConstants.missingCode,
-                        style: TextStyle(
-                          fontFamily: UiConstants.headingFont,
-                          fontSize: UiConstants.bodyFontSize,
-                          fontWeight: FontWeight.w700,
-                          color: hasDep
-                              ? AppColors.success
-                              : AppColors.textMuted,
-                        ),
-                      ),
-                      if (hasDep) ...[
-                        // City name (only if not empty), localized to current locale
-                        Builder(
-                          builder: (_) {
-                            final rawCity =
-                                route!.depCity ??
-                                AirportDatabase.getCity(
+                    // Departure
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Text(
+                            hasDep
+                                ? AirportDatabase.displayCode(
+                                    route!.departureAirport,
+                                  )
+                                : UiConstants.missingCode,
+                            style: TextStyle(
+                              fontFamily: UiConstants.headingFont,
+                              fontSize: UiConstants.bodyFontSize,
+                              fontWeight: FontWeight.w700,
+                              color: hasDep
+                                  ? AppColors.success
+                                  : AppColors.textMuted,
+                            ),
+                          ),
+                          if (hasDep) ...[
+                            // City name (only if not empty), localized to current locale
+                            Builder(
+                              builder: (_) {
+                                final rawCity =
+                                    route!.depCity ??
+                                    AirportDatabase.getCity(
+                                      route!.departureAirport,
+                                    );
+                                if (rawCity.isEmpty) {
+                                  return const SizedBox.shrink();
+                                }
+                                final city = localizeCity(rawCity, locale);
+                                return Text(
+                                  city,
+                                  style: TextStyle(
+                                    fontFamily: UiConstants.bodyFont,
+                                    fontSize: UiConstants.microFontSize,
+                                    color: isDark
+                                        ? AppColors.textSecondary
+                                        : UiConstants.lightTextSecondary,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  overflow: TextOverflow.ellipsis,
+                                );
+                              },
+                            ),
+                            // Country + flag (localized name)
+                            Builder(
+                              builder: (_) {
+                                final country = AirportDatabase.getCountry(
                                   route!.departureAirport,
                                 );
-                            if (rawCity.isEmpty) return const SizedBox.shrink();
-                            final city = localizeCity(rawCity, locale);
-                            return Text(
-                              city,
-                              style: TextStyle(
-                                fontFamily: UiConstants.bodyFont,
-                                fontSize: UiConstants.microFontSize,
-                                color: isDark
-                                    ? AppColors.textSecondary
-                                    : UiConstants.lightTextSecondary,
-                              ),
-                              textAlign: TextAlign.center,
-                              overflow: TextOverflow.ellipsis,
-                            );
-                          },
-                        ),
-                        // Country + flag (localized name)
-                        Builder(
-                          builder: (_) {
-                            final country = AirportDatabase.getCountry(
-                              route!.departureAirport,
-                            );
-                            if (country.isEmpty) return const SizedBox.shrink();
-                            final canonicalCountry =
-                                CountryDatabase.displayName(country);
-                            final displayCountry = localizeCountry(
-                              canonicalCountry,
-                              locale,
-                            );
-                            return FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  _countryFlagWidget(country),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    displayCountry,
-                                    style: TextStyle(
-                                      fontFamily: UiConstants.bodyFont,
-                                      fontSize: UiConstants.tinyFontSize,
-                                      color: isDark
-                                          ? AppColors.textMuted
-                                          : UiConstants.lightTextMuted,
-                                    ),
+                                if (country.isEmpty) {
+                                  return const SizedBox.shrink();
+                                }
+                                final canonicalCountry =
+                                    CountryDatabase.displayName(country);
+                                final displayCountry = localizeCountry(
+                                  canonicalCountry,
+                                  locale,
+                                );
+                                return FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      _countryFlagWidget(country),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        displayCountry,
+                                        style: TextStyle(
+                                          fontFamily: UiConstants.bodyFont,
+                                          fontSize: UiConstants.tinyFontSize,
+                                          color: isDark
+                                              ? AppColors.textMuted
+                                              : UiConstants.lightTextMuted,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-                // Route line with plane
-                Expanded(
-                  flex: 2,
-                  child: SizedBox(
-                    height: 20,
-                    child: CustomPaint(
-                      painter: RouteLinePainter(color: primary),
+                                );
+                              },
+                            ),
+                          ],
+                        ],
+                      ),
                     ),
-                  ),
-                ),
-                // Arrival
-                Expanded(
-                  child: Column(
-                    children: [
-                      Text(
-                        hasArr
-                            ? AirportDatabase.displayCode(route!.arrivalAirport)
-                            : UiConstants.missingCode,
-                        style: TextStyle(
-                          fontFamily: UiConstants.headingFont,
-                          fontSize: UiConstants.bodyFontSize,
-                          fontWeight: FontWeight.w700,
-                          color: hasArr
-                              ? AppColors.accent
-                              : AppColors.textMuted,
+                    // Route line with plane
+                    Expanded(
+                      flex: 2,
+                      child: SizedBox(
+                        height: 20,
+                        child: CustomPaint(
+                          painter: RouteLinePainter(color: primary),
                         ),
                       ),
-                      if (hasArr) ...[
-                        Builder(
-                          builder: (_) {
-                            final rawCity =
-                                route!.arrCity ??
-                                AirportDatabase.getCity(route!.arrivalAirport);
-                            if (rawCity.isEmpty) return const SizedBox.shrink();
-                            final city = localizeCity(rawCity, locale);
-                            return Text(
-                              city,
-                              style: TextStyle(
-                                fontFamily: UiConstants.bodyFont,
-                                fontSize: UiConstants.microFontSize,
-                                color: isDark
-                                    ? AppColors.textSecondary
-                                    : UiConstants.lightTextSecondary,
-                              ),
-                              textAlign: TextAlign.center,
-                              overflow: TextOverflow.ellipsis,
-                            );
-                          },
-                        ),
-                        Builder(
-                          builder: (_) {
-                            final country = AirportDatabase.getCountry(
-                              route!.arrivalAirport,
-                            );
-                            if (country.isEmpty) return const SizedBox.shrink();
-                            final canonicalCountry =
-                                CountryDatabase.displayName(country);
-                            final displayCountry = localizeCountry(
-                              canonicalCountry,
-                              locale,
-                            );
-                            return FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  _countryFlagWidget(country),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    displayCountry,
-                                    style: TextStyle(
-                                      fontFamily: UiConstants.bodyFont,
-                                      fontSize: UiConstants.tinyFontSize,
-                                      color: isDark
-                                          ? AppColors.textMuted
-                                          : UiConstants.lightTextMuted,
-                                    ),
+                    ),
+                    // Arrival
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Text(
+                            hasArr
+                                ? AirportDatabase.displayCode(
+                                    route!.arrivalAirport,
+                                  )
+                                : UiConstants.missingCode,
+                            style: TextStyle(
+                              fontFamily: UiConstants.headingFont,
+                              fontSize: UiConstants.bodyFontSize,
+                              fontWeight: FontWeight.w700,
+                              color: hasArr
+                                  ? AppColors.accent
+                                  : AppColors.textMuted,
+                            ),
+                          ),
+                          if (hasArr) ...[
+                            Builder(
+                              builder: (_) {
+                                final rawCity =
+                                    route!.arrCity ??
+                                    AirportDatabase.getCity(
+                                      route!.arrivalAirport,
+                                    );
+                                if (rawCity.isEmpty) {
+                                  return const SizedBox.shrink();
+                                }
+                                final city = localizeCity(rawCity, locale);
+                                return Text(
+                                  city,
+                                  style: TextStyle(
+                                    fontFamily: UiConstants.bodyFont,
+                                    fontSize: UiConstants.microFontSize,
+                                    color: isDark
+                                        ? AppColors.textSecondary
+                                        : UiConstants.lightTextSecondary,
                                   ),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
+                                  textAlign: TextAlign.center,
+                                  overflow: TextOverflow.ellipsis,
+                                );
+                              },
+                            ),
+                            Builder(
+                              builder: (_) {
+                                final country = AirportDatabase.getCountry(
+                                  route!.arrivalAirport,
+                                );
+                                if (country.isEmpty) {
+                                  return const SizedBox.shrink();
+                                }
+                                final canonicalCountry =
+                                    CountryDatabase.displayName(country);
+                                final displayCountry = localizeCountry(
+                                  canonicalCountry,
+                                  locale,
+                                );
+                                return FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      _countryFlagWidget(country),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        displayCountry,
+                                        style: TextStyle(
+                                          fontFamily: UiConstants.bodyFont,
+                                          fontSize: UiConstants.tinyFontSize,
+                                          color: isDark
+                                              ? AppColors.textMuted
+                                              : UiConstants.lightTextMuted,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
                   ],
                 ),
                 // Popularity badge under the dep→arr arrow — silent

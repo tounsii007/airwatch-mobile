@@ -26,7 +26,9 @@ void main() {
     });
 
     test('parses negative temperatures with M prefix', () {
-      final r = decodeMetar('EFHK 101220Z 09008KT 9999 -SN OVC008 M03/M05 Q1013');
+      final r = decodeMetar(
+        'EFHK 101220Z 09008KT 9999 -SN OVC008 M03/M05 Q1013',
+      );
       expect(r.temperature.tempC, -3);
       expect(r.temperature.dewC, -5);
       expect(r.altimeter.hPa, 1013);
@@ -49,7 +51,9 @@ void main() {
     });
 
     test('decodes phenomenon stack like TSRA with intensity prefix', () {
-      final r = decodeMetar('KORD 101455Z 24015G25KT 4SM +TSRA BKN025CB 21/19 A2978');
+      final r = decodeMetar(
+        'KORD 101455Z 24015G25KT 4SM +TSRA BKN025CB 21/19 A2978',
+      );
       expect(r.wind?.gust, 25);
       expect(r.phenomena.length, 2);
       expect(r.phenomena[0].intensity, '+');
@@ -65,7 +69,9 @@ void main() {
     });
 
     test('preserves remarks block as a single unknown blob', () {
-      final r = decodeMetar('KSFO 101455Z 28012KT 10SM CLR 17/12 A3001 RMK AO2 SLP161');
+      final r = decodeMetar(
+        'KSFO 101455Z 28012KT 10SM CLR 17/12 A3001 RMK AO2 SLP161',
+      );
       expect(r.unknown.any((u) => u.startsWith('RMK ')), isTrue);
     });
   });

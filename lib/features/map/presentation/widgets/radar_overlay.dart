@@ -55,10 +55,7 @@ class _RadarOverlayState extends State<RadarOverlay>
       return IgnorePointer(
         child: CustomPaint(
           size: Size.infinite,
-          painter: _RadarOverlayPainter(
-            progress: 0,
-            color: AppColors.primary,
-          ),
+          painter: _RadarOverlayPainter(progress: 0, color: AppColors.primary),
         ),
       );
     }

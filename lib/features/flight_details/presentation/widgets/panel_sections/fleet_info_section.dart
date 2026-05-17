@@ -133,27 +133,25 @@ class _FleetInfoSectionState extends State<FleetInfoSection> {
           ),
           const SizedBox(height: 6),
           if (registry != null) _registryRow(registry, body, muted, s),
-          if (registry != null && sightings != null)
-            const SizedBox(height: 4),
+          if (registry != null && sightings != null) const SizedBox(height: 4),
           if (sightings != null) _sightingsRow(sightings, body, muted, s),
         ],
       ),
     );
   }
 
-  Widget _registryRow(
-    FleetRegistry r,
-    Color body,
-    Color muted,
-    AppStrings s,
-  ) {
+  Widget _registryRow(FleetRegistry r, Color body, Color muted, AppStrings s) {
     final parts = <String>[];
     if (r.manufacturer != null) parts.add(r.manufacturer!);
     if (r.type != null) parts.add(r.type!);
     if (r.builtYear != null) {
       final age = DateTime.now().year - r.builtYear!;
       // Sanity: registry year passed parsing, so age ≥ 0.
-      parts.add(s.fleetAge.replaceFirst('{0}', '$age').replaceFirst('{1}', '${r.builtYear}'));
+      parts.add(
+        s.fleetAge
+            .replaceFirst('{0}', '$age')
+            .replaceFirst('{1}', '${r.builtYear}'),
+      );
     }
     if (r.owner != null) parts.add(r.owner!);
     if (parts.isEmpty) return const SizedBox.shrink();
@@ -176,13 +174,21 @@ class _FleetInfoSectionState extends State<FleetInfoSection> {
     final fmt = NumberFormat.decimalPattern();
     final parts = <String>[];
     if (s.count > 0) {
-      parts.add(strings.fleetSightings.replaceFirst('{0}', fmt.format(s.count)));
+      parts.add(
+        strings.fleetSightings.replaceFirst('{0}', fmt.format(s.count)),
+      );
     }
-    final firstSeen =
-        _formatRelative(s.firstSeenAt, strings.fleetFirstSeen, strings);
+    final firstSeen = _formatRelative(
+      s.firstSeenAt,
+      strings.fleetFirstSeen,
+      strings,
+    );
     if (firstSeen != null) parts.add(firstSeen);
-    final lastSeen =
-        _formatRelative(s.lastSeenAt, strings.fleetLastSeen, strings);
+    final lastSeen = _formatRelative(
+      s.lastSeenAt,
+      strings.fleetLastSeen,
+      strings,
+    );
     if (lastSeen != null) parts.add(lastSeen);
     if (parts.isEmpty) return const SizedBox.shrink();
     return Text(
@@ -213,11 +219,15 @@ class _FleetInfoSectionState extends State<FleetInfoSection> {
     } else if (diff.inDays.abs() < 30) {
       label = strings.relTimeDays.replaceFirst('{0}', '${diff.inDays}');
     } else if (diff.inDays.abs() < 365) {
-      label = strings.relTimeMonths
-          .replaceFirst('{0}', '${(diff.inDays / 30).round()}');
+      label = strings.relTimeMonths.replaceFirst(
+        '{0}',
+        '${(diff.inDays / 30).round()}',
+      );
     } else {
-      label = strings.relTimeYears
-          .replaceFirst('{0}', '${(diff.inDays / 365).round()}');
+      label = strings.relTimeYears.replaceFirst(
+        '{0}',
+        '${(diff.inDays / 365).round()}',
+      );
     }
     return template.replaceFirst('{0}', label);
   }

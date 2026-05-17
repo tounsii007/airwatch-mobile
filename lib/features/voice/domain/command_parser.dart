@@ -189,10 +189,7 @@ final _patternsEs = <_Pattern>[
     ),
     (m) => VShowFlight(m.group(1)!.toUpperCase()),
   ),
-  (
-    RegExp(r'carga|cargo', caseSensitive: false),
-    (_) => const VFilterCargo(),
-  ),
+  (RegExp(r'carga|cargo', caseSensitive: false), (_) => const VFilterCargo()),
   (
     RegExp(r'modo\s+oscuro|oscuro', caseSensitive: false),
     (_) => const VSetStyleDark(),
@@ -236,10 +233,7 @@ final _patternsIt = <_Pattern>[
     ),
     (m) => VShowFlight(m.group(1)!.toUpperCase()),
   ),
-  (
-    RegExp(r'merci|cargo', caseSensitive: false),
-    (_) => const VFilterCargo(),
-  ),
+  (RegExp(r'merci|cargo', caseSensitive: false), (_) => const VFilterCargo()),
   (
     RegExp(r'modalit[àa]\s+scura|scuro', caseSensitive: false),
     (_) => const VSetStyleDark(),

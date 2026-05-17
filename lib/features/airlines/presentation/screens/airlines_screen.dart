@@ -61,9 +61,7 @@ class AirlinesScreen extends ConsumerWidget {
     return AwPageScaffold(
       title: s.airlines,
       subtitle: liveCount > 0
-          ? AwPageBadge(
-              label: '$liveCount ${s.airlinesCarriers.toUpperCase()}',
-            )
+          ? AwPageBadge(label: '$liveCount ${s.airlinesCarriers.toUpperCase()}')
           : null,
       child: asyncFlights.when(
         loading: () => const Center(child: CircularProgressIndicator()),

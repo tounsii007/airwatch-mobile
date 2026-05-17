@@ -29,10 +29,10 @@ class WikiInfo {
       (imageUrl == null || imageUrl!.isEmpty);
 
   factory WikiInfo.fromJson(Map<String, dynamic> j) => WikiInfo(
-        summary: _str(j['summary']),
-        imageUrl: _str(j['image_url']),
-        wikiUrl: _str(j['wiki_url']),
-      );
+    summary: _str(j['summary']),
+    imageUrl: _str(j['image_url']),
+    wikiUrl: _str(j['wiki_url']),
+  );
 
   static String? _str(Object? v) {
     if (v == null) return null;

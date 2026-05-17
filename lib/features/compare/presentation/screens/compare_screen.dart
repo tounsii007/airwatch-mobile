@@ -460,8 +460,7 @@ class _Row extends StatelessWidget {
                             height: 8,
                             decoration: BoxDecoration(
                               color: colorA.withValues(alpha: 0.55),
-                              borderRadius:
-                                  const BorderRadiusDirectional.only(
+                              borderRadius: const BorderRadiusDirectional.only(
                                 topStart: Radius.circular(4),
                                 bottomStart: Radius.circular(4),
                               ),
@@ -479,8 +478,7 @@ class _Row extends StatelessWidget {
                             height: 8,
                             decoration: BoxDecoration(
                               color: colorB.withValues(alpha: 0.55),
-                              borderRadius:
-                                  const BorderRadiusDirectional.only(
+                              borderRadius: const BorderRadiusDirectional.only(
                                 topEnd: Radius.circular(4),
                                 bottomEnd: Radius.circular(4),
                               ),

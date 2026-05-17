@@ -273,7 +273,9 @@ class StatsScreen extends ConsumerWidget {
 
   String _buildCsv(List<ViewedFlight> flights) {
     final buf = StringBuffer();
-    buf.writeln('icao24,callsign,origin,destination,airline,views,firstSeenAt,lastSeenAt');
+    buf.writeln(
+      'icao24,callsign,origin,destination,airline,views,firstSeenAt,lastSeenAt',
+    );
     for (final f in flights) {
       buf.writeln(
         [
@@ -298,9 +300,9 @@ class StatsScreen extends ConsumerWidget {
     String message,
   ) {
     Clipboard.setData(ClipboardData(text: payload));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 }
 
@@ -313,23 +315,29 @@ class _ActivityMetaStrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final since = summary.trackingSince;
-    final sinceLabel =
-        since == null ? '—' : _formatDate(since.toLocal());
+    final sinceLabel = since == null ? '—' : _formatDate(since.toLocal());
     final daysLabel = summary.daysActive.toString();
     final peak = summary.peakHour;
-    final peakLabel =
-        peak == null ? '—' : '${peak.toString().padLeft(2, '0')}:00';
+    final peakLabel = peak == null
+        ? '—'
+        : '${peak.toString().padLeft(2, '0')}:00';
 
     return GlassPanel(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       borderRadius: 12,
       child: Row(
         children: [
-          Expanded(child: _MetaCell(label: s.statsTrackingSince, value: sinceLabel)),
+          Expanded(
+            child: _MetaCell(label: s.statsTrackingSince, value: sinceLabel),
+          ),
           _MetaDivider(),
-          Expanded(child: _MetaCell(label: s.statsDaysActive, value: daysLabel)),
+          Expanded(
+            child: _MetaCell(label: s.statsDaysActive, value: daysLabel),
+          ),
           _MetaDivider(),
-          Expanded(child: _MetaCell(label: s.statsPeakHour, value: peakLabel)),
+          Expanded(
+            child: _MetaCell(label: s.statsPeakHour, value: peakLabel),
+          ),
         ],
       ),
     );
@@ -382,11 +390,11 @@ class _MetaCell extends StatelessWidget {
 class _MetaDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
-        width: 1,
-        height: 24,
-        margin: const EdgeInsets.symmetric(horizontal: 8),
-        color: AppColors.glassBorder.withValues(alpha: 0.4),
-      );
+    width: 1,
+    height: 24,
+    margin: const EdgeInsets.symmetric(horizontal: 8),
+    color: AppColors.glassBorder.withValues(alpha: 0.4),
+  );
 }
 
 // ─── 24-hour activity histogram ─────────────────────────────────────────

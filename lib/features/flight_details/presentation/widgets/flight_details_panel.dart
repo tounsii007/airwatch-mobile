@@ -134,7 +134,9 @@ class _FlightDetailsPanelState extends ConsumerState<FlightDetailsPanel> {
       if (data.route != null) {
         final dep = data.route!.departureAirport;
         final arr = data.route!.arrivalAirport;
-        ref.read(personalStatsProvider.notifier).enrichRoute(
+        ref
+            .read(personalStatsProvider.notifier)
+            .enrichRoute(
               icao24: aircraft.icao24,
               originIata: dep.isEmpty ? null : dep,
               destIata: arr.isEmpty ? null : arr,
@@ -168,8 +170,9 @@ class _FlightDetailsPanelState extends ConsumerState<FlightDetailsPanel> {
     // sees "no photo" without us needing to thread a flag through every
     // section. Mirrors airwatch-web's `showAircraftPhotos` plumbing in
     // MobileDetailsPanel.tsx (commit 6eeb5b8).
-    final showPhotos =
-        ref.watch(settingsProvider.select((s) => s.showAircraftPhotos));
+    final showPhotos = ref.watch(
+      settingsProvider.select((s) => s.showAircraftPhotos),
+    );
     final effectivePhotoUrl = showPhotos ? _aircraftPhotoUrl : null;
 
     final content = _PanelContent(

@@ -447,8 +447,7 @@ class StringsEs extends AppStrings {
   @override
   String get atcLiveTitle => 'ATC EN VIVO';
   @override
-  String get atcUnavailable =>
-      'Sin feeds catalogados para este aeropuerto';
+  String get atcUnavailable => 'Sin feeds catalogados para este aeropuerto';
   @override
   String get atcSearchFallback => 'Buscar en LiveATC.net';
   @override
@@ -581,11 +580,9 @@ class StringsEs extends AppStrings {
   @override
   String get fenceDrawHintRectFirst => 'Toca para fijar la primera esquina';
   @override
-  String get fenceDrawHintRectSecond =>
-      'Toca para fijar la esquina opuesta';
+  String get fenceDrawHintRectSecond => 'Toca para fijar la esquina opuesta';
   @override
-  String get fenceDrawHintReady =>
-      'Guarda cuando esté listo o toca RESET';
+  String get fenceDrawHintReady => 'Guarda cuando esté listo o toca RESET';
   @override
   String get fenceDrawResetButton => 'RESET';
   @override
@@ -641,11 +638,9 @@ class StringsEs extends AppStrings {
   @override
   String get fenceImporting => 'IMPORTANDO…';
   @override
-  String get fenceExportTooltip =>
-      'Descargar geofences como JSON';
+  String get fenceExportTooltip => 'Descargar geofences como JSON';
   @override
-  String get fenceImportTooltip =>
-      'Restaurar geofences desde un archivo JSON';
+  String get fenceImportTooltip => 'Restaurar geofences desde un archivo JSON';
   @override
   String get fenceExportEmpty => 'Nada que exportar';
   @override
@@ -659,20 +654,17 @@ class StringsEs extends AppStrings {
   @override
   String get fenceImportedMany => '{0} geofences importadas';
   @override
-  String get fenceImportedPartial =>
-      '{0} importadas, {1} fallidas ({2})';
+  String get fenceImportedPartial => '{0} importadas, {1} fallidas ({2})';
   @override
   String get fenceReadFailed => 'Lectura fallida: {0}';
   @override
   String get fenceImportInvalidJson => 'JSON inválido: {0}';
   @override
-  String get fenceImportSchemaMismatch =>
-      'Esquema incompatible en {0}: {1}';
+  String get fenceImportSchemaMismatch => 'Esquema incompatible en {0}: {1}';
 
   // ── Dashboard empty / honest states ────────────────────────────────────
   @override
   String get dashNoDataYet => 'Sin datos aún';
   @override
-  String get dashEmptyHint =>
-      'Abre el mapa para empezar a seguir vuelos';
+  String get dashEmptyHint => 'Abre el mapa para empezar a seguir vuelos';
 }

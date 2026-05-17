@@ -83,77 +83,74 @@ class GeofencesScreen extends ConsumerWidget {
         ],
       ),
       child: CustomScrollView(
-          slivers: [
-            // Live alerts — auto-hidden when no aircraft is inside an
-            // active fence right now. Sits above the list so a new
-            // intrusion is immediately visible.
-            const SliverToBoxAdapter(child: AlertsPanel()),
+        slivers: [
+          // Live alerts — auto-hidden when no aircraft is inside an
+          // active fence right now. Sits above the list so a new
+          // intrusion is immediately visible.
+          const SliverToBoxAdapter(child: AlertsPanel()),
 
-            // Section header with total count + IO toolbar.
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(16, 6, 16, 4),
-              sliver: SliverToBoxAdapter(
-                child: Row(
-                  children: [
+          // Section header with total count + IO toolbar.
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(16, 6, 16, 4),
+            sliver: SliverToBoxAdapter(
+              child: Row(
+                children: [
+                  Text(
+                    s.fenceActiveHeading,
+                    style: const TextStyle(
+                      fontFamily: UiConstants.headingFont,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 1.4,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  const Spacer(),
+                  if (fences.isNotEmpty)
                     Text(
-                      s.fenceActiveHeading,
+                      s.fenceTotalCount.replaceAll('{0}', '${fences.length}'),
                       style: const TextStyle(
-                        fontFamily: UiConstants.headingFont,
+                        fontFamily: UiConstants.bodyFont,
                         fontSize: 11,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 1.4,
-                        color: AppColors.primary,
+                        color: AppColors.textMuted,
                       ),
                     ),
-                    const Spacer(),
-                    if (fences.isNotEmpty)
-                      Text(
-                        s.fenceTotalCount.replaceAll('{0}', '${fences.length}'),
-                        style: const TextStyle(
-                          fontFamily: UiConstants.bodyFont,
-                          fontSize: 11,
-                          color: AppColors.textMuted,
-                        ),
-                      ),
-                  ],
-                ),
+                ],
               ),
             ),
+          ),
 
-            // Export / import toolbar — always visible so users discover
-            // the JSON round-trip even with no fences (the empty-export
-            // path renders an informative status message).
+          // Export / import toolbar — always visible so users discover
+          // the JSON round-trip even with no fences (the empty-export
+          // path renders an informative status message).
+          SliverPadding(
+            padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
+            sliver: SliverToBoxAdapter(child: FenceIOToolbar(fences: fences)),
+          ),
+
+          if (fences.isEmpty)
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: _Empty(isDark: isDark),
+            )
+          else
             SliverPadding(
-              padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
-              sliver: SliverToBoxAdapter(
-                child: FenceIOToolbar(fences: fences),
-              ),
-            ),
-
-            if (fences.isEmpty)
-              SliverFillRemaining(
-                hasScrollBody: false,
-                child: _Empty(isDark: isDark),
-              )
-            else
-              SliverPadding(
-                padding: const EdgeInsets.fromLTRB(12, 0, 12, 96),
-                sliver: SliverList.separated(
-                  itemCount: fences.length,
-                  separatorBuilder: (_, _) => const SizedBox(height: 8),
-                  itemBuilder: (_, i) => _FenceTile(
-                    fence: fences[i],
-                    isDark: isDark,
-                    onToggle: () => ref
-                        .read(geofencesProvider.notifier)
-                        .toggleActive(fences[i].id),
-                    onRemove: () => ref
-                        .read(geofencesProvider.notifier)
-                        .remove(fences[i].id),
-                  ),
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 96),
+              sliver: SliverList.separated(
+                itemCount: fences.length,
+                separatorBuilder: (_, _) => const SizedBox(height: 8),
+                itemBuilder: (_, i) => _FenceTile(
+                  fence: fences[i],
+                  isDark: isDark,
+                  onToggle: () => ref
+                      .read(geofencesProvider.notifier)
+                      .toggleActive(fences[i].id),
+                  onRemove: () =>
+                      ref.read(geofencesProvider.notifier).remove(fences[i].id),
                 ),
               ),
-          ],
+            ),
+        ],
       ),
     );
   }
@@ -178,18 +175,9 @@ class _FenceTile extends StatelessWidget {
     final s = context.s;
     if (fence.type == GeoFenceType.circle) {
       return s.fenceShapeCircle
-          .replaceAll(
-            '{0}',
-            (fence.centerLat ?? 0).toStringAsFixed(2),
-          )
-          .replaceAll(
-            '{1}',
-            (fence.centerLon ?? 0).toStringAsFixed(2),
-          )
-          .replaceAll(
-            '{2}',
-            (fence.radiusKm ?? 0).toStringAsFixed(1),
-          );
+          .replaceAll('{0}', (fence.centerLat ?? 0).toStringAsFixed(2))
+          .replaceAll('{1}', (fence.centerLon ?? 0).toStringAsFixed(2))
+          .replaceAll('{2}', (fence.radiusKm ?? 0).toStringAsFixed(1));
     }
     return s.fenceShapeRect
         .replaceAll('{0}', (fence.southLat ?? 0).toStringAsFixed(1))

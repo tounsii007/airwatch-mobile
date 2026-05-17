@@ -174,125 +174,125 @@ class _ARScreenState extends ConsumerState<ARScreen> {
               ),
             ),
 
-          // Horizon line — translates with pitch + roll.
-          HorizonLine(pitchDeg: _pitch, rollDeg: _roll),
+            // Horizon line — translates with pitch + roll.
+            HorizonLine(pitchDeg: _pitch, rollDeg: _roll),
 
-          // Aircraft labels — one per detected flight.
-          ..._buildAircraftLabels(detected, primary),
+            // Aircraft labels — one per detected flight.
+            ..._buildAircraftLabels(detected, primary),
 
-          // Crosshair — aiming reticle at screen center.
-          IgnorePointer(
-            child: Center(
-              child: Container(
-                width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: primary.withValues(alpha: 0.5),
-                    width: 1.5,
+            // Crosshair — aiming reticle at screen center.
+            IgnorePointer(
+              child: Center(
+                child: Container(
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: primary.withValues(alpha: 0.5),
+                      width: 1.5,
+                    ),
                   ),
-                ),
-                child: Center(
-                  child: Container(
-                    width: 6,
-                    height: 6,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: primary,
+                  child: Center(
+                    child: Container(
+                      width: 6,
+                      height: 6,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: primary,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
 
-          // Top bar + compass hud.
-          SafeArea(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () => Navigator.of(context).pop(),
-                        child: GlassPanel(
-                          padding: const EdgeInsets.all(8),
-                          borderRadius: 10,
-                          child: Icon(
-                            Icons.arrow_back_rounded,
-                            size: 18,
-                            color: primary,
+            // Top bar + compass hud.
+            SafeArea(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => Navigator.of(context).pop(),
+                          child: GlassPanel(
+                            padding: const EdgeInsets.all(8),
+                            borderRadius: 10,
+                            child: Icon(
+                              Icons.arrow_back_rounded,
+                              size: 18,
+                              color: primary,
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 10),
-                      NeonText(
-                        text: context.s.arMode,
-                        fontSize: 14,
-                        color: primary,
-                        glowRadius: isDark ? 8 : 0,
-                      ),
-                    ],
+                        const SizedBox(width: 10),
+                        NeonText(
+                          text: context.s.arMode,
+                          fontSize: 14,
+                          color: primary,
+                          glowRadius: isDark ? 8 : 0,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(height: 6),
-                CompassHud(headingDeg: _heading),
-              ],
+                  const SizedBox(height: 6),
+                  CompassHud(headingDeg: _heading),
+                ],
+              ),
             ),
-          ),
 
-          // Bottom telemetry footer — heading / pitch / detected count.
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: GlassPanel(
-                  borderRadius: 12,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 10,
-                  ),
-                  child: Row(
-                    children: [
-                      _Stat(label: 'HDG', value: '${_heading.round()}°'),
-                      const SizedBox(width: 18),
-                      _Stat(label: 'PITCH', value: '${_pitch.round()}°'),
-                      const SizedBox(width: 18),
-                      _Stat(
-                        label: 'IN VIEW',
-                        value: detected.length.toString(),
-                      ),
-                      const Spacer(),
-                      if (_sensorError != null)
-                        Tooltip(
-                          message: _sensorError!,
-                          child: const Icon(
-                            Icons.warning_amber_rounded,
-                            size: 16,
-                            color: AppColors.warning,
-                          ),
-                        )
-                      else
-                        Icon(
-                          _userPos == null
-                              ? Icons.gps_off_rounded
-                              : Icons.gps_fixed_rounded,
-                          size: 16,
-                          color: _userPos == null
-                              ? AppColors.textMuted
-                              : AppColors.success,
+            // Bottom telemetry footer — heading / pitch / detected count.
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: GlassPanel(
+                    borderRadius: 12,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 10,
+                    ),
+                    child: Row(
+                      children: [
+                        _Stat(label: 'HDG', value: '${_heading.round()}°'),
+                        const SizedBox(width: 18),
+                        _Stat(label: 'PITCH', value: '${_pitch.round()}°'),
+                        const SizedBox(width: 18),
+                        _Stat(
+                          label: 'IN VIEW',
+                          value: detected.length.toString(),
                         ),
-                    ],
+                        const Spacer(),
+                        if (_sensorError != null)
+                          Tooltip(
+                            message: _sensorError!,
+                            child: const Icon(
+                              Icons.warning_amber_rounded,
+                              size: 16,
+                              color: AppColors.warning,
+                            ),
+                          )
+                        else
+                          Icon(
+                            _userPos == null
+                                ? Icons.gps_off_rounded
+                                : Icons.gps_fixed_rounded,
+                            size: 16,
+                            color: _userPos == null
+                                ? AppColors.textMuted
+                                : AppColors.success,
+                          ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
           ],
         ),
       ),

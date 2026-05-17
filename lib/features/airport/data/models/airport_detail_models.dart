@@ -77,10 +77,12 @@ class AirportScheduleFlight {
   final String? arrTerminal;
   final String? depGate;
   final String? arrGate;
+
   /// Codeshare partner airline IATA (e.g. "AF" when a Lufthansa-operated
   /// flight is sold by Air France). Null when the row isn't a codeshare.
   /// Mirrors airwatch-web's `csAirlineIata` (commit 76fdfa0).
   final String? csAirlineIata;
+
   /// Codeshare partner's flight number (e.g. "AF1241"). Null when not
   /// applicable. The tile only shows this when it differs from the
   /// operating [flightIata] — Airlabs occasionally echoes the same
@@ -125,10 +127,10 @@ class AirportScheduleFlight {
       arrTerminal: map['arr_terminal']?.toString(),
       depGate: map['dep_gate']?.toString(),
       arrGate: map['arr_gate']?.toString(),
-      csAirlineIata:
-          (csAirline != null && csAirline.isNotEmpty) ? csAirline : null,
-      csFlightIata:
-          (csFlight != null && csFlight.isNotEmpty) ? csFlight : null,
+      csAirlineIata: (csAirline != null && csAirline.isNotEmpty)
+          ? csAirline
+          : null,
+      csFlightIata: (csFlight != null && csFlight.isNotEmpty) ? csFlight : null,
     );
   }
 

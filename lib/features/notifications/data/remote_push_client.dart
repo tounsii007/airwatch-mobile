@@ -112,11 +112,11 @@ class MobilePushSubscriptionRequest {
   });
 
   Map<String, dynamic> toJson() => {
-        'clientId': clientId,
-        'token': token,
-        'platform': platform,
-        if (language != null) 'language': language,
-      };
+    'clientId': clientId,
+    'token': token,
+    'platform': platform,
+    if (language != null) 'language': language,
+  };
 }
 
 /// Helper for the actual http roundtrip. Used by the future [FcmPush]
@@ -129,8 +129,7 @@ class MobilePushSubscriptionRequest {
 class MobilePushSubscriptionApi {
   final Dio _dio;
 
-  MobilePushSubscriptionApi({Dio? dio})
-      : _dio = dio ?? AppHttpClient.create();
+  MobilePushSubscriptionApi({Dio? dio}) : _dio = dio ?? AppHttpClient.create();
 
   Future<bool> subscribe(MobilePushSubscriptionRequest req) async {
     try {

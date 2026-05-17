@@ -28,7 +28,9 @@ void main() {
     test('drops the oldest non-pinned when crossing the cap', () {
       final base = <FavoriteItem>[];
       for (var i = 0; i < FavoritesNotifier.maxItems; i++) {
-        base.add(make('f$i', addedAt: DateTime(2026).add(Duration(seconds: i))));
+        base.add(
+          make('f$i', addedAt: DateTime(2026).add(Duration(seconds: i))),
+        );
       }
       final result = FavoritesNotifier.appendWithCap(base, make('newest'));
       expect(result.length, FavoritesNotifier.maxItems);
@@ -40,11 +42,11 @@ void main() {
     test('pinned entries are never evicted', () {
       final base = <FavoriteItem>[];
       // f0 is pinned (oldest); f1..f499 are non-pinned.
-      base.add(make('f0',
-          pinned: true, addedAt: DateTime(2026)));
+      base.add(make('f0', pinned: true, addedAt: DateTime(2026)));
       for (var i = 1; i < FavoritesNotifier.maxItems; i++) {
-        base.add(make('f$i',
-            addedAt: DateTime(2026).add(Duration(seconds: i))));
+        base.add(
+          make('f$i', addedAt: DateTime(2026).add(Duration(seconds: i))),
+        );
       }
       final result = FavoritesNotifier.appendWithCap(base, make('newest'));
       expect(result.length, FavoritesNotifier.maxItems);

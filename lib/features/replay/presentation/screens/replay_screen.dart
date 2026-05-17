@@ -52,85 +52,85 @@ class _ReplayScreenState extends ConsumerState<ReplayScreen> {
     return AwPageScaffold(
       title: s.replayTitle,
       child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(
-                Icons.history_rounded,
-                size: 56,
-                color: AppColors.primary.withValues(alpha: 0.7),
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.history_rounded,
+              size: 56,
+              color: AppColors.primary.withValues(alpha: 0.7),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              s.replayHeading,
+              style: const TextStyle(
+                fontFamily: UiConstants.headingFont,
+                fontSize: 18,
+                fontWeight: FontWeight.w800,
+                color: AppColors.primary,
               ),
-              const SizedBox(height: 12),
-              Text(
-                s.replayHeading,
-                style: const TextStyle(
-                  fontFamily: UiConstants.headingFont,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.primary,
-                ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              s.replayBody,
+              style: TextStyle(
+                fontFamily: UiConstants.bodyFont,
+                fontSize: 13,
+                color: AppColors.textMuted.withValues(alpha: 0.9),
               ),
-              const SizedBox(height: 6),
-              Text(
-                s.replayBody,
-                style: TextStyle(
-                  fontFamily: UiConstants.bodyFont,
-                  fontSize: 13,
-                  color: AppColors.textMuted.withValues(alpha: 0.9),
-                ),
-              ),
-              const SizedBox(height: 20),
-              GlassPanel(
-                padding: const EdgeInsets.fromLTRB(12, 4, 4, 4),
-                borderRadius: 12,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _controller,
-                        textInputAction: TextInputAction.search,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: s.replayHint,
-                          hintStyle: const TextStyle(
-                            fontFamily: UiConstants.bodyFont,
-                            fontSize: 13,
-                            color: AppColors.textMuted,
-                          ),
+            ),
+            const SizedBox(height: 20),
+            GlassPanel(
+              padding: const EdgeInsets.fromLTRB(12, 4, 4, 4),
+              borderRadius: 12,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _controller,
+                      textInputAction: TextInputAction.search,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: s.replayHint,
+                        hintStyle: const TextStyle(
+                          fontFamily: UiConstants.bodyFont,
+                          fontSize: 13,
+                          color: AppColors.textMuted,
                         ),
-                        style: const TextStyle(
-                          fontFamily: UiConstants.headingFont,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 0.6,
-                          color: AppColors.primary,
-                        ),
-                        onSubmitted: (_) => _launch(context),
                       ),
-                    ),
-                    IconButton(
-                      tooltip: s.replaySearchAction,
-                      onPressed: () => _launch(context),
-                      icon: const Icon(
-                        Icons.arrow_forward_rounded,
+                      style: const TextStyle(
+                        fontFamily: UiConstants.headingFont,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.6,
                         color: AppColors.primary,
                       ),
+                      onSubmitted: (_) => _launch(context),
                     ),
-                  ],
-                ),
+                  ),
+                  IconButton(
+                    tooltip: s.replaySearchAction,
+                    onPressed: () => _launch(context),
+                    icon: const Icon(
+                      Icons.arrow_forward_rounded,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 12),
-              Text(
-                s.replayExamples,
-                style: TextStyle(
-                  fontFamily: UiConstants.bodyFont,
-                  fontSize: 11,
-                  color: AppColors.textMuted.withValues(alpha: 0.8),
-                ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              s.replayExamples,
+              style: TextStyle(
+                fontFamily: UiConstants.bodyFont,
+                fontSize: 11,
+                color: AppColors.textMuted.withValues(alpha: 0.8),
               ),
-            ],
-          ),
+            ),
+          ],
+        ),
       ),
     );
   }

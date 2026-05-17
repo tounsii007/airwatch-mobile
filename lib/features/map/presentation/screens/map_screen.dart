@@ -116,89 +116,89 @@ class _MapScreenState extends ConsumerState<MapScreen>
           Directionality(
             textDirection: TextDirection.ltr,
             child: FlutterMap(
-            mapController: _mapController,
-            options: MapOptions(
-              initialCenter: const LatLng(48.8566, 2.3522),
-              initialZoom: AppConfig.defaultZoom,
-              minZoom: AppConfig.minZoom,
-              maxZoom: AppConfig.maxZoom,
-              backgroundColor: isDark
-                  ? AppColors.background
-                  : UiConstants.lightBackground,
-              // Restrict panning to a single world copy with a small
-              // dateline buffer. flutter_map has no `worldCopyJump`
-              // equivalent (Leaflet teleports the view across the
-              // anti-meridian; flutter_map just hits the edge), so the
-              // closest match is to constrain the center coordinate.
-              // Latitude is clipped at ±85 because Web Mercator can't
-              // project the poles cleanly anyway.
-              cameraConstraint: CameraConstraint.containCenter(
-                bounds: LatLngBounds(
-                  const LatLng(-85, -180),
-                  const LatLng(85, 180),
+              mapController: _mapController,
+              options: MapOptions(
+                initialCenter: const LatLng(48.8566, 2.3522),
+                initialZoom: AppConfig.defaultZoom,
+                minZoom: AppConfig.minZoom,
+                maxZoom: AppConfig.maxZoom,
+                backgroundColor: isDark
+                    ? AppColors.background
+                    : UiConstants.lightBackground,
+                // Restrict panning to a single world copy with a small
+                // dateline buffer. flutter_map has no `worldCopyJump`
+                // equivalent (Leaflet teleports the view across the
+                // anti-meridian; flutter_map just hits the edge), so the
+                // closest match is to constrain the center coordinate.
+                // Latitude is clipped at ±85 because Web Mercator can't
+                // project the poles cleanly anyway.
+                cameraConstraint: CameraConstraint.containCenter(
+                  bounds: LatLngBounds(
+                    const LatLng(-85, -180),
+                    const LatLng(85, 180),
+                  ),
                 ),
-              ),
-              // Slower scroll-wheel zoom for desktop / web builds — the
-              // default 0.005 is jittery on high-DPI mice. Mirrors the
-              // web's `wheelDebounceTime: 100` / `wheelPxPerZoomLevel: 80`
-              // tuning, just expressed as flutter_map's velocity number.
-              interactionOptions: const InteractionOptions(
-                scrollWheelVelocity: 0.003,
-              ),
-              onTap: (tapPosition, point) {
-                ref.read(selectedAircraftProvider.notifier).set(null);
-                ref.read(isTrackingFlightProvider.notifier).set(false);
-                setState(() => _showSearch = false);
-              },
-              onPositionChanged: (position, hasGesture) {
-                if (hasGesture) {
+                // Slower scroll-wheel zoom for desktop / web builds — the
+                // default 0.005 is jittery on high-DPI mice. Mirrors the
+                // web's `wheelDebounceTime: 100` / `wheelPxPerZoomLevel: 80`
+                // tuning, just expressed as flutter_map's velocity number.
+                interactionOptions: const InteractionOptions(
+                  scrollWheelVelocity: 0.003,
+                ),
+                onTap: (tapPosition, point) {
+                  ref.read(selectedAircraftProvider.notifier).set(null);
                   ref.read(isTrackingFlightProvider.notifier).set(false);
-                }
-                final zoom = position.zoom;
-                if (zoom != _currentZoom) {
-                  setState(() => _currentZoom = zoom);
-                }
-              },
-            ),
-            children: [
-              // Tile layer — URL comes from the selected basemap style. The
-              // ValueKey ties the layer's lifecycle to the URL so flutter_map
-              // disposes the previous tile cache and rebuilds when the user
-              // picks a different style (the web frontend keeps a per-URL
-              // layer cache; flutter_map's tile manager handles that
-              // internally so we don't need an explicit cache here).
-              TileLayer(
-                key: ValueKey(style.url),
-                urlTemplate: style.url,
-                userAgentPackageName: 'com.airwatch.mobile',
-                tileProvider: NetworkTileProvider(),
-                maxNativeZoom: style.maxNativeZoom ?? 19,
+                  setState(() => _showSearch = false);
+                },
+                onPositionChanged: (position, hasGesture) {
+                  if (hasGesture) {
+                    ref.read(isTrackingFlightProvider.notifier).set(false);
+                  }
+                  final zoom = position.zoom;
+                  if (zoom != _currentZoom) {
+                    setState(() => _currentZoom = zoom);
+                  }
+                },
               ),
-
-              // Turbulence / SIGMET overlay (translucent polygons,
-              // toggled via showTurbulenceProvider).
-              const TurbulenceOverlayLayer(),
-
-              // Airport markers (major airports)
-              AirportMarkersLayer(zoom: _currentZoom),
-
-              // Flight trail — only for selected aircraft
-              if (showTrails && selectedAircraft != null)
-                FlightTrailLayer(
-                  aircraft: [selectedAircraft],
-                  selectedIcao: selectedAircraft.icao24,
-                  // destinationPosition could be set from route data
+              children: [
+                // Tile layer — URL comes from the selected basemap style. The
+                // ValueKey ties the layer's lifecycle to the URL so flutter_map
+                // disposes the previous tile cache and rebuilds when the user
+                // picks a different style (the web frontend keeps a per-URL
+                // layer cache; flutter_map's tile manager handles that
+                // internally so we don't need an explicit cache here).
+                TileLayer(
+                  key: ValueKey(style.url),
+                  urlTemplate: style.url,
+                  userAgentPackageName: 'com.airwatch.mobile',
+                  tileProvider: NetworkTileProvider(),
+                  maxNativeZoom: style.maxNativeZoom ?? 19,
                 ),
 
-              // Aircraft markers (with interpolated positions)
-              _InterpolatedMarkerLayer(
-                aircraft: aircraft,
-                selectedAircraft: selectedAircraft,
-                currentZoom: _currentZoom,
-                onSelect: (ac) =>
-                    ref.read(selectedAircraftProvider.notifier).set(ac),
-              ),
-            ],
+                // Turbulence / SIGMET overlay (translucent polygons,
+                // toggled via showTurbulenceProvider).
+                const TurbulenceOverlayLayer(),
+
+                // Airport markers (major airports)
+                AirportMarkersLayer(zoom: _currentZoom),
+
+                // Flight trail — only for selected aircraft
+                if (showTrails && selectedAircraft != null)
+                  FlightTrailLayer(
+                    aircraft: [selectedAircraft],
+                    selectedIcao: selectedAircraft.icao24,
+                    // destinationPosition could be set from route data
+                  ),
+
+                // Aircraft markers (with interpolated positions)
+                _InterpolatedMarkerLayer(
+                  aircraft: aircraft,
+                  selectedAircraft: selectedAircraft,
+                  currentZoom: _currentZoom,
+                  onSelect: (ac) =>
+                      ref.read(selectedAircraftProvider.notifier).set(ac),
+                ),
+              ],
             ),
           ),
 

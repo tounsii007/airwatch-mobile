@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('prefersReducedMotion picks up MediaQuery.disableAnimations',
-      (tester) async {
+  testWidgets('prefersReducedMotion picks up MediaQuery.disableAnimations', (
+    tester,
+  ) async {
     bool? captured;
     await tester.pumpWidget(
       MediaQuery(

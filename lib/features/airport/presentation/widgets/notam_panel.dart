@@ -161,9 +161,7 @@ class _NotamPanelState extends State<NotamPanel> {
             style: TextStyle(
               fontFamily: UiConstants.bodyFont,
               fontSize: 11,
-              color: isDark
-                  ? AppColors.textMuted
-                  : UiConstants.lightTextMuted,
+              color: isDark ? AppColors.textMuted : UiConstants.lightTextMuted,
             ),
           ),
         ],
@@ -171,17 +169,13 @@ class _NotamPanelState extends State<NotamPanel> {
     }
 
     final result = _result;
-    if (result == null ||
-        result.upstreamUnavailable ||
-        result.networkError) {
+    if (result == null || result.upstreamUnavailable || result.networkError) {
       return Text(
         s.notamsUnavailable,
         style: TextStyle(
           fontFamily: UiConstants.bodyFont,
           fontSize: 11,
-          color: isDark
-              ? AppColors.textMuted
-              : UiConstants.lightTextMuted,
+          color: isDark ? AppColors.textMuted : UiConstants.lightTextMuted,
         ),
       );
     }
@@ -192,9 +186,7 @@ class _NotamPanelState extends State<NotamPanel> {
         style: TextStyle(
           fontFamily: UiConstants.bodyFont,
           fontSize: 11,
-          color: isDark
-              ? AppColors.textMuted
-              : UiConstants.lightTextMuted,
+          color: isDark ? AppColors.textMuted : UiConstants.lightTextMuted,
         ),
       );
     }
@@ -205,14 +197,16 @@ class _NotamPanelState extends State<NotamPanel> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ...visible.map((n) => _NotamRow(
-              item: n,
-              expanded: _expanded.contains(n.id),
-              isDark: isDark,
-              onToggle: () => setState(() {
-                if (!_expanded.add(n.id)) _expanded.remove(n.id);
-              }),
-            )),
+        ...visible.map(
+          (n) => _NotamRow(
+            item: n,
+            expanded: _expanded.contains(n.id),
+            isDark: isDark,
+            onToggle: () => setState(() {
+              if (!_expanded.add(n.id)) _expanded.remove(n.id);
+            }),
+          ),
+        ),
         if (extra > 0) ...[
           const SizedBox(height: 4),
           Text(
@@ -220,9 +214,7 @@ class _NotamPanelState extends State<NotamPanel> {
             style: TextStyle(
               fontFamily: UiConstants.bodyFont,
               fontSize: 10,
-              color: isDark
-                  ? AppColors.textMuted
-                  : UiConstants.lightTextMuted,
+              color: isDark ? AppColors.textMuted : UiConstants.lightTextMuted,
             ),
           ),
         ],
@@ -246,9 +238,7 @@ class _NotamRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final muted = isDark
-        ? AppColors.textMuted
-        : UiConstants.lightTextMuted;
+    final muted = isDark ? AppColors.textMuted : UiConstants.lightTextMuted;
     final body = isDark
         ? AppColors.textSecondary
         : UiConstants.lightTextSecondary;

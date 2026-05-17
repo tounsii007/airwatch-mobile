@@ -586,8 +586,7 @@ class StringsDe extends AppStrings {
   @override
   String get fenceDrawTitle => 'Geofence zeichnen';
   @override
-  String get fenceDrawHintCircleFirst =>
-      'Tippe, um den Mittelpunkt zu setzen';
+  String get fenceDrawHintCircleFirst => 'Tippe, um den Mittelpunkt zu setzen';
   @override
   String get fenceDrawHintCircleSecond => 'Tippe, um den Radius zu setzen';
   @override
@@ -596,8 +595,7 @@ class StringsDe extends AppStrings {
   String get fenceDrawHintRectSecond =>
       'Tippe, um die gegenüberliegende Ecke zu setzen';
   @override
-  String get fenceDrawHintReady =>
-      'Speichern, wenn fertig, oder RESET tippen';
+  String get fenceDrawHintReady => 'Speichern, wenn fertig, oder RESET tippen';
   @override
   String get fenceDrawResetButton => 'ZURÜCKSETZEN';
   @override
@@ -611,8 +609,7 @@ class StringsDe extends AppStrings {
   @override
   String get alertsClearAll => 'ALLE LÖSCHEN';
   @override
-  String get alertsClearAllTooltip =>
-      'Alle Alarme löschen (Geofences bleiben)';
+  String get alertsClearAllTooltip => 'Alle Alarme löschen (Geofences bleiben)';
   @override
   String get alertsDismiss => 'Schließen';
   @override
@@ -653,11 +650,9 @@ class StringsDe extends AppStrings {
   @override
   String get fenceImporting => 'IMPORT…';
   @override
-  String get fenceExportTooltip =>
-      'Geofences als JSON-Datei herunterladen';
+  String get fenceExportTooltip => 'Geofences als JSON-Datei herunterladen';
   @override
-  String get fenceImportTooltip =>
-      'Geofences aus JSON-Datei wiederherstellen';
+  String get fenceImportTooltip => 'Geofences aus JSON-Datei wiederherstellen';
   @override
   String get fenceExportEmpty => 'Nichts zu exportieren';
   @override
@@ -671,20 +666,17 @@ class StringsDe extends AppStrings {
   @override
   String get fenceImportedMany => '{0} Geofences importiert';
   @override
-  String get fenceImportedPartial =>
-      '{0} importiert, {1} fehlgeschlagen ({2})';
+  String get fenceImportedPartial => '{0} importiert, {1} fehlgeschlagen ({2})';
   @override
   String get fenceReadFailed => 'Lesen fehlgeschlagen: {0}';
   @override
   String get fenceImportInvalidJson => 'Ungültiges JSON: {0}';
   @override
-  String get fenceImportSchemaMismatch =>
-      'Schema-Konflikt bei {0}: {1}';
+  String get fenceImportSchemaMismatch => 'Schema-Konflikt bei {0}: {1}';
 
   // ── Dashboard empty / honest states ────────────────────────────────────
   @override
   String get dashNoDataYet => 'Noch keine Daten';
   @override
-  String get dashEmptyHint =>
-      'Öffne die Karte, um Flüge zu verfolgen';
+  String get dashEmptyHint => 'Öffne die Karte, um Flüge zu verfolgen';
 }

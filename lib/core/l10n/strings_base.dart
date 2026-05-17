@@ -18,29 +18,37 @@ abstract class AppStrings {
   String get dashboard => 'Dashboard';
   String get globe => 'Globe';
   String get stats => 'Stats';
+
   /// Bottom-nav overflow trigger — opens the secondary-routes sheet.
   /// Mirrors the web app's "More" button in BottomNav.tsx.
   String get more => 'More';
+
   /// Short label for the /compare route. The longer "Compare flights"
   /// (compareFlights) stays in place for the page title; this is the
   /// nav-bar label only.
   String get compare => 'Compare';
+
   /// Sheet header shown above the secondary-routes grid.
   String get moreFeatures => 'More features';
+
   /// Default short subtitle for the dashboard tile in the More sheet
   /// (the personal-overview tile grid — NOT the web's airport-monitoring
   /// dashboard).
   String get dashboardSubtitle => 'Personal overview';
+
   /// Page title for the mobile "Dashboard" — renamed to "Overview" to
   /// disambiguate from airwatch-web's `/dashboard` (which monitors
   /// tracked airports). Mobile's screen is a personal tile grid with
   /// live flights / saved items / top airlines / altitude bands.
   /// Falls back to "Overview" in English; locales can override.
   String get overview => 'Overview';
+
   /// Default short subtitle for the stats tile in the More sheet.
   String get statsSubtitle => 'Tracking history';
+
   /// Default short subtitle for the airlines tile.
   String get airlinesSubtitle => 'Live carrier list';
+
   /// Default short subtitle for the spotting tile.
   String get spottingShortSubtitle => 'Nearby flights';
 
@@ -137,14 +145,14 @@ abstract class AppStrings {
   // Wiki panel (mirrors airwatch-web WikiPanel commit d99d3c2).
   /// Section title — "About" / "Über" / "À propos" etc.
   String get wikiAbout => 'About';
+
   /// CTA link to the canonical Wikipedia page.
   String get wikiReadMore => 'Read on Wikipedia';
 
   // Nearby Airports panel (mirrors airwatch-web NearbyAirportsPanel
   // commit d99d3c2).
   String get nearbyAirportsTitle => 'Airports near you';
-  String get nearbyAirportsCta =>
-      'Use your location to find airports nearby.';
+  String get nearbyAirportsCta => 'Use your location to find airports nearby.';
   String get useMyLocation => 'USE MY LOCATION';
   String get locating => 'Locating…';
   String get geoDenied => 'Location permission denied.';
@@ -317,10 +325,13 @@ abstract class AppStrings {
 
   // ── FleetInfoCard (mirrors web f8fff87) ───────────────────────────────
   String get fleetInfoTitle => 'FLEET INFO';
+
   /// "{0} years old (built {1})"
   String get fleetAge => '{0} y old (built {1})';
+
   /// "{0} sightings" (number is locale-formatted by the caller).
   String get fleetSightings => '{0} sightings';
+
   /// "first seen {0}" with {0} a relative time like "3mo ago".
   String get fleetFirstSeen => 'first seen {0}';
   String get fleetLastSeen => 'last seen {0}';
@@ -334,9 +345,11 @@ abstract class AppStrings {
   // ── AtcAudioPanel (mirrors web c8c53b5) ───────────────────────────────
   String get atcLiveTitle => 'LIVE ATC';
   String get atcUnavailable => 'No catalogued feeds for this airport';
+
   /// Search-on-LiveATC fallback when the airport isn't in the catalog
   /// or the api errored. The button opens `liveatc.net/search?icao=…`.
   String get atcSearchFallback => 'Search on LiveATC.net';
+
   /// Attribution line — required by LiveATC.net's terms.
   String get atcAttribution => 'Audio courtesy of LiveATC.net';
   String get atcOpenInBrowser => 'Open in browser';
@@ -344,10 +357,13 @@ abstract class AppStrings {
   // ── Airport detail tab labels + sort pills (i18n leak audit) ──────────
   /// "INFO" tab on the airport detail screen alongside DEP / ARR.
   String get infoTab => 'INFO';
+
   /// "SORT" prefix on the schedules sort pill row.
   String get sortLabel => 'SORT';
+
   /// "TIME" sort pill — sort by scheduled time.
   String get sortByTime => 'TIME';
+
   /// "DELAY" sort pill — sort by delay magnitude.
   String get sortByDelay => 'DELAY';
 
@@ -358,6 +374,7 @@ abstract class AppStrings {
   // ── Relative-time formatter (used by FleetInfoCard sightings rows) ────
   /// "just now" — no quantity.
   String get relTimeNow => 'just now';
+
   /// "{0}m ago" — quantity + unit suffix is the parser; keep this string
   /// in template form so locales can reorder.
   String get relTimeMinutes => '{0}m ago';
@@ -374,6 +391,7 @@ abstract class AppStrings {
   // ── Geofence form (mirrors web 4a6ea68 + e22ca75) ─────────────────────
   /// AppBar title on the form screen.
   String get fenceFormTitle => 'New geofence';
+
   /// "NEW {0} GEOFENCE" — {0} resolves to "CIRCLE" or "RECTANGLE".
   String get fenceNewHeading => 'NEW {0} GEOFENCE';
   String get fenceTypeCircle => 'CIRCLE';
@@ -404,17 +422,21 @@ abstract class AppStrings {
 
   // ── Geofence list (mirrors web FencesList.tsx) ────────────────────────
   String get fenceActiveHeading => 'ACTIVE FENCES';
+
   /// "{0} total" — count of fences shown next to ACTIVE FENCES heading.
   String get fenceTotalCount => '{0} total';
   String get fencesListEmpty =>
       'No fences yet. Tap DRAW or the edit button to add one — alerts will appear here when an aircraft enters the zone.';
   String get fenceDelete => 'Delete';
+
   /// Shape one-liner — "50.04° N, 8.56° E · r 50.5 km".
   /// {0} = lat, {1} = lon, {2} = radius km.
   String get fenceShapeCircle => '{0}° N, {1}° E · r {2} km';
+
   /// "S 47.0° → N 51.0° · W 5.0° → E 12.0°".
   /// {0} = south, {1} = north, {2} = west, {3} = east.
   String get fenceShapeRect => 'S {0}° → N {1}° · W {2}° → E {3}°';
+
   /// "Only Lufthansa (DLH) flights trigger this fence".
   String get fenceAirlineTooltip => 'Only {0} ({1}) flights trigger this fence';
   String get fenceAirlineTooltipNoName => 'Airline filter: {0}';
@@ -443,6 +465,7 @@ abstract class AppStrings {
   String get alertsDismissTooltip =>
       'Dismiss this alert (does not affect history)';
   String get alertsAllFilter => 'ALL';
+
   /// "Toggle alerts from \"{0}\"" — {0} is the fence name.
   String get alertsFilterTooltip => 'Toggle alerts from "{0}"';
   String get alertsEmptyFilter =>
@@ -456,8 +479,10 @@ abstract class AppStrings {
   String get fenceStatsTopAirlineWithName =>
       'Top airline: {0} ({1}× this fence)';
   String get fenceStatsTopAirline => 'Top airline: {0}';
+
   /// "top:" prefix before the airline ICAO badge in the stats row.
   String get fenceStatsTopLabel => 'top:';
+
   /// "last 3m" — relative time prefix.
   String get fenceStatsLast => 'last {0}';
 
@@ -473,6 +498,7 @@ abstract class AppStrings {
   String get fenceReadingFile => 'Reading file…';
   String get fenceImportedOne => 'Imported 1 fence';
   String get fenceImportedMany => 'Imported {0} fences';
+
   /// "Imported {0}, failed {1} ({2})" — partial-success status message.
   String get fenceImportedPartial => 'Imported {0}, failed {1} ({2})';
   String get fenceReadFailed => 'Read failed: {0}';

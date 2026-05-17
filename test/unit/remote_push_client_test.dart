@@ -10,15 +10,17 @@ void main() {
   });
 
   group('NoOpPush (default)', () {
-    test('initialize / isAvailable / register / unregister all no-op',
-        () async {
-      final client = NoOpPush();
-      await client.initialize();
-      expect(await client.isAvailable(), isFalse);
-      expect(await client.registerToken('test-client'), isFalse);
-      expect(await client.unregisterToken('test-client'), isFalse);
-      expect(client.currentToken, isNull);
-    });
+    test(
+      'initialize / isAvailable / register / unregister all no-op',
+      () async {
+        final client = NoOpPush();
+        await client.initialize();
+        expect(await client.isAvailable(), isFalse);
+        expect(await client.registerToken('test-client'), isFalse);
+        expect(await client.unregisterToken('test-client'), isFalse);
+        expect(client.currentToken, isNull);
+      },
+    );
   });
 
   group('PushClientId', () {

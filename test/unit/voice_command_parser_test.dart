@@ -133,22 +133,21 @@ void main() {
 
   group('parseVoiceCommand — Spanish', () {
     test('"muestra vuelo IBE3201" → showFlight', () {
-      final cmd =
-          parseVoiceCommand('muestra vuelo IBE3201', AppLanguage.es);
+      final cmd = parseVoiceCommand('muestra vuelo IBE3201', AppLanguage.es);
       expect(cmd, isA<VShowFlight>());
       expect((cmd as VShowFlight).callsign, 'IBE3201');
     });
 
     test('"carga" / "cargo" → filterCargo', () {
-      expect(
-          parseVoiceCommand('carga', AppLanguage.es), isA<VFilterCargo>());
-      expect(parseVoiceCommand('cargo', AppLanguage.es),
-          isA<VFilterCargo>());
+      expect(parseVoiceCommand('carga', AppLanguage.es), isA<VFilterCargo>());
+      expect(parseVoiceCommand('cargo', AppLanguage.es), isA<VFilterCargo>());
     });
 
     test('"modo oscuro" → setStyleDark', () {
-      expect(parseVoiceCommand('modo oscuro', AppLanguage.es),
-          isA<VSetStyleDark>());
+      expect(
+        parseVoiceCommand('modo oscuro', AppLanguage.es),
+        isA<VSetStyleDark>(),
+      );
     });
 
     test('"acerca" → zoomIn', () {
@@ -160,18 +159,18 @@ void main() {
     });
 
     test('"clima" → toggleRadar', () {
-      expect(parseVoiceCommand('clima', AppLanguage.es),
-          isA<VToggleRadar>());
+      expect(parseVoiceCommand('clima', AppLanguage.es), isA<VToggleRadar>());
     });
 
     test('"turbulencia" → toggleTurbulence', () {
-      expect(parseVoiceCommand('turbulencia', AppLanguage.es),
-          isA<VToggleTurbulence>());
+      expect(
+        parseVoiceCommand('turbulencia', AppLanguage.es),
+        isA<VToggleTurbulence>(),
+      );
     });
 
     test('"ve a aeropuerto MAD" → goToAirport', () {
-      final cmd =
-          parseVoiceCommand('ve a aeropuerto MAD', AppLanguage.es);
+      final cmd = parseVoiceCommand('ve a aeropuerto MAD', AppLanguage.es);
       expect(cmd, isA<VGoToAirport>());
       expect((cmd as VGoToAirport).query.toUpperCase(), 'MAD');
     });
@@ -179,47 +178,47 @@ void main() {
 
   group('parseVoiceCommand — Italian', () {
     test('"mostra volo AZA601" → showFlight', () {
-      final cmd =
-          parseVoiceCommand('mostra volo AZA601', AppLanguage.it);
+      final cmd = parseVoiceCommand('mostra volo AZA601', AppLanguage.it);
       expect(cmd, isA<VShowFlight>());
       expect((cmd as VShowFlight).callsign, 'AZA601');
     });
 
     test('"merci" / "cargo" → filterCargo', () {
-      expect(
-          parseVoiceCommand('merci', AppLanguage.it), isA<VFilterCargo>());
-      expect(parseVoiceCommand('cargo', AppLanguage.it),
-          isA<VFilterCargo>());
+      expect(parseVoiceCommand('merci', AppLanguage.it), isA<VFilterCargo>());
+      expect(parseVoiceCommand('cargo', AppLanguage.it), isA<VFilterCargo>());
     });
 
     test('"modalità scura" → setStyleDark', () {
-      expect(parseVoiceCommand('modalità scura', AppLanguage.it),
-          isA<VSetStyleDark>());
+      expect(
+        parseVoiceCommand('modalità scura', AppLanguage.it),
+        isA<VSetStyleDark>(),
+      );
     });
 
     test('"ingrandisci" → zoomIn', () {
-      expect(
-          parseVoiceCommand('ingrandisci', AppLanguage.it), isA<VZoomIn>());
+      expect(parseVoiceCommand('ingrandisci', AppLanguage.it), isA<VZoomIn>());
     });
 
     test('"rimpicciolisci" → zoomOut', () {
-      expect(parseVoiceCommand('rimpicciolisci', AppLanguage.it),
-          isA<VZoomOut>());
+      expect(
+        parseVoiceCommand('rimpicciolisci', AppLanguage.it),
+        isA<VZoomOut>(),
+      );
     });
 
     test('"meteo" → toggleRadar', () {
-      expect(
-          parseVoiceCommand('meteo', AppLanguage.it), isA<VToggleRadar>());
+      expect(parseVoiceCommand('meteo', AppLanguage.it), isA<VToggleRadar>());
     });
 
     test('"turbolenza" → toggleTurbulence', () {
-      expect(parseVoiceCommand('turbolenza', AppLanguage.it),
-          isA<VToggleTurbulence>());
+      expect(
+        parseVoiceCommand('turbolenza', AppLanguage.it),
+        isA<VToggleTurbulence>(),
+      );
     });
 
     test('"vai a aeroporto FCO" → goToAirport', () {
-      final cmd =
-          parseVoiceCommand('vai a aeroporto FCO', AppLanguage.it);
+      final cmd = parseVoiceCommand('vai a aeroporto FCO', AppLanguage.it);
       expect(cmd, isA<VGoToAirport>());
       expect((cmd as VGoToAirport).query.toUpperCase(), 'FCO');
     });

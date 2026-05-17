@@ -300,8 +300,7 @@ class StringsAr extends AppStrings {
   @override
   String get nearbyAirportsTitle => 'مطارات قريبة منك';
   @override
-  String get nearbyAirportsCta =>
-      'استخدم موقعك للعثور على المطارات القريبة.';
+  String get nearbyAirportsCta => 'استخدم موقعك للعثور على المطارات القريبة.';
   @override
   String get useMyLocation => 'استخدام موقعي';
   @override
@@ -561,11 +560,9 @@ class StringsAr extends AppStrings {
   @override
   String get fenceShapeCircle => '{0}° شمال، {1}° شرق · ق {2} كم';
   @override
-  String get fenceShapeRect =>
-      'ج {0}° → ش {1}° · غ {2}° → ش {3}°';
+  String get fenceShapeRect => 'ج {0}° → ش {1}° · غ {2}° → ش {3}°';
   @override
-  String get fenceAirlineTooltip =>
-      'فقط رحلات {0} ({1}) تُفعّل هذا السور';
+  String get fenceAirlineTooltip => 'فقط رحلات {0} ({1}) تُفعّل هذا السور';
   @override
   String get fenceAirlineTooltipNoName => 'مرشح الشركة: {0}';
   @override
@@ -583,14 +580,11 @@ class StringsAr extends AppStrings {
   @override
   String get fenceDrawHintCircleSecond => 'اضغط لتحديد نصف القطر';
   @override
-  String get fenceDrawHintRectFirst =>
-      'اضغط لتحديد الزاوية الأولى';
+  String get fenceDrawHintRectFirst => 'اضغط لتحديد الزاوية الأولى';
   @override
-  String get fenceDrawHintRectSecond =>
-      'اضغط لتحديد الزاوية المقابلة';
+  String get fenceDrawHintRectSecond => 'اضغط لتحديد الزاوية المقابلة';
   @override
-  String get fenceDrawHintReady =>
-      'احفظ عند الانتهاء أو اضغط إعادة';
+  String get fenceDrawHintReady => 'احفظ عند الانتهاء أو اضغط إعادة';
   @override
   String get fenceDrawResetButton => 'إعادة';
   @override
@@ -608,15 +602,13 @@ class StringsAr extends AppStrings {
   @override
   String get alertsDismiss => 'تجاهل';
   @override
-  String get alertsDismissTooltip =>
-      'تجاهل هذا التنبيه (لا يؤثر على السجل)';
+  String get alertsDismissTooltip => 'تجاهل هذا التنبيه (لا يؤثر على السجل)';
   @override
   String get alertsAllFilter => 'الكل';
   @override
   String get alertsFilterTooltip => 'تبديل تنبيهات «{0}»';
   @override
-  String get alertsEmptyFilter =>
-      'لا تنبيهات تطابق المرشح. اضغط الكل.';
+  String get alertsEmptyFilter => 'لا تنبيهات تطابق المرشح. اضغط الكل.';
   @override
   String get alertsShowOnMap => 'عرض هذه الرحلة على الخريطة';
 
@@ -628,8 +620,7 @@ class StringsAr extends AppStrings {
   @override
   String get fenceStatsAircraft => '{0} طائرات';
   @override
-  String get fenceStatsTopAirlineWithName =>
-      'أعلى شركة: {0} ({1}× هذا السور)';
+  String get fenceStatsTopAirlineWithName => 'أعلى شركة: {0} ({1}× هذا السور)';
   @override
   String get fenceStatsTopAirline => 'أعلى شركة: {0}';
   @override
@@ -661,15 +652,13 @@ class StringsAr extends AppStrings {
   @override
   String get fenceImportedMany => 'تم استيراد {0} أسوار';
   @override
-  String get fenceImportedPartial =>
-      'تم استيراد {0}، فشل {1} ({2})';
+  String get fenceImportedPartial => 'تم استيراد {0}، فشل {1} ({2})';
   @override
   String get fenceReadFailed => 'فشلت القراءة: {0}';
   @override
   String get fenceImportInvalidJson => 'JSON غير صالح: {0}';
   @override
-  String get fenceImportSchemaMismatch =>
-      'عدم تطابق المخطط عند {0}: {1}';
+  String get fenceImportSchemaMismatch => 'عدم تطابق المخطط عند {0}: {1}';
 
   // ── Dashboard empty / honest states ────────────────────────────────────
   @override

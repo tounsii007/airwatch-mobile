@@ -12,21 +12,20 @@ class _Crashing extends StatelessWidget {
 }
 
 Widget _wrap(Widget child) => MaterialApp(
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [Locale('en'), Locale('de'), Locale('fr')],
-      home: Scaffold(body: child),
-    );
+  localizationsDelegates: const [
+    GlobalMaterialLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+  ],
+  supportedLocales: const [Locale('en'), Locale('de'), Locale('fr')],
+  home: Scaffold(body: child),
+);
 
 void main() {
-  testWidgets('catches a build-time exception and renders a fallback',
-      (tester) async {
-    await tester.pumpWidget(
-      _wrap(const ErrorBoundary(child: _Crashing())),
-    );
+  testWidgets('catches a build-time exception and renders a fallback', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_wrap(const ErrorBoundary(child: _Crashing())));
     // ErrorWidget.builder swap catches the exception — but the framework
     // still records it on the test reporter. Drain via takeException so
     // the test passes while we assert the fallback rendered.
@@ -37,14 +36,17 @@ void main() {
     expect(find.textContaining('boom'), findsOneWidget);
   });
 
-  testWidgets('retry button resets the boundary and rebuilds the child',
-      (tester) async {
+  testWidgets('retry button resets the boundary and rebuilds the child', (
+    tester,
+  ) async {
     var crashCount = 0;
-    final child = Builder(builder: (ctx) {
-      crashCount++;
-      if (crashCount == 1) throw StateError('boom');
-      return const Text('OK');
-    });
+    final child = Builder(
+      builder: (ctx) {
+        crashCount++;
+        if (crashCount == 1) throw StateError('boom');
+        return const Text('OK');
+      },
+    );
     await tester.pumpWidget(_wrap(ErrorBoundary(child: child)));
     expect(tester.takeException(), isStateError);
     await tester.pump();

@@ -11,18 +11,60 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   setUpAll(() {
     debugSetAirportFullDatabase(const {
-      'EDDF': AirportEntry('EDDF', 'FRA', 'Frankfurt am Main',
-          'Frankfurt', 'DE', 50.0379, 8.5622),
-      'KJFK': AirportEntry('KJFK', 'JFK', 'John F Kennedy Intl',
-          'New York', 'US', 40.6398, -73.7789),
-      'EGLL': AirportEntry('EGLL', 'LHR', 'Heathrow',
-          'London', 'GB', 51.4775, -0.4614),
-      'LFPG': AirportEntry('LFPG', 'CDG', 'Charles de Gaulle',
-          'Paris', 'FR', 49.0097, 2.5478),
-      'OMDB': AirportEntry('OMDB', 'DXB', 'Dubai Intl',
-          'Dubai', 'AE', 25.2528, 55.3644),
-      'VHHH': AirportEntry('VHHH', 'HKG', 'Hong Kong Intl',
-          'Hong Kong', 'HK', 22.3080, 113.9185),
+      'EDDF': AirportEntry(
+        'EDDF',
+        'FRA',
+        'Frankfurt am Main',
+        'Frankfurt',
+        'DE',
+        50.0379,
+        8.5622,
+      ),
+      'KJFK': AirportEntry(
+        'KJFK',
+        'JFK',
+        'John F Kennedy Intl',
+        'New York',
+        'US',
+        40.6398,
+        -73.7789,
+      ),
+      'EGLL': AirportEntry(
+        'EGLL',
+        'LHR',
+        'Heathrow',
+        'London',
+        'GB',
+        51.4775,
+        -0.4614,
+      ),
+      'LFPG': AirportEntry(
+        'LFPG',
+        'CDG',
+        'Charles de Gaulle',
+        'Paris',
+        'FR',
+        49.0097,
+        2.5478,
+      ),
+      'OMDB': AirportEntry(
+        'OMDB',
+        'DXB',
+        'Dubai Intl',
+        'Dubai',
+        'AE',
+        25.2528,
+        55.3644,
+      ),
+      'VHHH': AirportEntry(
+        'VHHH',
+        'HKG',
+        'Hong Kong Intl',
+        'Hong Kong',
+        'HK',
+        22.3080,
+        113.9185,
+      ),
     });
   });
 
@@ -66,8 +108,11 @@ void main() {
         final byIcao = airportFullDatabase[icao];
         if (byIcao == null || byIcao.iata.isEmpty) continue;
         final byIata = lookupAirportByIata(byIcao.iata);
-        expect(byIata?.icao, byIcao.icao,
-            reason: 'IATA index disagrees with raw map for $icao');
+        expect(
+          byIata?.icao,
+          byIcao.icao,
+          reason: 'IATA index disagrees with raw map for $icao',
+        );
       }
     });
   });

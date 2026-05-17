@@ -92,8 +92,8 @@ class AviationWeatherService {
   final Dio _dio;
 
   AviationWeatherService({Dio? dio})
-      : _dio = dio ??
-            AppHttpClient.create(receiveTimeout: AppConfig.shortTimeout);
+    : _dio =
+          dio ?? AppHttpClient.create(receiveTimeout: AppConfig.shortTimeout);
 
   /// Fetch METAR + TAF for an ICAO airport in parallel. ICAO is a
   /// 4-letter code (EDDF, KSFO, LFPG); the backend regex enforces this
@@ -146,10 +146,10 @@ class AviationWeatherService {
       final List<dynamic> list = switch (body) {
         final List<dynamic> arr => arr,
         final Map<String, dynamic> map => switch (map) {
-            {'notams': final List<dynamic> arr} => arr,
-            {'items': final List<dynamic> arr} => arr,
-            _ => const [],
-          },
+          {'notams': final List<dynamic> arr} => arr,
+          {'items': final List<dynamic> arr} => arr,
+          _ => const [],
+        },
         _ => const [],
       };
 

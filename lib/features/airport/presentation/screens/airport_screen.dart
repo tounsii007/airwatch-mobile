@@ -385,7 +385,9 @@ class _AirportScreenState extends ConsumerState<AirportScreen> {
                             (apt) => GestureDetector(
                               onTap: () => _selectAirport(apt.iata, apt.city),
                               child: Container(
-                                margin: const EdgeInsetsDirectional.only(end: 8),
+                                margin: const EdgeInsetsDirectional.only(
+                                  end: 8,
+                                ),
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 12,
                                   vertical: 8,

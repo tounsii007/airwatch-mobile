@@ -59,8 +59,8 @@ class AirportWeatherTickNotifier extends Notifier<int> {
 
 final airportWeatherTickProvider =
     NotifierProvider<AirportWeatherTickNotifier, int>(
-  AirportWeatherTickNotifier.new,
-);
+      AirportWeatherTickNotifier.new,
+    );
 
 /// Synchronous read from the in-memory cache. Returns null until the
 /// first fetch for [iata] lands (or after TTL expiry).
@@ -104,10 +104,12 @@ void prefetchAirportWeather(
 
   Future<void>.delayed(delay, () async {
     try {
-      final dio = Dio(BaseOptions(
-        connectTimeout: const Duration(seconds: 6),
-        receiveTimeout: const Duration(seconds: 6),
-      ));
+      final dio = Dio(
+        BaseOptions(
+          connectTimeout: const Duration(seconds: 6),
+          receiveTimeout: const Duration(seconds: 6),
+        ),
+      );
       final r = await dio.get<dynamic>(
         'https://api.open-meteo.com/v1/forecast',
         queryParameters: {

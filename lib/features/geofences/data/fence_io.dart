@@ -86,10 +86,7 @@ FenceImportResult parseImportJson(String raw) {
 
   final raws = json['fences'];
   if (raws is! List) {
-    return const FenceImportErr(
-      'Expected fences array',
-      path: 'fences',
-    );
+    return const FenceImportErr('Expected fences array', path: 'fences');
   }
 
   final out = <GeoFence>[];

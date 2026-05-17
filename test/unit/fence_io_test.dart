@@ -10,32 +10,31 @@ import 'package:airwatch_mobile/features/geofences/domain/geofence.dart';
 /// rejection paths.
 void main() {
   GeoFence buildCircle() => GeoFence(
-        id: 'f1',
-        name: 'Frankfurt 50km',
-        type: GeoFenceType.circle,
-        centerLat: 50.0379,
-        centerLon: 8.5622,
-        radiusKm: 50,
-        minAltitudeFt: 1000,
-        maxAltitudeFt: 38000,
-        airlineFilter: 'DLH',
-      );
+    id: 'f1',
+    name: 'Frankfurt 50km',
+    type: GeoFenceType.circle,
+    centerLat: 50.0379,
+    centerLon: 8.5622,
+    radiusKm: 50,
+    minAltitudeFt: 1000,
+    maxAltitudeFt: 38000,
+    airlineFilter: 'DLH',
+  );
 
   GeoFence buildRect() => GeoFence(
-        id: 'f2',
-        name: 'Mediterranean box',
-        type: GeoFenceType.rectangle,
-        northLat: 45,
-        southLat: 35,
-        eastLon: 20,
-        westLon: 5,
-      );
+    id: 'f2',
+    name: 'Mediterranean box',
+    type: GeoFenceType.rectangle,
+    northLat: 45,
+    southLat: 35,
+    eastLon: 20,
+    westLon: 5,
+  );
 
   group('buildExportJson', () {
     test('produces an envelope with version + ISO timestamp + fences', () {
       final fence = buildCircle();
-      final json = buildExportJson([fence],
-          now: DateTime.utc(2026, 5, 14, 12));
+      final json = buildExportJson([fence], now: DateTime.utc(2026, 5, 14, 12));
       final decoded = jsonDecode(json) as Map<String, dynamic>;
       expect(decoded['version'], kExportFileVersion);
       expect(decoded['exportedAt'], '2026-05-14T12:00:00.000Z');
@@ -101,7 +100,8 @@ void main() {
 
     test('rejects unsupported version', () {
       final result = parseImportJson(
-          '{"version": 99, "exportedAt": "x", "fences": []}');
+        '{"version": 99, "exportedAt": "x", "fences": []}',
+      );
       expect(result, isA<FenceImportErr>());
       expect((result as FenceImportErr).path, 'version');
     });

@@ -180,9 +180,7 @@ class _MetarPanelState extends State<MetarPanel> {
         style: TextStyle(
           fontFamily: UiConstants.bodyFont,
           fontSize: 11,
-          color: isDark
-              ? AppColors.textMuted
-              : UiConstants.lightTextMuted,
+          color: isDark ? AppColors.textMuted : UiConstants.lightTextMuted,
         ),
       );
     }
@@ -194,9 +192,7 @@ class _MetarPanelState extends State<MetarPanel> {
           style: TextStyle(
             fontFamily: UiConstants.bodyFont,
             fontSize: 11,
-            color: isDark
-                ? AppColors.textMuted
-                : UiConstants.lightTextMuted,
+            color: isDark ? AppColors.textMuted : UiConstants.lightTextMuted,
           ),
         );
       }
@@ -216,9 +212,7 @@ class _MetarPanelState extends State<MetarPanel> {
         style: TextStyle(
           fontFamily: UiConstants.bodyFont,
           fontSize: 11,
-          color: isDark
-              ? AppColors.textMuted
-              : UiConstants.lightTextMuted,
+          color: isDark ? AppColors.textMuted : UiConstants.lightTextMuted,
         ),
       );
     }
@@ -247,9 +241,7 @@ class _LoadingLine extends StatelessWidget {
           height: 10,
           child: CircularProgressIndicator(
             strokeWidth: 1.6,
-            color: isDark
-                ? AppColors.textMuted
-                : UiConstants.lightTextMuted,
+            color: isDark ? AppColors.textMuted : UiConstants.lightTextMuted,
           ),
         ),
         const SizedBox(width: 8),
@@ -258,9 +250,7 @@ class _LoadingLine extends StatelessWidget {
           style: TextStyle(
             fontFamily: UiConstants.bodyFont,
             fontSize: 11,
-            color: isDark
-                ? AppColors.textMuted
-                : UiConstants.lightTextMuted,
+            color: isDark ? AppColors.textMuted : UiConstants.lightTextMuted,
           ),
         ),
       ],
@@ -286,12 +276,8 @@ class _MetarBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = context.s;
-    final muted = isDark
-        ? AppColors.textMuted
-        : UiConstants.lightTextMuted;
-    final body = isDark
-        ? AppColors.textPrimary
-        : UiConstants.lightTextPrimary;
+    final muted = isDark ? AppColors.textMuted : UiConstants.lightTextMuted;
+    final body = isDark ? AppColors.textPrimary : UiConstants.lightTextPrimary;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -311,29 +297,47 @@ class _MetarBody extends StatelessWidget {
           runSpacing: 6,
           children: [
             if (decoded.wind != null)
-              _Field(label: s.metarLabelWind, value: _windText(decoded.wind!),
-                  body: body, muted: muted),
+              _Field(
+                label: s.metarLabelWind,
+                value: _windText(decoded.wind!),
+                body: body,
+                muted: muted,
+              ),
             if (decoded.visibility != null)
-              _Field(label: s.metarLabelVisibility,
-                  value: _visText(decoded.visibility!),
-                  body: body, muted: muted),
+              _Field(
+                label: s.metarLabelVisibility,
+                value: _visText(decoded.visibility!),
+                body: body,
+                muted: muted,
+              ),
             if (decoded.temperature.tempC != null)
-              _Field(label: s.metarLabelTemp,
-                  value: _tempText(decoded.temperature),
-                  body: body, muted: muted),
-            if (decoded.altimeter.hPa != null ||
-                decoded.altimeter.inHg != null)
-              _Field(label: s.metarLabelAltimeter,
-                  value: _altText(decoded.altimeter),
-                  body: body, muted: muted),
+              _Field(
+                label: s.metarLabelTemp,
+                value: _tempText(decoded.temperature),
+                body: body,
+                muted: muted,
+              ),
+            if (decoded.altimeter.hPa != null || decoded.altimeter.inHg != null)
+              _Field(
+                label: s.metarLabelAltimeter,
+                value: _altText(decoded.altimeter),
+                body: body,
+                muted: muted,
+              ),
             if (decoded.cloudLayers.isNotEmpty)
-              _Field(label: s.metarLabelClouds,
-                  value: _cloudText(decoded.cloudLayers),
-                  body: body, muted: muted),
+              _Field(
+                label: s.metarLabelClouds,
+                value: _cloudText(decoded.cloudLayers),
+                body: body,
+                muted: muted,
+              ),
             if (decoded.phenomena.isNotEmpty)
-              _Field(label: s.metarLabelWeather,
-                  value: decoded.phenomena.map(phenomenonText).join(', '),
-                  body: body, muted: muted),
+              _Field(
+                label: s.metarLabelWeather,
+                value: decoded.phenomena.map(phenomenonText).join(', '),
+                body: body,
+                muted: muted,
+              ),
           ],
         ),
         const SizedBox(height: 6),
@@ -349,7 +353,9 @@ class _MetarBody extends StatelessWidget {
 
   String _windText(DecodedWind w) {
     if (w.variable && w.speed == 0) return 'CALM';
-    final dir = w.variable ? 'VRB' : '${w.direction!.toString().padLeft(3, '0')}°';
+    final dir = w.variable
+        ? 'VRB'
+        : '${w.direction!.toString().padLeft(3, '0')}°';
     final gust = w.gust != null ? 'G${w.gust}' : '';
     return '$dir ${w.speed}$gust ${w.unit}';
   }
@@ -377,9 +383,7 @@ class _MetarBody extends StatelessWidget {
   String _cloudText(List<DecodedCloudLayer> layers) {
     return layers
         .map((l) {
-          if (l.cover == 'CAVOK' ||
-              l.cover == 'SKC' ||
-              l.cover == 'CLR') {
+          if (l.cover == 'CAVOK' || l.cover == 'SKC' || l.cover == 'CLR') {
             return l.cover;
           }
           final type = l.type != null ? ' ${l.type}' : '';
@@ -406,12 +410,8 @@ class _TafBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final muted = isDark
-        ? AppColors.textMuted
-        : UiConstants.lightTextMuted;
-    final body = isDark
-        ? AppColors.textPrimary
-        : UiConstants.lightTextPrimary;
+    final muted = isDark ? AppColors.textMuted : UiConstants.lightTextMuted;
+    final body = isDark ? AppColors.textPrimary : UiConstants.lightTextPrimary;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -426,12 +426,16 @@ class _TafBody extends StatelessWidget {
             ),
           ),
         const SizedBox(height: 6),
-        ...decoded.windows.take(6).map((w) => _TafWindowRow(
-              window: w,
-              body: body,
-              muted: muted,
-              primary: primary,
-            )),
+        ...decoded.windows
+            .take(6)
+            .map(
+              (w) => _TafWindowRow(
+                window: w,
+                body: body,
+                muted: muted,
+                primary: primary,
+              ),
+            ),
         const SizedBox(height: 6),
         _RawToggle(
           showing: showRaw,
@@ -464,11 +468,13 @@ class _TafWindowRow extends StatelessWidget {
     if (c.wind != null) summary.add(_windShort(c.wind!));
     if (c.visibility != null) summary.add(_visShort(c.visibility!));
     if (c.cloudLayers.isNotEmpty) {
-      summary.add(c.cloudLayers
-          .where((l) => l.cover != 'CAVOK')
-          .take(2)
-          .map((l) => l.baseFt != null ? '${l.cover}${l.baseFt}' : l.cover)
-          .join(' '));
+      summary.add(
+        c.cloudLayers
+            .where((l) => l.cover != 'CAVOK')
+            .take(2)
+            .map((l) => l.baseFt != null ? '${l.cover}${l.baseFt}' : l.cover)
+            .join(' '),
+      );
     }
     if (c.phenomena.isNotEmpty) {
       summary.add(c.phenomena.take(3).map((p) => p.code).join(','));
@@ -533,10 +539,10 @@ class _TafWindowRow extends StatelessWidget {
   }
 
   String _visShort(DecodedVisibility v) => switch (v.unit) {
-        VisibilityUnit.cavok => 'CAVOK',
-        VisibilityUnit.sm => '${v.value}SM',
-        VisibilityUnit.m => '${v.value}m',
-      };
+    VisibilityUnit.cavok => 'CAVOK',
+    VisibilityUnit.sm => '${v.value}SM',
+    VisibilityUnit.m => '${v.value}m',
+  };
 }
 
 class _Field extends StatelessWidget {
@@ -641,9 +647,7 @@ class _RawToggle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = context.s;
-    final muted = isDark
-        ? AppColors.textMuted
-        : UiConstants.lightTextMuted;
+    final muted = isDark ? AppColors.textMuted : UiConstants.lightTextMuted;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

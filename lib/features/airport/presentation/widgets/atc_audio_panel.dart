@@ -162,9 +162,7 @@ class _AtcAudioPanelState extends State<AtcAudioPanel> {
             height: 10,
             child: CircularProgressIndicator(
               strokeWidth: 1.6,
-              color: isDark
-                  ? AppColors.textMuted
-                  : UiConstants.lightTextMuted,
+              color: isDark ? AppColors.textMuted : UiConstants.lightTextMuted,
             ),
           ),
           const SizedBox(width: 8),
@@ -173,9 +171,7 @@ class _AtcAudioPanelState extends State<AtcAudioPanel> {
             style: TextStyle(
               fontFamily: UiConstants.bodyFont,
               fontSize: 11,
-              color: isDark
-                  ? AppColors.textMuted
-                  : UiConstants.lightTextMuted,
+              color: isDark ? AppColors.textMuted : UiConstants.lightTextMuted,
             ),
           ),
         ],
@@ -194,16 +190,12 @@ class _AtcAudioPanelState extends State<AtcAudioPanel> {
             style: TextStyle(
               fontFamily: UiConstants.bodyFont,
               fontSize: 11,
-              color: isDark
-                  ? AppColors.textMuted
-                  : UiConstants.lightTextMuted,
+              color: isDark ? AppColors.textMuted : UiConstants.lightTextMuted,
             ),
           ),
           const SizedBox(height: 6),
           GestureDetector(
-            onTap: () => _launch(
-              'https://www.liveatc.net/search/?icao=$icao',
-            ),
+            onTap: () => _launch('https://www.liveatc.net/search/?icao=$icao'),
             behavior: HitTestBehavior.opaque,
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -238,11 +230,14 @@ class _AtcAudioPanelState extends State<AtcAudioPanel> {
           spacing: 6,
           runSpacing: 6,
           children: result.feeds
-              .map((f) => _FeedChip(
-                    feed: f,
-                    onTap: () =>
-                        _launch(f.externalUrl.isNotEmpty ? f.externalUrl : f.streamUrl),
-                  ))
+              .map(
+                (f) => _FeedChip(
+                  feed: f,
+                  onTap: () => _launch(
+                    f.externalUrl.isNotEmpty ? f.externalUrl : f.streamUrl,
+                  ),
+                ),
+              )
               .toList(growable: false),
         ),
         const SizedBox(height: 6),
@@ -252,9 +247,7 @@ class _AtcAudioPanelState extends State<AtcAudioPanel> {
             fontFamily: UiConstants.bodyFont,
             fontSize: 9,
             fontStyle: FontStyle.italic,
-            color: isDark
-                ? AppColors.textMuted
-                : UiConstants.lightTextMuted,
+            color: isDark ? AppColors.textMuted : UiConstants.lightTextMuted,
           ),
         ),
       ],
@@ -278,9 +271,7 @@ class _FeedChip extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.accent.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(6),
-          border: Border.all(
-            color: AppColors.accent.withValues(alpha: 0.45),
-          ),
+          border: Border.all(color: AppColors.accent.withValues(alpha: 0.45)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,

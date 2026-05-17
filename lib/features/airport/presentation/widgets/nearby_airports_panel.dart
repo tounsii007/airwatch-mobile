@@ -226,8 +226,10 @@ class _NearbyAirportsPanelState extends ConsumerState<NearbyAirportsPanel> {
                 ),
                 borderRadius: BorderRadius.circular(6),
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 4,
+                    vertical: 6,
+                  ),
                   child: Row(
                     children: [
                       SizedBox(
@@ -350,7 +352,8 @@ double _haversineKm(double lat1, double lon1, double lat2, double lon2) {
   const r = 6371.0;
   final dLat = _rad(lat2 - lat1);
   final dLon = _rad(lon2 - lon1);
-  final a = math.sin(dLat / 2) * math.sin(dLat / 2) +
+  final a =
+      math.sin(dLat / 2) * math.sin(dLat / 2) +
       math.cos(_rad(lat1)) *
           math.cos(_rad(lat2)) *
           math.sin(dLon / 2) *

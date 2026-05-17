@@ -115,6 +115,8 @@ void main() {
   }
 
   // ignore: avoid_print
-  print('OK: ${decoded.length} airports ($iataCount with IATA), '
-      '${(file.lengthSync() / 1024).toStringAsFixed(1)} kB');
+  print(
+    'OK: ${decoded.length} airports ($iataCount with IATA), '
+    '${(file.lengthSync() / 1024).toStringAsFixed(1)} kB',
+  );
 }

@@ -14,11 +14,7 @@ class FleetInfo {
   final FleetRegistry? registry;
   final FleetSightings? sightings;
 
-  const FleetInfo({
-    required this.icao24,
-    this.registry,
-    this.sightings,
-  });
+  const FleetInfo({required this.icao24, this.registry, this.sightings});
 
   bool get isEmpty => registry == null && sightings == null;
 }
@@ -123,14 +119,16 @@ class FleetInfoService {
   final Dio _dio;
 
   FleetInfoService({Dio? dio})
-      : _dio = dio ??
-            AppHttpClient.create(receiveTimeout: AppConfig.shortTimeout);
+    : _dio =
+          dio ?? AppHttpClient.create(receiveTimeout: AppConfig.shortTimeout);
 
   Future<FleetInfo?> load(String hex) async {
     final code = hex.trim().toLowerCase();
     if (code.length != 6) return null;
     try {
-      final response = await _dio.get<dynamic>(ApiConstants.aircraftFleet(code));
+      final response = await _dio.get<dynamic>(
+        ApiConstants.aircraftFleet(code),
+      );
       if (response.statusCode != 200) return null;
       final body = response.data;
       if (body is! Map<String, dynamic>) return null;

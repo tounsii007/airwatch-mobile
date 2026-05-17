@@ -41,11 +41,13 @@ class SettingsState {
   final bool showHeatmap;
   final bool showAirportLabels;
   final bool showAircraftLabels;
+
   /// Show a small weather emoji (☀️ / ☁️ / 🌧️ / …) next to the IATA code
   /// in the airport-marker label. Mirrors airwatch-web's
   /// `showAirportWeather` setting (commit 6eeb5b8) — when off, no
   /// Open-Meteo fetches go out and labels stay text-only.
   final bool showAirportWeather;
+
   /// Render the planespotters.net aircraft photo on the flight details
   /// panel. Mirrors airwatch-web's `showAircraftPhotos` setting
   /// (commit 6eeb5b8) — defaults on, can be turned off by privacy-

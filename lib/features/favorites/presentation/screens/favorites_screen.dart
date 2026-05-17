@@ -467,23 +467,25 @@ class _ExportIcsButton extends StatelessWidget {
     }
 
     final now = DateTime.now().toUtc();
-    final events = items.map((item) {
-      // We don't carry per-item arrival times — the calendar entry
-      // anchors at "now" so the import succeeds, and the SUMMARY +
-      // DESCRIPTION carry the human-readable detail.
-      final kindLabel = switch (item.type) {
-        FavoriteType.flight => 'Flight',
-        FavoriteType.airline => 'Airline',
-        FavoriteType.airport => 'Airport',
-      };
-      return IcsEvent(
-        id: '${item.type.name}-${item.id}',
-        start: now,
-        end: now.add(const Duration(hours: 1)),
-        title: '$kindLabel: ${item.label}',
-        description: item.subtitle,
-      );
-    }).toList(growable: false);
+    final events = items
+        .map((item) {
+          // We don't carry per-item arrival times — the calendar entry
+          // anchors at "now" so the import succeeds, and the SUMMARY +
+          // DESCRIPTION carry the human-readable detail.
+          final kindLabel = switch (item.type) {
+            FavoriteType.flight => 'Flight',
+            FavoriteType.airline => 'Airline',
+            FavoriteType.airport => 'Airport',
+          };
+          return IcsEvent(
+            id: '${item.type.name}-${item.id}',
+            start: now,
+            end: now.add(const Duration(hours: 1)),
+            title: '$kindLabel: ${item.label}',
+            description: item.subtitle,
+          );
+        })
+        .toList(growable: false);
 
     final ics = buildIcs(events, calName: s.exportIcsCalName);
     // Route through share_plus's XFile.fromData so the file lands as
@@ -538,5 +540,3 @@ class _ExportIcsButton extends StatelessWidget {
     );
   }
 }
-
-

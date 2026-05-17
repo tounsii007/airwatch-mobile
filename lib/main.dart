@@ -33,15 +33,16 @@ void main() {
         return true; // Prevent crash
       };
 
-      unawaited(SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
-        DeviceOrientation.landscapeLeft,
-        DeviceOrientation.landscapeRight,
-      ]));
-
       unawaited(
-          SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge));
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.portraitUp,
+          DeviceOrientation.portraitDown,
+          DeviceOrientation.landscapeLeft,
+          DeviceOrientation.landscapeRight,
+        ]),
+      );
+
+      unawaited(SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge));
 
       // Local-notifications init — registers Android channels (squawk +
       // geofence) up-front so the channel UI exists in the system

@@ -52,8 +52,7 @@ class RouteStatsBadge extends StatefulWidget {
 }
 
 class _RouteStatsBadgeState extends State<RouteStatsBadge> {
-  late final RouteStatsService _service =
-      widget.service ?? RouteStatsService();
+  late final RouteStatsService _service = widget.service ?? RouteStatsService();
 
   RouteStats? _stats;
   bool _loaded = false;
@@ -103,16 +102,19 @@ class _RouteStatsBadgeState extends State<RouteStatsBadge> {
 
     final segments = <String>[];
     if (stats.todayCount > 0) {
-      segments.add(s.routeTodayFlights
-          .replaceFirst('{0}', fmt.format(stats.todayCount)));
+      segments.add(
+        s.routeTodayFlights.replaceFirst('{0}', fmt.format(stats.todayCount)),
+      );
     }
     if (stats.weekCount > 0) {
-      segments.add(s.routeWeekFlights
-          .replaceFirst('{0}', fmt.format(stats.weekCount)));
+      segments.add(
+        s.routeWeekFlights.replaceFirst('{0}', fmt.format(stats.weekCount)),
+      );
     }
     if (stats.monthCount > 0) {
-      segments.add(s.routeMonthFlights
-          .replaceFirst('{0}', fmt.format(stats.monthCount)));
+      segments.add(
+        s.routeMonthFlights.replaceFirst('{0}', fmt.format(stats.monthCount)),
+      );
     }
     if (segments.isEmpty) return const SizedBox.shrink();
 

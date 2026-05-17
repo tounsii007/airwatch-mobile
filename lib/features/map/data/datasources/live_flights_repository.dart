@@ -36,8 +36,7 @@ class LiveFlightsRepository {
   final FlightWebSocketService _ws;
   final AirlabsFlightsDatasource _polling;
 
-  final _controller =
-      StreamController<Map<String, AircraftState>>.broadcast();
+  final _controller = StreamController<Map<String, AircraftState>>.broadcast();
   StreamSubscription<List<AircraftState>>? _wsSub;
   StreamSubscription<List<AircraftState>>? _pollSub;
   StreamSubscription<WsConnectionState>? _connSub;
@@ -53,16 +52,15 @@ class LiveFlightsRepository {
 
   /// Public stream — fan-out broadcast so multiple ref.watch'ers
   /// share one upstream connection.
-  Stream<Map<String, AircraftState>> get stream =>
-      _controller.stream;
+  Stream<Map<String, AircraftState>> get stream => _controller.stream;
 
   Map<String, AircraftState> get lastFrame => _lastFrame;
 
   LiveFlightsRepository({
     required FlightWebSocketService ws,
     required AirlabsFlightsDatasource polling,
-  })  : _ws = ws,
-        _polling = polling;
+  }) : _ws = ws,
+       _polling = polling;
 
   /// Start both transports. Idempotent — safe to call from a
   /// Provider's build() body.
@@ -75,8 +73,7 @@ class LiveFlightsRepository {
       // Drop polled frames once the WS is delivering — the WS feed
       // is fresher (60s) and we don't want to overwrite it with the
       // 5-min old polling snapshot.
-      if (_wsHasDelivered &&
-          _ws.currentState == WsConnectionState.connected) {
+      if (_wsHasDelivered && _ws.currentState == WsConnectionState.connected) {
         return;
       }
       _emit(list);

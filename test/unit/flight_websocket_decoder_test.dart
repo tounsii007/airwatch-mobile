@@ -66,7 +66,7 @@ void main() {
             'speed': 800.0,
             'flag': 'DE',
             'status': 'en-route',
-          }
+          },
         ],
       });
       final decoded = jsonDecode(synthetic);

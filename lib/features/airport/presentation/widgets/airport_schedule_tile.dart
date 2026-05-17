@@ -108,11 +108,14 @@ class AirportScheduleTile extends StatelessWidget {
             if (flight.hasMeaningfulCodeshare) ...[
               const SizedBox(width: 4),
               Tooltip(
-                message: context.tr('codeshare_with')
+                message: context
+                    .tr('codeshare_with')
                     .replaceAll('{0}', flight.csFlightIata!),
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 4,
+                    vertical: 1,
+                  ),
                   decoration: BoxDecoration(
                     color: const Color(0xFF9D72D9).withValues(alpha: 0.18),
                     borderRadius: BorderRadius.circular(3),

@@ -120,9 +120,7 @@ class PanelStatusSection extends StatelessWidget {
     if (timeStr.contains(' ')) {
       final parts = timeStr.split(' ');
       if (parts.length > 1) {
-        return parts.last.length >= 5
-            ? parts.last.substring(0, 5)
-            : parts.last;
+        return parts.last.length >= 5 ? parts.last.substring(0, 5) : parts.last;
       }
     }
     if (timeStr.contains('T')) {

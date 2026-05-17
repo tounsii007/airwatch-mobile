@@ -107,16 +107,14 @@ void main() {
       expect(ws.connectCalled, isTrue);
     });
 
-    test('cold-start: polling frames flow through until WS delivers',
-        () async {
+    test('cold-start: polling frames flow through until WS delivers', () async {
       polling.emit([_ac('aaa111'), _ac('bbb222')]);
       await Future<void>.delayed(Duration.zero);
       expect(emissions.length, 1);
       expect(emissions.last.keys, containsAll(['aaa111', 'bbb222']));
     });
 
-    test('once WS delivers, subsequent polling frames are dropped',
-        () async {
+    test('once WS delivers, subsequent polling frames are dropped', () async {
       // 1. Polling primes the stream.
       polling.emit([_ac('aaa111')]);
       await Future<void>.delayed(Duration.zero);
@@ -133,30 +131,34 @@ void main() {
       // 3. A later polling frame must NOT overwrite the fresher WS feed.
       polling.emit([_ac('old001'), _ac('old002')]);
       await Future<void>.delayed(Duration.zero);
-      expect(emissions.length, 2,
-          reason: 'WS already delivered; poll frame should be swallowed');
+      expect(
+        emissions.length,
+        2,
+        reason: 'WS already delivered; poll frame should be swallowed',
+      );
     });
 
-    test('WS disconnect: polling resumes flowing through immediately',
-        () async {
-      // Establish the WS-dominant state.
-      ws.setConnectionState(WsConnectionState.connected);
-      ws.emit([_ac('ws0001')]);
-      await Future<void>.delayed(Duration.zero);
-      expect(emissions.last.keys, ['ws0001']);
+    test(
+      'WS disconnect: polling resumes flowing through immediately',
+      () async {
+        // Establish the WS-dominant state.
+        ws.setConnectionState(WsConnectionState.connected);
+        ws.emit([_ac('ws0001')]);
+        await Future<void>.delayed(Duration.zero);
+        expect(emissions.last.keys, ['ws0001']);
 
-      // WS goes offline — repo flips _wsHasDelivered back to false.
-      ws.setConnectionState(WsConnectionState.offline);
-      await Future<void>.delayed(Duration.zero);
+        // WS goes offline — repo flips _wsHasDelivered back to false.
+        ws.setConnectionState(WsConnectionState.offline);
+        await Future<void>.delayed(Duration.zero);
 
-      // A polling frame after offline DOES land now.
-      polling.emit([_ac('pol001')]);
-      await Future<void>.delayed(Duration.zero);
-      expect(emissions.last.keys, ['pol001']);
-    });
+        // A polling frame after offline DOES land now.
+        polling.emit([_ac('pol001')]);
+        await Future<void>.delayed(Duration.zero);
+        expect(emissions.last.keys, ['pol001']);
+      },
+    );
 
-    test('WS connecting (handshake in flight): polling still flows',
-        () async {
+    test('WS connecting (handshake in flight): polling still flows', () async {
       ws.setConnectionState(WsConnectionState.connecting);
       polling.emit([_ac('pol001')]);
       await Future<void>.delayed(Duration.zero);
@@ -181,8 +183,7 @@ void main() {
       expect(emissions.last.containsKey('abc123'), isTrue);
     });
 
-    test('reconnect cycle: WS down then up again flows correctly',
-        () async {
+    test('reconnect cycle: WS down then up again flows correctly', () async {
       // First cycle: WS connects + delivers.
       ws.setConnectionState(WsConnectionState.connected);
       ws.emit([_ac('ws0001')]);

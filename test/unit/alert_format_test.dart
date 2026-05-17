@@ -16,10 +16,14 @@ void main() {
     });
 
     test('returns "just now" for diffs < 5 s', () {
-      expect(timeAgo(ref.subtract(const Duration(seconds: 1)), refMs),
-          'just now');
-      expect(timeAgo(ref.subtract(const Duration(seconds: 4)), refMs),
-          'just now');
+      expect(
+        timeAgo(ref.subtract(const Duration(seconds: 1)), refMs),
+        'just now',
+      );
+      expect(
+        timeAgo(ref.subtract(const Duration(seconds: 4)), refMs),
+        'just now',
+      );
     });
 
     test('returns seconds for diffs in [5, 60) s', () {

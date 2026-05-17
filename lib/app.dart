@@ -272,8 +272,7 @@ class _NavItem extends StatelessWidget {
     // Active-state palette — kept centralised so changes ripple through
     // every visual element (icon, label, bottom-bar) in one place.
     final activeColor = color;
-    final restColor =
-        isDark ? AppColors.textMuted : UiConstants.lightHintText;
+    final restColor = isDark ? AppColors.textMuted : UiConstants.lightHintText;
     final foreground = isActive ? activeColor : restColor;
 
     // Semantics wrapper so TalkBack / VoiceOver announce the role +

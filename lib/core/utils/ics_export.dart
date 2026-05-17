@@ -100,9 +100,7 @@ String buildIcs(List<IcsEvent> events, {String calName = 'AirWatch'}) {
 
   for (final ev in events) {
     final startStr = _formatUtc(ev.start);
-    final endStr = _formatUtc(
-      ev.end ?? ev.start.add(const Duration(hours: 1)),
-    );
+    final endStr = _formatUtc(ev.end ?? ev.start.add(const Duration(hours: 1)));
     lines.add('BEGIN:VEVENT');
     lines.add(foldLine('UID:${escapeText(ev.id)}@airwatch.app'));
     lines.add('DTSTAMP:$dtstamp');

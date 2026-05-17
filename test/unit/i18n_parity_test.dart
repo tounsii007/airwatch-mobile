@@ -69,7 +69,8 @@ void main() {
     expect(
       issues,
       isEmpty,
-      reason: 'i18n drift — every non-en core locale must cover the union '
+      reason:
+          'i18n drift — every non-en core locale must cover the union '
           'set of keys defined across all core locales:\n'
           '${issues.join("\n")}',
     );
@@ -91,8 +92,10 @@ void main() {
       final coverage = coreUnion.isEmpty
           ? 100.0
           : 100 * (1 - missing.length / coreUnion.length);
-      lines.add('[$code] Stage-1: covers ${keys.length}/${coreUnion.length} '
-          'keys (${coverage.toStringAsFixed(0)} %).');
+      lines.add(
+        '[$code] Stage-1: covers ${keys.length}/${coreUnion.length} '
+        'keys (${coverage.toStringAsFixed(0)} %).',
+      );
     }
     for (final l in lines) {
       // ignore: avoid_print
@@ -103,8 +106,11 @@ void main() {
     // a reported metric; gaps don't fail the build.
     for (final code in softLocales) {
       final file = File('lib/core/l10n/strings_$code.dart');
-      expect(file.existsSync(), isTrue,
-          reason: 'soft locale $code is missing its file');
+      expect(
+        file.existsSync(),
+        isTrue,
+        reason: 'soft locale $code is missing its file',
+      );
     }
   });
 
@@ -121,8 +127,7 @@ void main() {
         empty.add('$path:${m.group(1)}');
       }
     }
-    expect(empty, isEmpty,
-        reason: 'empty translations: ${empty.join(", ")}');
+    expect(empty, isEmpty, reason: 'empty translations: ${empty.join(", ")}');
   });
 }
 

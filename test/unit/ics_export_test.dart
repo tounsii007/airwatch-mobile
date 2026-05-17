@@ -79,11 +79,7 @@ void main() {
 
     test('defaults DTEND to start + 1h when not provided', () {
       final ics = buildIcs([
-        IcsEvent(
-          id: 'a',
-          start: DateTime.utc(2026, 5, 15, 10),
-          title: 'thing',
-        ),
+        IcsEvent(id: 'a', start: DateTime.utc(2026, 5, 15, 10), title: 'thing'),
       ]);
       expect(ics, contains('DTSTART:20260515T100000Z'));
       expect(ics, contains('DTEND:20260515T110000Z'));
@@ -106,16 +102,8 @@ void main() {
 
     test('multiple events all get rendered', () {
       final ics = buildIcs([
-        IcsEvent(
-          id: 'a',
-          start: DateTime.utc(2026, 5, 15),
-          title: 'event A',
-        ),
-        IcsEvent(
-          id: 'b',
-          start: DateTime.utc(2026, 5, 16),
-          title: 'event B',
-        ),
+        IcsEvent(id: 'a', start: DateTime.utc(2026, 5, 15), title: 'event A'),
+        IcsEvent(id: 'b', start: DateTime.utc(2026, 5, 16), title: 'event B'),
       ]);
       // Two BEGIN:VEVENT and END:VEVENT pairs.
       expect(RegExp(r'BEGIN:VEVENT').allMatches(ics).length, 2);

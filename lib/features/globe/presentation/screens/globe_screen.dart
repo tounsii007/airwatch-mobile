@@ -192,24 +192,24 @@ class _GlobeScreenState extends ConsumerState<GlobeScreen> {
             Center(
               child: FlutterEarthGlobe(controller: _controller, radius: 140),
             ),
-          // Stats overlay — airborne / ground / total / showing
-          // Mirrors the web's overlay on the Cesium globe so the
-          // user knows how representative the visible dot cloud is.
-          Positioned(
-            top: 12,
-            left: 12,
-            right: 12,
-            child: _StatsOverlay(
-              asyncFlights: asyncFlights,
-              shown: _currentIds.length,
+            // Stats overlay — airborne / ground / total / showing
+            // Mirrors the web's overlay on the Cesium globe so the
+            // user knows how representative the visible dot cloud is.
+            Positioned(
+              top: 12,
+              left: 12,
+              right: 12,
+              child: _StatsOverlay(
+                asyncFlights: asyncFlights,
+                shown: _currentIds.length,
+              ),
             ),
-          ),
-          // Altitude-band legend — explains what the dot colours mean.
-          const Positioned(bottom: 12, left: 12, child: _AltitudeLegend()),
-          // Flight detail panel surfaces over the globe when a point
-          // is tapped. The panel is the same widget the map uses, so
-          // the user gets identical functionality on both screens.
-          const FlightDetailsPanel(),
+            // Altitude-band legend — explains what the dot colours mean.
+            const Positioned(bottom: 12, left: 12, child: _AltitudeLegend()),
+            // Flight detail panel surfaces over the globe when a point
+            // is tapped. The panel is the same widget the map uses, so
+            // the user gets identical functionality on both screens.
+            const FlightDetailsPanel(),
           ],
         ),
       ),

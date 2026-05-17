@@ -118,9 +118,7 @@ class _GeoFenceDrawScreenState extends ConsumerState<GeoFenceDrawScreen> {
         content: TextField(
           controller: ctl,
           autofocus: true,
-          decoration: InputDecoration(
-            hintText: s.fenceNamePlaceholder,
-          ),
+          decoration: InputDecoration(hintText: s.fenceNamePlaceholder),
         ),
         actions: [
           TextButton(

@@ -51,15 +51,15 @@ class ViewedFlight {
   });
 
   Map<String, dynamic> toJson() => {
-        'icao24': icao24,
-        'callsign': callsign,
-        'originIata': originIata,
-        'destIata': destIata,
-        'airlineIcao': airlineIcao,
-        'views': views,
-        'firstSeenAt': firstSeenAt.toUtc().toIso8601String(),
-        'lastSeenAt': lastSeenAt.toUtc().toIso8601String(),
-      };
+    'icao24': icao24,
+    'callsign': callsign,
+    'originIata': originIata,
+    'destIata': destIata,
+    'airlineIcao': airlineIcao,
+    'views': views,
+    'firstSeenAt': firstSeenAt.toUtc().toIso8601String(),
+    'lastSeenAt': lastSeenAt.toUtc().toIso8601String(),
+  };
 
   static ViewedFlight? fromJson(Map<String, dynamic> j) {
     final icao = j['icao24'];
@@ -73,10 +73,10 @@ class ViewedFlight {
       views: (j['views'] as num?)?.toInt() ?? 1,
       firstSeenAt:
           DateTime.tryParse(j['firstSeenAt']?.toString() ?? '') ??
-              DateTime.now().toUtc(),
+          DateTime.now().toUtc(),
       lastSeenAt:
           DateTime.tryParse(j['lastSeenAt']?.toString() ?? '') ??
-              DateTime.now().toUtc(),
+          DateTime.now().toUtc(),
     );
   }
 }
@@ -134,8 +134,9 @@ class PersonalStatsNotifier extends Notifier<PersonalStatsState> {
 
   Future<void> _persist() async {
     final p = await SharedPreferences.getInstance();
-    final payload =
-        state.viewedFlights.map((vf) => vf.toJson()).toList(growable: false);
+    final payload = state.viewedFlights
+        .map((vf) => vf.toJson())
+        .toList(growable: false);
     await p.setString(_kPersistKey, jsonEncode(payload));
     await p.setInt(_kPersistTotalKey, state.totalViews);
   }
@@ -150,7 +151,9 @@ class PersonalStatsNotifier extends Notifier<PersonalStatsState> {
     if (icao24.isEmpty) return;
 
     final callsign = aircraft.callsign?.trim();
-    final airline = (callsign != null && callsign.length >= 3 &&
+    final airline =
+        (callsign != null &&
+            callsign.length >= 3 &&
             RegExp(r'^[A-Z]{3}').hasMatch(callsign.toUpperCase()))
         ? callsign.substring(0, 3).toUpperCase()
         : null;
@@ -248,5 +251,5 @@ class PersonalStatsNotifier extends Notifier<PersonalStatsState> {
 
 final personalStatsProvider =
     NotifierProvider<PersonalStatsNotifier, PersonalStatsState>(
-  PersonalStatsNotifier.new,
-);
+      PersonalStatsNotifier.new,
+    );

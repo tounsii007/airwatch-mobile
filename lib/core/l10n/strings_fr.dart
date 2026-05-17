@@ -545,8 +545,7 @@ class StringsFr extends AppStrings {
   @override
   String get fenceErrRadius => 'Le rayon doit être supérieur à 0 km';
   @override
-  String get fenceErrBoundsRequired =>
-      'Les quatre limites sont requises';
+  String get fenceErrBoundsRequired => 'Les quatre limites sont requises';
   @override
   String get fenceErrNorthSouth => 'Nord doit être supérieur à Sud';
   @override
@@ -586,14 +585,11 @@ class StringsFr extends AppStrings {
   @override
   String get fenceDrawHintCircleSecond => 'Tapez pour définir le rayon';
   @override
-  String get fenceDrawHintRectFirst =>
-      'Tapez pour définir le premier coin';
+  String get fenceDrawHintRectFirst => 'Tapez pour définir le premier coin';
   @override
-  String get fenceDrawHintRectSecond =>
-      'Tapez pour définir le coin opposé';
+  String get fenceDrawHintRectSecond => 'Tapez pour définir le coin opposé';
   @override
-  String get fenceDrawHintReady =>
-      'Enregistrer quand prêt ou taper RESET';
+  String get fenceDrawHintReady => 'Enregistrer quand prêt ou taper RESET';
   @override
   String get fenceDrawResetButton => 'RESET';
   @override
@@ -649,8 +645,7 @@ class StringsFr extends AppStrings {
   @override
   String get fenceImporting => 'IMPORT…';
   @override
-  String get fenceExportTooltip =>
-      'Télécharger vos géofences en JSON';
+  String get fenceExportTooltip => 'Télécharger vos géofences en JSON';
   @override
   String get fenceImportTooltip =>
       'Restaurer les géofences depuis un fichier JSON';
@@ -667,15 +662,13 @@ class StringsFr extends AppStrings {
   @override
   String get fenceImportedMany => '{0} géofences importées';
   @override
-  String get fenceImportedPartial =>
-      '{0} importée(s), {1} en échec ({2})';
+  String get fenceImportedPartial => '{0} importée(s), {1} en échec ({2})';
   @override
   String get fenceReadFailed => 'Échec de lecture : {0}';
   @override
   String get fenceImportInvalidJson => 'JSON invalide : {0}';
   @override
-  String get fenceImportSchemaMismatch =>
-      'Schéma incompatible à {0} : {1}';
+  String get fenceImportSchemaMismatch => 'Schéma incompatible à {0} : {1}';
 
   // ── Dashboard empty / honest states ────────────────────────────────────
   @override

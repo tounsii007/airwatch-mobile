@@ -99,8 +99,7 @@ void debugSetAirportFullDatabase(Map<String, AirportEntry> map) {
 }
 
 /// Lookup by ICAO code — O(1).
-AirportEntry? lookupAirport(String icao) =>
-    _icaoMap[icao.toUpperCase()];
+AirportEntry? lookupAirport(String icao) => _icaoMap[icao.toUpperCase()];
 
 /// Build (or fetch the cached) IATA index. The dataset is keyed by
 /// ICAO; the IATA index lets us avoid a 21 k linear scan on every

@@ -351,8 +351,9 @@ class AirportMarkersLayer extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     if (zoom < 4) return const SizedBox.shrink();
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final weatherEnabled =
-        ref.watch(settingsProvider.select((s) => s.showAirportWeather));
+    final weatherEnabled = ref.watch(
+      settingsProvider.select((s) => s.showAirportWeather),
+    );
     // Watch the weather-cache tick so the label layer repaints when a
     // freshly-fetched emoji lands. The provider's value is irrelevant —
     // we just care about the change signal.
@@ -438,8 +439,7 @@ class AirportMarkersLayer extends ConsumerWidget {
           entry.iata,
           entry.lat,
           entry.lon,
-          onLanded: () =>
-              ref.read(airportWeatherTickProvider.notifier).bump(),
+          onLanded: () => ref.read(airportWeatherTickProvider.notifier).bump(),
         );
       }
 
@@ -518,16 +518,13 @@ class _Dot extends StatelessWidget {
 class _Lbl extends StatelessWidget {
   final String iata;
   final bool isDark;
+
   /// Optional weather glyph rendered right of the IATA code. `null` when
   /// the user disabled `showAirportWeather` or the cache hasn't landed
   /// yet — in that case we fall back to text-only (no layout shift on
   /// late arrival because the marker width is fixed up-front).
   final String? weatherEmoji;
-  const _Lbl({
-    required this.iata,
-    required this.isDark,
-    this.weatherEmoji,
-  });
+  const _Lbl({required this.iata, required this.isDark, this.weatherEmoji});
   @override
   Widget build(BuildContext context) {
     const c = UiConstants.lightPrimary;

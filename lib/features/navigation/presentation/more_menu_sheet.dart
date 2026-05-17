@@ -166,7 +166,9 @@ class MoreMenuSheet extends ConsumerWidget {
                         ),
                       ),
                       IconButton(
-                        tooltip: MaterialLocalizations.of(context).closeButtonTooltip,
+                        tooltip: MaterialLocalizations.of(
+                          context,
+                        ).closeButtonTooltip,
                         onPressed: () => Navigator.of(context).pop(),
                         icon: const Icon(Icons.close_rounded, size: 20),
                         color: AppColors.textMuted,
@@ -177,7 +179,12 @@ class MoreMenuSheet extends ConsumerWidget {
                 // Grid — 2 columns on phones, expands on landscape.
                 Flexible(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsetsDirectional.fromSTEB(12, 0, 12, 16),
+                    padding: const EdgeInsetsDirectional.fromSTEB(
+                      12,
+                      0,
+                      12,
+                      16,
+                    ),
                     child: LayoutBuilder(
                       builder: (context, c) {
                         final cols = c.maxWidth >= 480 ? 3 : 2;
@@ -186,16 +193,14 @@ class MoreMenuSheet extends ConsumerWidget {
                           physics: const NeverScrollableScrollPhysics(),
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: cols,
-                            mainAxisSpacing: 8,
-                            crossAxisSpacing: 8,
-                            childAspectRatio: 1.35,
-                          ),
+                                crossAxisCount: cols,
+                                mainAxisSpacing: 8,
+                                crossAxisSpacing: 8,
+                                childAspectRatio: 1.35,
+                              ),
                           itemCount: entries.length,
-                          itemBuilder: (_, i) => _MoreCard(
-                            entry: entries[i],
-                            isDark: isDark,
-                          ),
+                          itemBuilder: (_, i) =>
+                              _MoreCard(entry: entries[i], isDark: isDark),
                         );
                       },
                     ),
@@ -241,9 +246,9 @@ class _MoreCard extends StatelessWidget {
             // screen returns to the underlying primary tab, not to a
             // ghost sheet that's already gone.
             Navigator.of(context).pop();
-            Navigator.of(context).push(
-              MaterialPageRoute<void>(builder: entry.builder),
-            );
+            Navigator.of(
+              context,
+            ).push(MaterialPageRoute<void>(builder: entry.builder));
           },
           borderRadius: BorderRadius.circular(12),
           child: Container(

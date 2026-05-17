@@ -173,7 +173,8 @@ DecodedMetar decodeMetar(String raw) {
   final phenomena = <DecodedPhenomenon>[];
   final unknown = <String>[];
 
-  if (tokens.isNotEmpty && (tokens.first == 'METAR' || tokens.first == 'SPECI')) {
+  if (tokens.isNotEmpty &&
+      (tokens.first == 'METAR' || tokens.first == 'SPECI')) {
     tokens.removeAt(0);
   }
 
@@ -216,9 +217,7 @@ DecodedMetar decodeMetar(String raw) {
     }
 
     if (tok == 'CLR' || tok == 'SKC') {
-      cloudLayers.add(
-        DecodedCloudLayer(cover: tok, baseFt: null, type: null),
-      );
+      cloudLayers.add(DecodedCloudLayer(cover: tok, baseFt: null, type: null));
       continue;
     }
 
@@ -401,8 +400,9 @@ class DecodedTaf {
   });
 }
 
-final _tafHeaderRe =
-    RegExp(r'^TAF\s+(?:AMD\s+|COR\s+)?([A-Z]{4})\s+(\d{6}Z)\s+(\d{4})\/(\d{4})\b');
+final _tafHeaderRe = RegExp(
+  r'^TAF\s+(?:AMD\s+|COR\s+)?([A-Z]{4})\s+(\d{6}Z)\s+(\d{4})\/(\d{4})\b',
+);
 final _fmRe = RegExp(r'^FM(\d{6})$');
 final _tempoRe = RegExp(r'^TEMPO$');
 final _becmgRe = RegExp(r'^BECMG$');
@@ -436,11 +436,13 @@ DecodedTaf decodeTaf(String raw) {
 
   void flush() {
     if (cur.isEmpty) return;
-    windows.add(DecodedTafWindow(
-      label: label,
-      when: when,
-      conditions: decodeMetar(cur.join(' ')),
-    ));
+    windows.add(
+      DecodedTafWindow(
+        label: label,
+        when: when,
+        conditions: decodeMetar(cur.join(' ')),
+      ),
+    );
     cur = <String>[];
   }
 
