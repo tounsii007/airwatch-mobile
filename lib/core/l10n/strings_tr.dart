@@ -251,4 +251,26 @@ class StringsTr extends AppStrings {
   String get terrainStyle => 'Arazi';
   @override
   String get popularAirports => 'Popüler havaalanları';
+
+  // ── AR HUD compact stat labels ─────────────────────────────────────────
+  @override
+  String get arHudHdg => 'YÖN';
+  @override
+  String get arHudPitch => 'EĞIM';
+  @override
+  String get arHudInView => 'GÖRÜŞTE';
+
+  // ── Favourite kind labels ──────────────────────────────────────────────
+  @override
+  String get kindFlight => 'Uçuş';
+  @override
+  String get kindAirline => 'Havayolu';
+  @override
+  String get kindAirport => 'Havalimanı';
+
+  // ── Generic UI fallbacks ───────────────────────────────────────────────
+  @override
+  String get errorGeneric => 'Hata';
+  @override
+  String get geofencesActiveCount => '{0} AKTIF';
 }

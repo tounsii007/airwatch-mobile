@@ -473,9 +473,9 @@ class _ExportIcsButton extends StatelessWidget {
           // anchors at "now" so the import succeeds, and the SUMMARY +
           // DESCRIPTION carry the human-readable detail.
           final kindLabel = switch (item.type) {
-            FavoriteType.flight => 'Flight',
-            FavoriteType.airline => 'Airline',
-            FavoriteType.airport => 'Airport',
+            FavoriteType.flight => s.kindFlight,
+            FavoriteType.airline => s.kindAirline,
+            FavoriteType.airport => s.kindAirport,
           };
           return IcsEvent(
             id: '${item.type.name}-${item.id}',

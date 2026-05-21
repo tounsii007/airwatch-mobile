@@ -679,4 +679,26 @@ class StringsDe extends AppStrings {
   String get dashNoDataYet => 'Noch keine Daten';
   @override
   String get dashEmptyHint => 'Öffne die Karte, um Flüge zu verfolgen';
+
+  // ── AR HUD compact stat labels ─────────────────────────────────────────
+  @override
+  String get arHudHdg => 'KURS';
+  @override
+  String get arHudPitch => 'NICK';
+  @override
+  String get arHudInView => 'IM BILD';
+
+  // ── Favourite kind labels ──────────────────────────────────────────────
+  @override
+  String get kindFlight => 'Flug';
+  @override
+  String get kindAirline => 'Fluggesellschaft';
+  @override
+  String get kindAirport => 'Flughafen';
+
+  // ── Generic UI fallbacks ───────────────────────────────────────────────
+  @override
+  String get errorGeneric => 'Fehler';
+  @override
+  String get geofencesActiveCount => '{0} AKTIV';
 }
