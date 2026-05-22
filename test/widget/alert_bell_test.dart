@@ -65,7 +65,8 @@ void main() {
       );
       await tester.tap(find.byIcon(Icons.notifications_active_rounded));
       await tester.pumpAndSettle();
-      expect(find.text('ALERTS · 1'), findsOneWidget);
+      // Singular form now: alertsCountOne = "ALERT" (was hardcoded "ALERTS").
+      expect(find.text('ALERT · 1'), findsOneWidget);
       expect(find.text('Emergency squawk'), findsOneWidget);
     });
 

@@ -139,8 +139,22 @@ class CountryDatabase {
   static List<CountryInfo> search(String? query, {int limit = 20}) {
     if (limit <= 0) return const [];
 
-    final normalizedQuery = _normalize(query ?? '');
+    final rawQuery = query?.trim() ?? '';
+    final normalizedQuery = _normalize(rawQuery);
     if (normalizedQuery.isEmpty) {
+      // Non-ASCII queries (Arabic, Chinese, etc.) get wiped by the regex in
+      // `_normalize` because the character class is `[^a-z0-9]+`. Before
+      // falling back to the alphabetical "first N" slice, try a cross-locale
+      // reverse lookup so "تونس" / "ألمانيا" still surface their canonical
+      // entry. Mirrors the asymmetric handling already in `find()`.
+      if (rawQuery.isNotEmpty) {
+        final canonical = resolveCountryAlias(rawQuery);
+        if (canonical != null) {
+          final code = _byNormalizedName[_normalize(canonical)];
+          final info = code == null ? null : _byCode[code];
+          if (info != null) return [info];
+        }
+      }
       if (limit >= _countries.length) return List<CountryInfo>.from(_countries);
       return _countries.take(limit).toList(growable: false);
     }
@@ -160,10 +174,22 @@ class CountryDatabase {
             return a.country.name.compareTo(b.country.name);
           });
 
-    return scored
-        .take(limit)
-        .map((result) => result.country)
-        .toList(growable: false);
+    // Even when ASCII scoring produces hits, surface the cross-locale match
+    // first if the raw query resolves to a canonical English name — that's
+    // the user's intent when they typed "Tunesien" / "Niemcy" / "Almanya".
+    final canonicalFromAlias = resolveCountryAlias(rawQuery);
+    final aliasCountry = canonicalFromAlias == null
+        ? null
+        : _byCode[_byNormalizedName[_normalize(canonicalFromAlias)] ?? ''];
+
+    final ranked = <CountryInfo>[];
+    if (aliasCountry != null) ranked.add(aliasCountry);
+    for (final entry in scored) {
+      if (entry.country.code == aliasCountry?.code) continue;
+      ranked.add(entry.country);
+      if (ranked.length >= limit) break;
+    }
+    return ranked.take(limit).toList(growable: false);
   }
 
   static String _normalize(String value) {
