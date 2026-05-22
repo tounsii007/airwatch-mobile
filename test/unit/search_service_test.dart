@@ -204,69 +204,91 @@ void main() {
     // / France entry. Confirms the iter 1 country_translations expansion is
     // wired all the way through SearchService.
 
-    test('cross-locale: German country query finds canonical Tunisia', () async {
-      final service = SearchService();
-      final results = await service.search('Tunesien', liveAircraft: const {});
-      expect(
-        results.any(
-          (item) =>
-              item.type == SearchResultType.country && item.title == 'Tunisia',
-        ),
-        isTrue,
-      );
-    });
+    test(
+      'cross-locale: German country query finds canonical Tunisia',
+      () async {
+        final service = SearchService();
+        final results = await service.search(
+          'Tunesien',
+          liveAircraft: const {},
+        );
+        expect(
+          results.any(
+            (item) =>
+                item.type == SearchResultType.country &&
+                item.title == 'Tunisia',
+          ),
+          isTrue,
+        );
+      },
+    );
 
-    test('cross-locale: French country query finds canonical Germany',
-        () async {
-      final service = SearchService();
-      final results = await service.search('Allemagne', liveAircraft: const {});
-      expect(
-        results.any(
-          (item) =>
-              item.type == SearchResultType.country && item.title == 'Germany',
-        ),
-        isTrue,
-      );
-    });
+    test(
+      'cross-locale: French country query finds canonical Germany',
+      () async {
+        final service = SearchService();
+        final results = await service.search(
+          'Allemagne',
+          liveAircraft: const {},
+        );
+        expect(
+          results.any(
+            (item) =>
+                item.type == SearchResultType.country &&
+                item.title == 'Germany',
+          ),
+          isTrue,
+        );
+      },
+    );
 
-    test('cross-locale: Polish country query finds canonical Germany',
-        () async {
-      final service = SearchService();
-      final results = await service.search('Niemcy', liveAircraft: const {});
-      expect(
-        results.any(
-          (item) =>
-              item.type == SearchResultType.country && item.title == 'Germany',
-        ),
-        isTrue,
-      );
-    });
+    test(
+      'cross-locale: Polish country query finds canonical Germany',
+      () async {
+        final service = SearchService();
+        final results = await service.search('Niemcy', liveAircraft: const {});
+        expect(
+          results.any(
+            (item) =>
+                item.type == SearchResultType.country &&
+                item.title == 'Germany',
+          ),
+          isTrue,
+        );
+      },
+    );
 
-    test('cross-locale: Turkish country query finds canonical Germany',
-        () async {
-      final service = SearchService();
-      final results = await service.search('Almanya', liveAircraft: const {});
-      expect(
-        results.any(
-          (item) =>
-              item.type == SearchResultType.country && item.title == 'Germany',
-        ),
-        isTrue,
-      );
-    });
+    test(
+      'cross-locale: Turkish country query finds canonical Germany',
+      () async {
+        final service = SearchService();
+        final results = await service.search('Almanya', liveAircraft: const {});
+        expect(
+          results.any(
+            (item) =>
+                item.type == SearchResultType.country &&
+                item.title == 'Germany',
+          ),
+          isTrue,
+        );
+      },
+    );
 
-    test('cross-locale: Arabic country query finds canonical Tunisia',
-        () async {
-      final service = SearchService();
-      final results = await service.search('تونس', liveAircraft: const {});
-      expect(
-        results.any(
-          (item) =>
-              item.type == SearchResultType.country && item.title == 'Tunisia',
-        ),
-        isTrue,
-      );
-    });
+    test(
+      'cross-locale: Arabic country query finds canonical Tunisia',
+      () async {
+        final service = SearchService();
+        final results = await service.search('تونس', liveAircraft: const {});
+        expect(
+          results.any(
+            (item) =>
+                item.type == SearchResultType.country &&
+                item.title == 'Tunisia',
+          ),
+          isTrue,
+        );
+      },
+    );
 
     test('cross-locale: Spanish country query finds canonical Spain', () async {
       final service = SearchService();
