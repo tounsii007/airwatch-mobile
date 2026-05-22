@@ -252,4 +252,32 @@ class StringsNl extends AppStrings {
   String get terrainStyle => 'Terrein';
   @override
   String get popularAirports => 'Populaire luchthavens';
+
+  // ── AR HUD compact stat labels ─────────────────────────────────────────
+  @override
+  String get arHudHdg => 'KOERS';
+  @override
+  String get arHudPitch => 'PITCH';
+  @override
+  String get arHudInView => 'IN BEELD';
+
+  // ── Favourite kind labels ──────────────────────────────────────────────
+  @override
+  String get kindFlight => 'Vlucht';
+  @override
+  String get kindAirline => 'Luchtvaartmij.';
+  @override
+  String get kindAirport => 'Luchthaven';
+
+  // ── Generic UI fallbacks ───────────────────────────────────────────────
+  @override
+  String get errorGeneric => 'Fout';
+  @override
+  String get geofencesActiveCount => '{0} ACTIEF';
+
+  // ── Alert bell + sheet ─────────────────────────────────────────────────
+  @override
+  String get alertBellAria => 'Open meldingenpaneel';
+  @override
+  String get alertsNone => 'Geen actieve meldingen';
 }

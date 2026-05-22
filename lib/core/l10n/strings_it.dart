@@ -668,4 +668,32 @@ class StringsIt extends AppStrings {
   String get dashNoDataYet => 'Nessun dato';
   @override
   String get dashEmptyHint => 'Apri la mappa per iniziare a seguire i voli';
+
+  // ── AR HUD compact stat labels ─────────────────────────────────────────
+  @override
+  String get arHudHdg => 'ROTTA';
+  @override
+  String get arHudPitch => 'BECC.';
+  @override
+  String get arHudInView => 'IN VISTA';
+
+  // ── Favourite kind labels ──────────────────────────────────────────────
+  @override
+  String get kindFlight => 'Volo';
+  @override
+  String get kindAirline => 'Compagnia';
+  @override
+  String get kindAirport => 'Aeroporto';
+
+  // ── Generic UI fallbacks ───────────────────────────────────────────────
+  @override
+  String get errorGeneric => 'Errore';
+  @override
+  String get geofencesActiveCount => '{0} ATTIVE';
+
+  // ── Alert bell + sheet ─────────────────────────────────────────────────
+  @override
+  String get alertBellAria => 'Apri pannello avvisi';
+  @override
+  String get alertsNone => 'Nessun avviso attivo';
 }

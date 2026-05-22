@@ -47,7 +47,10 @@ class GeofencesScreen extends ConsumerWidget {
       // mirrors web's `<Subtitle>{n} active</Subtitle>` on /geofences.
       subtitle: fences.isNotEmpty
           ? AwPageBadge(
-              label: '${fences.length} ACTIVE',
+              label: s.geofencesActiveCount.replaceFirst(
+                '{0}',
+                fences.length.toString(),
+              ),
               color: AppColors.success,
             )
           : null,

@@ -676,4 +676,32 @@ class StringsFr extends AppStrings {
   @override
   String get dashEmptyHint =>
       'Ouvrez la carte pour commencer à suivre des vols';
+
+  // ── AR HUD compact stat labels ─────────────────────────────────────────
+  @override
+  String get arHudHdg => 'CAP';
+  @override
+  String get arHudPitch => 'TANG';
+  @override
+  String get arHudInView => 'EN VUE';
+
+  // ── Favourite kind labels ──────────────────────────────────────────────
+  @override
+  String get kindFlight => 'Vol';
+  @override
+  String get kindAirline => 'Compagnie';
+  @override
+  String get kindAirport => 'Aéroport';
+
+  // ── Generic UI fallbacks ───────────────────────────────────────────────
+  @override
+  String get errorGeneric => 'Erreur';
+  @override
+  String get geofencesActiveCount => '{0} ACTIVE(S)';
+
+  // ── Alert bell + sheet ─────────────────────────────────────────────────
+  @override
+  String get alertBellAria => 'Ouvrir le panneau d\'alertes';
+  @override
+  String get alertsNone => 'Aucune alerte active';
 }

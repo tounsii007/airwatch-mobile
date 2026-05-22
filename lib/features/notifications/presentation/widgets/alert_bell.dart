@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:airwatch_mobile/core/constants/ui_constants.dart';
+import 'package:airwatch_mobile/core/l10n/ui_text.dart';
 import 'package:airwatch_mobile/core/theme/app_colors.dart';
 import 'package:airwatch_mobile/core/widgets/glass_panel.dart';
 import 'package:airwatch_mobile/features/map/presentation/providers/flight_providers.dart';
@@ -23,50 +24,65 @@ class AlertBell extends ConsumerWidget {
     final primary = isDark ? AppColors.primary : UiConstants.lightPrimary;
     final count = ref.watch(alertCountProvider);
 
-    return GestureDetector(
-      onTap: () => _open(context),
-      behavior: HitTestBehavior.opaque,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          GlassPanel(
-            padding: const EdgeInsets.all(10),
-            borderRadius: 12,
-            borderColor: count > 0
-                ? AppColors.error.withValues(alpha: 0.55)
-                : null,
-            child: Icon(
-              count > 0
-                  ? Icons.notifications_active_rounded
-                  : Icons.notifications_none_rounded,
-              size: 20,
-              color: count > 0 ? AppColors.error : primary,
+    // Screen-reader label: bell purpose + active-count hint.
+    final ariaLabel = count > 0
+        ? '${context.s.alertBellAria} ($count)'
+        : context.s.alertBellAria;
+
+    return Semantics(
+      button: true,
+      label: ariaLabel,
+      child: GestureDetector(
+        onTap: () => _open(context),
+        behavior: HitTestBehavior.opaque,
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            GlassPanel(
+              // 12 + 20 + 12 = 44 — matches WCAG 2.5.5 (target size) so the
+              // bell is comfortably tappable on small phones / with motor
+              // impairment. Was 10 (= 40px overall) before this iteration.
+              padding: const EdgeInsets.all(12),
+              borderRadius: 12,
+              borderColor: count > 0
+                  ? AppColors.error.withValues(alpha: 0.55)
+                  : null,
+              child: Icon(
+                count > 0
+                    ? Icons.notifications_active_rounded
+                    : Icons.notifications_none_rounded,
+                size: 20,
+                color: count > 0 ? AppColors.error : primary,
+              ),
             ),
-          ),
-          if (count > 0)
-            Positioned(
-              right: -2,
-              top: -2,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-                constraints: const BoxConstraints(minWidth: 16),
-                decoration: BoxDecoration(
-                  color: AppColors.error,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  count > 9 ? '9+' : count.toString(),
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontFamily: UiConstants.headingFont,
-                    fontSize: 9,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.white,
+            if (count > 0)
+              Positioned(
+                right: -2,
+                top: -2,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 5,
+                    vertical: 1,
+                  ),
+                  constraints: const BoxConstraints(minWidth: 16),
+                  decoration: BoxDecoration(
+                    color: AppColors.error,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    count > 9 ? '9+' : count.toString(),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontFamily: UiConstants.headingFont,
+                      fontSize: 9,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -130,7 +146,7 @@ class _AlertsSheet extends ConsumerWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      'ALERTS · ${alerts.length}',
+                      '${alerts.length == 1 ? context.s.alertsCountOne : context.s.alertsCountMany} · ${alerts.length}',
                       style: TextStyle(
                         fontFamily: UiConstants.headingFont,
                         fontSize: 12,
@@ -266,9 +282,9 @@ class _Empty extends StatelessWidget {
               color: AppColors.textMuted.withValues(alpha: 0.5),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'No active alerts',
-              style: TextStyle(
+            Text(
+              context.s.alertsNone,
+              style: const TextStyle(
                 fontFamily: UiConstants.bodyFont,
                 fontSize: 13,
                 color: AppColors.textMuted,

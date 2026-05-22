@@ -259,12 +259,18 @@ class _ARScreenState extends ConsumerState<ARScreen> {
                     ),
                     child: Row(
                       children: [
-                        _Stat(label: 'HDG', value: '${_heading.round()}°'),
-                        const SizedBox(width: 18),
-                        _Stat(label: 'PITCH', value: '${_pitch.round()}°'),
+                        _Stat(
+                          label: context.s.arHudHdg,
+                          value: '${_heading.round()}°',
+                        ),
                         const SizedBox(width: 18),
                         _Stat(
-                          label: 'IN VIEW',
+                          label: context.s.arHudPitch,
+                          value: '${_pitch.round()}°',
+                        ),
+                        const SizedBox(width: 18),
+                        _Stat(
+                          label: context.s.arHudInView,
                           value: detected.length.toString(),
                         ),
                         const Spacer(),

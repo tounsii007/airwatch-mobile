@@ -85,7 +85,7 @@ class _SplashScreenState extends State<SplashScreen>
     final size = MediaQuery.sizeOf(context);
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0A1628),
+      backgroundColor: const Color(0xFF0A0A0A),
       body: AnimatedBuilder(
         animation: Listenable.merge([
           _logoScale,
@@ -103,17 +103,20 @@ class _SplashScreenState extends State<SplashScreen>
             child: Stack(
               fit: StackFit.expand,
               children: [
-                // ═══ Layer 1: Steel blue gradient background ═══
+                // ═══ Layer 1: Neutral charcoal gradient background ═══
+                // Was a steel-blue gradient; now a near-black charcoal mix
+                // so the splash matches the iter 73 surface palette (matches
+                // airwatch-web's neutral-surface look).
                 Container(
                   decoration: const BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment(-0.5, -1),
                       end: Alignment(0.5, 1),
                       colors: [
-                        Color(0xFF0F1D32),
-                        Color(0xFF152742),
-                        Color(0xFF1A3050),
-                        Color(0xFF0D1B2E),
+                        Color(0xFF151515),
+                        Color(0xFF1F1F1F),
+                        Color(0xFF252525),
+                        Color(0xFF0F0F0F),
                       ],
                     ),
                   ),

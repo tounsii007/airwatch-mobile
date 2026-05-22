@@ -256,4 +256,32 @@ class StringsPl extends AppStrings {
   String get terrainStyle => 'Teren';
   @override
   String get popularAirports => 'Popularne lotniska';
+
+  // ── AR HUD compact stat labels ─────────────────────────────────────────
+  @override
+  String get arHudHdg => 'KURS';
+  @override
+  String get arHudPitch => 'POCH.';
+  @override
+  String get arHudInView => 'W KADRZE';
+
+  // ── Favourite kind labels ──────────────────────────────────────────────
+  @override
+  String get kindFlight => 'Lot';
+  @override
+  String get kindAirline => 'Linia lotnicza';
+  @override
+  String get kindAirport => 'Lotnisko';
+
+  // ── Generic UI fallbacks ───────────────────────────────────────────────
+  @override
+  String get errorGeneric => 'Błąd';
+  @override
+  String get geofencesActiveCount => '{0} AKTYWNE';
+
+  // ── Alert bell + sheet ─────────────────────────────────────────────────
+  @override
+  String get alertBellAria => 'Otwórz panel alertów';
+  @override
+  String get alertsNone => 'Brak aktywnych alertów';
 }

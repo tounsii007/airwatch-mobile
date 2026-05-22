@@ -5,9 +5,12 @@ class UiConstants {
   static const String bodyFont = 'Rajdhani';
 
   static const Color lightPrimary = Color(0xFF0077B6);
-  static const Color lightBackground = Color(0xFFF0F4F8);
+  // Off-white surfaces match airwatch-web iter 73. The previous #F0F4F8 carried
+  // a faint blue cast that mismatched the new neutral dark theme; pure-neutral
+  // greys ensure both themes share the same "no blue background" rule.
+  static const Color lightBackground = Color(0xFFFAFAFA);
   static const Color lightSurface = Color(0xFFFFFFFF);
-  static const Color lightBorder = Color(0xFFE2E8F0);
+  static const Color lightBorder = Color(0xFFE5E5E5);
   static const Color lightTextPrimary = Color(0xFF1A1A2E);
   static const Color lightTextSecondary = Color(0xFF6B7280);
   static const Color lightTextMuted = Color(0xFF9CA3AF);

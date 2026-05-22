@@ -129,7 +129,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 child: TextField(
                   controller: _controller,
                   onChanged: _onQueryChanged,
-                  textCapitalization: TextCapitalization.characters,
+                  // No forced TextCapitalization — the underlying search service
+                  // upper-cases the query for code matching, and country search
+                  // normalises case + diacritics. Forcing UPPER CASE on the
+                  // field obscured non-Latin scripts (Arabic, ß, Türkiye) and
+                  // made country queries like "Tunesien" / "Niemcy" awkward to
+                  // type. Users now see exactly what they type.
                   style: TextStyle(
                     fontFamily: UiConstants.headingFont,
                     fontSize: UiConstants.bodyFontSize,
@@ -147,18 +152,31 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                           : UiConstants.lightHintText,
                     ),
                     prefixIcon: Icon(Icons.search_rounded, color: primary),
+                    // Clear button: 44×44 WCAG 2.5.5 AAA target area via
+                    // explicit InkResponse radius — the icon stays 20px so the
+                    // visual chrome is unchanged but mis-taps stop landing
+                    // outside the hit zone.
                     suffixIcon: _query.isNotEmpty
-                        ? GestureDetector(
-                            onTap: () {
-                              _controller.clear();
-                              _onQueryChanged('');
-                            },
-                            child: Icon(
-                              Icons.close_rounded,
-                              size: 20,
-                              color: isDark
-                                  ? AppColors.textMuted
-                                  : UiConstants.lightTextMuted,
+                        ? Semantics(
+                            button: true,
+                            label: context.tr('search_clear_aria'),
+                            child: SizedBox(
+                              width: 44,
+                              height: 44,
+                              child: InkResponse(
+                                onTap: () {
+                                  _controller.clear();
+                                  _onQueryChanged('');
+                                },
+                                radius: 22,
+                                child: Icon(
+                                  Icons.close_rounded,
+                                  size: 20,
+                                  color: isDark
+                                      ? AppColors.textMuted
+                                      : UiConstants.lightTextMuted,
+                                ),
+                              ),
                             ),
                           )
                         : null,

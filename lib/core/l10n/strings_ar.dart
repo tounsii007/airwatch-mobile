@@ -665,4 +665,32 @@ class StringsAr extends AppStrings {
   String get dashNoDataYet => 'لا بيانات بعد';
   @override
   String get dashEmptyHint => 'افتح الخريطة لبدء تتبع الرحلات';
+
+  // ── AR HUD compact stat labels ─────────────────────────────────────────
+  @override
+  String get arHudHdg => 'الاتجاه';
+  @override
+  String get arHudPitch => 'الميل';
+  @override
+  String get arHudInView => 'في المرأى';
+
+  // ── Favourite kind labels ──────────────────────────────────────────────
+  @override
+  String get kindFlight => 'رحلة';
+  @override
+  String get kindAirline => 'شركة طيران';
+  @override
+  String get kindAirport => 'مطار';
+
+  // ── Generic UI fallbacks ───────────────────────────────────────────────
+  @override
+  String get errorGeneric => 'خطأ';
+  @override
+  String get geofencesActiveCount => '{0} نشطة';
+
+  // ── Alert bell + sheet ─────────────────────────────────────────────────
+  @override
+  String get alertBellAria => 'فتح لوحة التنبيهات';
+  @override
+  String get alertsNone => 'لا توجد تنبيهات نشطة';
 }

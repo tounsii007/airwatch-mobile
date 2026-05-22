@@ -201,7 +201,7 @@ class _NearbyAirportsPanelState extends ConsumerState<NearbyAirportsPanel> {
       case _NbStatus.unavailable:
         return _retryRow(s, s.geoUnavailable);
       case _NbStatus.error:
-        return _retryRow(s, _err ?? 'Error');
+        return _retryRow(s, _err ?? s.errorGeneric);
       case _NbStatus.ready:
         if (_results.isEmpty) {
           return Text(

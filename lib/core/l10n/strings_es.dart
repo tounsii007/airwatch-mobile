@@ -667,4 +667,32 @@ class StringsEs extends AppStrings {
   String get dashNoDataYet => 'Sin datos aún';
   @override
   String get dashEmptyHint => 'Abre el mapa para empezar a seguir vuelos';
+
+  // ── AR HUD compact stat labels ─────────────────────────────────────────
+  @override
+  String get arHudHdg => 'RUMBO';
+  @override
+  String get arHudPitch => 'CABE.';
+  @override
+  String get arHudInView => 'A LA VISTA';
+
+  // ── Favourite kind labels ──────────────────────────────────────────────
+  @override
+  String get kindFlight => 'Vuelo';
+  @override
+  String get kindAirline => 'Aerolínea';
+  @override
+  String get kindAirport => 'Aeropuerto';
+
+  // ── Generic UI fallbacks ───────────────────────────────────────────────
+  @override
+  String get errorGeneric => 'Error';
+  @override
+  String get geofencesActiveCount => '{0} ACTIVAS';
+
+  // ── Alert bell + sheet ─────────────────────────────────────────────────
+  @override
+  String get alertBellAria => 'Abrir panel de alertas';
+  @override
+  String get alertsNone => 'Sin alertas activas';
 }

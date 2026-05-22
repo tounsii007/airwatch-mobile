@@ -509,4 +509,34 @@ abstract class AppStrings {
   /// Used when a tile would otherwise render a misleading "0" KPI.
   String get dashNoDataYet => 'No data yet';
   String get dashEmptyHint => 'Open the map to start tracking flights';
+
+  // ── AR HUD compact stat labels ───────────────────────────────────────
+  /// Three-letter abbreviation for compass heading, shown in the AR HUD
+  /// next to the live degree value. Mirrors the web's AR overlay layout.
+  String get arHudHdg => 'HDG';
+  String get arHudPitch => 'PITCH';
+  String get arHudInView => 'IN VIEW';
+
+  // ── Favourite kind labels (used by the .ics calendar export) ─────────
+  /// Singular noun for "Flight" — used in the ICS event title prefix when
+  /// exporting saved favourites. Web equivalent: `t('kindFlight')`.
+  String get kindFlight => 'Flight';
+  String get kindAirline => 'Airline';
+  String get kindAirport => 'Airport';
+
+  // ── Generic UI fallbacks ─────────────────────────────────────────────
+  /// Last-resort error label shown when an upstream message is unavailable.
+  /// Used by the nearby-airports panel retry row, etc.
+  String get errorGeneric => 'Error';
+
+  /// Pluralised "{0} active" — geofence badge shown under the page title.
+  /// {0} is substituted with the active-fence count.
+  String get geofencesActiveCount => '{0} ACTIVE';
+
+  // ── Alert bell + sheet ───────────────────────────────────────────────
+  /// Aria label for the bell icon button in the top-right corner.
+  String get alertBellAria => 'Open alerts panel';
+
+  /// Empty-state caption shown in the alerts sheet when there are none.
+  String get alertsNone => 'No active alerts';
 }
