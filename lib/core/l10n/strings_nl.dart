@@ -274,4 +274,10 @@ class StringsNl extends AppStrings {
   String get errorGeneric => 'Fout';
   @override
   String get geofencesActiveCount => '{0} ACTIEF';
+
+  // ── Alert bell + sheet ─────────────────────────────────────────────────
+  @override
+  String get alertBellAria => 'Open meldingenpaneel';
+  @override
+  String get alertsNone => 'Geen actieve meldingen';
 }

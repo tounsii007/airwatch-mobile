@@ -698,4 +698,10 @@ class StringsFr extends AppStrings {
   String get errorGeneric => 'Erreur';
   @override
   String get geofencesActiveCount => '{0} ACTIVE(S)';
+
+  // ── Alert bell + sheet ─────────────────────────────────────────────────
+  @override
+  String get alertBellAria => 'Ouvrir le panneau d\'alertes';
+  @override
+  String get alertsNone => 'Aucune alerte active';
 }

@@ -532,4 +532,11 @@ abstract class AppStrings {
   /// Pluralised "{0} active" — geofence badge shown under the page title.
   /// {0} is substituted with the active-fence count.
   String get geofencesActiveCount => '{0} ACTIVE';
+
+  // ── Alert bell + sheet ───────────────────────────────────────────────
+  /// Aria label for the bell icon button in the top-right corner.
+  String get alertBellAria => 'Open alerts panel';
+
+  /// Empty-state caption shown in the alerts sheet when there are none.
+  String get alertsNone => 'No active alerts';
 }

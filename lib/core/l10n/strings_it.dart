@@ -690,4 +690,10 @@ class StringsIt extends AppStrings {
   String get errorGeneric => 'Errore';
   @override
   String get geofencesActiveCount => '{0} ATTIVE';
+
+  // ── Alert bell + sheet ─────────────────────────────────────────────────
+  @override
+  String get alertBellAria => 'Apri pannello avvisi';
+  @override
+  String get alertsNone => 'Nessun avviso attivo';
 }

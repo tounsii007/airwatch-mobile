@@ -273,4 +273,10 @@ class StringsTr extends AppStrings {
   String get errorGeneric => 'Hata';
   @override
   String get geofencesActiveCount => '{0} AKTIF';
+
+  // ── Alert bell + sheet ─────────────────────────────────────────────────
+  @override
+  String get alertBellAria => 'Bildirimleri aç';
+  @override
+  String get alertsNone => 'Aktif uyarı yok';
 }

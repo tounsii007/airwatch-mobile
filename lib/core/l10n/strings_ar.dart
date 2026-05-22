@@ -687,4 +687,10 @@ class StringsAr extends AppStrings {
   String get errorGeneric => 'خطأ';
   @override
   String get geofencesActiveCount => '{0} نشطة';
+
+  // ── Alert bell + sheet ─────────────────────────────────────────────────
+  @override
+  String get alertBellAria => 'فتح لوحة التنبيهات';
+  @override
+  String get alertsNone => 'لا توجد تنبيهات نشطة';
 }

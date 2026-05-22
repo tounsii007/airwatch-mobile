@@ -133,6 +133,7 @@ class UiText {
       'active_flights': 'ACTIVE FLIGHTS',
       'no_flights': 'No flights found',
       'routes': 'ROUTES',
+      'search_clear_aria': 'Clear search',
     },
     'de': {
       'airports': 'FLUGHÄFEN',
@@ -247,6 +248,7 @@ class UiText {
       'active_flights': 'AKTIVE FLÜGE',
       'no_flights': 'Keine Flüge gefunden',
       'routes': 'ROUTEN',
+      'search_clear_aria': 'Suche zurücksetzen',
     },
     'fr': {
       'airports': 'AÉROPORTS',
@@ -361,6 +363,7 @@ class UiText {
       'active_flights': 'VOLS ACTIFS',
       'no_flights': 'Aucun vol trouvé',
       'routes': 'ROUTES',
+      'search_clear_aria': 'Effacer la recherche',
     },
   };
 

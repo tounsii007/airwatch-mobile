@@ -278,4 +278,10 @@ class StringsPl extends AppStrings {
   String get errorGeneric => 'Błąd';
   @override
   String get geofencesActiveCount => '{0} AKTYWNE';
+
+  // ── Alert bell + sheet ─────────────────────────────────────────────────
+  @override
+  String get alertBellAria => 'Otwórz panel alertów';
+  @override
+  String get alertsNone => 'Brak aktywnych alertów';
 }

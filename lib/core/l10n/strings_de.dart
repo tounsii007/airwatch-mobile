@@ -701,4 +701,10 @@ class StringsDe extends AppStrings {
   String get errorGeneric => 'Fehler';
   @override
   String get geofencesActiveCount => '{0} AKTIV';
+
+  // ── Alert bell + sheet ─────────────────────────────────────────────────
+  @override
+  String get alertBellAria => 'Benachrichtigungen öffnen';
+  @override
+  String get alertsNone => 'Keine aktiven Warnungen';
 }
