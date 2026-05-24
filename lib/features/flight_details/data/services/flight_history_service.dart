@@ -3,6 +3,7 @@ import 'package:airwatch_mobile/core/constants/api_json_keys.dart';
 import 'package:airwatch_mobile/core/constants/airport_database.dart';
 import 'package:airwatch_mobile/core/constants/config.dart';
 import 'package:airwatch_mobile/core/network/app_http_client.dart';
+import 'package:airwatch_mobile/core/network/dio_retry.dart';
 import 'package:airwatch_mobile/features/flight_details/data/models/flight_history_api_models.dart';
 import 'package:airwatch_mobile/features/flight_details/data/models/flight_history_models.dart';
 import 'package:airwatch_mobile/features/map/data/datasources/flight_info_datasource.dart';
@@ -10,10 +11,15 @@ import 'package:airwatch_mobile/features/map/data/datasources/flight_info_dataso
 class FlightHistoryService {
   final Dio _dio;
   final FlightInfoDatasource _infoDatasource;
+  final DioRetry _retry;
 
-  FlightHistoryService({Dio? dio, FlightInfoDatasource? infoDatasource})
-    : _dio = dio ?? AppHttpClient.create(connectTimeout: AppConfig.longTimeout),
-      _infoDatasource = infoDatasource ?? FlightInfoDatasource();
+  FlightHistoryService({
+    Dio? dio,
+    FlightInfoDatasource? infoDatasource,
+    DioRetry? retry,
+  }) : _dio = dio ?? AppHttpClient.create(connectTimeout: AppConfig.longTimeout),
+       _infoDatasource = infoDatasource ?? FlightInfoDatasource(),
+       _retry = retry ?? DioRetry();
 
   Future<FlightHistoryResult> search(
     String callsign, {
@@ -88,56 +94,56 @@ class FlightHistoryService {
   }
 
   Future<HistoryFlight?> _loadCurrentFlight(String callsign) async {
-    try {
-      final response = await _dio.get(
-        AppConfig.flightUrl(flightIcao: callsign),
-      );
-      if (response.statusCode == 200 && response.data is Map) {
-        final data = response.data as Map;
-        final flight = data[ApiJsonKeys.response] as Map?;
-        if (flight != null && flight.isNotEmpty) {
-          return HistoryFlight.fromAirlabs(
-            AirlabsFlightSnapshot.fromMap(flight),
-          );
-        }
+    final response = await _retry.get(
+      _dio,
+      AppConfig.flightUrl(flightIcao: callsign),
+      logTag: '[FlightHistory current]',
+    );
+    if (response?.statusCode == 200 && response?.data is Map) {
+      final data = response!.data as Map;
+      final flight = data[ApiJsonKeys.response] as Map?;
+      if (flight != null && flight.isNotEmpty) {
+        return HistoryFlight.fromAirlabs(
+          AirlabsFlightSnapshot.fromMap(flight),
+        );
       }
-    } catch (_) {}
+    }
     return null;
   }
 
   Future<HistoryFlight?> _loadFlightByIata(String flightIata) async {
-    try {
-      final response = await _dio.get(
-        AppConfig.flightUrl(flightIata: flightIata),
-      );
-      if (response.statusCode == 200 && response.data is Map) {
-        final data = response.data as Map;
-        final flight = data[ApiJsonKeys.response] as Map?;
-        if (flight != null && flight.isNotEmpty) {
-          return HistoryFlight.fromAirlabs(
-            AirlabsFlightSnapshot.fromMap(flight),
-          );
-        }
+    final response = await _retry.get(
+      _dio,
+      AppConfig.flightUrl(flightIata: flightIata),
+      logTag: '[FlightHistory iata]',
+    );
+    if (response?.statusCode == 200 && response?.data is Map) {
+      final data = response!.data as Map;
+      final flight = data[ApiJsonKeys.response] as Map?;
+      if (flight != null && flight.isNotEmpty) {
+        return HistoryFlight.fromAirlabs(
+          AirlabsFlightSnapshot.fromMap(flight),
+        );
       }
-    } catch (_) {}
+    }
     return null;
   }
 
   Future<HistoryFlight?> _loadRouteFlight(String callsign) async {
-    try {
-      final response = await _dio.get(
-        AppConfig.routesUrl(flightIcao: callsign),
-      );
-      if (response.statusCode == 200 && response.data is Map) {
-        final data = response.data as Map;
-        final routes = data[ApiJsonKeys.response] as List?;
-        if (routes != null && routes.isNotEmpty && routes.first is Map) {
-          return HistoryFlight.fromAirlabsRoute(
-            AirlabsRouteSnapshot.fromMap(routes.first as Map),
-          );
-        }
+    final response = await _retry.get(
+      _dio,
+      AppConfig.routesUrl(flightIcao: callsign),
+      logTag: '[FlightHistory route]',
+    );
+    if (response?.statusCode == 200 && response?.data is Map) {
+      final data = response!.data as Map;
+      final routes = data[ApiJsonKeys.response] as List?;
+      if (routes != null && routes.isNotEmpty && routes.first is Map) {
+        return HistoryFlight.fromAirlabsRoute(
+          AirlabsRouteSnapshot.fromMap(routes.first as Map),
+        );
       }
-    } catch (_) {}
+    }
     return null;
   }
 }
