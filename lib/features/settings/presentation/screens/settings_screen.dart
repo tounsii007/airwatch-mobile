@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:airwatch_mobile/core/constants/app_meta.dart';
 import 'package:airwatch_mobile/core/constants/settings_provider.dart';
 import 'package:airwatch_mobile/core/constants/ui_constants.dart';
 import 'package:airwatch_mobile/core/l10n/app_strings.dart';
@@ -1190,15 +1192,9 @@ void _showPrivacyDialog(BuildContext context, bool isDark, Color primary) {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  s.privacyLastUpdated
-                      .replaceFirst('{0}', '2026-05-03')
-                      .replaceFirst('{1}', '2.0.0'),
-                  style: TextStyle(
-                    fontFamily: UiConstants.bodyFont,
-                    fontSize: 11,
-                    color: mutedColor,
-                  ),
+                _PrivacyLastUpdated(
+                  mutedColor: mutedColor,
+                  format: s.privacyLastUpdated,
                 ),
                 heading(s.privacySummaryHeading),
                 bullet(s.privacySummary1),
@@ -1237,4 +1233,41 @@ void _showPrivacyDialog(BuildContext context, bool isDark, Color primary) {
       );
     },
   );
+}
+
+/// "Last updated: {date} · v{version}" stamp on the privacy dialog.
+///
+/// <p>The version comes from package_info_plus at runtime so the displayed
+/// build always matches what's actually installed. The revision date is a
+/// const in [privacyPolicyDate] — bump it only when PRIVACY.md changes,
+/// not on every code release.
+///
+/// <p>While the PackageInfo future is in flight (only on first dialog open
+/// per session) we render the date alone so the layout doesn't shift.
+class _PrivacyLastUpdated extends StatelessWidget {
+  const _PrivacyLastUpdated({required this.mutedColor, required this.format});
+  final Color mutedColor;
+
+  /// Localized format string — e.g. `s.privacyLastUpdated`.
+  /// Placeholders: `{0}` = policy date, `{1}` = app version.
+  final String format;
+
+  @override
+  Widget build(BuildContext context) {
+    final style = TextStyle(
+      fontFamily: UiConstants.bodyFont,
+      fontSize: 11,
+      color: mutedColor,
+    );
+    return FutureBuilder<PackageInfo>(
+      future: PackageInfo.fromPlatform(),
+      builder: (_, snap) {
+        final version = snap.data?.version ?? privacyPolicyDate;
+        final text = format
+            .replaceFirst('{0}', privacyPolicyDate)
+            .replaceFirst('{1}', version);
+        return Text(text, style: style);
+      },
+    );
+  }
 }
