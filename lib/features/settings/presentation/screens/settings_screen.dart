@@ -1168,6 +1168,7 @@ void _showPrivacyDialog(BuildContext context, bool isDark, Color primary) {
           ],
         ),
       );
+      final s = ctx.s;
       return AlertDialog(
         backgroundColor: isDark ? AppColors.surface : UiConstants.lightSurface,
         title: Row(
@@ -1175,7 +1176,7 @@ void _showPrivacyDialog(BuildContext context, bool isDark, Color primary) {
             Icon(Icons.privacy_tip_outlined, color: primary, size: 20),
             const SizedBox(width: 8),
             Text(
-              'Privacy Policy',
+              s.privacyTitle,
               style: TextStyle(
                 fontFamily: UiConstants.headingFont,
                 color: textColor,
@@ -1190,51 +1191,33 @@ void _showPrivacyDialog(BuildContext context, bool isDark, Color primary) {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Last updated: 2026-05-03 · v2.0.0',
+                  s.privacyLastUpdated
+                      .replaceFirst('{0}', '2026-05-03')
+                      .replaceFirst('{1}', '2.0.0'),
                   style: TextStyle(
                     fontFamily: UiConstants.bodyFont,
                     fontSize: 11,
                     color: mutedColor,
                   ),
                 ),
-                heading('Summary'),
-                bullet('No accounts, no logins, no personal data collected.'),
-                bullet('No ads, no analytics SDKs, no telemetry beacons.'),
-                bullet('No data sold or shared with third parties.'),
-                heading('On-device only'),
-                bullet(
-                  'Location — used to centre the map and find nearby aircraft. Never uploaded.',
-                ),
-                bullet(
-                  'Camera (AR mode) — frames are decoded, drawn, and discarded. Never uploaded.',
-                ),
-                bullet(
-                  'Microphone (voice button) — handed to the OS speech recogniser; only the transcript reaches AirWatch, and even that is parsed locally.',
-                ),
-                bullet(
-                  'Sensors (compass, accelerometer) — read at 10 Hz for the AR HUD; never persisted.',
-                ),
-                bullet(
-                  'Settings, favourites, geofences — saved in the app sandbox via SharedPreferences / NSUserDefaults.',
-                ),
-                heading('Network'),
-                bullet(
-                  'Talks to api.airwatch.app (TLS-pinned) and pics.avs.io for airline logos. That\'s the entire host list.',
-                ),
-                bullet(
-                  'Backend logs are kept 30 days for rate-limiting; IP addresses are not joined with any other dataset.',
-                ),
-                heading('Your rights'),
-                bullet(
-                  'Access, rectification, erasure, restriction, portability, objection, and consent withdrawal — write to privacy@airwatch.app.',
-                ),
-                bullet(
-                  'Right to lodge a complaint with your local data-protection authority.',
-                ),
-                heading('Full text'),
-                bullet(
-                  'See PRIVACY.md in the repository for the complete policy, including third-party data sources and international-transfer details.',
-                ),
+                heading(s.privacySummaryHeading),
+                bullet(s.privacySummary1),
+                bullet(s.privacySummary2),
+                bullet(s.privacySummary3),
+                heading(s.privacyOnDeviceHeading),
+                bullet(s.privacyOnDeviceLocation),
+                bullet(s.privacyOnDeviceCamera),
+                bullet(s.privacyOnDeviceMicrophone),
+                bullet(s.privacyOnDeviceSensors),
+                bullet(s.privacyOnDeviceStorage),
+                heading(s.privacyNetworkHeading),
+                bullet(s.privacyNetworkHosts),
+                bullet(s.privacyNetworkLogs),
+                heading(s.privacyRightsHeading),
+                bullet(s.privacyRightsList),
+                bullet(s.privacyRightsComplaint),
+                heading(s.privacyFullTextHeading),
+                bullet(s.privacyFullTextRef),
               ],
             ),
           ),
@@ -1243,7 +1226,7 @@ void _showPrivacyDialog(BuildContext context, bool isDark, Color primary) {
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
             child: Text(
-              'Close',
+              s.actionClose,
               style: TextStyle(
                 color: primary,
                 fontFamily: UiConstants.headingFont,
