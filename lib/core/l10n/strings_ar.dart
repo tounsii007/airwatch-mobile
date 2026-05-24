@@ -773,4 +773,6 @@ class StringsAr extends AppStrings {
   String get mapAriaMyLocation => 'توسيط على موقعي';
   @override
   String get mapAriaCargoToggle => 'رحلات الشحن فقط';
+  @override
+  String get alertTileHint => 'انقر مرتين للعرض على الخريطة';
 }

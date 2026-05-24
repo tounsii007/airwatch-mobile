@@ -189,59 +189,76 @@ class _AlertTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return GestureDetector(
-      onTap: () => _focus(context, ref),
-      behavior: HitTestBehavior.opaque,
-      child: GlassPanel(
-        borderRadius: 10,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        borderColor: alert.accent.withValues(alpha: 0.45),
-        child: Row(
-          children: [
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                color: alert.accent.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(8),
+    final hint = context.s.alertTileHint;
+    // Concatenate title + subtitle into a single screen-reader announce —
+    // TalkBack/VoiceOver otherwise read them as two unrelated leaves.
+    // The trailing chevron is decorative; hidden via excludeSemantics.
+    final srLabel = alert.subtitle != null && alert.subtitle!.isNotEmpty
+        ? '${alert.title}. ${alert.subtitle}'
+        : alert.title;
+    return Semantics(
+      button: true,
+      label: srLabel,
+      hint: hint,
+      excludeSemantics: true,
+      child: GestureDetector(
+        onTap: () => _focus(context, ref),
+        behavior: HitTestBehavior.opaque,
+        child: GlassPanel(
+          borderRadius: 10,
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          borderColor: alert.accent.withValues(alpha: 0.45),
+          child: Row(
+            children: [
+              Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: alert.accent.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(alert.icon, color: alert.accent, size: 18),
               ),
-              child: Icon(alert.icon, color: alert.accent, size: 18),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    alert.title,
-                    style: TextStyle(
-                      fontFamily: UiConstants.headingFont,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w800,
-                      color: alert.accent,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  if (alert.subtitle != null && alert.subtitle!.isNotEmpty) ...[
-                    const SizedBox(height: 2),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
                     Text(
-                      alert.subtitle!,
-                      style: const TextStyle(
-                        fontFamily: UiConstants.bodyFont,
-                        fontSize: 11,
-                        color: AppColors.textMuted,
+                      alert.title,
+                      style: TextStyle(
+                        fontFamily: UiConstants.headingFont,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                        color: alert.accent,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
+                    if (alert.subtitle != null &&
+                        alert.subtitle!.isNotEmpty) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        alert.subtitle!,
+                        style: const TextStyle(
+                          fontFamily: UiConstants.bodyFont,
+                          fontSize: 11,
+                          color: AppColors.textMuted,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
-            ),
-            const Icon(Icons.chevron_right_rounded, color: AppColors.textMuted),
-          ],
+              const Icon(
+                Icons.chevron_right_rounded,
+                color: AppColors.textMuted,
+              ),
+            ],
+          ),
         ),
       ),
     );

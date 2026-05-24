@@ -788,4 +788,6 @@ class StringsDe extends AppStrings {
   String get mapAriaMyLocation => 'Auf meinen Standort zentrieren';
   @override
   String get mapAriaCargoToggle => 'Nur Frachtflüge';
+  @override
+  String get alertTileHint => 'Doppeltippen, um auf der Karte anzuzeigen';
 }
