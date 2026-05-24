@@ -776,4 +776,6 @@ class StringsIt extends AppStrings {
   String get mapAriaMyLocation => 'Centra sulla mia posizione';
   @override
   String get mapAriaCargoToggle => 'Solo voli cargo';
+  @override
+  String get alertTileHint => 'Tocca due volte per mostrare sulla mappa';
 }

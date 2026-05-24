@@ -360,4 +360,6 @@ class StringsTr extends AppStrings {
   String get mapAriaMyLocation => 'Konumumu ortala';
   @override
   String get mapAriaCargoToggle => 'Yalnızca kargo uçuşları';
+  @override
+  String get alertTileHint => 'Haritada göstermek için iki kez dokun';
 }

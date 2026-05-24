@@ -365,4 +365,6 @@ class StringsPl extends AppStrings {
   String get mapAriaMyLocation => 'Wyśrodkuj na moim położeniu';
   @override
   String get mapAriaCargoToggle => 'Tylko loty cargo';
+  @override
+  String get alertTileHint => 'Stuknij dwukrotnie, aby pokazać na mapie';
 }

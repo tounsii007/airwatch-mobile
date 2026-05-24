@@ -785,4 +785,6 @@ class StringsFr extends AppStrings {
   String get mapAriaMyLocation => 'Centrer sur ma position';
   @override
   String get mapAriaCargoToggle => 'Vols cargo uniquement';
+  @override
+  String get alertTileHint => 'Double-toucher pour afficher sur la carte';
 }

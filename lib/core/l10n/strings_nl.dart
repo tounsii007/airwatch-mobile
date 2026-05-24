@@ -360,4 +360,6 @@ class StringsNl extends AppStrings {
   String get mapAriaMyLocation => 'Centreer op mijn locatie';
   @override
   String get mapAriaCargoToggle => 'Alleen vrachtvluchten';
+  @override
+  String get alertTileHint => 'Dubbel tikken om op de kaart te tonen';
 }
