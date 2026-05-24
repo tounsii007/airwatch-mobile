@@ -6,6 +6,7 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:airwatch_mobile/core/constants/airport_full_database.dart';
 import 'package:airwatch_mobile/core/constants/ui_constants.dart';
 import 'package:airwatch_mobile/core/l10n/app_strings.dart';
+import 'package:airwatch_mobile/core/l10n/ui_text.dart';
 import 'package:airwatch_mobile/core/theme/app_colors.dart';
 import 'package:airwatch_mobile/core/widgets/glass_panel.dart';
 import 'package:airwatch_mobile/features/map/data/models/aircraft_state.dart';
@@ -191,24 +192,49 @@ class _VoiceButtonState extends ConsumerState<VoiceButton> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primary = isDark ? AppColors.primary : UiConstants.lightPrimary;
+    final s = context.s;
 
-    return GestureDetector(
-      onTap: _initialized ? _toggle : null,
-      behavior: HitTestBehavior.opaque,
-      child: GlassPanel(
-        padding: const EdgeInsets.all(10),
-        borderRadius: 12,
-        borderColor: _listening
-            ? AppColors.error.withValues(alpha: 0.55)
-            : (_available ? null : AppColors.textMuted.withValues(alpha: 0.25)),
-        child: Icon(
-          _listening
-              ? Icons.mic_rounded
-              : (_available ? Icons.mic_none_rounded : Icons.mic_off_rounded),
-          size: 20,
-          color: _listening
-              ? AppColors.error
-              : (_available ? primary : AppColors.textMuted),
+    // Pick the label that matches the current state so the screen reader
+    // announces the *current* affordance ("stop listening") rather than
+    // a generic icon name.
+    final String ariaLabel;
+    if (!_initialized) {
+      ariaLabel = s.voiceAriaInitializing;
+    } else if (!_available) {
+      ariaLabel = s.voiceAriaUnavailable;
+    } else if (_listening) {
+      ariaLabel = s.voiceAriaListening;
+    } else {
+      ariaLabel = s.voiceAriaIdle;
+    }
+
+    return Semantics(
+      button: true,
+      enabled: _initialized && _available,
+      toggled: _listening,
+      label: ariaLabel,
+      child: GestureDetector(
+        onTap: _initialized ? _toggle : null,
+        behavior: HitTestBehavior.opaque,
+        child: GlassPanel(
+          padding: const EdgeInsets.all(10),
+          borderRadius: 12,
+          borderColor: _listening
+              ? AppColors.error.withValues(alpha: 0.55)
+              : (_available
+                    ? null
+                    : AppColors.textMuted.withValues(alpha: 0.25)),
+          child: Icon(
+            _listening
+                ? Icons.mic_rounded
+                : (_available
+                      ? Icons.mic_none_rounded
+                      : Icons.mic_off_rounded),
+            size: 20,
+            color: _listening
+                ? AppColors.error
+                : (_available ? primary : AppColors.textMuted),
+          ),
         ),
       ),
     );

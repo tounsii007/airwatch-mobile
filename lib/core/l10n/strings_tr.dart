@@ -362,4 +362,14 @@ class StringsTr extends AppStrings {
   String get mapAriaCargoToggle => 'Yalnızca kargo uçuşları';
   @override
   String get alertTileHint => 'Haritada göstermek için iki kez dokun';
+  @override
+  String get mapAriaStylePicker => 'Harita stili';
+  @override
+  String get voiceAriaIdle => 'Sesli komut';
+  @override
+  String get voiceAriaListening => 'Dinliyor — durdurmak için dokun';
+  @override
+  String get voiceAriaInitializing => 'Sesli komut başlatılıyor';
+  @override
+  String get voiceAriaUnavailable => 'Sesli komut kullanılamıyor';
 }

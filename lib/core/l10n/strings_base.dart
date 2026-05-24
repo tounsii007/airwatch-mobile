@@ -614,4 +614,15 @@ abstract class AppStrings {
   /// Screen-reader hint appended to each alert tile — explains what
   /// tapping does ("Double tap to show on the map" in TalkBack rhythm).
   String get alertTileHint => 'Double tap to show on map';
+  // ── Map style picker + voice button (a11y) ───────────────────────────
+  /// Trigger label for the layered-basemap picker. The current style's
+  /// 3-letter code is appended at runtime (e.g. "Map style. DRK.").
+  String get mapAriaStylePicker => 'Map style';
+
+  /// Voice button state-aware labels — only one is announced at a time
+  /// based on the SpeechToText init/available/listening tri-state.
+  String get voiceAriaIdle => 'Voice command';
+  String get voiceAriaListening => 'Listening — tap to stop';
+  String get voiceAriaInitializing => 'Voice command, initializing';
+  String get voiceAriaUnavailable => 'Voice command unavailable';
 }

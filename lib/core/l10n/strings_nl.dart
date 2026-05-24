@@ -362,4 +362,14 @@ class StringsNl extends AppStrings {
   String get mapAriaCargoToggle => 'Alleen vrachtvluchten';
   @override
   String get alertTileHint => 'Dubbel tikken om op de kaart te tonen';
+  @override
+  String get mapAriaStylePicker => 'Kaartstijl';
+  @override
+  String get voiceAriaIdle => 'Spraakopdracht';
+  @override
+  String get voiceAriaListening => 'Luistert — tik om te stoppen';
+  @override
+  String get voiceAriaInitializing => 'Spraakopdracht wordt geïnitialiseerd';
+  @override
+  String get voiceAriaUnavailable => 'Spraakopdracht niet beschikbaar';
 }

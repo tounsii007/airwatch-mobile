@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:airwatch_mobile/core/constants/ui_constants.dart';
+import 'package:airwatch_mobile/core/l10n/ui_text.dart';
 import 'package:airwatch_mobile/core/theme/app_colors.dart';
 import 'package:airwatch_mobile/core/widgets/glass_panel.dart';
 import 'package:airwatch_mobile/features/map/presentation/widgets/map_styles.dart';
@@ -55,30 +56,40 @@ class _MapStylePickerState extends State<MapStylePicker> {
     final primary = isDark ? AppColors.primary : UiConstants.lightPrimary;
     final currentDef = styleDef(widget.current);
 
-    final trigger = GestureDetector(
-      onTap: _toggle,
-      child: GlassPanel(
-        padding: const EdgeInsets.all(10),
-        borderRadius: 12,
-        borderColor: _open ? primary.withValues(alpha: 0.45) : null,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.layers_rounded, size: 20, color: primary),
-            const SizedBox(height: 1),
-            // 3-letter code under the icon — the same hint the web
-            // version puts under its <Layers> svg.
-            Text(
-              currentDef.label,
-              style: TextStyle(
-                fontFamily: UiConstants.headingFont,
-                fontSize: 7,
-                fontWeight: FontWeight.w700,
-                color: primary.withValues(alpha: 0.75),
-                letterSpacing: 0.6,
+    final trigger = Semantics(
+      button: true,
+      expanded: _open,
+      // Read: "Map style picker. <DRK | SAT | …> selected. Double tap to
+      // change." TalkBack picks the active style off label, the trigger
+      // semantics off the `button` flag, and the expand state off
+      // `expanded`. Padding stays at 10 — picker is in a Row next to
+      // already-tall controls.
+      label: '${context.s.mapAriaStylePicker}. ${currentDef.label}',
+      child: GestureDetector(
+        onTap: _toggle,
+        child: GlassPanel(
+          padding: const EdgeInsets.all(10),
+          borderRadius: 12,
+          borderColor: _open ? primary.withValues(alpha: 0.45) : null,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.layers_rounded, size: 20, color: primary),
+              const SizedBox(height: 1),
+              // 3-letter code under the icon — the same hint the web
+              // version puts under its <Layers> svg.
+              Text(
+                currentDef.label,
+                style: TextStyle(
+                  fontFamily: UiConstants.headingFont,
+                  fontSize: 7,
+                  fontWeight: FontWeight.w700,
+                  color: primary.withValues(alpha: 0.75),
+                  letterSpacing: 0.6,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -153,46 +164,54 @@ class _StyleEntry extends StatelessWidget {
         ? Colors.white.withValues(alpha: 0.18)
         : Colors.black.withValues(alpha: 0.12);
 
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 1),
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-        decoration: BoxDecoration(
-          color: active ? primary.withValues(alpha: 0.18) : Colors.transparent,
-          borderRadius: BorderRadius.circular(6),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Color swatch — uses the style's "high altitude" hue as a
-            // recognizable preview (matches web behaviour).
-            Container(
-              width: 10,
-              height: 10,
-              decoration: BoxDecoration(
-                color: def.colors.high,
-                borderRadius: BorderRadius.circular(2),
-                border: Border.all(color: swatchBorder, width: 0.5),
+    return Semantics(
+      button: true,
+      selected: active,
+      label: def.label,
+      excludeSemantics: true,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 1),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          decoration: BoxDecoration(
+            color: active
+                ? primary.withValues(alpha: 0.18)
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Color swatch — uses the style's "high altitude" hue as a
+              // recognizable preview (matches web behaviour).
+              Container(
+                width: 10,
+                height: 10,
+                decoration: BoxDecoration(
+                  color: def.colors.high,
+                  borderRadius: BorderRadius.circular(2),
+                  border: Border.all(color: swatchBorder, width: 0.5),
+                ),
               ),
-            ),
-            const SizedBox(width: 8),
-            Text(
-              def.label,
-              style: TextStyle(
-                fontFamily: UiConstants.headingFont,
-                fontSize: 10,
-                fontWeight: FontWeight.w700,
-                color: active
-                    ? primary
-                    : (isDark
-                          ? AppColors.textSecondary
-                          : UiConstants.lightTextSecondary),
-                letterSpacing: 0.8,
+              const SizedBox(width: 8),
+              Text(
+                def.label,
+                style: TextStyle(
+                  fontFamily: UiConstants.headingFont,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w700,
+                  color: active
+                      ? primary
+                      : (isDark
+                            ? AppColors.textSecondary
+                            : UiConstants.lightTextSecondary),
+                  letterSpacing: 0.8,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

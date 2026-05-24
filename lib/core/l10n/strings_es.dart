@@ -777,4 +777,14 @@ class StringsEs extends AppStrings {
   String get mapAriaCargoToggle => 'Solo vuelos de carga';
   @override
   String get alertTileHint => 'Toca dos veces para mostrar en el mapa';
+  @override
+  String get mapAriaStylePicker => 'Estilo de mapa';
+  @override
+  String get voiceAriaIdle => 'Comando de voz';
+  @override
+  String get voiceAriaListening => 'Escuchando — toca para detener';
+  @override
+  String get voiceAriaInitializing => 'Comando de voz, inicializando';
+  @override
+  String get voiceAriaUnavailable => 'Comando de voz no disponible';
 }
