@@ -349,4 +349,15 @@ class StringsTr extends AppStrings {
   String get geofencesDrawFab => 'ÇİZ';
   @override
   String get geofencesFormFabAria => 'Koordinatla bölge ekle';
+  // ── Map controls (a11y aria-labels) ────────────────────────────────────
+  @override
+  String get mapAriaSearch => 'Aramayı aç';
+  @override
+  String get mapAriaZoomIn => 'Yakınlaştır';
+  @override
+  String get mapAriaZoomOut => 'Uzaklaştır';
+  @override
+  String get mapAriaMyLocation => 'Konumumu ortala';
+  @override
+  String get mapAriaCargoToggle => 'Yalnızca kargo uçuşları';
 }

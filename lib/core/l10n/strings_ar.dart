@@ -762,4 +762,15 @@ class StringsAr extends AppStrings {
   String get geofencesDrawFab => 'ارسم';
   @override
   String get geofencesFormFabAria => 'إضافة منطقة بالإحداثيات';
+  // ── Map controls (a11y aria-labels) ────────────────────────────────────
+  @override
+  String get mapAriaSearch => 'فتح البحث';
+  @override
+  String get mapAriaZoomIn => 'تكبير';
+  @override
+  String get mapAriaZoomOut => 'تصغير';
+  @override
+  String get mapAriaMyLocation => 'توسيط على موقعي';
+  @override
+  String get mapAriaCargoToggle => 'رحلات الشحن فقط';
 }

@@ -777,4 +777,15 @@ class StringsDe extends AppStrings {
   String get geofencesDrawFab => 'ZEICHNEN';
   @override
   String get geofencesFormFabAria => 'Zone per Koordinaten anlegen';
+  // ── Map controls (a11y aria-labels) ────────────────────────────────────
+  @override
+  String get mapAriaSearch => 'Suche öffnen';
+  @override
+  String get mapAriaZoomIn => 'Vergrößern';
+  @override
+  String get mapAriaZoomOut => 'Verkleinern';
+  @override
+  String get mapAriaMyLocation => 'Auf meinen Standort zentrieren';
+  @override
+  String get mapAriaCargoToggle => 'Nur Frachtflüge';
 }

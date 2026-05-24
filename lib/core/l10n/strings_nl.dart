@@ -349,4 +349,15 @@ class StringsNl extends AppStrings {
   String get geofencesDrawFab => 'TEKENEN';
   @override
   String get geofencesFormFabAria => 'Zone via coördinaten toevoegen';
+  // ── Map controls (a11y aria-labels) ────────────────────────────────────
+  @override
+  String get mapAriaSearch => 'Open zoeken';
+  @override
+  String get mapAriaZoomIn => 'Inzoomen';
+  @override
+  String get mapAriaZoomOut => 'Uitzoomen';
+  @override
+  String get mapAriaMyLocation => 'Centreer op mijn locatie';
+  @override
+  String get mapAriaCargoToggle => 'Alleen vrachtvluchten';
 }

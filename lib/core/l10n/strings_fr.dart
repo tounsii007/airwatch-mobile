@@ -774,4 +774,15 @@ class StringsFr extends AppStrings {
   String get geofencesDrawFab => 'DESSINER';
   @override
   String get geofencesFormFabAria => 'Ajouter par coordonnées';
+  // ── Map controls (a11y aria-labels) ────────────────────────────────────
+  @override
+  String get mapAriaSearch => 'Ouvrir la recherche';
+  @override
+  String get mapAriaZoomIn => 'Zoom avant';
+  @override
+  String get mapAriaZoomOut => 'Zoom arrière';
+  @override
+  String get mapAriaMyLocation => 'Centrer sur ma position';
+  @override
+  String get mapAriaCargoToggle => 'Vols cargo uniquement';
 }

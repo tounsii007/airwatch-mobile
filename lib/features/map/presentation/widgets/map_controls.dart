@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:airwatch_mobile/core/constants/ui_constants.dart';
+import 'package:airwatch_mobile/core/l10n/ui_text.dart';
 import 'package:airwatch_mobile/core/theme/app_colors.dart';
 import 'package:airwatch_mobile/core/utils/responsive.dart';
 import 'package:airwatch_mobile/core/widgets/glass_panel.dart';
@@ -28,6 +29,7 @@ class MapControls extends ConsumerWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final right = Responsive.mapControlsRight(context);
     final currentStyle = ref.watch(mapStyleProvider);
+    final s = context.s;
 
     return Positioned(
       right: right,
@@ -38,24 +40,28 @@ class MapControls extends ConsumerWidget {
             icon: Icons.search_rounded,
             onTap: onToggleSearch,
             isDark: isDark,
+            ariaLabel: s.mapAriaSearch,
           ),
           const SizedBox(height: 8),
           _ControlButton(
             icon: Icons.add_rounded,
             onTap: onZoomIn,
             isDark: isDark,
+            ariaLabel: s.mapAriaZoomIn,
           ),
           const SizedBox(height: 4),
           _ControlButton(
             icon: Icons.remove_rounded,
             onTap: onZoomOut,
             isDark: isDark,
+            ariaLabel: s.mapAriaZoomOut,
           ),
           const SizedBox(height: 8),
           _ControlButton(
             icon: Icons.my_location_rounded,
             onTap: onMyLocation,
             isDark: isDark,
+            ariaLabel: s.mapAriaMyLocation,
           ),
           const SizedBox(height: 8),
           // Basemap-style switcher. Web's MapStylePicker port: one tap opens
@@ -95,23 +101,36 @@ class _ControlButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback? onTap;
   final bool isDark;
+  final String ariaLabel;
 
-  const _ControlButton({required this.icon, this.onTap, required this.isDark});
+  const _ControlButton({
+    required this.icon,
+    this.onTap,
+    required this.isDark,
+    required this.ariaLabel,
+  });
 
   @override
   Widget build(BuildContext context) {
     final enabled = onTap != null;
-    return GestureDetector(
-      onTap: onTap,
-      child: Opacity(
-        opacity: enabled ? 1.0 : 0.3,
-        child: GlassPanel(
-          padding: const EdgeInsets.all(10),
-          borderRadius: 12,
-          child: Icon(
-            icon,
-            size: 20,
-            color: isDark ? AppColors.primary : UiConstants.lightPrimary,
+    return Semantics(
+      button: true,
+      enabled: enabled,
+      label: ariaLabel,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Opacity(
+          opacity: enabled ? 1.0 : 0.3,
+          child: GlassPanel(
+            // 12 + 20 + 12 = 44 — matches WCAG 2.5.5 (target size).
+            // Was 10 (= 40px overall), which fell short.
+            padding: const EdgeInsets.all(12),
+            borderRadius: 12,
+            child: Icon(
+              icon,
+              size: 20,
+              color: isDark ? AppColors.primary : UiConstants.lightPrimary,
+            ),
           ),
         ),
       ),
@@ -138,11 +157,12 @@ class _CargoOnlyToggle extends ConsumerWidget {
     return Semantics(
       button: true,
       toggled: on,
-      label: 'Cargo only',
+      label: context.s.mapAriaCargoToggle,
       child: GestureDetector(
         onTap: () => ref.read(showCargoOnlyProvider.notifier).toggle(),
         child: GlassPanel(
-          padding: const EdgeInsets.all(10),
+          // 12 + 20 + 12 = 44 — matches WCAG 2.5.5 (target size). Was 10.
+          padding: const EdgeInsets.all(12),
           borderRadius: 12,
           borderColor: on ? accent : null,
           child: Icon(
