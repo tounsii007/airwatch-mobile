@@ -410,6 +410,7 @@ class _TafBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final s = context.s;
     final muted = isDark ? AppColors.textMuted : UiConstants.lightTextMuted;
     final body = isDark ? AppColors.textPrimary : UiConstants.lightTextPrimary;
 
@@ -418,7 +419,9 @@ class _TafBody extends StatelessWidget {
       children: [
         if (decoded.validFrom != null && decoded.validTo != null)
           Text(
-            'Valid ${decoded.validFrom} → ${decoded.validTo}',
+            s.metarTafValidPrefix
+                .replaceFirst('{0}', decoded.validFrom!)
+                .replaceFirst('{1}', decoded.validTo!),
             style: TextStyle(
               fontFamily: 'monospace',
               fontSize: 10,
@@ -493,7 +496,7 @@ class _TafWindowRow extends StatelessWidget {
               borderRadius: BorderRadius.circular(3),
             ),
             child: Text(
-              window.label == 'INITIAL' ? 'NOW' : window.label,
+              window.label == 'INITIAL' ? context.s.metarTafNow : window.label,
               style: TextStyle(
                 fontFamily: UiConstants.headingFont,
                 fontSize: 9,

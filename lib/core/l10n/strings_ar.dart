@@ -1,4 +1,4 @@
-import 'strings_base.dart';
+﻿import 'strings_base.dart';
 
 /// Arabic locale — parity with airwatch-web's ar.json (commit d0a7598).
 ///
@@ -751,4 +751,15 @@ class StringsAr extends AppStrings {
   @override
   String get privacyFullTextRef =>
       'راجع PRIVACY.md في المستودع للاطلاع على السياسة الكاملة، بما في ذلك مصادر الطرف الثالث وعمليات النقل الدولية.';
+  // ── Aviation: METAR / TAF micro-labels ─────────────────────────────────
+  @override
+  String get metarTafValidPrefix => 'صالح {0} → {1}';
+  @override
+  String get metarTafNow => 'الآن';
+
+  // ── Geofences: FAB action labels ───────────────────────────────────────
+  @override
+  String get geofencesDrawFab => 'ارسم';
+  @override
+  String get geofencesFormFabAria => 'إضافة منطقة بالإحداثيات';
 }

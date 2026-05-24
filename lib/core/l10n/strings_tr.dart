@@ -1,4 +1,4 @@
-import 'strings_base.dart';
+﻿import 'strings_base.dart';
 
 /// Turkish localisation — Stage-1 translation set.
 ///
@@ -338,4 +338,15 @@ class StringsTr extends AppStrings {
   @override
   String get privacyFullTextRef =>
       'Üçüncü taraf kaynakları ve uluslararası aktarımlar dahil tam politika için depodaki PRIVACY.md dosyasına bakın.';
+  // ── Aviation: METAR / TAF micro-labels ─────────────────────────────────
+  @override
+  String get metarTafValidPrefix => 'Geçerli {0} → {1}';
+  @override
+  String get metarTafNow => 'ŞİMDİ';
+
+  // ── Geofences: FAB action labels ───────────────────────────────────────
+  @override
+  String get geofencesDrawFab => 'ÇİZ';
+  @override
+  String get geofencesFormFabAria => 'Koordinatla bölge ekle';
 }
