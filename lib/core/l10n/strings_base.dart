@@ -539,4 +539,52 @@ abstract class AppStrings {
 
   /// Empty-state caption shown in the alerts sheet when there are none.
   String get alertsNone => 'No active alerts';
+
+  // ── Generic dialog actions ───────────────────────────────────────────
+  /// "Close" — used as the dismiss action on info-only dialogs.
+  String get actionClose => 'Close';
+
+  // ── Settings: Privacy Policy dialog ──────────────────────────────────
+  // Web parity: PRIVACY.md is shown as a localised dialog; mirrors the
+  // /privacy route in airwatch-web. Keep wording short — the dialog is
+  // narrow on phones and long sentences wrap awkwardly.
+  String get privacyTitle => 'Privacy Policy';
+
+  /// "Last updated: {0} · v{1}" — {0} = date string, {1} = app version.
+  String get privacyLastUpdated => 'Last updated: {0} · v{1}';
+
+  String get privacySummaryHeading => 'Summary';
+  String get privacySummary1 =>
+      'No accounts, no logins, no personal data collected.';
+  String get privacySummary2 =>
+      'No ads, no analytics SDKs, no telemetry beacons.';
+  String get privacySummary3 => 'No data sold or shared with third parties.';
+
+  String get privacyOnDeviceHeading => 'On-device only';
+  String get privacyOnDeviceLocation =>
+      'Location — used to centre the map and find nearby aircraft. Never uploaded.';
+  String get privacyOnDeviceCamera =>
+      'Camera (AR mode) — frames are decoded, drawn, and discarded. Never uploaded.';
+  String get privacyOnDeviceMicrophone =>
+      'Microphone (voice button) — handed to the OS speech recogniser; only the transcript reaches AirWatch, and even that is parsed locally.';
+  String get privacyOnDeviceSensors =>
+      'Sensors (compass, accelerometer) — read at 10 Hz for the AR HUD; never persisted.';
+  String get privacyOnDeviceStorage =>
+      'Settings, favourites, geofences — saved in the app sandbox via SharedPreferences / NSUserDefaults.';
+
+  String get privacyNetworkHeading => 'Network';
+  String get privacyNetworkHosts =>
+      'Talks to api.airwatch.app (TLS-pinned) and pics.avs.io for airline logos. That\'s the entire host list.';
+  String get privacyNetworkLogs =>
+      'Backend logs are kept 30 days for rate-limiting; IP addresses are not joined with any other dataset.';
+
+  String get privacyRightsHeading => 'Your rights';
+  String get privacyRightsList =>
+      'Access, rectification, erasure, restriction, portability, objection, and consent withdrawal — write to privacy@airwatch.app.';
+  String get privacyRightsComplaint =>
+      'Right to lodge a complaint with your local data-protection authority.';
+
+  String get privacyFullTextHeading => 'Full text';
+  String get privacyFullTextRef =>
+      'See PRIVACY.md in the repository for the complete policy, including third-party data sources and international-transfer details.';
 }

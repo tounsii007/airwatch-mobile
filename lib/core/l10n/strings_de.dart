@@ -707,4 +707,63 @@ class StringsDe extends AppStrings {
   String get alertBellAria => 'Benachrichtigungen öffnen';
   @override
   String get alertsNone => 'Keine aktiven Warnungen';
+
+  // ── Generic dialog actions ─────────────────────────────────────────────
+  @override
+  String get actionClose => 'Schließen';
+
+  // ── Settings: Privacy Policy dialog ────────────────────────────────────
+  @override
+  String get privacyTitle => 'Datenschutzerklärung';
+  @override
+  String get privacyLastUpdated => 'Zuletzt aktualisiert: {0} · v{1}';
+  @override
+  String get privacySummaryHeading => 'Zusammenfassung';
+  @override
+  String get privacySummary1 =>
+      'Keine Konten, keine Logins, keine personenbezogenen Daten erhoben.';
+  @override
+  String get privacySummary2 =>
+      'Keine Werbung, keine Analyse-SDKs, keine Telemetrie.';
+  @override
+  String get privacySummary3 =>
+      'Keine Datenweitergabe oder -verkauf an Dritte.';
+  @override
+  String get privacyOnDeviceHeading => 'Nur auf dem Gerät';
+  @override
+  String get privacyOnDeviceLocation =>
+      'Standort — zum Zentrieren der Karte und Finden nahegelegener Flugzeuge. Wird nie hochgeladen.';
+  @override
+  String get privacyOnDeviceCamera =>
+      'Kamera (AR-Modus) — Frames werden decodiert, gezeichnet und verworfen. Wird nie hochgeladen.';
+  @override
+  String get privacyOnDeviceMicrophone =>
+      'Mikrofon (Sprachbutton) — wird an die OS-Spracherkennung übergeben; nur das Transkript erreicht AirWatch und wird lokal verarbeitet.';
+  @override
+  String get privacyOnDeviceSensors =>
+      'Sensoren (Kompass, Beschleunigungssensor) — werden mit 10 Hz für das AR-HUD gelesen; nie gespeichert.';
+  @override
+  String get privacyOnDeviceStorage =>
+      'Einstellungen, Favoriten, Geofences — in der App-Sandbox via SharedPreferences / NSUserDefaults gespeichert.';
+  @override
+  String get privacyNetworkHeading => 'Netzwerk';
+  @override
+  String get privacyNetworkHosts =>
+      'Spricht nur mit api.airwatch.app (TLS-pinned) und pics.avs.io für Airline-Logos. Das ist die vollständige Host-Liste.';
+  @override
+  String get privacyNetworkLogs =>
+      'Backend-Logs werden 30 Tage zur Ratenbegrenzung aufbewahrt; IP-Adressen werden mit keinem anderen Datensatz verknüpft.';
+  @override
+  String get privacyRightsHeading => 'Deine Rechte';
+  @override
+  String get privacyRightsList =>
+      'Auskunft, Berichtigung, Löschung, Einschränkung, Übertragbarkeit, Widerspruch und Widerruf — schreib an privacy@airwatch.app.';
+  @override
+  String get privacyRightsComplaint =>
+      'Recht auf Beschwerde bei deiner lokalen Datenschutzbehörde.';
+  @override
+  String get privacyFullTextHeading => 'Vollständiger Text';
+  @override
+  String get privacyFullTextRef =>
+      'Siehe PRIVACY.md im Repository für die vollständige Richtlinie inkl. Drittanbieter-Datenquellen und internationaler Übertragungen.';
 }

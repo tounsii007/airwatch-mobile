@@ -696,4 +696,62 @@ class StringsIt extends AppStrings {
   String get alertBellAria => 'Apri pannello avvisi';
   @override
   String get alertsNone => 'Nessun avviso attivo';
+
+  // ── Generic dialog actions ─────────────────────────────────────────────
+  @override
+  String get actionClose => 'Chiudi';
+
+  // ── Settings: Privacy Policy dialog ────────────────────────────────────
+  @override
+  String get privacyTitle => 'Informativa sulla privacy';
+  @override
+  String get privacyLastUpdated => 'Ultimo aggiornamento: {0} · v{1}';
+  @override
+  String get privacySummaryHeading => 'Riepilogo';
+  @override
+  String get privacySummary1 =>
+      'Nessun account, nessun login, nessun dato personale raccolto.';
+  @override
+  String get privacySummary2 =>
+      'Nessuna pubblicità, nessun SDK di analisi, nessuna telemetria.';
+  @override
+  String get privacySummary3 => 'Nessun dato venduto o condiviso con terzi.';
+  @override
+  String get privacyOnDeviceHeading => 'Solo sul dispositivo';
+  @override
+  String get privacyOnDeviceLocation =>
+      'Posizione — usata per centrare la mappa e trovare aerei vicini. Mai caricata.';
+  @override
+  String get privacyOnDeviceCamera =>
+      'Fotocamera (modalità AR) — i frame sono decodificati, disegnati e scartati. Mai caricati.';
+  @override
+  String get privacyOnDeviceMicrophone =>
+      'Microfono (pulsante voce) — passato al riconoscimento vocale del sistema; solo la trascrizione raggiunge AirWatch ed è analizzata localmente.';
+  @override
+  String get privacyOnDeviceSensors =>
+      'Sensori (bussola, accelerometro) — letti a 10 Hz per l\'HUD AR; mai memorizzati.';
+  @override
+  String get privacyOnDeviceStorage =>
+      'Impostazioni, preferiti, geofence — salvati nella sandbox dell\'app tramite SharedPreferences / NSUserDefaults.';
+  @override
+  String get privacyNetworkHeading => 'Rete';
+  @override
+  String get privacyNetworkHosts =>
+      'Parla solo con api.airwatch.app (TLS-pinned) e pics.avs.io per i loghi. Questa è l\'intera lista degli host.';
+  @override
+  String get privacyNetworkLogs =>
+      'I log del backend sono conservati 30 giorni per il rate-limit; gli indirizzi IP non vengono incrociati con altri dataset.';
+  @override
+  String get privacyRightsHeading => 'I tuoi diritti';
+  @override
+  String get privacyRightsList =>
+      'Accesso, rettifica, cancellazione, limitazione, portabilità, opposizione e revoca del consenso — scrivi a privacy@airwatch.app.';
+  @override
+  String get privacyRightsComplaint =>
+      'Diritto di reclamo presso la tua autorità di protezione dei dati.';
+  @override
+  String get privacyFullTextHeading => 'Testo completo';
+  @override
+  String get privacyFullTextRef =>
+      'Consulta PRIVACY.md nel repository per l\'informativa completa, incluse fonti di terze parti e trasferimenti internazionali.';
 }

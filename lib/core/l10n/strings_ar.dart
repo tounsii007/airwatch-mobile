@@ -693,4 +693,62 @@ class StringsAr extends AppStrings {
   String get alertBellAria => 'فتح لوحة التنبيهات';
   @override
   String get alertsNone => 'لا توجد تنبيهات نشطة';
+
+  // ── Generic dialog actions ─────────────────────────────────────────────
+  @override
+  String get actionClose => 'إغلاق';
+
+  // ── Settings: Privacy Policy dialog ────────────────────────────────────
+  @override
+  String get privacyTitle => 'سياسة الخصوصية';
+  @override
+  String get privacyLastUpdated => 'آخر تحديث: {0} · v{1}';
+  @override
+  String get privacySummaryHeading => 'الملخص';
+  @override
+  String get privacySummary1 =>
+      'لا حسابات، لا تسجيل دخول، ولا جمع لبيانات شخصية.';
+  @override
+  String get privacySummary2 =>
+      'لا إعلانات، ولا أدوات تحليل، ولا قياس عن بُعد.';
+  @override
+  String get privacySummary3 => 'لا بيع للبيانات أو مشاركتها مع أطراف ثالثة.';
+  @override
+  String get privacyOnDeviceHeading => 'على الجهاز فقط';
+  @override
+  String get privacyOnDeviceLocation =>
+      'الموقع — يُستخدم لتوسيط الخريطة وإيجاد الطائرات القريبة. لا يُرفع أبدًا.';
+  @override
+  String get privacyOnDeviceCamera =>
+      'الكاميرا (وضع AR) — تُفكَّك الإطارات وتُرسم ثم تُلغى. لا تُرفع أبدًا.';
+  @override
+  String get privacyOnDeviceMicrophone =>
+      'الميكروفون (زر الصوت) — يُسلَّم لمحرّك التعرف الصوتي للنظام؛ يصل النص فقط إلى AirWatch ويُعالَج محليًا.';
+  @override
+  String get privacyOnDeviceSensors =>
+      'المستشعرات (البوصلة، مقياس التسارع) — تُقرأ بمعدل 10 هرتز لعرض HUD؛ لا تُخزَّن أبدًا.';
+  @override
+  String get privacyOnDeviceStorage =>
+      'الإعدادات والمفضّلات والـ Geofences — مُخزَّنة في حاوية التطبيق عبر SharedPreferences / NSUserDefaults.';
+  @override
+  String get privacyNetworkHeading => 'الشبكة';
+  @override
+  String get privacyNetworkHosts =>
+      'يتواصل فقط مع api.airwatch.app (TLS-pinned) وpics.avs.io لشعارات شركات الطيران. هذه قائمة المضيفين كاملة.';
+  @override
+  String get privacyNetworkLogs =>
+      'تُحفَظ سجلات الخادم 30 يومًا للحد من الطلبات؛ لا تُربط عناوين IP بأي مجموعة بيانات أخرى.';
+  @override
+  String get privacyRightsHeading => 'حقوقك';
+  @override
+  String get privacyRightsList =>
+      'الوصول، التصحيح، المحو، التقييد، النقل، الاعتراض وسحب الموافقة — راسلنا على privacy@airwatch.app.';
+  @override
+  String get privacyRightsComplaint =>
+      'الحق في تقديم شكوى إلى هيئة حماية البيانات المحلية.';
+  @override
+  String get privacyFullTextHeading => 'النص الكامل';
+  @override
+  String get privacyFullTextRef =>
+      'راجع PRIVACY.md في المستودع للاطلاع على السياسة الكاملة، بما في ذلك مصادر الطرف الثالث وعمليات النقل الدولية.';
 }

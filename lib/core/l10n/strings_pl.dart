@@ -284,4 +284,63 @@ class StringsPl extends AppStrings {
   String get alertBellAria => 'Otwórz panel alertów';
   @override
   String get alertsNone => 'Brak aktywnych alertów';
+
+  // ── Generic dialog actions ─────────────────────────────────────────────
+  @override
+  String get actionClose => 'Zamknij';
+
+  // ── Settings: Privacy Policy dialog ────────────────────────────────────
+  @override
+  String get privacyTitle => 'Polityka prywatności';
+  @override
+  String get privacyLastUpdated => 'Ostatnia aktualizacja: {0} · v{1}';
+  @override
+  String get privacySummaryHeading => 'Podsumowanie';
+  @override
+  String get privacySummary1 =>
+      'Brak kont, brak logowania, żadnych danych osobowych.';
+  @override
+  String get privacySummary2 =>
+      'Bez reklam, bez SDK analitycznych, bez telemetrii.';
+  @override
+  String get privacySummary3 =>
+      'Bez sprzedaży ani udostępniania danych stronom trzecim.';
+  @override
+  String get privacyOnDeviceHeading => 'Tylko na urządzeniu';
+  @override
+  String get privacyOnDeviceLocation =>
+      'Lokalizacja — używana do wyśrodkowania mapy i znalezienia samolotów w pobliżu. Nigdy nie jest wysyłana.';
+  @override
+  String get privacyOnDeviceCamera =>
+      'Kamera (tryb AR) — klatki są dekodowane, rysowane i odrzucane. Nigdy nie są wysyłane.';
+  @override
+  String get privacyOnDeviceMicrophone =>
+      'Mikrofon (przycisk głosu) — przekazany do systemowego rozpoznawania mowy; do AirWatch trafia tylko transkrypcja, przetwarzana lokalnie.';
+  @override
+  String get privacyOnDeviceSensors =>
+      'Czujniki (kompas, akcelerometr) — odczytywane z częstotliwością 10 Hz dla HUD AR; nigdy nie zapisywane.';
+  @override
+  String get privacyOnDeviceStorage =>
+      'Ustawienia, ulubione, geofences — zapisane w piaskownicy aplikacji przez SharedPreferences / NSUserDefaults.';
+  @override
+  String get privacyNetworkHeading => 'Sieć';
+  @override
+  String get privacyNetworkHosts =>
+      'Łączy się tylko z api.airwatch.app (TLS-pinned) i pics.avs.io dla logo linii. To cała lista hostów.';
+  @override
+  String get privacyNetworkLogs =>
+      'Logi backendu są przechowywane 30 dni dla limitów; adresy IP nie są łączone z żadnym innym zbiorem danych.';
+  @override
+  String get privacyRightsHeading => 'Twoje prawa';
+  @override
+  String get privacyRightsList =>
+      'Dostęp, sprostowanie, usunięcie, ograniczenie, przenoszenie, sprzeciw i wycofanie zgody — pisz na privacy@airwatch.app.';
+  @override
+  String get privacyRightsComplaint =>
+      'Prawo do złożenia skargi do lokalnego organu ochrony danych.';
+  @override
+  String get privacyFullTextHeading => 'Pełny tekst';
+  @override
+  String get privacyFullTextRef =>
+      'Zobacz PRIVACY.md w repozytorium, aby zapoznać się z pełną polityką, w tym źródłami zewnętrznymi i transferami międzynarodowymi.';
 }

@@ -279,4 +279,63 @@ class StringsTr extends AppStrings {
   String get alertBellAria => 'Bildirimleri aç';
   @override
   String get alertsNone => 'Aktif uyarı yok';
+
+  // ── Generic dialog actions ─────────────────────────────────────────────
+  @override
+  String get actionClose => 'Kapat';
+
+  // ── Settings: Privacy Policy dialog ────────────────────────────────────
+  @override
+  String get privacyTitle => 'Gizlilik Politikası';
+  @override
+  String get privacyLastUpdated => 'Son güncelleme: {0} · v{1}';
+  @override
+  String get privacySummaryHeading => 'Özet';
+  @override
+  String get privacySummary1 =>
+      'Hesap yok, giriş yok, kişisel veri toplanmıyor.';
+  @override
+  String get privacySummary2 =>
+      'Reklam yok, analiz SDK\'sı yok, telemetri yok.';
+  @override
+  String get privacySummary3 =>
+      'Üçüncü taraflarla veri satışı veya paylaşımı yok.';
+  @override
+  String get privacyOnDeviceHeading => 'Sadece cihazda';
+  @override
+  String get privacyOnDeviceLocation =>
+      'Konum — haritayı ortalamak ve yakındaki uçakları bulmak için kullanılır. Asla yüklenmez.';
+  @override
+  String get privacyOnDeviceCamera =>
+      'Kamera (AR modu) — kareler çözümlenir, çizilir ve atılır. Asla yüklenmez.';
+  @override
+  String get privacyOnDeviceMicrophone =>
+      'Mikrofon (ses düğmesi) — OS\'nin ses tanıma motoruna teslim edilir; AirWatch\'a yalnızca metin ulaşır ve yerel olarak işlenir.';
+  @override
+  String get privacyOnDeviceSensors =>
+      'Sensörler (pusula, ivmeölçer) — AR HUD için 10 Hz\'de okunur; asla kaydedilmez.';
+  @override
+  String get privacyOnDeviceStorage =>
+      'Ayarlar, favoriler, geofence\'ler — SharedPreferences / NSUserDefaults aracılığıyla uygulama korumalı alanında saklanır.';
+  @override
+  String get privacyNetworkHeading => 'Ağ';
+  @override
+  String get privacyNetworkHosts =>
+      'Yalnızca api.airwatch.app (TLS-pinned) ve havayolu logoları için pics.avs.io ile konuşur. Tüm host listesi budur.';
+  @override
+  String get privacyNetworkLogs =>
+      'Backend logları hız sınırlaması için 30 gün tutulur; IP adresleri başka hiçbir veri kümesiyle birleştirilmez.';
+  @override
+  String get privacyRightsHeading => 'Haklarınız';
+  @override
+  String get privacyRightsList =>
+      'Erişim, düzeltme, silme, kısıtlama, taşınabilirlik, itiraz ve onay geri çekme — privacy@airwatch.app adresine yazın.';
+  @override
+  String get privacyRightsComplaint =>
+      'Yerel veri koruma kurumunuza şikâyette bulunma hakkı.';
+  @override
+  String get privacyFullTextHeading => 'Tam metin';
+  @override
+  String get privacyFullTextRef =>
+      'Üçüncü taraf kaynakları ve uluslararası aktarımlar dahil tam politika için depodaki PRIVACY.md dosyasına bakın.';
 }
