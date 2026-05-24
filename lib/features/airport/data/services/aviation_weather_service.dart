@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' show debugPrint;
 
@@ -88,12 +91,99 @@ class NotamRecord {
 /// endpoints. The backend handles caching + circuit breaking + fallback
 /// — this service is intentionally simple. All errors map to the
 /// `*Unavailable` flags so the UI stays on its happy path.
+///
+/// **Retry policy**
+/// METAR/TAF/NOTAM fetches are idempotent GETs against a backend that
+/// already caches aggressively, so a transient 5xx / network blip is
+/// safe to retry. We give each fetch up to 3 total attempts with
+/// jittered exponential backoff (base 200ms, ×2, ×4, capped at 1s).
+/// Anything 4xx (or the 503-specific "upstream open" sentinel for
+/// NOTAM) short-circuits to "unavailable" immediately — those aren't
+/// going to fix themselves on the next packet.
 class AviationWeatherService {
   final Dio _dio;
+  final Random _rng;
 
-  AviationWeatherService({Dio? dio})
-    : _dio =
-          dio ?? AppHttpClient.create(receiveTimeout: AppConfig.shortTimeout);
+  /// Hook for tests to drop the backoff wait. Production paths use the
+  /// real `Future.delayed`.
+  final Future<void> Function(Duration) _wait;
+
+  AviationWeatherService({Dio? dio, Random? rng, Future<void> Function(Duration)? wait})
+    : _dio = dio ?? AppHttpClient.create(receiveTimeout: AppConfig.shortTimeout),
+      _rng = rng ?? Random(),
+      _wait = wait ?? Future.delayed;
+
+  /// Maximum attempts (including the first) for a transient failure.
+  /// Three attempts × ~1s worst-case backoff = ~3s total tail latency,
+  /// well inside the panel's "loading" state budget.
+  static const int _maxAttempts = 3;
+  static const Duration _backoffBase = Duration(milliseconds: 200);
+  static const Duration _backoffCap = Duration(seconds: 1);
+
+  /// Retry a GET with jittered exponential backoff on transient failure.
+  ///
+  /// "Transient" = `DioExceptionType.{connectionTimeout, receiveTimeout,
+  /// sendTimeout, connectionError}` or a 5xx response (but NOT the
+  /// NOTAM-specific 503 — that's the backend's circuit-open sentinel
+  /// and callers want it surfaced verbatim, so they pass `treat503Open`
+  /// to short-circuit).
+  ///
+  /// Returns the successful response, or the LAST failure response so
+  /// the caller can still inspect [Response.statusCode] for things like
+  /// the 503 sentinel.
+  Future<Response<dynamic>?> _getWithRetry(
+    String url, {
+    bool treat503Open = false,
+  }) async {
+    DioException? lastError;
+    for (var attempt = 1; attempt <= _maxAttempts; attempt++) {
+      try {
+        final response = await _dio.get<dynamic>(url);
+        final code = response.statusCode ?? 0;
+        // 2xx + 4xx → terminal. 5xx → retry, unless caller wants 503
+        // forwarded for the "upstream open" UI state.
+        if (code < 500 || (treat503Open && code == 503)) return response;
+        // 5xx falls through to the backoff path.
+      } on DioException catch (e) {
+        lastError = e;
+        if (!_isTransient(e)) {
+          // Non-retryable — surface immediately, callers map to null.
+          debugPrint('[AviationWeather] $url terminal: ${e.message}');
+          return null;
+        }
+      }
+      if (attempt == _maxAttempts) break;
+      await _wait(_jitteredBackoff(attempt));
+    }
+    if (lastError != null) {
+      debugPrint(
+        '[AviationWeather] $url exhausted ${_maxAttempts}x: ${lastError.message}',
+      );
+    }
+    return null;
+  }
+
+  bool _isTransient(DioException e) => switch (e.type) {
+    DioExceptionType.connectionTimeout ||
+    DioExceptionType.receiveTimeout ||
+    DioExceptionType.sendTimeout ||
+    DioExceptionType.connectionError => true,
+    DioExceptionType.badResponse =>
+      (e.response?.statusCode ?? 0) >= 500,
+    _ => false,
+  };
+
+  /// `base * 2^(attempt-1)` plus 0–base jitter, capped at [_backoffCap].
+  /// Jitter dodges the thundering-herd problem when the backend is the
+  /// thing that just woke up.
+  Duration _jitteredBackoff(int attempt) {
+    final exp = _backoffBase * (1 << (attempt - 1));
+    final jitter = Duration(
+      milliseconds: _rng.nextInt(_backoffBase.inMilliseconds),
+    );
+    final total = exp + jitter;
+    return total > _backoffCap ? _backoffCap : total;
+  }
 
   /// Fetch METAR + TAF for an ICAO airport in parallel. ICAO is a
   /// 4-letter code (EDDF, KSFO, LFPG); the backend regex enforces this
@@ -131,7 +221,13 @@ class AviationWeatherService {
       return const NotamResult();
     }
     try {
-      final response = await _dio.get<dynamic>(ApiConstants.notam(icao));
+      final response = await _getWithRetry(
+        ApiConstants.notam(icao),
+        treat503Open: true,
+      );
+      if (response == null) {
+        return const NotamResult(networkError: true);
+      }
       if (response.statusCode == 503) {
         return const NotamResult(upstreamUnavailable: true);
       }
@@ -170,20 +266,17 @@ class AviationWeatherService {
   /// out of the upstream payload. The aviationweather.gov shape is
   /// `[{rawOb: "..."}]` for METAR and `[{rawTAF: "..."}]` for TAF.
   /// Returns null on any non-2xx or empty payload — caller decides
-  /// what unavailable means.
+  /// what unavailable means. Uses [_getWithRetry] so a transient 5xx
+  /// or network blip gets up to 3 attempts before giving up.
   Future<String?> _fetchOne(String url, String rawKey) async {
-    try {
-      final response = await _dio.get<dynamic>(url);
-      if (response.statusCode != 200) return null;
-      final body = response.data;
-      if (body is! List || body.isEmpty) return null;
-      final first = body.first;
-      if (first is! Map) return null;
-      final raw = first[rawKey];
-      return raw is String && raw.isNotEmpty ? raw : null;
-    } on DioException catch (e) {
-      debugPrint('[AviationWeather] $url: ${e.message}');
-      return null;
-    }
+    final response = await _getWithRetry(url);
+    if (response == null) return null;
+    if (response.statusCode != 200) return null;
+    final body = response.data;
+    if (body is! List || body.isEmpty) return null;
+    final first = body.first;
+    if (first is! Map) return null;
+    final raw = first[rawKey];
+    return raw is String && raw.isNotEmpty ? raw : null;
   }
 }
