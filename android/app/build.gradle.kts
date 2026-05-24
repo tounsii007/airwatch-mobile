@@ -144,4 +144,32 @@ flutter {
 // isCoreLibraryDesugaringEnabled flag above.
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+
+    // ─────────────────────────────────────────────────────────────────────
+    // Force-pin androidx.glance:glance-appwidget to a stable 1.1.x.
+    //
+    // The home_widget 0.9.x Flutter plugin declares its Android dep as
+    //   implementation "androidx.glance:glance-appwidget:1.+"
+    // which Gradle resolves to the LATEST matching version — including
+    // alphas. Right now that's 1.3.0-alpha01, which transitively requires
+    //   * Android Gradle Plugin ≥ 9.1.0
+    //   * compileSdk ≥ 37
+    // We're on AGP 8.11.1 + compileSdk 36 (via flutter.compileSdkVersion),
+    // so the AAR metadata check at the start of `assembleRelease` aborts
+    // the build. The same alpha also pulls in
+    // androidx.compose.remote:remote-creation-android:1.0.0-alpha11 which
+    // has the same constraints.
+    //
+    // Pinning here keeps the toolchain bump as a separate, focused PR
+    // (it requires Gradle wrapper + Java + Kotlin coordination). The
+    // 1.1.1 release supports AGP 8.x and compileSdk 34+, which is
+    // comfortable for our target.
+    constraints {
+        implementation("androidx.glance:glance-appwidget:1.1.1") {
+            because(
+                "home_widget 0.9.x uses dynamic 1.+; alphas need AGP 9.1 + " +
+                "compileSdk 37 which we haven't adopted yet."
+            )
+        }
+    }
 }
