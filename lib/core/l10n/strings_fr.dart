@@ -1,4 +1,4 @@
-import 'strings_base.dart';
+﻿import 'strings_base.dart';
 
 class StringsFr extends AppStrings {
   @override
@@ -763,4 +763,15 @@ class StringsFr extends AppStrings {
   @override
   String get privacyFullTextRef =>
       'Voir PRIVACY.md dans le dépôt pour la politique complète, sources tierces et transferts internationaux inclus.';
+  // ── Aviation: METAR / TAF micro-labels ─────────────────────────────────
+  @override
+  String get metarTafValidPrefix => 'Valide {0} → {1}';
+  @override
+  String get metarTafNow => 'MAINT.';
+
+  // ── Geofences: FAB action labels ───────────────────────────────────────
+  @override
+  String get geofencesDrawFab => 'DESSINER';
+  @override
+  String get geofencesFormFabAria => 'Ajouter par coordonnées';
 }

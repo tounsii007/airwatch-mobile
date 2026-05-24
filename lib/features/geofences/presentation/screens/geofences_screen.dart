@@ -69,7 +69,7 @@ class GeofencesScreen extends ConsumerWidget {
             ),
             backgroundColor: AppColors.primary,
             icon: const Icon(Icons.edit_location_alt_rounded),
-            label: const Text('DRAW'),
+            label: Text(s.geofencesDrawFab),
           ),
           const SizedBox(height: 10),
           // Numeric form fallback for users who prefer typing exact
@@ -81,6 +81,7 @@ class GeofencesScreen extends ConsumerWidget {
             ),
             backgroundColor: AppColors.surface.withValues(alpha: 0.85),
             foregroundColor: AppColors.primary,
+            tooltip: s.geofencesFormFabAria,
             child: const Icon(Icons.edit_rounded),
           ),
         ],

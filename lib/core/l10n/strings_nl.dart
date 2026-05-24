@@ -1,4 +1,4 @@
-import 'strings_base.dart';
+﻿import 'strings_base.dart';
 
 /// Dutch localisation — Stage-1 translation set.
 ///
@@ -338,4 +338,15 @@ class StringsNl extends AppStrings {
   @override
   String get privacyFullTextRef =>
       'Zie PRIVACY.md in de repository voor het volledige beleid, inclusief externe gegevensbronnen en internationale overdrachten.';
+  // ── Aviation: METAR / TAF micro-labels ─────────────────────────────────
+  @override
+  String get metarTafValidPrefix => 'Geldig {0} → {1}';
+  @override
+  String get metarTafNow => 'NU';
+
+  // ── Geofences: FAB action labels ───────────────────────────────────────
+  @override
+  String get geofencesDrawFab => 'TEKENEN';
+  @override
+  String get geofencesFormFabAria => 'Zone via coördinaten toevoegen';
 }

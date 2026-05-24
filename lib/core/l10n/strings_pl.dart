@@ -1,4 +1,4 @@
-import 'strings_base.dart';
+﻿import 'strings_base.dart';
 
 /// Polish localisation — Stage-1 translation set.
 ///
@@ -343,4 +343,15 @@ class StringsPl extends AppStrings {
   @override
   String get privacyFullTextRef =>
       'Zobacz PRIVACY.md w repozytorium, aby zapoznać się z pełną polityką, w tym źródłami zewnętrznymi i transferami międzynarodowymi.';
+  // ── Aviation: METAR / TAF micro-labels ─────────────────────────────────
+  @override
+  String get metarTafValidPrefix => 'Ważny {0} → {1}';
+  @override
+  String get metarTafNow => 'TERAZ';
+
+  // ── Geofences: FAB action labels ───────────────────────────────────────
+  @override
+  String get geofencesDrawFab => 'RYSUJ';
+  @override
+  String get geofencesFormFabAria => 'Dodaj strefę przez współrzędne';
 }

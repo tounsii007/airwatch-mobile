@@ -1,4 +1,4 @@
-/// Base class defining all translatable strings.
+﻿/// Base class defining all translatable strings.
 /// Each language implements this with its own translations.
 abstract class AppStrings {
   String get appName => 'AirWatch';
@@ -587,4 +587,18 @@ abstract class AppStrings {
   String get privacyFullTextHeading => 'Full text';
   String get privacyFullTextRef =>
       'See PRIVACY.md in the repository for the complete policy, including third-party data sources and international-transfer details.';
+  // ── Aviation: METAR / TAF micro-labels ───────────────────────────────
+  /// "Valid {0} → {1}" — TAF validity window prefix. {0} = from, {1} = to.
+  String get metarTafValidPrefix => 'Valid {0} → {1}';
+
+  /// "NOW" — short pill shown on the TAF "INITIAL" window row, telling
+  /// the operator they're looking at the currently-active forecast.
+  String get metarTafNow => 'NOW';
+
+  // ── Geofences: FAB action labels ─────────────────────────────────────
+  /// Primary FAB on the geofences screen — opens the draw-on-map screen.
+  String get geofencesDrawFab => 'DRAW';
+
+  /// Aria label for the small "open numeric form" FAB next to DRAW.
+  String get geofencesFormFabAria => 'Add fence by entering coordinates';
 }
