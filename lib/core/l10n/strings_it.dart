@@ -765,4 +765,15 @@ class StringsIt extends AppStrings {
   String get geofencesDrawFab => 'DISEGNA';
   @override
   String get geofencesFormFabAria => 'Aggiungi tramite coordinate';
+  // ── Map controls (a11y aria-labels) ────────────────────────────────────
+  @override
+  String get mapAriaSearch => 'Apri ricerca';
+  @override
+  String get mapAriaZoomIn => 'Ingrandisci';
+  @override
+  String get mapAriaZoomOut => 'Riduci';
+  @override
+  String get mapAriaMyLocation => 'Centra sulla mia posizione';
+  @override
+  String get mapAriaCargoToggle => 'Solo voli cargo';
 }

@@ -354,4 +354,15 @@ class StringsPl extends AppStrings {
   String get geofencesDrawFab => 'RYSUJ';
   @override
   String get geofencesFormFabAria => 'Dodaj strefę przez współrzędne';
+  // ── Map controls (a11y aria-labels) ────────────────────────────────────
+  @override
+  String get mapAriaSearch => 'Otwórz wyszukiwanie';
+  @override
+  String get mapAriaZoomIn => 'Powiększ';
+  @override
+  String get mapAriaZoomOut => 'Pomniejsz';
+  @override
+  String get mapAriaMyLocation => 'Wyśrodkuj na moim położeniu';
+  @override
+  String get mapAriaCargoToggle => 'Tylko loty cargo';
 }

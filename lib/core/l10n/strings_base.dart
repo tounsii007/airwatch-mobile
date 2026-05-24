@@ -601,4 +601,14 @@ abstract class AppStrings {
 
   /// Aria label for the small "open numeric form" FAB next to DRAW.
   String get geofencesFormFabAria => 'Add fence by entering coordinates';
+  // ── Map controls (a11y aria-labels) ──────────────────────────────────
+  // Screen-reader labels for the icon-only map control stack on the right
+  // edge of the map screen. The icons are universally understood
+  // visually but a TalkBack/VoiceOver user gets just "button" without
+  // these. Mirrors airwatch-web's MapToolbar aria attributes.
+  String get mapAriaSearch => 'Open search';
+  String get mapAriaZoomIn => 'Zoom in';
+  String get mapAriaZoomOut => 'Zoom out';
+  String get mapAriaMyLocation => 'Center on my location';
+  String get mapAriaCargoToggle => 'Cargo flights only';
 }
