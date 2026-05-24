@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:airwatch_mobile/core/constants/ui_constants.dart';
 import 'package:airwatch_mobile/core/theme/app_colors.dart';
+import 'package:airwatch_mobile/core/theme/theme_context_ext.dart';
 import 'package:airwatch_mobile/core/widgets/count_up.dart';
 import 'package:airwatch_mobile/core/widgets/glass_panel.dart';
 
@@ -72,27 +73,21 @@ class StatCard extends StatelessWidget {
   /// even when one of them has no hint / trend / icon.
   final double minHeight;
 
-  Color _statusColor(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final primary = isDark ? AppColors.primary : UiConstants.lightPrimary;
-    return switch (status) {
-      StatCardStatus.defaultStatus => primary,
-      StatCardStatus.success => AppColors.success,
-      StatCardStatus.warning => AppColors.warning,
-      StatCardStatus.error => AppColors.error,
-      StatCardStatus.info => AppColors.info,
-    };
-  }
+  Color _statusColor(BuildContext context) => switch (status) {
+    StatCardStatus.defaultStatus => context.themePrimary,
+    StatCardStatus.success => AppColors.success,
+    StatCardStatus.warning => AppColors.warning,
+    StatCardStatus.error => AppColors.error,
+    StatCardStatus.info => AppColors.info,
+  };
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDark = context.isDarkTheme;
     final accent = _statusColor(context);
     final isLoading = value == null;
     final isZero = !isLoading && (value!.toDouble() == 0);
-    final mutedColor = isDark
-        ? AppColors.textMuted
-        : UiConstants.lightTextMuted;
+    final mutedColor = context.themeMuted;
 
     return ConstrainedBox(
       constraints: BoxConstraints(minHeight: minHeight),
@@ -301,7 +296,7 @@ class _ShimmerBlockState extends State<_ShimmerBlock>
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isDark = context.isDarkTheme;
     final base = isDark
         ? Colors.white.withValues(alpha: 0.06)
         : Colors.black.withValues(alpha: 0.06);
