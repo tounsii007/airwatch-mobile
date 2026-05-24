@@ -89,6 +89,14 @@ dependencies:
   # the bump picks up perf + iOS-fix patches.
   flutter_earth_globe: ^2.2.1
 
+  # Reads the bundled app version (CFBundleShortVersionString / versionName)
+  # at runtime so the Privacy-Policy dialog's "v{x}" stamp always reflects
+  # the actual installed build — no more hand-edited string in the source
+  # diverging from pubspec.yaml at release time. Already a transitive dep
+  # via flutter_local_notifications; promoted to direct so the import
+  # isn't a "phantom dependency".
+  package_info_plus: ^9.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
