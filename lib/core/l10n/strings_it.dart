@@ -778,4 +778,14 @@ class StringsIt extends AppStrings {
   String get mapAriaCargoToggle => 'Solo voli cargo';
   @override
   String get alertTileHint => 'Tocca due volte per mostrare sulla mappa';
+  @override
+  String get mapAriaStylePicker => 'Stile mappa';
+  @override
+  String get voiceAriaIdle => 'Comando vocale';
+  @override
+  String get voiceAriaListening => 'In ascolto — tocca per fermare';
+  @override
+  String get voiceAriaInitializing => 'Comando vocale, in inizializzazione';
+  @override
+  String get voiceAriaUnavailable => 'Comando vocale non disponibile';
 }

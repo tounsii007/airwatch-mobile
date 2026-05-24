@@ -787,4 +787,14 @@ class StringsFr extends AppStrings {
   String get mapAriaCargoToggle => 'Vols cargo uniquement';
   @override
   String get alertTileHint => 'Double-toucher pour afficher sur la carte';
+  @override
+  String get mapAriaStylePicker => 'Style de carte';
+  @override
+  String get voiceAriaIdle => 'Commande vocale';
+  @override
+  String get voiceAriaListening => 'Écoute — toucher pour arrêter';
+  @override
+  String get voiceAriaInitializing => 'Commande vocale, initialisation';
+  @override
+  String get voiceAriaUnavailable => 'Commande vocale indisponible';
 }

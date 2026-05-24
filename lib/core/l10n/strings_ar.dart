@@ -775,4 +775,14 @@ class StringsAr extends AppStrings {
   String get mapAriaCargoToggle => 'رحلات الشحن فقط';
   @override
   String get alertTileHint => 'انقر مرتين للعرض على الخريطة';
+  @override
+  String get mapAriaStylePicker => 'نمط الخريطة';
+  @override
+  String get voiceAriaIdle => 'الأمر الصوتي';
+  @override
+  String get voiceAriaListening => 'أستمع — انقر للإيقاف';
+  @override
+  String get voiceAriaInitializing => 'الأمر الصوتي قيد التهيئة';
+  @override
+  String get voiceAriaUnavailable => 'الأمر الصوتي غير متاح';
 }

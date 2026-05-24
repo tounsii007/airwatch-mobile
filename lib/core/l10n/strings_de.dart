@@ -790,4 +790,14 @@ class StringsDe extends AppStrings {
   String get mapAriaCargoToggle => 'Nur Frachtflüge';
   @override
   String get alertTileHint => 'Doppeltippen, um auf der Karte anzuzeigen';
+  @override
+  String get mapAriaStylePicker => 'Kartenstil';
+  @override
+  String get voiceAriaIdle => 'Sprachbefehl';
+  @override
+  String get voiceAriaListening => 'Höre zu — tippe zum Beenden';
+  @override
+  String get voiceAriaInitializing => 'Sprachbefehl wird initialisiert';
+  @override
+  String get voiceAriaUnavailable => 'Sprachbefehl nicht verfügbar';
 }

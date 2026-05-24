@@ -367,4 +367,14 @@ class StringsPl extends AppStrings {
   String get mapAriaCargoToggle => 'Tylko loty cargo';
   @override
   String get alertTileHint => 'Stuknij dwukrotnie, aby pokazać na mapie';
+  @override
+  String get mapAriaStylePicker => 'Styl mapy';
+  @override
+  String get voiceAriaIdle => 'Polecenie głosowe';
+  @override
+  String get voiceAriaListening => 'Słucham — stuknij, aby zatrzymać';
+  @override
+  String get voiceAriaInitializing => 'Inicjalizacja polecenia głosowego';
+  @override
+  String get voiceAriaUnavailable => 'Polecenie głosowe niedostępne';
 }
