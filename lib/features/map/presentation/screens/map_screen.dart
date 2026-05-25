@@ -260,7 +260,12 @@ class _MapScreenState extends ConsumerState<MapScreen>
     final primaryColor = isDark ? AppColors.primary : UiConstants.lightPrimary;
 
     return Positioned(
-      top: MediaQuery.of(context).padding.top + 60,
+      // MediaQuery.paddingOf only subscribes the build to padding
+      // changes; MediaQuery.of subscribes to everything (size,
+      // textScale, brightness, accessibility flags…) so this widget
+      // would rebuild on a rotation or keyboard-show even when its
+      // own top padding doesn't change.
+      top: MediaQuery.paddingOf(context).top + 60,
       left: 12,
       right: 60,
       child: Column(
