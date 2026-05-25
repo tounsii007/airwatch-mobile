@@ -83,9 +83,8 @@ extension ThemeContextExt on BuildContext {
       isDarkTheme ? AppColors.textPrimary : UiConstants.lightTextPrimary;
 
   /// Secondary text — for body copy in panel chrome.
-  Color get themeTextSecondary => isDarkTheme
-      ? AppColors.textSecondary
-      : UiConstants.lightTextSecondary;
+  Color get themeTextSecondary =>
+      isDarkTheme ? AppColors.textSecondary : UiConstants.lightTextSecondary;
 
   /// Lowest-emphasis text — for captions / hints / metadata. The
   /// dark-theme tone (#6B85A4) was bumped in iter 73 for WCAG AA

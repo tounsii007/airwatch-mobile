@@ -17,7 +17,8 @@ class FlightHistoryService {
     Dio? dio,
     FlightInfoDatasource? infoDatasource,
     DioRetry? retry,
-  }) : _dio = dio ?? AppHttpClient.create(connectTimeout: AppConfig.longTimeout),
+  }) : _dio =
+           dio ?? AppHttpClient.create(connectTimeout: AppConfig.longTimeout),
        _infoDatasource = infoDatasource ?? FlightInfoDatasource(),
        _retry = retry ?? DioRetry();
 
@@ -103,9 +104,7 @@ class FlightHistoryService {
       final data = response!.data as Map;
       final flight = data[ApiJsonKeys.response] as Map?;
       if (flight != null && flight.isNotEmpty) {
-        return HistoryFlight.fromAirlabs(
-          AirlabsFlightSnapshot.fromMap(flight),
-        );
+        return HistoryFlight.fromAirlabs(AirlabsFlightSnapshot.fromMap(flight));
       }
     }
     return null;
@@ -121,9 +120,7 @@ class FlightHistoryService {
       final data = response!.data as Map;
       final flight = data[ApiJsonKeys.response] as Map?;
       if (flight != null && flight.isNotEmpty) {
-        return HistoryFlight.fromAirlabs(
-          AirlabsFlightSnapshot.fromMap(flight),
-        );
+        return HistoryFlight.fromAirlabs(AirlabsFlightSnapshot.fromMap(flight));
       }
     }
     return null;

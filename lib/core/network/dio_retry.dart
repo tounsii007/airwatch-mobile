@@ -92,7 +92,9 @@ class DioRetry {
       await _wait(_jitteredBackoff(attempt));
     }
     if (lastError != null) {
-      debugPrint('$logTag $url exhausted ${maxAttempts}x: ${lastError.message}');
+      debugPrint(
+        '$logTag $url exhausted ${maxAttempts}x: ${lastError.message}',
+      );
     }
     return lastResponse;
   }
@@ -102,8 +104,7 @@ class DioRetry {
     DioExceptionType.receiveTimeout ||
     DioExceptionType.sendTimeout ||
     DioExceptionType.connectionError => true,
-    DioExceptionType.badResponse =>
-      (e.response?.statusCode ?? 0) >= 500,
+    DioExceptionType.badResponse => (e.response?.statusCode ?? 0) >= 500,
     _ => false,
   };
 

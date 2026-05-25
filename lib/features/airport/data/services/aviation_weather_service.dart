@@ -108,10 +108,14 @@ class AviationWeatherService {
   /// real `Future.delayed`.
   final Future<void> Function(Duration) _wait;
 
-  AviationWeatherService({Dio? dio, Random? rng, Future<void> Function(Duration)? wait})
-    : _dio = dio ?? AppHttpClient.create(receiveTimeout: AppConfig.shortTimeout),
-      _rng = rng ?? Random(),
-      _wait = wait ?? Future.delayed;
+  AviationWeatherService({
+    Dio? dio,
+    Random? rng,
+    Future<void> Function(Duration)? wait,
+  }) : _dio =
+           dio ?? AppHttpClient.create(receiveTimeout: AppConfig.shortTimeout),
+       _rng = rng ?? Random(),
+       _wait = wait ?? Future.delayed;
 
   /// Maximum attempts (including the first) for a transient failure.
   /// Three attempts × ~1s worst-case backoff = ~3s total tail latency,
@@ -168,8 +172,7 @@ class AviationWeatherService {
     DioExceptionType.receiveTimeout ||
     DioExceptionType.sendTimeout ||
     DioExceptionType.connectionError => true,
-    DioExceptionType.badResponse =>
-      (e.response?.statusCode ?? 0) >= 500,
+    DioExceptionType.badResponse => (e.response?.statusCode ?? 0) >= 500,
     _ => false,
   };
 

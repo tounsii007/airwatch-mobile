@@ -231,9 +231,7 @@ class _VoiceButtonState extends ConsumerState<VoiceButton> {
           child: Icon(
             _listening
                 ? Icons.mic_rounded
-                : (_available
-                      ? Icons.mic_none_rounded
-                      : Icons.mic_off_rounded),
+                : (_available ? Icons.mic_none_rounded : Icons.mic_off_rounded),
             size: 20,
             color: _listening
                 ? AppColors.error

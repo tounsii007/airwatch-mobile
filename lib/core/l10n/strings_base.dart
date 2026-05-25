@@ -1,4 +1,4 @@
-﻿/// Base class defining all translatable strings.
+/// Base class defining all translatable strings.
 /// Each language implements this with its own translations.
 abstract class AppStrings {
   String get appName => 'AirWatch';
@@ -611,6 +611,7 @@ abstract class AppStrings {
   String get mapAriaZoomOut => 'Zoom out';
   String get mapAriaMyLocation => 'Center on my location';
   String get mapAriaCargoToggle => 'Cargo flights only';
+
   /// Screen-reader hint appended to each alert tile — explains what
   /// tapping does ("Double tap to show on the map" in TalkBack rhythm).
   String get alertTileHint => 'Double tap to show on map';
