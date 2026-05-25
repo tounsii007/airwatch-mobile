@@ -91,6 +91,10 @@ class _CargoScreenState extends ConsumerState<CargoScreen> {
     List<AircraftState> filtered,
     bool hasAnyCargo,
   ) {
+    // Hoist languageProvider out of the per-card map() below — every
+    // _CargoCard previously called ref.watch(languageProvider) and
+    // registered a subscription per card per build.
+    final lang = ref.watch(languageProvider);
     return ListView(
       padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
       children: [
@@ -154,7 +158,7 @@ class _CargoScreenState extends ConsumerState<CargoScreen> {
               padding: const EdgeInsets.only(bottom: 8),
               child: _CargoCard(
                 aircraft: ac,
-                language: ref.watch(languageProvider),
+                language: lang,
               ),
             ),
           ),
