@@ -94,7 +94,7 @@ jobs:
         run: flutter test --machine --reporter expanded > test-report.json || (cat test-report.json; exit 1)
       - name: Upload test report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: test-report
           path: test-report.json
@@ -118,7 +118,7 @@ jobs:
           cache: true
       - run: flutter pub get
       - run: flutter build web --release
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: web-build-${{ github.sha }}
           path: build/web/
@@ -146,7 +146,7 @@ jobs:
           cache: true
       - run: flutter pub get
       - run: flutter build apk --release
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: android-apk-${{ github.sha }}
           path: build/app/outputs/flutter-apk/app-release.apk
