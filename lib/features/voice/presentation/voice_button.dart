@@ -107,8 +107,12 @@ class _VoiceButtonState extends ConsumerState<VoiceButton> {
       AppLanguage.en => 'en_US',
     };
     await _speech.listen(
-      localeId: localeId,
-      listenOptions: stt.SpeechListenOptions(cancelOnError: true),
+      // localeId moved into SpeechListenOptions in speech_to_text 7.x; the
+      // top-level parameter is deprecated but still works.
+      listenOptions: stt.SpeechListenOptions(
+        cancelOnError: true,
+        localeId: localeId,
+      ),
       onResult: (res) {
         if (!mounted) return;
         setState(() => _heard = res.recognizedWords);

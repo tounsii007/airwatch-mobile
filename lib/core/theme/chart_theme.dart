@@ -187,7 +187,7 @@ class ChartTheme {
                 ),
               ),
             )
-          : BarTouchData(enabled: false),
+          : const BarTouchData(enabled: false),
       barGroups: [
         for (var i = 0; i < values.length; i++)
           BarChartGroupData(
