@@ -57,7 +57,7 @@ class _SquawkAlertBannerState extends ConsumerState<SquawkAlertBanner>
     return Positioned(
       left: 12,
       right: 12,
-      top: MediaQuery.of(context).padding.top + 56,
+      top: MediaQuery.paddingOf(context).top + 56,
       child: GlassPanel(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         borderRadius: 12,

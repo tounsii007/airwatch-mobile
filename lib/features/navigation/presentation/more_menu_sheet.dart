@@ -119,7 +119,7 @@ class MoreMenuSheet extends ConsumerWidget {
     // 90 % of viewport — leaves a hint of the primary screen behind so
     // the user knows they can swipe down to dismiss without losing
     // their map context.
-    final maxHeight = MediaQuery.of(context).size.height * 0.9;
+    final maxHeight = MediaQuery.sizeOf(context).height * 0.9;
 
     return ConstrainedBox(
       constraints: BoxConstraints(maxHeight: maxHeight),

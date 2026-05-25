@@ -33,7 +33,7 @@ class MapControls extends ConsumerWidget {
 
     return Positioned(
       right: right,
-      top: MediaQuery.of(context).padding.top + 80,
+      top: MediaQuery.paddingOf(context).top + 80,
       child: Column(
         children: [
           _ControlButton(

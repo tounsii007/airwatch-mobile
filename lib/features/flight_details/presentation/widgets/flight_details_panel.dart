@@ -224,7 +224,7 @@ class _FlightDetailsPanelState extends ConsumerState<FlightDetailsPanel> {
     }
 
     return Positioned(
-      top: MediaQuery.of(context).padding.top + AppConfig.panelTopOffset,
+      top: MediaQuery.paddingOf(context).top + AppConfig.panelTopOffset,
       left: 12,
       bottom: 80,
       width: panelWidth,
