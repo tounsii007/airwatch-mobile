@@ -106,6 +106,10 @@ class _AirportScreenState extends ConsumerState<AirportScreen> {
     final primary = isDark ? AppColors.primary : UiConstants.lightPrimary;
     final aircraftAsync = ref.watch(aircraftStreamProvider);
     final settings = ref.watch(settingsProvider);
+    // Hoist the language out of the per-tile build path — every
+    // suggestion tile read it twice (city + country), each call
+    // re-subscribing this widget to the languageProvider.
+    final langName = ref.watch(languageProvider).name;
 
     return Scaffold(
       backgroundColor: isDark
@@ -251,7 +255,7 @@ class _AirportScreenState extends ConsumerState<AirportScreen> {
                           overflow: TextOverflow.ellipsis,
                         ),
                         Text(
-                          '${localizeCity(apt.city, ref.watch(languageProvider).name)} • ${localizeCountry(CountryDatabase.displayName(apt.country), ref.watch(languageProvider).name)}',
+                          '${localizeCity(apt.city, langName)} • ${localizeCountry(CountryDatabase.displayName(apt.country), langName)}',
                           style: TextStyle(
                             fontFamily: UiConstants.bodyFont,
                             fontSize: 12,
