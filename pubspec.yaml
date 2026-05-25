@@ -68,7 +68,7 @@ dependencies:
   # Speech-to-text — drives the voice-command button. The 7.x line is
   # the current stable release on pub.dev and supports both Android
   # (RecognizerIntent) and iOS (SFSpeechRecognizer).
-  speech_to_text: ^7.0.0
+  speech_to_text: ^7.4.0
 
   # Notifications (local)
   flutter_local_notifications: ^21.0.0
