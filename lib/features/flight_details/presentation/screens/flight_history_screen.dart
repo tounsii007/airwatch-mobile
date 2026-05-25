@@ -222,6 +222,14 @@ class _FlightHistoryScreenState extends State<FlightHistoryScreen> {
                   logoUrl,
                   width: 50,
                   height: 24,
+                  // Decode at ~2x logical size so 3x-DPR screens stay
+                  // sharp without the engine keeping the full upstream
+                  // bitmap in memory. Airline logos can be 512x512+ from
+                  // the upstream; without cacheWidth/cacheHeight the
+                  // decoded RGBA buffer is ~1 MB per logo per history
+                  // row.
+                  cacheWidth: 100,
+                  cacheHeight: 48,
                   fit: BoxFit.contain,
                   errorBuilder: (_, error, stackTrace) =>
                       Icon(Icons.airlines_rounded, color: primary, size: 22),
