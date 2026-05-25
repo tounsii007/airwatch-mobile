@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:airwatch_mobile/core/constants/airport_database.dart';
 import 'package:airwatch_mobile/core/constants/ui_constants.dart';
@@ -218,20 +219,20 @@ class _FlightHistoryScreenState extends State<FlightHistoryScreen> {
             if (logoUrl != null)
               Padding(
                 padding: const EdgeInsetsDirectional.only(end: 10),
-                child: Image.network(
-                  logoUrl,
+                child: CachedNetworkImage(
+                  imageUrl: logoUrl,
                   width: 50,
                   height: 24,
-                  // Decode at ~2x logical size so 3x-DPR screens stay
-                  // sharp without the engine keeping the full upstream
-                  // bitmap in memory. Airline logos can be 512x512+ from
-                  // the upstream; without cacheWidth/cacheHeight the
-                  // decoded RGBA buffer is ~1 MB per logo per history
-                  // row.
-                  cacheWidth: 100,
-                  cacheHeight: 48,
+                  // 2× decode size keeps 3x-DPR screens sharp without
+                  // holding the full upstream PNG (often 512²) in
+                  // memory. Persistent disk cache (the rest of the app
+                  // already uses CachedNetworkImage everywhere — this
+                  // one Image.network was an outlier that re-downloaded
+                  // the same logo across history visits).
+                  memCacheWidth: 100,
+                  memCacheHeight: 48,
                   fit: BoxFit.contain,
-                  errorBuilder: (_, error, stackTrace) =>
+                  errorWidget: (_, _, _) =>
                       Icon(Icons.airlines_rounded, color: primary, size: 22),
                 ),
               ),
