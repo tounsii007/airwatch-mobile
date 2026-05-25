@@ -62,6 +62,15 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
         _snapshot.where((f) => f.type == FavoriteType.airport).toList()
           ..sort(pinSort);
 
+    // Pre-compute an O(1) lookup of currently-favorited ids. The
+    // previous pattern called ref.watch(favoritesProvider).any(...)
+    // inside every tile's map() — three sections × N tiles each =
+    // O(N²) scans per rebuild. The Set is built once per build and
+    // every tile gets contains() in constant time. Reuses
+    // liveFavorites from the top of build() so the provider isn't
+    // re-subscribed.
+    final favoriteIds = {for (final fav in liveFavorites) fav.id};
+
     return Scaffold(
       backgroundColor: isDark
           ? AppColors.background
@@ -139,9 +148,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
                     ),
                     const SizedBox(height: 8),
                     ...flights.map((f) {
-                      final isFav = ref
-                          .watch(favoritesProvider)
-                          .any((fav) => fav.id == f.id);
+                      final isFav = favoriteIds.contains(f.id);
                       return _FavoriteTile(
                         item: f,
                         isDark: isDark,
@@ -166,9 +173,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
                     ),
                     const SizedBox(height: 8),
                     ...airlines.map((f) {
-                      final isFav = ref
-                          .watch(favoritesProvider)
-                          .any((fav) => fav.id == f.id);
+                      final isFav = favoriteIds.contains(f.id);
                       return _FavoriteTile(
                         item: f,
                         isDark: isDark,
@@ -190,9 +195,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
                     ),
                     const SizedBox(height: 8),
                     ...airports.map((f) {
-                      final isFav = ref
-                          .watch(favoritesProvider)
-                          .any((fav) => fav.id == f.id);
+                      final isFav = favoriteIds.contains(f.id);
                       return _FavoriteTile(
                         item: f,
                         isDark: isDark,
