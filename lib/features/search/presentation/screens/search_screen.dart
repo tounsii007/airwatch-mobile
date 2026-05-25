@@ -403,9 +403,17 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       }
     }
 
-    return ListView(
+    // ListView.builder uses SliverChildBuilderDelegate which lazily
+    // mounts RenderObjects only for items that are about to scroll
+    // into the viewport. Passing the pre-built widget list to
+    // ListView(children: ...) eagerly materialises every section
+    // header + result tile up front. A multi-section search with
+    // dozens of results per section pays a meaningful mount cost
+    // for tiles the user never scrolls to.
+    return ListView.builder(
       padding: UiConstants.searchResultsPadding,
-      children: widgets,
+      itemCount: widgets.length,
+      itemBuilder: (_, i) => widgets[i],
     );
   }
 
