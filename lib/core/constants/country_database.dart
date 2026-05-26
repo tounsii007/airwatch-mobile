@@ -192,13 +192,20 @@ class CountryDatabase {
     return ranked.take(limit).toList(growable: false);
   }
 
+  /// Hoisted out of _normalize so each country-name lookup doesn't
+  /// rebuild the regex engine state. _normalize is on the hot path of
+  /// CountryDatabase.find / displayName / the country-aware airport
+  /// search — every keystroke in the airport-search box calls it.
+  static final RegExp _nonAlnumRe = RegExp(r'[^a-z0-9]+');
+  static final RegExp _whitespaceRe = RegExp(r'\s+');
+
   static String _normalize(String value) {
     return value
         .trim()
         .toLowerCase()
         .replaceAll('&', 'and')
-        .replaceAll(RegExp(r'[^a-z0-9]+'), ' ')
-        .replaceAll(RegExp(r'\s+'), ' ')
+        .replaceAll(_nonAlnumRe, ' ')
+        .replaceAll(_whitespaceRe, ' ')
         .trim();
   }
 
