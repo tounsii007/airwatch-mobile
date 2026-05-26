@@ -30,11 +30,17 @@ class FlightCodeFormatter {
     return _airlinesByIata[normalized] ?? const <AirlineInfo>[];
   }
 
+  /// Pre-compiled flight-code RegExp. The previous in-method literal
+  /// caused Dart to construct a fresh RegExp object (with its own
+  /// compiled state machine) on every call. parseFlightCode is invoked
+  /// in tile builders across cargo, search, history, etc.
+  static final RegExp _flightCodeRe = RegExp(
+    r'^([A-Z0-9]{2,3})([0-9]{1,4}[A-Z]?)$',
+  );
+
   static ParsedFlightCode? parseFlightCode(String? value) {
     final normalized = _normalize(value);
-    final match = RegExp(
-      r'^([A-Z0-9]{2,3})([0-9]{1,4}[A-Z]?)$',
-    ).firstMatch(normalized);
+    final match = _flightCodeRe.firstMatch(normalized);
     if (match == null) {
       return null;
     }
