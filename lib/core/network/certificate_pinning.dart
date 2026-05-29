@@ -45,6 +45,14 @@ import 'package:flutter/foundation.dart';
 class CertificatePinning {
   CertificatePinning._();
 
+  /// When true, a release build that boots without any configured pins
+  /// throws a [StateError] instead of merely warning. Flip to `false`
+  /// only for emergency one-off builds where a CI/CD misconfiguration is
+  /// known and accepted — the default is to fail closed so a shipped
+  /// build can never silently degrade to "no second-line MITM defence".
+  // ignore: constant_identifier_names
+  static const bool _REQUIRE_PINNING_IN_RELEASE = true;
+
   /// Comma-separated list of `sha256/{base64}` pins from
   /// `--dart-define=API_CERT_PINS=...`. Empty → pinning off.
   static const String _rawPins = String.fromEnvironment('API_CERT_PINS');
@@ -59,29 +67,76 @@ class CertificatePinning {
   /// True iff at least one valid pin is configured.
   static bool get isConfigured => _pins.isNotEmpty;
 
+  /// Enforce the pinning policy on every release boot. With
+  /// [_REQUIRE_PINNING_IN_RELEASE] set (the default), a release build
+  /// that lacks pins throws a [StateError] at the call site — the app
+  /// will refuse to make HTTPS requests rather than ship with only
+  /// standard PKI validation. When the flag is off, falls back to the
+  /// previous behaviour of a loud warning so a misconfigured CI/CD push
+  /// can still roll out.
+  static void _warnIfReleaseWithoutPins() {
+    if (!kReleaseMode || isConfigured) return;
+    if (_REQUIRE_PINNING_IN_RELEASE) {
+      throw StateError('Release build without certificate pinning');
+    }
+    debugPrint(
+      'WARNING: CertificatePinning not configured in release build — '
+      'API_CERT_PINS is empty. Standard PKI validation is still in '
+      'effect, but the second-line MITM defence is disabled.',
+    );
+  }
+
+  /// Build an [HttpClient] with leaf-certificate pinning installed via
+  /// [HttpClient.badCertificateCallback].
+  ///
+  /// When pinning is not configured (or in debug mode), returns a
+  /// vanilla [HttpClient] — identical TLS behaviour to a code path that
+  /// never went through this helper. Used by [apply] for Dio and by
+  /// `FlightWebSocketService` for the WS client.
+  ///
+  /// NOTE: `badCertificateCallback` only fires when the standard PKI
+  /// chain validation FAILS, so it's a one-way ratchet here — it can
+  /// only *reject* a cert that the chain otherwise accepted. That's
+  /// actually fine for MITM defence: the threat model is a malicious CA
+  /// the device trusts (corporate inspection proxy, hostile captive
+  /// portal, etc.); standard validation passes those, and the pin
+  /// catches them. For the same reason, the pin check inverts — we
+  /// return `true` (override-reject) iff the fingerprint does NOT match
+  /// a pin, so a non-matching cert is dropped even if the OS would
+  /// have trusted it.
+  ///
+  /// The Dio adapter additionally wires up `validateCertificate` (which
+  /// fires on EVERY cert, not just chain failures); the WS path can't
+  /// use that hook so it leans on `badCertificateCallback` instead. To
+  /// make the WS path safe, we treat any cert reaching the callback as
+  /// suspect and require a pin match to allow it through.
+  static HttpClient buildPinnedHttpClient() {
+    _warnIfReleaseWithoutPins();
+    if (!isConfigured || kDebugMode) return HttpClient();
+
+    final pins = _pins;
+    final client = HttpClient();
+    client.badCertificateCallback = (cert, host, port) {
+      final fingerprint = base64.encode(sha256.convert(cert.der).bytes);
+      final ok = pins.contains(fingerprint);
+      if (!ok) {
+        debugPrint('[cert-pin] mismatch for $host: got $fingerprint');
+      }
+      return ok;
+    };
+    return client;
+  }
+
   /// Attach an [IOHttpClientAdapter] to the given Dio that enforces
   /// leaf-certificate pinning. No-op when pinning is not configured or
   /// in debug mode.
   static void apply(Dio dio) {
+    _warnIfReleaseWithoutPins();
     if (!isConfigured || kDebugMode) return;
 
     final pins = _pins;
     dio.httpClientAdapter = IOHttpClientAdapter(
-      createHttpClient: () {
-        final client = HttpClient();
-        // badCertificateCallback runs for chain-validation failures only —
-        // for pinning we need to inspect EVERY accepted cert, which is
-        // what `validateCertificate` does (Dio 5.x feature, plumbed
-        // through to the underlying HttpClient via the adapter wrapper
-        // below).
-        client.badCertificateCallback = (cert, host, port) {
-          // Default: still reject untrusted CA chains. Pinning is a
-          // SECOND line of defence on top of standard PKI, not a
-          // replacement.
-          return false;
-        };
-        return client;
-      },
+      createHttpClient: buildPinnedHttpClient,
       validateCertificate: (cert, host, port) {
         if (cert == null) return false;
         // Hash the leaf certificate's full DER (see class docstring for

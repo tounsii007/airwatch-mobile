@@ -67,6 +67,16 @@ class _WikiPanelState extends ConsumerState<WikiPanel> {
     if (url == null || url.isEmpty) return;
     final uri = Uri.tryParse(url);
     if (uri == null) return;
+    // Allowlist https only. Stops a malicious or misconfigured upstream
+    // from steering the user into javascript:, file:, intent:, or any
+    // other launcher-handled scheme via a tampered wikiUrl payload.
+    if (uri.scheme != 'https') {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Unsicherer Link blockiert')),
+      );
+      return;
+    }
     await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 

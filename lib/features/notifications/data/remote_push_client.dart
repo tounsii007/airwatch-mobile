@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' show debugPrint, kReleaseMode;
@@ -180,13 +182,16 @@ class PushClientId {
     return fresh;
   }
 
-  /// 16 bytes from DateTime.microsecondsSinceEpoch + a tiny RNG —
-  /// good enough for a routing key (not a security token).
+  /// 16 bytes from [Random.secure] (128 bits, OS-backed CSPRNG)
+  /// base64url-encoded → ~22 chars after stripping padding. Even though
+  /// the api treats this as an opaque routing key, sourcing it from a
+  /// CSPRNG eliminates the predictability of the old time+hashCode
+  /// scheme (microsecond timestamps + a 32-bit object identity hash
+  /// are trivial to bruteforce / collide across reinstalls).
   static String _generateId() {
-    final ts = DateTime.now().microsecondsSinceEpoch;
-    final r = (ts.hashCode ^ identityHashCode(Object())).toRadixString(16);
-    final stamp = ts.toRadixString(36);
-    return 'aw-$stamp-$r';
+    final rng = Random.secure();
+    final bytes = List<int>.generate(16, (_) => rng.nextInt(256));
+    return 'aw-${base64UrlEncode(bytes).replaceAll('=', '')}';
   }
 }
 

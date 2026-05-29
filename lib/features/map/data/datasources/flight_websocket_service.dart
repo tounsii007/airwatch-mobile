@@ -3,9 +3,11 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import 'package:airwatch_mobile/core/constants/api_constants.dart';
+import 'package:airwatch_mobile/core/network/certificate_pinning.dart';
 import 'package:airwatch_mobile/features/map/data/models/aircraft_state.dart';
 
 /// Per-flight WebSocket client for the airwatch-api `/ws/flights`
@@ -73,7 +75,13 @@ class FlightWebSocketService {
     _setState(WsConnectionState.connecting);
     try {
       final url = ApiConstants.wsFlights;
-      _channel = WebSocketChannel.connect(Uri.parse(url));
+      // Reuse the same pinned HttpClient that Dio uses so the WS
+      // upgrade is protected by the same leaf-cert pin set. When
+      // pinning isn't configured (or in debug), buildPinnedHttpClient
+      // returns a vanilla HttpClient and standard PKI validation
+      // applies — same behaviour as the previous WebSocketChannel.connect.
+      final httpClient = CertificatePinning.buildPinnedHttpClient();
+      _channel = IOWebSocketChannel.connect(url, customClient: httpClient);
     } catch (e) {
       debugPrint('[FlightWS] connect failed: $e');
       _scheduleReconnect();

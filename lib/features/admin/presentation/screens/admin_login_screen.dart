@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:airwatch_mobile/core/l10n/app_strings.dart';
+import 'package:airwatch_mobile/core/platform/screen_security.dart';
 import 'package:airwatch_mobile/core/theme/app_colors.dart';
 import 'package:airwatch_mobile/core/widgets/glass_panel.dart';
 import 'package:airwatch_mobile/features/admin/presentation/providers/admin_providers.dart';
@@ -24,14 +25,24 @@ class AdminLoginScreen extends ConsumerStatefulWidget {
 }
 
 class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
-  final _user = TextEditingController(text: 'viewer');
+  final _user = TextEditingController();
   final _pw = TextEditingController();
   final _totp = TextEditingController();
   bool _busy = false;
   String? _error;
 
   @override
+  void initState() {
+    super.initState();
+    // Block screenshots / recording while credentials + TOTP are on
+    // screen. On Android this sets FLAG_SECURE; on iOS the AppDelegate
+    // handles the equivalent backgrounding overlay app-wide.
+    ScreenSecurity.enable();
+  }
+
+  @override
   void dispose() {
+    ScreenSecurity.disable();
     _user.dispose();
     _pw.dispose();
     _totp.dispose();
@@ -138,6 +149,13 @@ class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
                     border: const OutlineInputBorder(),
                   ),
                   keyboardType: TextInputType.number,
+                  // TOTP codes are short-lived secrets. Do NOT let the IME
+                  // log them in the autocorrect dictionary or surface them
+                  // as suggestion chips to other apps. Stays plain-text
+                  // (no obscureText) because the user needs to read the
+                  // 6 digits off their authenticator to type them in.
+                  enableSuggestions: false,
+                  autocorrect: false,
                   enabled: !_busy,
                   onSubmitted: (_) => _busy ? null : _submit(),
                 ),

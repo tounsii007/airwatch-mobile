@@ -84,6 +84,18 @@ class _AtcAudioPanelState extends State<AtcAudioPanel> {
     if (url.isEmpty) return;
     final uri = Uri.tryParse(url);
     if (uri == null) return;
+    // Allowlist https only. LiveATC feed URLs are https in production;
+    // the upstream catalog could still hand back http (or, worse, a
+    // launcher-handled scheme like javascript:/intent:), so we drop
+    // anything that isn't TLS. The fallback LiveATC search link is
+    // hardcoded https in this file too.
+    if (uri.scheme != 'https') {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Unsicherer Link blockiert')),
+      );
+      return;
+    }
     // Use external mode so the system browser handles audio
     // playback — the platform-default Chrome/Safari has the right
     // codec support for LiveATC's streaming MP3 format.

@@ -146,10 +146,18 @@ jobs:
           cache: true
       - run: flutter pub get
       - run: flutter build apk --release
+      # Rename the output so the artifact filename reflects reality: the
+      # binary was produced with `--release` but signed with the debug
+      # keystore because `ANDROID_KEYSTORE_BASE64` (and friends) are not
+      # set in CI — only the release.yml pipeline mounts the upload key.
+      # An artifact called `app-release.apk` has tricked reviewers into
+      # sideloading it onto real devices in the past.
+      - name: Rename APK to reflect debug-signing
+        run: mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/app-debug-signed-ci.apk
       - uses: actions/upload-artifact@v7
         with:
           name: android-apk-${{ github.sha }}
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: build/app/outputs/flutter-apk/app-debug-signed-ci.apk
           retention-days: 7
 
   # ──────────────────────────────────────────────────────────────────────

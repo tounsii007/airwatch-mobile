@@ -3,6 +3,21 @@
 import 'dart:io';
 import 'dart:convert';
 
+/// Hosts the `/img/*` proxy is permitted to fetch from. Anything outside
+/// this allowlist is rejected with 403 to neutralise SSRF — without it,
+/// the proxy would happily fetch http://169.254.169.254/ (cloud metadata),
+/// http://localhost/, or any internal service reachable from the proxy.
+///
+/// Mirrors the airwatch-web `img-src` CSP allowlist for image hosts in
+/// `airwatch-web/src/proxy.ts` (planespotters CDNs + avs.io airline logos +
+/// flagcdn country flags).
+const Set<String> _imgAllowedHosts = {
+  'api.planespotters.net',
+  'cdn.planespotters.net',
+  'pics.avs.io',
+  'flagcdn.com',
+};
+
 /// AirWatch CORS Proxy — lightweight, Airlabs-only.
 ///
 /// Routes:
@@ -78,18 +93,14 @@ void main() async {
   final server = await HttpServer.bind(_resolveBindAddress(bindHost), port);
 
   _writeLog('AirWatch Proxy on http://$bindHost:$port');
-  print('  /airlabs/* → airlabs.co ${airlabsKey.isEmpty ? "(NO KEY!)" : "(configured)"}');
+  print('AIRLABS_KEY: ${airlabsKey.isNotEmpty ? "configured" : "not configured"}');
+  print('  /airlabs/* → airlabs.co');
   print('  /weather/* → open-meteo.com (free)');
   print('  /hexdb/*   → hexdb.io');
   print('  /photo/*   → planespotters.net');
   print('  /img/*     → image proxy');
   print('  /turbulence → aviationweather.gov (SIGMET)');
   print('  /lookup    → aggregated');
-
-  if (airlabsKey.isEmpty) {
-    print('\n  ⚠ WARNING: No AIRLABS_KEY set! Flights will not load.');
-    print('  Set: \$env:AIRLABS_KEY="your-key"');
-  }
 
   print('\nReady.\n');
 
@@ -174,11 +185,28 @@ void main() async {
     } else if (path.startsWith('/turbulence')) {
       targetUrl = 'https://aviationweather.gov/api/data/airsigmet?format=json';
     } else if (path.startsWith('/img/')) {
-      // Binary image proxy for CORS bypass
+      // Binary image proxy for CORS bypass — SSRF-validated. Reject anything
+      // that isn't https, isn't on the host allowlist, or resolves to a
+      // private/loopback/link-local IP (incl. AWS metadata 169.254.169.254).
       final imageUrl = Uri.decodeComponent(path.replaceFirst('/img/', ''));
+      final Uri parsed;
+      try {
+        parsed = Uri.parse(imageUrl);
+      } catch (_) {
+        _send(request, 403, '{"error":"host not allowed"}');
+        return;
+      }
+      if (parsed.scheme != 'https' || !_imgAllowedHosts.contains(parsed.host)) {
+        _send(request, 403, '{"error":"host not allowed"}');
+        return;
+      }
+      if (!await _imgHostResolvesToPublicIp(parsed.host)) {
+        _send(request, 403, '{"error":"host not allowed"}');
+        return;
+      }
       try {
         final client = HttpClient();
-        final imgReq = await client.getUrl(Uri.parse(imageUrl));
+        final imgReq = await client.getUrl(parsed);
         final imgRes = await imgReq.close();
         request.response.statusCode = imgRes.statusCode;
         final ct = imgRes.headers.contentType;
@@ -330,6 +358,41 @@ bool _isLocalNetworkOrigin(String origin) {
   } catch (_) {
     return false;
   }
+}
+
+/// Returns true iff every IP that [host] resolves to is a public,
+/// routable address. Blocks loopback, link-local (incl. AWS metadata at
+/// 169.254.169.254), and RFC1918 private ranges (10/8, 172.16/12,
+/// 192.168/16). Defence in depth on top of [_imgAllowedHosts] — if DNS
+/// rebinding ever steered an allowed hostname at a private IP, the
+/// outbound fetch still wouldn't go through.
+Future<bool> _imgHostResolvesToPublicIp(String host) async {
+  try {
+    final addrs = await InternetAddress.lookup(host);
+    if (addrs.isEmpty) return false;
+    for (final a in addrs) {
+      if (a.isLoopback || a.isLinkLocal) return false;
+      if (_isRfc1918(a)) return false;
+    }
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
+bool _isRfc1918(InternetAddress a) {
+  if (a.type != InternetAddressType.IPv4) return false;
+  final parts = a.address.split('.');
+  if (parts.length != 4) return false;
+  final o0 = int.tryParse(parts[0]) ?? -1;
+  final o1 = int.tryParse(parts[1]) ?? -1;
+  // 10.0.0.0/8
+  if (o0 == 10) return true;
+  // 172.16.0.0/12
+  if (o0 == 172 && o1 >= 16 && o1 <= 31) return true;
+  // 192.168.0.0/16
+  if (o0 == 192 && o1 == 168) return true;
+  return false;
 }
 
 bool _isAllowedPath(String path) {
