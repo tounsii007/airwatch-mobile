@@ -200,14 +200,32 @@ void main() async {
         _send(request, 403, '{"error":"host not allowed"}');
         return;
       }
-      if (!await _imgHostResolvesToPublicIp(parsed.host)) {
+      // Resolve once, validate, and remember the addresses. We can't easily
+      // force HttpClient to dial a specific IP while keeping TLS SNI/host
+      // header intact (and TLS cert validation would fail if we substituted
+      // the IP into the URL), so we instead VERIFY at connection time that
+      // the dialed remote address is one of the IPs we just validated. If
+      // a 0-TTL DNS rebind flipped the answer between our pre-check and
+      // HttpClient.getUrl's lookup, the connection will land on an IP we
+      // didn't approve and we abort with 502 before piping the response.
+      final approvedAddrs = await _imgResolveApprovedAddrs(parsed.host);
+      if (approvedAddrs == null) {
         _send(request, 403, '{"error":"host not allowed"}');
         return;
       }
+      final approvedIps = approvedAddrs.map((a) => a.address).toSet();
       try {
         final client = HttpClient();
         final imgReq = await client.getUrl(parsed);
         final imgRes = await imgReq.close();
+        // Post-connect TOCTOU check: ensure the address we actually dialed
+        // is in the approved set from our pre-check lookup.
+        final remoteIp = imgRes.connectionInfo?.remoteAddress.address;
+        if (remoteIp == null || !approvedIps.contains(remoteIp)) {
+          client.close(force: true);
+          _send(request, 502, '{"error":"dns rebind detected"}');
+          return;
+        }
         request.response.statusCode = imgRes.statusCode;
         final ct = imgRes.headers.contentType;
         if (ct != null) request.response.headers.contentType = ct;
@@ -360,23 +378,26 @@ bool _isLocalNetworkOrigin(String origin) {
   }
 }
 
-/// Returns true iff every IP that [host] resolves to is a public,
-/// routable address. Blocks loopback, link-local (incl. AWS metadata at
-/// 169.254.169.254), and RFC1918 private ranges (10/8, 172.16/12,
-/// 192.168/16). Defence in depth on top of [_imgAllowedHosts] — if DNS
-/// rebinding ever steered an allowed hostname at a private IP, the
-/// outbound fetch still wouldn't go through.
-Future<bool> _imgHostResolvesToPublicIp(String host) async {
+/// Resolves [host] and returns the list of addresses iff every resolved
+/// IP is a public, routable address. Blocks loopback, link-local (incl.
+/// AWS metadata at 169.254.169.254), and RFC1918 private ranges (10/8,
+/// 172.16/12, 192.168/16). Returns null if the host doesn't resolve or
+/// resolves to any disallowed IP.
+///
+/// The caller then verifies the actual dialed `remoteAddress` is in this
+/// approved set — closing the DNS-TOCTOU window between our pre-check
+/// lookup and HttpClient's separate connect-time lookup.
+Future<List<InternetAddress>?> _imgResolveApprovedAddrs(String host) async {
   try {
     final addrs = await InternetAddress.lookup(host);
-    if (addrs.isEmpty) return false;
+    if (addrs.isEmpty) return null;
     for (final a in addrs) {
-      if (a.isLoopback || a.isLinkLocal) return false;
-      if (_isRfc1918(a)) return false;
+      if (a.isLoopback || a.isLinkLocal) return null;
+      if (_isRfc1918(a)) return null;
     }
-    return true;
+    return addrs;
   } catch (_) {
-    return false;
+    return null;
   }
 }
 

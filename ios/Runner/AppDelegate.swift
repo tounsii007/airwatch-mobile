@@ -16,7 +16,22 @@ import UIKit
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
   }
 
-  override func applicationDidEnterBackground(_ application: UIApplication) {
+  // Snapshot blocker uses willResignActive / didBecomeActive (not the
+  // background lifecycle) so phone-call interrupts, Control-Center pulls,
+  // notification banners, and the app-switcher snapshot are all covered.
+  // willResignActive fires earlier than didEnterBackground (which doesn't
+  // fire at all for transient interrupts), and didBecomeActive mirrors it
+  // by firing on return from any interruption.
+  override func applicationWillResignActive(_ application: UIApplication) {
+    addBlurView()
+  }
+
+  override func applicationDidBecomeActive(_ application: UIApplication) {
+    removeBlurView()
+  }
+
+  private func addBlurView() {
+    guard blurView == nil else { return }
     let blur = UIView(frame: window?.frame ?? .zero)
     blur.backgroundColor = .black
     blur.tag = 999
@@ -24,7 +39,7 @@ import UIKit
     blurView = blur
   }
 
-  override func applicationWillEnterForeground(_ application: UIApplication) {
+  private func removeBlurView() {
     blurView?.removeFromSuperview()
     blurView = nil
   }
