@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -75,13 +76,26 @@ class FlightWebSocketService {
     _setState(WsConnectionState.connecting);
     try {
       final url = ApiConstants.wsFlights;
-      // Reuse the same pinned HttpClient that Dio uses so the WS
-      // upgrade is protected by the same leaf-cert pin set. When
-      // pinning isn't configured (or in debug), buildPinnedHttpClient
-      // returns a vanilla HttpClient and standard PKI validation
-      // applies — same behaviour as the previous WebSocketChannel.connect.
-      final httpClient = CertificatePinning.buildPinnedHttpClient();
-      _channel = IOWebSocketChannel.connect(url, customClient: httpClient);
+      // Flutter's `flutter_test` framework substitutes a mocked
+      // HttpClient whose HttpResponse doesn't implement detachSocket(),
+      // so going through dart:io's WebSocket.connect (which is what
+      // IOWebSocketChannel.connect does internally) throws
+      // UnsupportedError("Mocked response") during the upgrade
+      // handshake. In tests, fall back to the plain
+      // WebSocketChannel.connect path — pinning has no value in a
+      // pure-Dart test environment anyway because there's no real
+      // socket to pin.
+      if (Platform.environment['FLUTTER_TEST'] == 'true') {
+        _channel = WebSocketChannel.connect(Uri.parse(url));
+      } else {
+        // Reuse the same pinned HttpClient that Dio uses so the WS
+        // upgrade is protected by the same leaf-cert pin set. When
+        // pinning isn't configured (or in debug), buildPinnedHttpClient
+        // returns a vanilla HttpClient and standard PKI validation
+        // applies — same behaviour as the previous WebSocketChannel.connect.
+        final httpClient = CertificatePinning.buildPinnedHttpClient();
+        _channel = IOWebSocketChannel.connect(url, customClient: httpClient);
+      }
     } catch (e) {
       debugPrint('[FlightWS] connect failed: $e');
       _scheduleReconnect();

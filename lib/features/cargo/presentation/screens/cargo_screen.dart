@@ -156,10 +156,7 @@ class _CargoScreenState extends ConsumerState<CargoScreen> {
           ...filtered.map(
             (ac) => Padding(
               padding: const EdgeInsets.only(bottom: 8),
-              child: _CargoCard(
-                aircraft: ac,
-                language: lang,
-              ),
+              child: _CargoCard(aircraft: ac, language: lang),
             ),
           ),
       ],

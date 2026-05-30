@@ -190,7 +190,7 @@ class _AirportScreenState extends ConsumerState<AirportScreen> {
             // Content: search results OR default view
             Expanded(
               child: _suggestions.isNotEmpty
-                  ? _buildSearchResults(isDark, primary)
+                  ? _buildSearchResults(isDark, primary, langName)
                   : _buildDefaultView(isDark, primary, aircraftAsync, settings),
             ),
           ],
@@ -200,7 +200,7 @@ class _AirportScreenState extends ConsumerState<AirportScreen> {
   }
 
   // ═══ Search results ═══
-  Widget _buildSearchResults(bool isDark, Color primary) {
+  Widget _buildSearchResults(bool isDark, Color primary, String langName) {
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       itemCount: _suggestions.length,
