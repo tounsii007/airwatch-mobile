@@ -165,11 +165,26 @@ dependencies {
     // 1.1.1 release supports AGP 8.x and compileSdk 34+, which is
     // comfortable for our target.
     constraints {
-        implementation("androidx.glance:glance-appwidget:1.1.1") {
+        implementation("androidx.glance:glance-appwidget") {
+            version {
+                // `strictly` overrides home_widget's dynamic 1.+; a plain
+                // constraint isn't enough — Gradle still resolves the
+                // dynamic version to the highest available (1.3.0-alpha01
+                // today) and merely emits a warning when the constraint
+                // disagrees.
+                strictly("1.1.1")
+            }
             because(
-                "home_widget 0.9.x uses dynamic 1.+; alphas need AGP 9.1 + " +
-                "compileSdk 37 which we haven't adopted yet."
+                "home_widget 0.9.x uses dynamic 1.+; 1.2/1.3 alphas need " +
+                "AGP 9.1 + compileSdk 37 which we haven't adopted yet."
             )
+        }
+    }
+    // Belt-and-suspenders against future transitive bumps to dynamic
+    // alpha versions of the same artifact.
+    configurations.all {
+        resolutionStrategy {
+            force("androidx.glance:glance-appwidget:1.1.1")
         }
     }
 }
