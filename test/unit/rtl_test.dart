@@ -50,66 +50,39 @@ void main() {
 
   group('textDirectionFor', () {
     test('returns TextDirection.rtl for Arabic', () {
-      expect(
-        textDirectionFor(AppLanguage.ar),
-        equals(TextDirection.rtl),
-      );
+      expect(textDirectionFor(AppLanguage.ar), equals(TextDirection.rtl));
     });
 
     test('returns TextDirection.ltr for English', () {
-      expect(
-        textDirectionFor(AppLanguage.en),
-        equals(TextDirection.ltr),
-      );
+      expect(textDirectionFor(AppLanguage.en), equals(TextDirection.ltr));
     });
 
     test('returns TextDirection.ltr for German', () {
-      expect(
-        textDirectionFor(AppLanguage.de),
-        equals(TextDirection.ltr),
-      );
+      expect(textDirectionFor(AppLanguage.de), equals(TextDirection.ltr));
     });
 
     test('returns TextDirection.ltr for French', () {
-      expect(
-        textDirectionFor(AppLanguage.fr),
-        equals(TextDirection.ltr),
-      );
+      expect(textDirectionFor(AppLanguage.fr), equals(TextDirection.ltr));
     });
 
     test('returns TextDirection.ltr for Spanish', () {
-      expect(
-        textDirectionFor(AppLanguage.es),
-        equals(TextDirection.ltr),
-      );
+      expect(textDirectionFor(AppLanguage.es), equals(TextDirection.ltr));
     });
 
     test('returns TextDirection.ltr for Italian', () {
-      expect(
-        textDirectionFor(AppLanguage.it),
-        equals(TextDirection.ltr),
-      );
+      expect(textDirectionFor(AppLanguage.it), equals(TextDirection.ltr));
     });
 
     test('returns TextDirection.ltr for Polish', () {
-      expect(
-        textDirectionFor(AppLanguage.pl),
-        equals(TextDirection.ltr),
-      );
+      expect(textDirectionFor(AppLanguage.pl), equals(TextDirection.ltr));
     });
 
     test('returns TextDirection.ltr for Dutch', () {
-      expect(
-        textDirectionFor(AppLanguage.nl),
-        equals(TextDirection.ltr),
-      );
+      expect(textDirectionFor(AppLanguage.nl), equals(TextDirection.ltr));
     });
 
     test('returns TextDirection.ltr for Turkish', () {
-      expect(
-        textDirectionFor(AppLanguage.tr),
-        equals(TextDirection.ltr),
-      );
+      expect(textDirectionFor(AppLanguage.tr), equals(TextDirection.ltr));
     });
 
     test('consistent with isRtl: returns rtl only when isRtl is true', () {

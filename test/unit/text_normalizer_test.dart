@@ -70,32 +70,19 @@ void main() {
       });
 
       test('fixes multiple mojibake characters side by side', () {
-        expect(
-          TextNormalizer.fixMojibake('CafÃ©Ã§on'),
-          'Caféçon',
-        );
+        expect(TextNormalizer.fixMojibake('CafÃ©Ã§on'), 'Caféçon');
       });
 
       test('fixes complex city names with multiple accents', () {
-        expect(
-          TextNormalizer.fixMojibake('MÃ¼nchen'),
-          'München',
-        );
+        expect(TextNormalizer.fixMojibake('MÃ¼nchen'), 'München');
       });
 
       test('fixes French place names', () {
-        expect(
-          TextNormalizer.fixMojibake('LÃ©nin MontÃ©')
-,
-          'Lénin Monté',
-        );
+        expect(TextNormalizer.fixMojibake('LÃ©nin MontÃ©'), 'Lénin Monté');
       });
 
       test('fixes text with capital and lowercase mojibake', () {
-        expect(
-          TextNormalizer.fixMojibake('Ã€ bientÃ´t'),
-          'À bientôt',
-        );
+        expect(TextNormalizer.fixMojibake('Ã€ bientÃ´t'), 'À bientôt');
       });
     });
 
@@ -109,24 +96,15 @@ void main() {
       });
 
       test('ASCII-only text remains unchanged', () {
-        expect(
-          TextNormalizer.fixMojibake('San Francisco'),
-          'San Francisco',
-        );
+        expect(TextNormalizer.fixMojibake('San Francisco'), 'San Francisco');
       });
 
       test('already-correct UTF-8 text remains unchanged', () {
-        expect(
-          TextNormalizer.fixMojibake('Café'),
-          'Café',
-        );
+        expect(TextNormalizer.fixMojibake('Café'), 'Café');
       });
 
       test('mixed mojibake and correct text', () {
-        expect(
-          TextNormalizer.fixMojibake('Café vs CafÃ©'),
-          'Café vs Café',
-        );
+        expect(TextNormalizer.fixMojibake('Café vs CafÃ©'), 'Café vs Café');
       });
 
       test('text with numbers and mojibake', () {
@@ -137,10 +115,7 @@ void main() {
       });
 
       test('text with punctuation and mojibake', () {
-        expect(
-          TextNormalizer.fixMojibake('CafÃ©!? Yes!'),
-          'Café!? Yes!',
-        );
+        expect(TextNormalizer.fixMojibake('CafÃ©!? Yes!'), 'Café!? Yes!');
       });
 
       test('single space is preserved', () {
@@ -148,10 +123,7 @@ void main() {
       });
 
       test('whitespace with mojibake', () {
-        expect(
-          TextNormalizer.fixMojibake('  CafÃ©  '),
-          '  Café  ',
-        );
+        expect(TextNormalizer.fixMojibake('  CafÃ©  '), '  Café  ');
       });
     });
 
@@ -251,45 +223,27 @@ void main() {
 
     group('real-world scenarios', () {
       test('fixes airport/city names like São Paulo', () {
-        expect(
-          TextNormalizer.fixMojibake('SÃ£o Paulo'),
-          'São Paulo',
-        );
+        expect(TextNormalizer.fixMojibake('SÃ£o Paulo'), 'São Paulo');
       });
 
       test('fixes airport names like Zürich', () {
-        expect(
-          TextNormalizer.fixMojibake('ZÃ¼rich'),
-          'Zürich',
-        );
+        expect(TextNormalizer.fixMojibake('ZÃ¼rich'), 'Zürich');
       });
 
       test('fixes names like François', () {
-        expect(
-          TextNormalizer.fixMojibake('FranÃ§ois'),
-          'François',
-        );
+        expect(TextNormalizer.fixMojibake('FranÃ§ois'), 'François');
       });
 
       test('fixes Montréal', () {
-        expect(
-          TextNormalizer.fixMojibake('MontrÃ©al'),
-          'Montréal',
-        );
+        expect(TextNormalizer.fixMojibake('MontrÃ©al'), 'Montréal');
       });
 
       test('fixes names like CÃ´te d\'Ivoire', () {
-        expect(
-          TextNormalizer.fixMojibake('CÃ´te d\'Ivoire'),
-          'Côte d\'Ivoire',
-        );
+        expect(TextNormalizer.fixMojibake('CÃ´te d\'Ivoire'), 'Côte d\'Ivoire');
       });
 
       test('fixes Istanbul with Turkish characters', () {
-        expect(
-          TextNormalizer.fixMojibake('ÄŸstanbul'),
-          'ğstanbul',
-        );
+        expect(TextNormalizer.fixMojibake('ÄŸstanbul'), 'ğstanbul');
       });
 
       test('fixes long text with multiple mojibake', () {
@@ -303,9 +257,7 @@ void main() {
 
       test('preserves existing correct characters in mixed text', () {
         expect(
-          TextNormalizer.fixMojibake(
-            'Café + CafÃ© = two cafés',
-          ),
+          TextNormalizer.fixMojibake('Café + CafÃ© = two cafés'),
           'Café + Café = two cafés',
         );
       });
@@ -325,24 +277,15 @@ void main() {
       });
 
       test('mojibake at start of string', () {
-        expect(
-          TextNormalizer.fixMojibake('Ã©cole'),
-          'école',
-        );
+        expect(TextNormalizer.fixMojibake('Ã©cole'), 'école');
       });
 
       test('mojibake at end of string', () {
-        expect(
-          TextNormalizer.fixMojibake('cafÃ©'),
-          'café',
-        );
+        expect(TextNormalizer.fixMojibake('cafÃ©'), 'café');
       });
 
       test('consecutive mojibake characters', () {
-        expect(
-          TextNormalizer.fixMojibake('tÃ©lÃ©phone'),
-          'téléphone',
-        );
+        expect(TextNormalizer.fixMojibake('tÃ©lÃ©phone'), 'téléphone');
       });
     });
 
