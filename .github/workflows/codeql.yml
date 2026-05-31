@@ -1,15 +1,23 @@
 # CodeQL — GitHub's static analysis for security vulnerabilities.
-# Free for public repos. Catches SQL injection, XSS, path traversal,
-# hardcoded credentials, deserialization issues, etc. Findings show up
-# on the Security tab and as inline PR comments.
+# Free for public repos. Catches injection, path traversal, hardcoded
+# credentials, deserialization issues, etc. Findings show up on the
+# Security tab and as inline PR comments.
 #
 # NOTE on languages: the app itself is Dart/Flutter, which CodeQL does
-# NOT support. What it CAN scan here is the hand-written Android native
-# layer (Kotlin: MainActivity, FlightWidgetProvider). We use
-# `build-mode: none` so CodeQL analyses the Kotlin sources directly
-# without standing up a full Flutter + Gradle Android build — that build
-# is heavy, needs the Flutter SDK, and already runs in ci.yml. Source-only
-# mode keeps this job fast and reliably green while still flagging issues.
+# NOT support. What it CAN scan is the hand-written Android native layer
+# (Kotlin: MainActivity, FlightWidgetProvider).
+#
+# Why a real build (not build-mode: none): CodeQL's Kotlin extractor
+# cannot run buildless. With `build-mode: none` it silently falls back to
+# a Gradle autobuild that dies at android/settings.gradle.kts because
+# `local.properties` (gitignored, holds flutter.sdk/sdk.dir) doesn't
+# exist on the runner — so the job failed with a configuration error and
+# extracted nothing. Instead we mirror the known-green `build-android`
+# job from ci.yml: set up Java + Flutter, then run a traced
+# `flutter build apk --debug`. `flutter build` generates local.properties
+# and drives the Gradle compile of the Kotlin layer, which CodeQL traces
+# to build its database. Heavier than source-only, but it is the only
+# mode that actually works for Kotlin.
 name: CodeQL
 
 on:
@@ -20,6 +28,13 @@ on:
   schedule:
     # Weekly re-scan so newly published CodeQL rules can flag old code.
     - cron: '30 5 * * 1'
+
+permissions:
+  contents: read
+
+env:
+  FLUTTER_VERSION: '3.41.5'
+  FLUTTER_CHANNEL: stable
 
 jobs:
   analyze:
@@ -35,10 +50,33 @@ jobs:
         language: [ "java-kotlin" ]
     steps:
       - uses: actions/checkout@v6
+
+      # Java + Flutter, matching ci.yml's build-android job so the traced
+      # build resolves exactly the same way it does in the green CI build.
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: ${{ env.FLUTTER_CHANNEL }}
+          cache: true
+      - run: flutter pub get
+
       - uses: github/codeql-action/init@v4
         with:
           languages: ${{ matrix.language }}
-          build-mode: none
+          build-mode: manual
+
+      # The traced build. `flutter build apk` generates local.properties
+      # and runs the Gradle compile of the Kotlin native layer; CodeQL
+      # tracing captures it. --debug avoids needing the release upload key
+      # (same rationale as ci.yml's build-android job).
+      - name: Build Android (traced) so CodeQL can extract the Kotlin
+        run: flutter build apk --debug
+
       - uses: github/codeql-action/analyze@v4
         with:
           category: "/language:${{ matrix.language }}"
